@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ -n "$1" ]
+then
 	dir=$1
 else
 	exit 0
