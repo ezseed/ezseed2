@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'EntypoRegular';
+    src: url('../fonts/entypo.eot');
+    src: url('../fonts/entypo.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/entypo.woff') format('woff'),
+         url('../fonts/entypo.ttf') format('truetype'),
+         url('../fonts/entypo.svg#entypo') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+
+}
+/*
+@font-face {
+    font-family: 'LeagueGothicRegular';
+    src: url('../fonts/LeagueGothic-Regular-webfont.eot');
+    src: url('../fonts/LeagueGothic-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/LeagueGothic-Regular-webfont.woff') format('woff'),
+         url('../fonts/LeagueGothic-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/LeagueGothic-Regular-webfont.svg#LeagueGothicRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+     -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+*/

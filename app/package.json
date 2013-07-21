@@ -1,0 +1,25 @@
+{
+  "name": "EzSeed2",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.2.5",
+    "ejs": "*",
+    "watch": "*",
+    "nedb": "~0.6.1",
+    "underscore": "~1.4.4",
+    "underscore.string": "~2.3.1",
+    "bcrypt-nodejs": "0.0.3",
+    "mime": "~1.2.9",
+    "allocine-api": "~0.1.4",
+    "id3": "~0.0.2",
+    "chokidar": "~0.6.2",
+    "socket.io": "~0.9.16",
+    "mongoose": "~3.6.11",
+    "archiver": "~0.4.5",
+    "node-cache": "~0.3.2"
+  }
+}
