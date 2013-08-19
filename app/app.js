@@ -111,6 +111,8 @@ var err = null;
 
     app.get('/install/complete', install.complete);
 
+    app.get('/install/torrent', install.torrent);
+    app.post('/install/transmission', install.transmission);
   }
 //});
 

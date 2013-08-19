@@ -3,6 +3,7 @@
 username=$1
 password=$2
 userdir=$3
+appdir=$4
 
 # if [ -f /etc/init.d/transmission-daemon ]
 # then
@@ -15,7 +16,7 @@ userdir=$3
 # fi
 
 echo "Adding user"
-useradd $username -p $(mkpasswd -H md5 $pass) -G debian-transmission -d $userdir/$username -m
+useradd $username -p $(mkpasswd -H md5 $password) -G debian-transmission -d $userdir -m
 
 chown -R $username:debian-transmission $userdir
 chmod 775 $userdir
@@ -32,7 +33,8 @@ cp -a /var/lib/transmission-daemon /var/lib/transmission-daemon-$username
 cp -a /etc/transmission-daemon /etc/transmission-daemon-$username
 cp /etc/default/transmission-daemon /etc/default/transmission-daemon-$username
 
-sed s/NAME=transmission-daemon/NAME=transmission-daemon-$username/ </etc/init.d/transmission-daemon-$username >/etc/init.d/transmission-daemon-$username.new
+
+sed 's/NAME=transmission-daemon/NAME=transmission-daemon-'$username'/' </etc/init.d/transmission-daemon-$username >/etc/init.d/transmission-daemon-$username.new
 
 mv /etc/init.d/transmission-daemon-$username.new /etc/init.d/transmission-daemon-$username
 
@@ -40,7 +42,7 @@ sed 's/CONFIG_DIR="\/var\/lib\/transmission-daemon\/info"/CONFIG_DIR="\/var\/lib
 
 mv /etc/default/transmission-daemon-$username.new /etc/default/transmission-daemon-$username
 
-#Useful ?
+# Useful ?
 chmod 755 /usr/bin/transmission-daemon-$username
 chmod 755 /etc/init.d/transmission-daemon-$username
 chmod -R 755 /var/lib/transmission-daemon-$username
@@ -59,7 +61,11 @@ echo "Editing settings"
 
 #mv $userdir/config/settings.json /etc/transmission-daemon-$username/settings.json
 
-ln -sf /etc/transmission-daemon-$username/settings.json /var/lib/transmission-daemon-$username/info/settings.json
+ln -sf /var/lib/transmission-daemon-$username/info/settings.json /etc/transmission-daemon-$username/settings.json 
+
+#Symlink to node app
+ln -sf /var/lib/transmission-daemon-$username/info/settings.json $appdir/scripts/transmission/config/settings.$username.json 
+
 chmod -R 755 /etc/transmission-daemon-$username
 
 #echo "Adding user config username/peerport/rpcport/daysleft"
@@ -68,8 +74,10 @@ chmod -R 755 /etc/transmission-daemon-$username
 #echo "Reloading apache"
 #/etc/init.d/apache2 reload
 
-echo "Starting Transmission"
-/etc/init.d/transmission-daemon-$username start
+# echo "Starting Transmission"
+service transmission-daemon-$username start
+service transmission-daemon-$username stop
+
 
 echo "Done"
 

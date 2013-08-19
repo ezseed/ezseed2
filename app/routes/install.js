@@ -32,17 +32,14 @@ exports.install = function(req, res) {
 * buffer
 */
 
-
-
 exports.folder = function(req, res) {
 
-	var dir = __dirname.replace('app/routes', '');	
 	var string = new Buffer(res.locals.message + '<p>Instanciez le dossier de téléchargement par défaut où seront créés les différents dossiers de téléchargement pour les utilisateurs</p>'+
 		'<form method="POST" action="/install/folder/create">'+
 			'<fieldset>'+
 				'<legend>Chemin du dossier à parser (absolu) : </legend>'+
 				'<label for="path">Chemin<sup>*</sup></label>'+
-				'<input type="text" name="path" style="width:350px" value="' + dir + 'downloads/" />'+
+				'<input type="text" name="path" style="width:350px" value="' + process.cwd().replace('app','') + 'downloads" />'+
 				'<button type="submit">Envoyer</button>'+
 				'<p>'+
 				'Ce dossier servira à conserver les fichiers téléchargés par les différents utilisateurs.<br>'+
@@ -54,6 +51,16 @@ exports.folder = function(req, res) {
 		'</form>');
 
 	res.send(string.toString());
+}
+
+/*
+* GET Torrent
+*/
+exports.torrent = function(req, res) {
+	res.send('<h1>Installation d\'un client torrent</h1>\
+		<form method="POST" action="/install/transmission">\
+		<label>Mot de passe pour transmission</label><input type="password" name="password" required><br>\
+		<input type="submit" value="Installer transmission"></form><a href="/install/complete">Passer cette étape</a>');
 }
 
 exports.complete = function(req, res) {
@@ -113,7 +120,7 @@ exports.folderCreation = function(req, res) {
 			config.save(function(err) {
 				if(err) throw err;
 
-				var userPath = req.body.path + req.session.user.username + '/';
+				var userPath = req.body.path + '/'+ req.session.user.username + '/';
 				var userFolderKey = new Buffer(userPath).toString('hex');
 
 				fs.mkdir(userPath, function(err) {
@@ -122,13 +129,9 @@ exports.folderCreation = function(req, res) {
 					var exec = require('child_process').exec,
     					child;
 
-    				child = exec('ln -s '+ req.body.path +' ' + __dirname + '/../public/downloads',
+    				child = exec('ln -sf '+ req.body.path +' ' + process.cwd() + '/public/downloads',
 					  	function (error, stdout, stderr) {
-						    console.log('stdout: ' + stdout);
-						    console.log('stderr: ' + stderr);
-						    if (error !== null) {
-						      console.log('exec error: ' + error);
-						    }
+						   
 
 						    var path = new Pathes({
 								'folderKey' : userFolderKey
@@ -144,7 +147,8 @@ exports.folderCreation = function(req, res) {
 							//$push: { 
 								Users.findByIdAndUpdate(req.session.user.id, { pathes: obj._id }, function(err) { 
 									if(err) console.log(err);
-									res.redirect('/install/complete');
+									req.session.user.dir = userPath;
+									res.redirect('/install/torrent');
 								});
 							});
 
@@ -159,4 +163,83 @@ exports.folderCreation = function(req, res) {
 			res.redirect('/install/folder');
 		}
 	});
+}
+
+/*
+* POST install transmission - run shell !
+*/
+exports.transmission = function(req, res) {
+
+	var execFile = require("child_process").execFile,
+    installShell = process.cwd() + '/scripts/transmission/transmission.install.sh';
+
+    fs.chmodSync(installShell, '777');
+
+    execFile(installShell, process.cwd(), null,
+	  	function (error, stdout, stderr) {
+
+		    //Creating user
+		    execFile(process.cwd() +'/scripts/transmission/transmission.user.sh', 
+		    	[req.session.user.username, req.body.password, req.session.user.dir, process.cwd()],
+		    	null,
+		    	function(err, stdout, sdterr) {
+
+
+		    		var settings = process.cwd() + '/scripts/transmission/config/settings.'+req.session.user.username+'.json';
+
+					fs.readFile(settings, function (err, data) {
+						if (err) throw err;
+						var d = JSON.parse(data);
+
+
+						//Default settings replacement
+						d['ratio-limit-enabled'] = true;
+						d['incomplete-dir-enabled'] = true;
+						d['peer-port-random-on-start'] = true;
+						d['lpd-enabled'] = true;
+						d['peer-socket-tos'] = 'lowcost';
+						d['rpc-password'] = req.body.password;
+						d['rpc-enabled'] = true;
+						d['rpc-whitelist-enabled'] = false;
+						d['rpc-authentication-required'] = true;
+						d['rpc-username'] = req.session.user.username;
+
+						d['download-dir'] = req.session.user.dir;
+
+
+						Users.count(function (err, count) {
+
+							d['rpc-port'] = d['rpc-port'] + count;
+
+							fs.writeFileSync(settings, JSON.stringify(d));
+
+							execFile(process.cwd() +'/scripts/transmission/transmission.sh', 
+						    	[req.session.user.username, 'start'],
+						    	null,
+						    	function(err, stdout, sdterr) {
+
+									res.redirect('/install/complete');
+
+								}
+							);
+
+						});
+
+					});
+
+
+				    
+		    	}
+		    )
+
+
+		}
+	);
+
+
+
+
+
+
+
 }
