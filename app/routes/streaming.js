@@ -20,8 +20,15 @@ exports.watch = function(req, res) {
 			req.session.error = 'Aucun fichier trouvé';
 			res.redirect('/');
 		} else {
-			
-			res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, 'path' : path });
+			var cwd = process.cwd().replace('/app', '');
+
+			path = path.replace(cwd, '');
+
+			console.log(cwd, path);
+
+			var fullUrl = 'http://' + req.host + ':3001' + path;
+
+			res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, path: path, fullUrl: fullUrl  });
 		}
 		
 	});

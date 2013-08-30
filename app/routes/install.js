@@ -175,6 +175,10 @@ exports.transmission = function(req, res) {
 
     fs.chmodSync(installShell, '777');
 
+    fs.chmodSync(process.cwd() +'/scripts/transmission/transmission.user.sh', '777');
+
+    fs.chmodSync(process.cwd() +'/scripts/transmission/transmission.sh', '777');
+
     execFile(installShell, process.cwd(), null,
 	  	function (error, stdout, stderr) {
 
@@ -195,6 +199,7 @@ exports.transmission = function(req, res) {
 						//Default settings replacement
 						d['ratio-limit-enabled'] = true;
 						d['incomplete-dir-enabled'] = true;
+						d['incomplete-dir'] = process.cwd() + '/incomplete';
 						d['peer-port-random-on-start'] = true;
 						d['lpd-enabled'] = true;
 						d['peer-socket-tos'] = 'lowcost';
@@ -204,8 +209,11 @@ exports.transmission = function(req, res) {
 						d['rpc-authentication-required'] = true;
 						d['rpc-username'] = req.session.user.username;
 
-						d['download-dir'] = req.session.user.dir;
+						d['download-dir'] = req.session.user.dir.substr(0, -1);
 
+
+						//fs.chownSync(req.session.user.dir, 'debian-transmission', 'soyuka');
+						fs.chmodSync(req.session.user.dir, '775')
 
 						Users.count(function (err, count) {
 

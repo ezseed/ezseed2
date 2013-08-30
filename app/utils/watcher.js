@@ -45,7 +45,7 @@ Object.byString = function(o, s) {
 
 //todo add cb
 var addToDB = {
-	movie : function(params, single, cb) {		
+	movie : function(params, single, cb) {
 		Movies.findById(params.key, function(err, doc) {
 
     		//if doc is founded
@@ -57,8 +57,13 @@ var addToDB = {
 					return cb();	
 				});
     		} else if(!doc) {
+
     			//see release.js
     			release.parseVideoName(params.file, function(err, movie, file) {
+
+    				console.log(movie);
+
+    				if(err) console.log('Release parse video err ', err);
 
     				var movie = new Movies(movie);
     				movie._id = params.key;
@@ -78,6 +83,8 @@ var addToDB = {
     						});
     				});
 	        	});
+    		} else {
+    			return cb();
     		}
     	});
 	},
@@ -134,7 +141,9 @@ var addToDB = {
     					}
     				);
     			});
-			}
+			} else {
+    			return cb();
+    		}
 		});
 
 	},
@@ -178,7 +187,9 @@ var addToDB = {
     					}
     				);
 				});
-			}
+			} else {
+    			return cb();
+    		}
 		});
 	
 	}
@@ -243,13 +254,15 @@ var closeTimeout,
 */
 exports.watcher = function(params) {
 	
+	console.log('Watcher : ', params);
+
 	var pathsToWatch = params.paths
 		, pathsKeys = params.pathsKeys
 		, firstWatch = params.firstWatch
 		, uid = params.uid
 		, sid = params.sid
 		, lastUpdate = Date.now();
-        var io = require('../app.js').io;
+    var io = require('../app.js').io;
 
 	
 	allFiles = params.allFiles == undefined ? allFiles : params.allFiles;
@@ -273,6 +286,7 @@ exports.watcher = function(params) {
   		if(firstWatch)
 	  		watcher.close();
 	  	else {
+
 	  		//TODO tvseries together
 	  		//sends all files once
 	  		if(allFiles) {
@@ -318,6 +332,8 @@ exports.watcher = function(params) {
 
 	//File is added
 	watcher.on('add', function(f, stat) {
+		
+		console.log('Watcher adds', f);
 
 		var prevDir = f.replace(path.basename(f), ''), //previous directory
           	prevDirKey = new Buffer(prevDir).toString('hex'), //to hex
@@ -342,7 +358,6 @@ exports.watcher = function(params) {
 		          		ext : path.extname(f)
 		          	};
 
-		          	
 			        var type = file.mime.split('/');//speed type from mime
 
 			        file._id = fileKey;

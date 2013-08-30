@@ -1,39 +1,16 @@
 <% include header %>
 <section class="element list text-center">
     <h1 class="text-center"><%- movie.title %></h1>
-    <object id="ie_plugin" classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616"
-                width="320" height="212"
-                codebase="/plugins/DivXBrowserPlugin.cab">
-
-    		    <param name="autoPlay" value="false" />
-                <param name="src" value="<%- path %>" />
-                <param name="previewImage" value="<%- movie.poster %>" />
-
-                <embed id="np_plugin" type="video/divx" src="<%- path %>"
-                       width="640" height="480"
-                       autoPlay="false" previewImage="<%- movie.poster %>"
-                       pluginspage="http://go.divx.com/plugin/download/">
-                </embed>
-     </object>
+<object classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" width="400" height="245" codebase="http://go.divx.com/plugin/DivXBrowserPlugin.cab">
+  <param name="custommode" value="none" />
+  <param name="previewImage" value="<%- movie.poster %>" />
+  <param name="autoPlay" value="false" />
+  <param name="src" value="<%- fullUrl %>" />
+<embed type="video/divx" src="<%- fullUrl %>" custommode="none" width="400" height="245" autoPlay="false" previewImage="<%- movie.poster %>" pluginspage="http://go.divx.com/plugin/download/">
+</embed>
+</object>
+<!-- leaving the code below will help search index your video -->
+<br />
+No video? Get the DivX Web Player for <a style="text-decoration: underline;" href="http://download.divx.com/player/DivXWebPlayerInstaller.exe">Windows</a> or <a style="text-decoration: underline;" href="http://download.divx.com/player/DivXWebPlayer.dmg">Mac</a>
 </section>
-<script type="text/javascript">
-
-    // This code detects which browser we are
-    // running into (IE/Safari or others) and assigns
-    // the correct element (object or embed) to
-    // the "plugin" variable, that we will use.
-    //
-
-    var plugin;
-
-    if(navigator.userAgent.indexOf('MSIE')   != -1 ||
-       navigator.userAgent.indexOf('Safari') != -1)
-    {
-        plugin = document.getElementById('ie_plugin');
-    }
-    else
-    {
-        plugin = document.getElementById('np_plugin');
-    }
-</script>
 <% include footer %>

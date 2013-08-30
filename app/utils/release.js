@@ -37,7 +37,8 @@ var audios = ['ac3', 'dts'];
 
 //Dummy name by replacing the founded vars
 function dummyName(name, obj) {
-	name = name.replace(obj.quality, '').replace(obj.subtitles, '').replace(obj.language, '');
+	if(name !== undefined)
+		name = name.replace(obj.quality, '').replace(obj.subtitles, '').replace(obj.language, '');
 	return name;
 }
 
@@ -48,8 +49,8 @@ function whatVideo(file, callback) {
 	
 	object = {};
 	var name = file.name;
-
-	var r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/); //searches for the tv show
+	
+	var r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i); //searches for the tv show
 	var y = new RegExp(/([0-9]{4})/); //Year regex
 
 	//Found a tv show
@@ -58,10 +59,11 @@ function whatVideo(file, callback) {
 		object.type = 'tvseries';
 
 		//Searches for the Season number + Episode number
-		r = new RegExp(/(.+)S([0-9]+)E([0-9]+)/);
-		var r2 = new RegExp(/(.+)([0-9]+)x([0-9])+/);
+		r = new RegExp(/(.+)S([0-9]+)E([0-9]+)/i);
+		var r2 = new RegExp(/(.+)([0-9]+)x([0-9])+/i);
 
 		var ar = name.match(r);
+
 		//If it matches
 		if(ar != null) {
 			file.name = ar[1];
@@ -128,7 +130,6 @@ exports.parseVideoName = function(file, cb) {
 	movie.language = parseLanguages(array);
 	movie.audio = parseAudios(array);
 
-
 	whatVideo(file, function(err, obj, f) {
 
 		//Adds the founded things to the file
@@ -142,7 +143,7 @@ exports.parseVideoName = function(file, cb) {
       		if(!_.isUndefined(res.feed)) {
           		var infos = Object.byString(res.feed, movie.type);
 
-          		if(infos != undefined) {
+          		if(infos !== undefined) {
 	          		movie.code = infos[0].code;
 
 	          		//Searching for a specific code
@@ -161,6 +162,9 @@ exports.parseVideoName = function(file, cb) {
 	          		movie.title = dummyName(file.name, movie);
 	          		return cb(err, movie, file);
 	          	}
+          	} else {
+          		movie.title = file.name;
+          		return cb(err, movie, file);
           	}
       	});
 

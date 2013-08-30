@@ -285,7 +285,7 @@
         var View = $.Ejs();
 
 		var user = <%- JSON.stringify(user) %>;
-		var socket = io.connect('http://localhost:3001/');
+		var socket = io.connect('http://localhost:3001');
 		//var reload = setInterval(socket.emit('reload', user), 10000);
 
         socket.emit('update', user.id);

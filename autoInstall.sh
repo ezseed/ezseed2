@@ -8,7 +8,10 @@ apt-get update
 
 # Dependecies
 # whois = mkpasswd
-apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois -y
+apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python -y
+
+mkdir /data
+mkdir /data/db
 
 #Install node js
 git clone https://github.com/joyent/node.git
@@ -29,8 +32,6 @@ make install
 if [ -z $(node -v) && -z $(npm -v) ]
 then
 	exit 0
- 
 else
 	npm install pm2 -g
-	
 fi

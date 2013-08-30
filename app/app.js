@@ -123,13 +123,14 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 var io = require('socket.io').listen(server);
 //less log
-//io.set('log level', 1);
+io.set('log level', 1);
 
 module.exports.io = io;
 
 io.sockets.on('connection', function (socket) {
 
   socket.on('update', function(uid) {
+
     Users.findById(uid).populate('pathes').exec(function(err, doc) {
       var ps = doc.pathes
         , paths = new Array()

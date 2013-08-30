@@ -47,5 +47,3 @@ allocine.api('search', {q: 'spiderman', count: 20, filter: 'movie'}, function(re
 // Informations sur un film particulier
 allocine.api('movie', {code: 128188}, function(result) { console.log(result.movie.title); });
 ```
-
-**Attention !** Il semble que si vous essayiez de modifier l'option `filter`, par exemple pour ne récupérer que les films, vous devez alors définir l'option `count`. Sinon, l'API refusera votre appel et retournera une erreur 403. C'est très bizarre, mais il s'agit peut-être là d'une limitation ou d'une mesure de sécurité mise en place par Allociné.
