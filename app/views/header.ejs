@@ -16,6 +16,11 @@
     <% if(user) { %>
     <script src="/socket.io/socket.io.js"></script>
     <% } %>
+    <% if(location == '/listen') { %>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jplayer/jplayer.blue.monday.css">
+    <script type="text/javascript" src="/javascripts/jplayer.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jplayer.playlist.min.js"></script>
+    <% } %>
     <style>
       .error {
           color: red
@@ -64,14 +69,14 @@
         <% } %>
       </div>
     </header>
-      <% if(user) { %>
+      <% if(user && location == '/') { %>
       <nav id="display">
         <div id="displayOptions">
           <i class="entypo-list" title="Présentation par liste simplifiée" data-filter=".table" ></i>
           <i class="entypo-numbered-list" title="Présentation par liste" data-filter=".list"></i>
           <i class="entypo-layout" title="Présentation par miniatures" data-filter=".miniature" ></i>
         </div>
-        <div id="search">
+        <div id="search" class="input-block">
           <i class="entypo-search"></i><input type="search" name="search" />
         </div>
         <ul id="displayFilters">

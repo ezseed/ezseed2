@@ -1,6 +1,7 @@
 var fs = require('fs')
 	, archiver = require('archiver')
-	, _ = require('underscore');
+	, _ = require('underscore')
+	, pathInfo = require('path');
 
 //Requires all the modedl database
 var mongoose = require('mongoose')
@@ -12,13 +13,13 @@ var mongoose = require('mongoose')
 	, Users = mongoose.model('Users')
 	, F = mongoose.model('File');
 
+var fileManager = require('../models/helpers/files.js');
+
 exports.download = function(req, res) {
 	var path = new Buffer(req.params.id, 'hex').toString(); 
-	console.log(path );
 
 	path = path.replace('../', __dirname.replace('routes', 'public') + '/');
 
-	console.log(path);
 	res.download(path);
 }
 
@@ -68,6 +69,7 @@ exports.downloadArchive = function(req, res) {
 }
 
 //Take _id as archive name + no tmp/user only 1 tmp
+//To be improved
 exports.archive = function(req, res) {
 	var archive = {};
 
@@ -83,18 +85,19 @@ exports.archive = function(req, res) {
 
 				//../ without ../ cause it's forbidden by express download
 				var dir = __dirname.replace('routes', 'public');
-				
+				var appDir = process.cwd().replace('/app', '');
+
 				_.each(docs.pathes, function(path, key) {
 					if(_.isArray(path) && path.length > 0) {
 						if (key == 'albums' && archive.path == undefined) {
 							//archive.name = path[0].artist + ' - ' + path[0].album;
-							archive.path = dir + path[0].path.replace('../', '/');
+							archive.path = dir + path[0].path.replace(appDir, '');
 						} else if(key == 'movies' && archive.path == undefined) {
 							//archive.name = path[0].title;
-							archive.path =  dir + path[0].path.replace('../', '/');
+							archive.path = dir + path[0].path.replace(appDir, '');
 						} else if(key == 'others' && archive.path == undefined) {
 							//archive.name = path[0]._id;
-							archive.path =  dir + path[0].path.replace('../', '/');											
+							archive.path = dir + path[0].path.replace(appDir, '');
 						}
 					}
 
@@ -176,5 +179,27 @@ exports.archive = function(req, res) {
 				}
 			}
 		);
+	});
+},
+//Improve files alone / folder !!
+exports.delete = function(req, res) {
+	var NodeCache = require( "node-cache" );
+	var cache = new NodeCache( { stdTTL: 0, checkperiod: 0 } );
+
+	var path = new Buffer(req.params.id, 'hex').toString();
+
+	var params = {
+		pathKey : new Buffer(path.replace(pathInfo.basename(path), '')).toString('hex'),
+		key : req.params.id,
+		type : req.params.type
+	};
+
+	fileManager.removeFromDB.byType(params, function() {
+		cache.del(params.key, function(err, count) {
+			if(err) console.log(err);
+			fs.unlink(path, function() {
+				res.redirect('/');
+			});
+		});
 	});
 }

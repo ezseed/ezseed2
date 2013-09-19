@@ -1,7 +1,7 @@
 <% 
-var Paths = new Array();
+var Paths = [];
 
-if(typeof paths == 'object')
+if(typeof paths !== 'array')
 	Paths[0] = paths;
 else 
 	Paths = paths;
@@ -37,7 +37,7 @@ Paths.forEach(function(path) {
 						<% if(album.cover == undefined) {%>
 							<i class="entypo-cd"></i>
 						<% } else { %>
-							<img src="<%- album.path + album.cover %>" />
+							<img src="<%- album.path.replace(appDir.replace('/app', ''), '') + album.cover %>" />
 						<% } %>
 					</div>
 				</a>
@@ -47,7 +47,7 @@ Paths.forEach(function(path) {
 
 				<div class="button-group">
 					<a href="/listen/<%- album._id %>" title="Écouter">
-						<i class="entypo-beamed-note"></i>
+						<i class="entypo-note-beamed"></i>
 					</a>
 					<% if(album.files.length > 1) {%>
 					<a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
@@ -56,7 +56,7 @@ Paths.forEach(function(path) {
 					<% } %>
 						<i class="entypo-download"></i>
 					</a>
-					<a href="/delete/<%- album._id %>" title="Supprimer">
+					<a href="/delete/album/<%- album._id %>" title="Supprimer">
 						<i class="entypo-trash"></i>
 					</a>
 				</div>
@@ -134,7 +134,7 @@ Paths.forEach(function(path) {
 				<% if(album.cover == undefined) {%>
 					<img src="/images/cover/audio.png" />
 				<% } else { %>
-					<img src="<%- album.path + album.cover %>" />
+					<img src="<%- album.path.replace(appDir.replace('/app', ''), '') + album.cover %>" />
 				<% } %>
 			</a>
 		</div>
@@ -146,15 +146,11 @@ Paths.forEach(function(path) {
 	});
 
 	path.movies.forEach(function(movie) {
+		var tailleDossier = 0;
 
-		if(movie.files.length > 1) {
-			var tailleDossier = 0;
-
-			for(var i = 0; i < movie.files.length; i++) {
-				tailleDossier += parseInt(movie.files[i].size);
-			}
-
-		}
+		if(movie.files.length > 1)
+			for(var i = 0; i < movie.files.length; i++)
+				tailleDossier += parseFloat(movie.files[i].size);
 
 		%>
 		<div data-id="<%- movie._id %>" class="element list video clearfix" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
@@ -189,19 +185,19 @@ Paths.forEach(function(path) {
 						<i class="entypo-download"></i>
 					</a>
 
-					<a href="/delete/<%- movie._id %>" title="Supprimer">
+					<a href="/delete/movie/<%- movie._id %>" title="Supprimer">
 						<i class="entypo-trash"></i>
 					</a>
 				</div>
 
 				<hr />
 				<p class="infos">
-					<%- movie.synopsis %>
+					<%- movie.synopsis %><br>
 					<% if(movie.trailer != undefined) { %>
-						<br />
 						<a href="<%- movie.trailer%>" target="_blank">Voir le trailer</a>
 					<% } %>
-				
+				</p>
+
 				<% if(movie.quality != undefined) { %>
 					<p class="info"><i class="entypo-monitor"></i><%- movie.quality %></p>
 				<% } %>
@@ -212,11 +208,10 @@ Paths.forEach(function(path) {
 					<p class="info"><i class="entypo-text-doc"></i><%- movie.subtitles %></p>
 				<% } %>
 
-				</p>
 			</div>
 			<% if(movie.files.length > 1) { %>
 				<div class="showFiles">
-					<i class="entypo-attach"></i>Fichiers du dossier
+					<i class="entypo-attach"></i><% if(movie.type == 'tvseries') { %>Episodes<%} else {%>Fichiers du dossier<%}%>
 				</div>
 				<div class="files">
 					<table>
@@ -238,7 +233,7 @@ Paths.forEach(function(path) {
 							%>
 							<tr>
 								<td><%- i %></td>
-								<td style="text-align:left"><%- file.name %></td>
+								<td style="text-align:left"><%- file.name %> <%if(file.episode !== undefined) {%> - E<%-file.episode%><%}%></td>
 								<td><%- bytesToSize(file.size) %></td>
 								<td>-</td>
 							</tr>			
@@ -249,10 +244,12 @@ Paths.forEach(function(path) {
 						</tbody>
 						<tfoot>
 							<tr>
-							<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
-							<td>
-								<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
-							</td>
+								<% if(movie.files[0].episode === undefined ) { %> 
+									<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+									<td>
+										<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+									</td>
+								<% } %>
 							</tr>
 						</tfoot>
 					</table>
@@ -307,7 +304,7 @@ Paths.forEach(function(path) {
 				</a>
 			</div>
 			<div class="list-infos">
-				<h1 class="league-gothic"><%- other.title %></h1>
+				<h1 class="league-gothic"><%- other.files[0].name %></h1>
 				<div class="button-group">
 					<% if(other.files.length > 1) {%>
 					<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
@@ -317,7 +314,7 @@ Paths.forEach(function(path) {
 						<i class="entypo-download"></i>
 					</a>
 
-					<a href="/delete/<%- other._id %>" title="Supprimer">
+					<a href="/delete/other/<%- other._id %>" title="Supprimer">
 						<i class="entypo-trash"></i>
 					</a>
 				</div>
@@ -329,6 +326,7 @@ Paths.forEach(function(path) {
 						Taille : <%- bytesToSize(other.files[0].size) %>
 						<% } %>
 					<% } %>
+				</p>
 			</div>
 			<% if(other.files.length > 1) { %>
 				<div class="showFiles">

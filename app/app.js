@@ -15,14 +15,6 @@ var express = require('express')
   , tmpWatcher = require('./utils/watcher.js').tmpWatcher
 ;
 
-var mongoose = require('mongoose')
-  , models = require('./models')
-  , Pathes = mongoose.model('Pathes')
-  , Movies = mongoose.model('Movies')
-  , Albums = mongoose.model('Albums')
-  , Others = mongoose.model('Others')
-  , Users = mongoose.model('Users')
-  , F = mongoose.model('File');
 
 var app = express();
 
@@ -51,7 +43,8 @@ app.use(function(req, res, next){
   if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
   if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
 
-
+  res.locals.appDir = process.cwd();
+  res.locals.location = path.dirname(req.originalUrl);
 
   if(req.session.user) {
     var u = req.session.user;
@@ -67,6 +60,8 @@ app.use(function(req, res, next){
 app.use(app.router);
 
 /* Opening Database */
+var mongoose = require('mongoose');
+
 mongoose.connect('mongodb://localhost/ezseed');
 
 var db = mongoose.connection;
@@ -94,9 +89,11 @@ app.post('/login', user.authenticate);
 app.get('/archive/(:id)', user.restrict, files.archive);
 app.get('/download/archive/(:id)', files.downloadArchive);
 app.get('/download/(:id)', files.download);
+app.get('/delete/(:type)/(:id)', user.restrict, files.delete);
 
 app.get('/watch/(:id)', streaming.watch);
-// app.get('/listen/(:id)', streaming.listen);
+// app.get('/stream/(:id)', streaming.stream);
+app.get('/listen/(:id)', streaming.listen);
 
 //dummy install
 var err = null;
@@ -121,39 +118,11 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 
-var io = require('socket.io').listen(server);
-//less log
-io.set('log level', 1);
+var io = require('./utils/sockets').listen(server);
+// //less log
+// io.set('log level', 1);
 
-module.exports.io = io;
+// module.exports.io = io;
 
-io.sockets.on('connection', function (socket) {
-
-  socket.on('update', function(uid) {
-
-    Users.findById(uid).populate('pathes').exec(function(err, doc) {
-      var ps = doc.pathes
-        , paths = new Array()
-        , pathsKeys = new Array();
-
-      ps.forEach(function(e, i) {
-        pathsKeys.push(e.folderKey);
-        paths.push(new Buffer(e.folderKey, 'hex').toString());
-      });
-
-      watcher({'paths':paths, 'pathsKeys':pathsKeys,'allFiles': true, 'uid':uid, 'sid':socket.id });
-
-    });
-  });
-
-  //Adds a tmp watcher + socket id, watch change of specific archive
-  socket.on('archive', function(id) {
-    tmpWatcher({
-      'archive' : { 'path' : __dirname + '/public/tmp/'},
-      'sid' : socket.id
-    });
-  });
-
-});
 
  

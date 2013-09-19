@@ -151,7 +151,7 @@ exports.parseVideoName = function(file, cb) {
 	          			infos = Object.byString(result, movie.type);
 
 	          			movie.title = infos.title;
-	          			movie.synopsis = infos.synopsis;
+	          			movie.synopsis = infos.synopsis.replace(/<\/?p>/ig, '');
 	          			movie.poster = infos.poster.href;
 	          			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
 
@@ -170,6 +170,59 @@ exports.parseVideoName = function(file, cb) {
 
 	});
 
+}
+
+//Crap function but extends doesn't work ?
+var addEpisodeToFile = function(file, episode, id) {
+  var file2 = {};
+
+  file2.mime = file.mime;
+  file2.size = file.size;
+  file2.path = file.path;
+  file2.name = file.name;
+  file2.ext = file.ext;
+  file2._id = id;
+  file2.episode = episode;
+
+  return file2;
+}
+
+exports.seriesTogether = function(movies) {
+	var series = _.where(movies, {type: "tvseries"}), tvshows = [];
+
+	for (var i = 0; i < series.length; i++)
+		if(tvshows.indexOf(series[i].title) === -1)
+    		tvshows.push(series[i].title);
+
+    var seriesOrdered = [], seriesByTVShow, serieByTVShow;
+	
+	for (var j = 0; j < tvshows.length; j++) {
+    
+		seriesByTVShow = _.where(series, {title: tvshows[j]});
+		serieByTVShow = _.findWhere(series, {title: tvshows[j]});
+    
+    	var files = [];
+
+		for (var k = 0; k < seriesByTVShow.length; k++) {
+      
+			if(seriesByTVShow[k].files.length === 1) 
+				seriesByTVShow[k].files[0] = addEpisodeToFile(seriesByTVShow[k].files[0] ,seriesByTVShow[k].episode, seriesByTVShow[k]._id);
+
+			for(var l = 0; l < seriesByTVShow[k].files.length; l++)
+	        	files.push(seriesByTVShow[k].files[l]);
+
+	    }
+
+    	serieByTVShow.files = _.extend( serieByTVShow.files, files);
+
+		seriesOrdered.push(serieByTVShow);
+		
+	}
+
+	return _.extend( 
+		_.reject(movies, function(movie){ return movie.type == 'tvseries'; })
+		, seriesOrdered
+	); 
 }
 
 exports.findCover = function(dir) {

@@ -1,5 +1,5 @@
 {
-  "name": "EzSeed2",
+  "name": "ezseed2",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,8 +8,6 @@
   "dependencies": {
     "express": "3.2.5",
     "ejs": "*",
-    "watch": "*",
-    "nedb": "~0.6.1",
     "underscore": "~1.4.4",
     "underscore.string": "~2.3.1",
     "bcrypt-nodejs": "0.0.3",
@@ -20,6 +18,8 @@
     "socket.io": "~0.9.16",
     "mongoose": "~3.6.11",
     "archiver": "~0.4.5",
-    "node-cache": "~0.3.2"
+    "node-cache": "~0.3.2",
+    "explorer": "0.0.5",
+    "async": "~0.2.9"
   }
 }
