@@ -8,8 +8,8 @@ var mongoose = require('mongoose')
 	, Users = mongoose.model('Users')
 	, F = mongoose.model('File')
     , release = require('../../utils/release.js')
-	, id3 = require('id3')
-	, fs = require('fs');
+	, fs = require('fs')
+	, cache = require('memory-cache');
 
 	//todo add cb
 module.exports.addToDB = {
@@ -61,7 +61,11 @@ module.exports.addToDB = {
 			if(err) console.log(err);
 
 			if(doc && !single) {
-				var tags = id3(fs.readFileSync(params.file.path)); 
+				var tags = release.getTags(fs.readFileSync(params.file.path)); 
+
+				if(doc.cover === undefined && tags.picture !== undefined)
+					doc.cover = tags.picture;
+
 				params.file.title = tags.title;	
 
 				doc.files.addToSet(params.file);
@@ -70,11 +74,11 @@ module.exports.addToDB = {
 				});
 				
 			} else if(!doc) {				
-				var tags = id3(fs.readFileSync(params.file.path));
+				var tags = release.getTags(fs.readFileSync(params.file.path), true);
 
 				var title;
 
-				if(tags.title == undefined) {
+				if(tags.album === undefined && tags.artist === undefined) {
 					title = params.prevDir.split("/");
 					title = title[title.length - 2]; //2 cause / at the end
 				} else 
@@ -82,7 +86,16 @@ module.exports.addToDB = {
 
 				params.file.title = tags.title;	
 
-				var coverFile = single ? null : release.findCover(params.prevDir);
+				var coverFile = null; 
+
+				if(tags.picture !== undefined)
+					coverFile = tags.picture;
+				else if(!single) {
+					coverFile = release.findCover(params.prevDir);
+					if(coverFile !== undefined)
+						coverFile = params.prevDir.replace(process.cwd().replace('/app', ''), '') + coverFile;
+				}
+
 
 				var album = new Albums({
     				_id : params.key,
@@ -121,19 +134,23 @@ module.exports.addToDB = {
 	* throwing files to fast while the db isn't filled
 	*/
 	other : function(params, single, cb) {
+		
 		//Other file is alone, checking the albums/movies folders is not needed
 		Others.findById(params.key, function(err,doc) {
 			if(err) console.log(err);
-
-			if(doc && single) {
+			
+			if(doc && !single) {
 				var title = params.prevDir.split("/");
 				title = title[title.length - 2]; //2 cause / at the end
-
+				
+				
 				doc.title = title;
 				doc.files.addToSet(params.file);
 				doc.save(function(err, doc) {
-					return cb();	
+					if(err) console.log(err);
+					return cb();
 				});
+				
 			} else if(!doc) {
 
 				var other = new Others({
@@ -158,35 +175,38 @@ module.exports.addToDB = {
     			return cb();
     		}
 		});
-	
+
 	}
+	
 }
 
 
 
 var removeFromDB = {
 	byType: function(params, cb) {
+
 		switch(params.type) {
-			case 'movie':
+			case 'video':
 				return removeFromDB.movie(params, cb);
 				break;
-			case 'album':
+			case 'audio':
 				return removeFromDB.album(params, cb);
 				break;
-			case 'other':
+			default:
 				return removeFromDB.other(params, cb);
 				break;
 		}
 	},
 	movie : function(params, cb) {
 		Movies.findByIdAndRemove(params.key, function(err) {
+			if(err) console.log(err);
 			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err)
 					console.log(err);
 
 				doc.movies.pull(params.key);
 				doc.save(function(err, doc) {
-					return cb();	
+					return cb(err);	
 				});
 			});
 
@@ -200,7 +220,7 @@ var removeFromDB = {
 
 				doc.albums.pull(params.key);
 				doc.save(function(err, doc) {
-					return cb();	
+					return cb(err);	
 				});
 			});
 
@@ -208,13 +228,14 @@ var removeFromDB = {
 	},
 	other : function(params, cb) {
 		Others.findByIdAndRemove(params.key, function(err) {
+			if(err) console.log(err);
+
 			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
-				if(err)
-					console.log(err);
+				if(err) console.log(err);
 
 				doc.others.pull(params.key);
 				doc.save(function(err, doc) {
-					return cb();	
+					return cb(err);	
 				});
 			});
 

@@ -1,7 +1,12 @@
 var fs = require('fs')
 	, archiver = require('archiver')
+	, explorer = require('explorer')
+	, async = require('async')
 	, _ = require('underscore')
-	, pathInfo = require('path');
+	, pathInfo = require('path')
+	, users = require('../models/helpers/users.js')
+	, fileManager = require('../models/helpers/files.js')
+	, removeFile = require('../utils/removeFile.js').removeFile;
 
 //Requires all the modedl database
 var mongoose = require('mongoose')
@@ -10,10 +15,8 @@ var mongoose = require('mongoose')
 	, Movies = mongoose.model('Movies')
 	, Albums = mongoose.model('Albums')
 	, Others = mongoose.model('Others')
-	, Users = mongoose.model('Users')
-	, F = mongoose.model('File');
+	, Users = mongoose.model('Users');
 
-var fileManager = require('../models/helpers/files.js');
 
 exports.download = function(req, res) {
 	var path = new Buffer(req.params.id, 'hex').toString(); 
@@ -46,7 +49,7 @@ exports.downloadArchive = function(req, res) {
 						} else if(key == 'movies' && name == undefined) {
 							name = path[0].title;
 						} else if(key == 'others' && name == undefined) {
-							name = path[0]._id;
+							name = path[0].title;
 						}
 					}
 
@@ -97,7 +100,7 @@ exports.archive = function(req, res) {
 							archive.path = dir + path[0].path.replace(appDir, '');
 						} else if(key == 'others' && archive.path == undefined) {
 							//archive.name = path[0]._id;
-							archive.path = dir + path[0].path.replace(appDir, '');
+							archive.path = dir + new Buffer(path[0]._id, 'hex').toString().replace(appDir, '');
 						}
 					}
 
@@ -127,53 +130,37 @@ exports.archive = function(req, res) {
 							var zip = archiver('zip');
 							
 							zip.on('error', function(err) {
-								console.log(err);
+								console.log('Zip error : ' + err);
 							  throw err;
 							});
 
 							zip.pipe(output);
 
-							//like a for loop 
-							function addFolder (files, i) {
-
-								var i = i == undefined ? 0 : i;
-								
-								//no hidden files
-								if(!/^\./.test(files[i])) {
+							explorer.getFiles(archive.path, function(err, filePaths) {
+								async.eachSeries(filePaths, function(item, cb) {
 									zip.append(
-										fs.createReadStream(archive.path + files[i]), 
-										{ name: files[i], store: true }, 
-										function() {
-											//console.log('added', files[i], 'no', i);
-
-											if(i < files.length - 1) {
-												i++;
-												return addFolder(files, i);
-											} else
-												return false;
+										fs.createReadStream(pathInfo.normalize(item)), 
+										{ name: pathInfo.basename(archive.path) + '/' + item.replace(archive.path, '') },  //, store: true
+										function(err) {
+											cb(err);
 										}
 									);
-								} else {
-									i++;
-									return addFolder(files, i);
-								}
-							
-							}
+								}, function(err){
+								   if(err) console.log(err);
+								   zip.finalize(function(err, written) {
+										if (err) {
+											console.log(err);
+										throw err;
+										}
 
-							addFolder(
-									fs.readdirSync(archive.path)
-								);
-							
-							zip.finalize(function(err, written) {
-								if (err) {
-									console.log(err);
-								throw err;
-								}
+										var json = {'error':null, 'download':true};
+										res.send(JSON.stringify(json));
+								
+									});
+								});
 
-								var json = {'error':null, 'download':true};
-								res.send(JSON.stringify(json));
-						
 							});
+							
 						}
 					});
 				}
@@ -183,23 +170,12 @@ exports.archive = function(req, res) {
 },
 //Improve files alone / folder !!
 exports.delete = function(req, res) {
-	var NodeCache = require( "node-cache" );
-	var cache = new NodeCache( { stdTTL: 0, checkperiod: 0 } );
 
-	var path = new Buffer(req.params.id, 'hex').toString();
-
-	var params = {
-		pathKey : new Buffer(path.replace(pathInfo.basename(path), '')).toString('hex'),
-		key : req.params.id,
-		type : req.params.type
-	};
-
-	fileManager.removeFromDB.byType(params, function() {
-		cache.del(params.key, function(err, count) {
+	users.paths(req.session.user.id, function(err, paths) {
+		removeFile({pathsKeys : paths.pathsKeys, f:new Buffer(req.params.id, 'hex').toString()}, function(err, key) {
 			if(err) console.log(err);
-			fs.unlink(path, function() {
-				res.redirect('/');
-			});
+			res.redirect('/');
 		});
 	});
+
 }

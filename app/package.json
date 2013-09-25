@@ -18,8 +18,9 @@
     "socket.io": "~0.9.16",
     "mongoose": "~3.6.11",
     "archiver": "~0.4.5",
-    "node-cache": "~0.3.2",
     "explorer": "0.0.5",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "memory-cache": "*",
+    "prettysize": "0.0.3"
   }
 }

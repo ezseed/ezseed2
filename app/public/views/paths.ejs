@@ -37,7 +37,7 @@ Paths.forEach(function(path) {
 						<% if(album.cover == undefined) {%>
 							<i class="entypo-cd"></i>
 						<% } else { %>
-							<img src="<%- album.path.replace(appDir.replace('/app', ''), '') + album.cover %>" />
+							<img src="<%- album.cover %>" />
 						<% } %>
 					</div>
 				</a>
@@ -134,7 +134,7 @@ Paths.forEach(function(path) {
 				<% if(album.cover == undefined) {%>
 					<img src="/images/cover/audio.png" />
 				<% } else { %>
-					<img src="<%- album.path.replace(appDir.replace('/app', ''), '') + album.cover %>" />
+					<img src="<%- album.cover %>" />
 				<% } %>
 			</a>
 		</div>
@@ -231,7 +231,7 @@ Paths.forEach(function(path) {
 
 							movie.files.forEach(function(file) {
 							%>
-							<tr>
+							<tr data-id="<%if(file.episode !== undefined){%><%-file._id%><%} %>">
 								<td><%- i %></td>
 								<td style="text-align:left"><%- file.name %> <%if(file.episode !== undefined) {%> - E<%-file.episode%><%}%></td>
 								<td><%- bytesToSize(file.size) %></td>
@@ -304,7 +304,7 @@ Paths.forEach(function(path) {
 				</a>
 			</div>
 			<div class="list-infos">
-				<h1 class="league-gothic"><%- other.files[0].name %></h1>
+				<h1 class="league-gothic"><%- other.title %></h1>
 				<div class="button-group">
 					<% if(other.files.length > 1) {%>
 					<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
@@ -331,6 +331,45 @@ Paths.forEach(function(path) {
 			<% if(other.files.length > 1) { %>
 				<div class="showFiles">
 					<i class="entypo-attach"></i>Fichiers du dossier
+				</div>
+				<div class="files">
+					<table>
+						<thead>
+							<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
+						</thead>
+						<tbody>
+							<%	var i = 1, tailleDossier = 0;
+							other.files.sort(function (a, b) {
+							    if (a.name == b.name) {
+							        return 0;
+							    } else if (a.name > b.name) {
+							        return 1;
+							    }
+							    return -1;
+							});
+
+							other.files.forEach(function(file) {
+							%>
+							<tr>
+								<td><%- i %></td>
+								<td style="text-align:left"><%- file.name %></td>
+								<td><%- bytesToSize(file.size) %></td>
+								<td>-</td>
+							</tr>			
+							<% 
+								i++;
+							}); 
+							%>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+								<td>
+									<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
 				</div>
 			<% } %>
 		</div>

@@ -262,6 +262,13 @@ jQuery(function($) {
 
     socket.emit('update', user.id);
 
+    socket.on('size', function(size) {
+        $('#diskSpace .used').text(size);
+
+        console.log(size);
+    });
+
+
     socket.on('files', function(d) {
         d = JSON.parse(d);
         

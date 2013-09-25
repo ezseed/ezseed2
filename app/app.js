@@ -1,22 +1,28 @@
-
+//espace disque
+//Ajouter fichiers plus rapidemment
+//Régler others > limit
+//gérer la suppression
+//gérer les séries + episodes
+//Admin !!!
 /**
  * Module dependencies.
  */
 
 var express = require('express')
   , routes = require('./routes')
+  //????
   , user = require('./routes/user')
   , streaming = require('./routes/streaming')
   , files = require('./routes/files')
   , http = require('http')
-  , path = require('path')
   , _ = require('underscore')
-  , watcher = require('./utils/watcher.js').watcher
-  , tmpWatcher = require('./utils/watcher.js').tmpWatcher
+  , path = require('path')
+  , cache = require('memory-cache')
 ;
 
 
 var app = express();
+
 
 //process.setMaxListeners(50);
 

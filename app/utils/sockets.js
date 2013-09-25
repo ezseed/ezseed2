@@ -25,15 +25,23 @@ module.exports.listen = function(app) {
 
                     users.files(uid, update, function(datas) {
                         console.log('Updating client');
-                        //Broadcast only to client !
-                        io.sockets.socket(socket.id).emit('files', JSON.stringify(datas));
-                        //Files sent we save the date
-                        lastUpdate = Date.now();
 
-                        var watcherParams = _.extend(paths, {sid: socket.id, io: io, lastUpdate : lastUpdate});
+                        users.usedSize(paths, function(size) {
 
-                        //Now we might watch !
-                        watcher.watch(watcherParams);
+                            //Broadcast only to client !
+                            io.sockets.socket(socket.id).emit('files', JSON.stringify(datas));
+
+                            io.sockets.socket(socket.id).emit('size', size);
+                            
+                            //Files sent we save the date
+                            lastUpdate = Date.now();
+
+                            var watcherParams = _.extend(paths, {sid: socket.id, io: io, lastUpdate : lastUpdate});
+
+                            //Now we might watch !
+                            watcher.watch(watcherParams);
+
+                        });
                     });
                 });
 

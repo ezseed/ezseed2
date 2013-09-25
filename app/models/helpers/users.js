@@ -8,7 +8,22 @@ var mongoose = require('mongoose')
   , F = mongoose.model('File')
   , _ = require('underscore');
 
+var cache = require('memory-cache'), pretty = require('prettysize'), async = require('async');
 
+
+var directorySize = function(path, cb) {
+
+  var exec = require('child_process').exec, child;
+
+  child = exec('du -sk '+path,
+      function (error, stdout, stderr) {
+
+        var size = stdout.match(/([0-9]+)/);
+
+        cb(error, size[0]*1024);
+    }
+  );
+} 
 
 module.exports.paths = function (uid, cb) {
 	 Users.findById(uid).populate('pathes').exec(function(err, doc) {
@@ -47,3 +62,12 @@ module.exports.files = function(uid, lastUpdate, cb) {
       );
     });
 }
+
+module.exports.usedSize = function(paths, cb) {
+
+  async.map(paths.paths, directorySize, function(err, sizes){
+      var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
+      cb(pretty(size));
+  });
+ 
+} 

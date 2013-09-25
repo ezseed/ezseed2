@@ -2,7 +2,8 @@ var _ = require('underscore')
   , _s = require('underscore.string')
   , allocine = require('allocine-api')
   , fs = require('fs')
-  , mime = require('mime');
+  , mime = require('mime')
+  , ID3 = require('id3');
 
 /*
 * Get an object by the string
@@ -223,6 +224,44 @@ exports.seriesTogether = function(movies) {
 		_.reject(movies, function(movie){ return movie.type == 'tvseries'; })
 		, seriesOrdered
 	); 
+}
+
+exports.getTags = function(file, picture) {
+	var id3 = new ID3(file);
+	id3.parse();
+
+	var tags = {
+			"title" : id3.get("title"),
+			"artist" :id3.get("artist"),
+			"album"  :id3.get("album"),
+			"year"   :id3.get("year"),
+			"genre"  :id3.get("genre")
+		};
+
+	if(picture) {
+		var datas = id3.get('picture');
+		if(datas !== null) {
+			if(datas.data !== undefined && datas.format !== undefined) {
+
+				var coverName = tags.artist + tags.album; 
+					coverName = coverName.replace(/[^a-zA-Z0-9]+/ig,'');
+
+				var file = process.cwd() + '/public/tmp/' + _.uniqueId('cover' + coverName);
+
+				var type = datas.format.split('/');
+
+				if(type[0] == 'image') {
+					file = file + '.' + type[1];
+
+					fs.writeFileSync(file, datas.data);
+					
+					tags = _.extend(tags, {'picture': file.replace(process.cwd() + '/public', '')});
+				}
+			}
+		}
+	}
+
+	return tags;
 }
 
 exports.findCover = function(dir) {
