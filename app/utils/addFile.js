@@ -14,7 +14,7 @@ var cache = require('memory-cache');
 module.exports.addFile = function(filesPaths, callback) {
 
 	var f = filesPaths.f;
-	var pathsKeys = filesPaths.pathsKeys, parsedPath = filesPaths.path;
+	var currentPath = filesPaths.path, pathKey = new Buffer(currentPath).toString('hex');
 
 	//No hidden files
 	if(!/^\./.test(pathInfo.basename(f))) {
@@ -22,7 +22,7 @@ module.exports.addFile = function(filesPaths, callback) {
 		var prevDir = f.replace(pathInfo.basename(f), ''); //previous directory
 		  
 		
-		var prev = f.replace(filesPaths.path, '').split('/');
+		var prev = f.replace(currentPath, '').split('/');
 
 		if(prev.length > 1)
 			prevDir = filesPaths.path + prev[0] + '/';
@@ -53,12 +53,13 @@ module.exports.addFile = function(filesPaths, callback) {
 
 	        //If it isn't the path we're watching
 	        //it's a folder having content
-	        if(pathsKeys.indexOf(prevDirKey) === -1) {
-	        	var pathKey = pathsKeys[0];
+	        if(currentPath.indexOf(prevDir) === -1) {
+
+	        	var params = {key : prevDirKey, pathKey: pathKey, pathKey: pathKey, file: file};
 
 		        if(type[0] == 'video') {
 
-					filesManager.addToDB.movie({'key' : prevDirKey, 'pathKey' : pathKey, 'file': file}, false,
+					filesManager.addToDB.movie(params, false,
 					function(err) {
 						cache.put(fileKey, 'video');
 								
@@ -66,17 +67,12 @@ module.exports.addFile = function(filesPaths, callback) {
 					});
 	        
 		        } else if (type[0] == 'audio') {
-					filesManager.addToDB.album(
-						{'key' : prevDirKey, 
-						'pathKey' : pathKey, 
-						'prevDir' : prevDir, 
-						'file' : file}, false,
-						function() {
-							cache.put(fileKey, 'audio');
-								
-							callback(null);
-						});
-
+					filesManager.addToDB.album(params, false,
+					function(err) {
+						cache.put(fileKey, 'audio');
+							
+						callback(null);
+					});
 				} else {
 
 					var prevFiles = fs.readdirSync(prevDir);
@@ -106,9 +102,9 @@ module.exports.addFile = function(filesPaths, callback) {
 
 					var isOther = checkIsOther(prevFiles);
 
-					if (isOther && !cache.get(prevDirKey)) {
+					if (isOther) {
 
-						filesManager.addToDB.other({'key':prevDirKey,'pathKey': pathKey,'prevDir':prevDir,'file':file},false,
+						filesManager.addToDB.other(params,false,
 							function() {
 								cache.put(fileKey, 'other');
 										
@@ -120,10 +116,11 @@ module.exports.addFile = function(filesPaths, callback) {
 
 				}
 			//We founded a file in the watch dir, it seems to be alone
-			} else {				
+			} else {
+				var params = {key : fileKey, pathKey : prevDirKey, file: file};				
 				if(type[0] == 'video') {
 					
-					filesManager.addToDB.movie({'key' : fileKey, 'pathKey' : prevDirKey, 'file': file}, true,
+					filesManager.addToDB.movie(params, true,
 					function() {
 						cache.put(fileKey, 'video');
 								
@@ -132,11 +129,7 @@ module.exports.addFile = function(filesPaths, callback) {
 
 				} else if(type[0] == 'audio') {
 
-					filesManager.addToDB.album(
-					{'key' : fileKey, 
-					'pathKey' : prevDirKey, 
-					'prevDir' : prevDir, 
-					'file' : file}, true,
+					filesManager.addToDB.album(params, true,
 					function() {
 						cache.put( fileKey, 'audio');
 								
@@ -144,7 +137,7 @@ module.exports.addFile = function(filesPaths, callback) {
 					});
 
 				} else {
-					filesManager.addToDB.other({'key':fileKey,'pathKey':prevDirKey,'prevDir':prevDir,'file':file}, true,
+					filesManager.addToDB.other(params, true,
 					function() {
 						cache.put(fileKey, 'other');
 								

@@ -26,10 +26,10 @@ module.exports.listen = function(app) {
                     users.files(uid, update, function(datas) {
                         console.log('Updating client');
 
-                        users.usedSize(paths, function(size) {
+                        //Broadcast only to client !
+                        io.sockets.socket(socket.id).emit('files', JSON.stringify(datas));
 
-                            //Broadcast only to client !
-                            io.sockets.socket(socket.id).emit('files', JSON.stringify(datas));
+                        users.usedSize(paths, function(size) {
 
                             io.sockets.socket(socket.id).emit('size', size);
                             

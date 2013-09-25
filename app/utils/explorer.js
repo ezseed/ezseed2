@@ -7,93 +7,91 @@ var _ = require('underscore')
   , async = require('async')
   , addFile = require('./addFile.js').addFile;
 
-var configuration = require(process.cwd() + '/configuration');
+var configuration = require('../configuration');
 
 exports.explore = function(params, cb) {
 	
 	var explorePath = function(path, callback) {
-		//Todo
-		var pathsKeys = [new Buffer(path).toString('hex')];
-
 
 		explorer.getDirectories (path, function(err, directoryPaths) {
 
-			var i = directoryPaths.length - 1, prevDirs = [i];
+			if(directoryPaths.length > 0) {
 
-			//Find each prevDir (key of a db schema)
-			do {
-				var prevDir = pathInfo.normalize(directoryPaths[i]).replace(path, '').split('/');
-				
-				prevDirs[i] = path + prevDir[0];
+				var i = directoryPaths.length - 1, prevDirs = [i];
 
-			} while(i--)
-			
-			prevDirs = _.unique(prevDirs); //unique array
-
-			//Find the nb of files of each dir
-			async.map(prevDirs, explorer.countFiles, function(err, filesNb){
-			    prevDirs = _.object(prevDirs, filesNb);
-
-
-			    explorer.getFiles(path, {ignoreVersionControl : true, sort: true },function(err, filePaths) {
-
-			    	var limitedDirectories = [];
-
-			    	 _.each(prevDirs, function(e, i) {
-				    	if(e > configuration.maxFilesLimit)
-				    		limitedDirectories.push(i);
-				    });
-
-					var files = [], cursor = 0, limited = [];
-
-
-					_.each(filePaths, function(e, i) {
-						e = pathInfo.normalize(e);
+				//Find each prevDir (key of a db schema)
+				do {
+					var prevDir = pathInfo.normalize(directoryPaths[i]).replace(path, '').split('/');
 					
+					prevDirs[i] = path + prevDir[0];
 
-						if(e != path
-							&&
-							!/^\./.test(pathInfo.basename(e))
-						) {
-							if(	
-								_.every(limitedDirectories, function(v) { return e.indexOf(v) === -1})
-							) {
-								files[cursor] = {};
-								files[cursor].pathsKeys = pathsKeys;
-								files[cursor].path = path;
-								files[cursor].f = pathInfo.normalize(e);
-								cursor++;
-							} else if(_.every(limited, function(v) { return e.indexOf(v) === -1})) {
-
-								var limitedDirectory = _.find(limitedDirectories, function(v){ return e.indexOf(v) !== -1 });
-
-								files[cursor] = {};
-								files[cursor].pathsKeys = pathsKeys;
-								files[cursor].path = path;
-								files[cursor].f = e;
-								cursor++;
-
-								limited.push(limitedDirectory);
-
-							}
-						}
-
-					});
-
-					async.eachSeries(files, addFile, function(err){
-						if(err) console.log(err);
-
-						console.log('Each files done.');
-					    // if any of the saves produced an error, err would equal that error
-					    callback(err);
-					});
-				});
-			    
+				} while(i--)
 				
-			});
+				prevDirs = _.unique(prevDirs); //unique array
+
+				//Find the nb of files of each dir
+				async.map(prevDirs, explorer.countFiles, function(err, filesNb){
+				    prevDirs = _.object(prevDirs, filesNb);
+
+
+				    explorer.getFiles(path, {ignoreVersionControl : true, sort: true },function(err, filePaths) {
+
+				    	var limitedDirectories = [];
+
+				    	 _.each(prevDirs, function(e, i) {
+					    	if(e > configuration.maxFilesLimit)
+					    		limitedDirectories.push(i);
+					    });
+
+						var files = [], cursor = 0, limited = [];
+
+
+						_.each(filePaths, function(e, i) {
+							e = pathInfo.normalize(e);
+						
+
+							if(e != path
+								&&
+								!/^\./.test(pathInfo.basename(e))
+							) {
+								if(	
+									_.every(limitedDirectories, function(v) { return e.indexOf(v) === -1})
+								) {
+									files[cursor] = {};
+									files[cursor].path = path;
+									files[cursor].f = e;
+									cursor++;
+								} else if(_.every(limited, function(v) { return e.indexOf(v) === -1})) {
+
+									var limitedDirectory = _.find(limitedDirectories, function(v){ return e.indexOf(v) !== -1 });
+
+									files[cursor] = {};
+									files[cursor].path = path;
+									files[cursor].f = e;
+									cursor++;
+
+									limited.push(limitedDirectory);
+
+								}
+							}
+
+						});
+
+						async.eachSeries(files, addFile, function(err){
+							if(err) console.log(err);
+
+							console.log('Each files done.');
+						    // if any of the saves produced an error, err would equal that error
+						    callback(err);
+						});
+					});
+				    
+				
+				});
+			} else {
+				callback('No files');
+			}	
 		});
-
-
 
 		
 

@@ -202,12 +202,13 @@ var removeFromDB = {
 			if(err) console.log(err);
 			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err)
-					console.log(err);
-
-				doc.movies.pull(params.key);
-				doc.save(function(err, doc) {
-					return cb(err);	
-				});
+					return cb(err);
+				else if(doc) {
+					doc.movies.pull(params.key);
+					doc.save(function(err, doc) {
+						return cb(err);	
+					});
+				}
 			});
 
 		});
@@ -216,12 +217,13 @@ var removeFromDB = {
 		Albums.findByIdAndRemove(params.key, function(err) {
 			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err)
-					console.log(err);
-
-				doc.albums.pull(params.key);
-				doc.save(function(err, doc) {
-					return cb(err);	
-				});
+					return cb(err);
+				else if(doc) {
+					doc.albums.pull(params.key);
+					doc.save(function(err, doc) {
+						return cb(err);	
+					});
+				}
 			});
 
 		});
@@ -231,12 +233,14 @@ var removeFromDB = {
 			if(err) console.log(err);
 
 			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
-				if(err) console.log(err);
-
-				doc.others.pull(params.key);
-				doc.save(function(err, doc) {
-					return cb(err);	
-				});
+				if(err) 
+					return cb(err);
+				else if(doc) {
+					doc.others.pull(params.key);
+					doc.save(function(err, doc) {
+						return cb(err);	
+					});
+				}
 			});
 
 		});

@@ -6,7 +6,8 @@ var mongoose = require('mongoose')
   , Others = mongoose.model('Others')
   , Users = mongoose.model('Users')
   , F = mongoose.model('File')
-  , _ = require('underscore');
+  , _ = require('underscore')
+  , cache = require('memory-cache');
 
 var cache = require('memory-cache'), pretty = require('prettysize'), async = require('async');
 
@@ -64,10 +65,15 @@ module.exports.files = function(uid, lastUpdate, cb) {
 }
 
 module.exports.usedSize = function(paths, cb) {
+  var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
 
-  async.map(paths.paths, directorySize, function(err, sizes){
-      var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
-      cb(pretty(size));
-  });
- 
+  if(cachedSize)
+    cb(pretty(cachedSize));
+  else {
+    async.map(paths.paths, directorySize, function(err, sizes){
+        var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
+        cache.put(key, size, 10000);
+        cb(pretty(size));
+    });
+  } 
 } 
