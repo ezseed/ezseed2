@@ -306,6 +306,7 @@ section#desktop .element.miniature {
 		position: absolute;
 		background-color: rgba(0,0,0,0.5);
 		width: auto;
+		height: 2em;
 	}
 
 	section#desktop .element.miniature div.titre h1 {
@@ -315,8 +316,6 @@ section#desktop .element.miniature {
 		text-shadow: 0 -1px 0 #303030;
 		font-size: 1.3em;
 		color:#b2b2af;
-		height: 2em;
-		line-height: 2em;
 	}
 	
 	section#desktop .element.miniature i {

@@ -4,7 +4,6 @@ var fs = require('fs')
 //Requires all the modedl database
 var mongoose = require('mongoose')
 	, models = require('../models')
-	, Pathes = mongoose.model('Pathes')
 	, Movies = mongoose.model('Movies')
 	, Albums = mongoose.model('Albums')
 	, Others = mongoose.model('Others')

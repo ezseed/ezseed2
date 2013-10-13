@@ -1,13 +1,13 @@
 //Requires all the modedl database
 var mongoose = require('mongoose')
 	, models = require('../')
-	, Pathes = mongoose.model('Pathes')
+	, Paths = mongoose.model('Paths')
 	, Movies = mongoose.model('Movies')
 	, Albums = mongoose.model('Albums')
 	, Others = mongoose.model('Others')
 	, Users = mongoose.model('Users')
 	, F = mongoose.model('File')
-    , release = require('../../utils/release.js')
+    , release = require('../../core/release.js')
 	, fs = require('fs')
 	, cache = require('memory-cache');
 
@@ -40,7 +40,7 @@ module.exports.addToDB = {
     				movie.save(function(err, obj) {
     					if(err) console.log(err);
     					//update the path
-    					Pathes.findOneAndUpdate(
+    					Paths.findOneAndUpdate(
     						{ folderKey : params.pathKey }, 
     						{ $addToSet : {'movies': params.key }, 'dateUpdated': Date.now() },
     						function(err) { 
@@ -112,7 +112,7 @@ module.exports.addToDB = {
     			});
 
     			album.save(function(err, obj) {
-    				Pathes.findOneAndUpdate(
+    				Paths.findOneAndUpdate(
     					{folderKey : params.pathKey}, 
     					{ $addToSet : {'albums': params.key }, 'dateUpdated': Date.now() }, 
     					function(err) { 
@@ -163,7 +163,7 @@ module.exports.addToDB = {
 				});
 
 				other.save(function(err, obj) {
-    				Pathes.findOneAndUpdate({folderKey : params.pathKey}, 
+    				Paths.findOneAndUpdate({folderKey : params.pathKey}, 
     					{ $addToSet : {'others': params.key }, 'dateUpdated': Date.now() }, 
     					function(err) { 
     						if(err) console.log(err); 
@@ -200,7 +200,7 @@ var removeFromDB = {
 	movie : function(params, cb) {
 		Movies.findByIdAndRemove(params.key, function(err) {
 			if(err) console.log(err);
-			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
+			Paths.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err)
 					return cb(err);
 				else if(doc) {
@@ -215,7 +215,7 @@ var removeFromDB = {
 	},
 	album : function(params, cb) {
 		Albums.findByIdAndRemove(params.key, function(err) {
-			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
+			Paths.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err)
 					return cb(err);
 				else if(doc) {
@@ -232,7 +232,7 @@ var removeFromDB = {
 		Others.findByIdAndRemove(params.key, function(err) {
 			if(err) console.log(err);
 
-			Pathes.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
+			Paths.findOne({folderKey: params.pathKey}).exec(function(err, doc) {
 				if(err) 
 					return cb(err);
 				else if(doc) {

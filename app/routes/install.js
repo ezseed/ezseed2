@@ -1,12 +1,14 @@
 var _s = require('underscore.string')
+	, _ = require('underscore')
 	, fs = require('fs')
+	, path = require('path')
   	, bcrypt = require('bcrypt-nodejs')
   	, mongoose = require('mongoose')
   	, models = require('../models')
   	, Users = mongoose.model('Users')
-  	, Config = mongoose.model('Config')
-	, Pathes = mongoose.model('Pathes');
+	, Paths = mongoose.model('Paths');
 
+var jf = require('jsonfile');
 
 /*
 * GET install
@@ -39,7 +41,7 @@ exports.folder = function(req, res) {
 			'<fieldset>'+
 				'<legend>Chemin du dossier à parser (absolu) : </legend>'+
 				'<label for="path">Chemin<sup>*</sup></label>'+
-				'<input type="text" name="path" style="width:350px" value="' + process.cwd().replace('app','') + 'downloads" />'+
+				'<input type="text" name="path" style="width:350px" value="' + path.join(global.config.root.replace('app',''), 'downloads') + '" />'+
 				'<button type="submit">Envoyer</button>'+
 				'<p>'+
 				'Ce dossier servira à conserver les fichiers téléchargés par les différents utilisateurs.<br>'+
@@ -108,54 +110,50 @@ exports.create = function(req, res) {
 
 /*
 * POST set the download Folder and create one for the admin
-* TODO symlink
 */
 
 exports.folderCreation = function(req, res) {
 	
 	fs.exists(req.body.path, function(exists) {
 		if(exists) {
-			var config = new Config ({'path' : req.body.path});
-			
-			config.save(function(err) {
-				if(err) throw err;
 
-				var userPath = req.body.path + '/'+ req.session.user.username + '/';
-				var userFolderKey = new Buffer(userPath).toString('hex');
+			var config = _.extend(global.config, {path : req.body.path});
 
-				fs.mkdir(userPath, function(err) {
-					if(err) console.log(err);
+			jf.writeFileSync(config.root + '/config.json', config);
 
-					var exec = require('child_process').exec,
-    					child;
+			var userPath = path.join(req.body.path, req.session.user.username);
 
-    				child = exec('ln -sf '+ req.body.path +' ' + process.cwd() + '/public/downloads',
-					  	function (error, stdout, stderr) {
-						   
+			fs.mkdir(userPath, function(err) {
+				if(err) console.log(err);
 
-						    var path = new Pathes({
-								'folderKey' : userFolderKey
-							});
+				var exec = require('child_process').exec,
+					child;
 
-									
-							path.save(function(err) {
+				child = exec('ln -sf '+ req.body.path +' ' + global.config.root + '/public/downloads',
+				  	function (error, stdout, stderr) {
+					   
+					    var path = new Paths({
+							'path' : userPath
+						});
+
+								
+						path.save(function(err) {
+							if(err) console.log(err);
+						});
+
+						path.on('save', function(obj) {
+							//Add it to the user pathes, by id = faster :)
+						//$push: { 
+							Users.findByIdAndUpdate(req.session.user.id, { paths: [obj._id] }, function(err) { 
 								if(err) console.log(err);
+								req.session.user.dir = userPath;
+								res.redirect('/install/torrent');
 							});
+						});
 
-							path.on('save', function(obj) {
-								//Add it to the user pathes, by id = faster :)
-							//$push: { 
-								Users.findByIdAndUpdate(req.session.user.id, { pathes: obj._id }, function(err) { 
-									if(err) console.log(err);
-									req.session.user.dir = userPath;
-									res.redirect('/install/torrent');
-								});
-							});
+					}
+				);
 
-						}
-					);
-
-				});
 			});
 			
 		} else {

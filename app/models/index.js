@@ -2,90 +2,68 @@ var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
 
-
-/* Configuration schema */
-var ConfigSchema = new Schema(
-	{
-		path : { 'type': String }
-	}
-);
-
-
 /* Setting the pathes Schemes */
 
 //File schema
 var file = new Schema(
 	{
-		_id : {'type' : String, 'unique' : true},
-		mime : {'type':String},
-		size : {'type':String},
-		path : {'type':String},
-		name : {'type':String},
-		ext : {'type':String}
-	}, 
-	{ autoIndex : false }
+		name : String,
+		path : String,
+		prevDir : String,
+		prevDirRelative : String,
+		type : String,
+		size : Number
+	}
 );
 
 //Albums schema
 var albums = new Schema(
 	{
-		_id : {'type':String, 'unique':true},
-		path : {'type':String},
-		title: {'type':String},
-		artist : {'type':String},
-		album : {'type':String},
-		year : {'type':String},
-		genre : {'type':String},
-		cover : {'type':String},
-		dateAdded: { type: Date, default: Date.now },
-		files : [file]
-	},
-	{ autoIndex: false }
+		artist : String,
+		album : String,
+		year : String,
+		genre : String,
+		songs : [file],
+		picture : String,
+		prevDir : String,
+		prevDirRelative : String,
+		dateAdded: { type: Date, default: Date.now }
+	}
 );
 
-//Movies Schema
-var movies = new Schema(
-	{
-		_id : {'type' : String, 'unique' : true},
-		type:{'type': String},
-		quality : {'type':String},
-		subtitles : {'type':String},
-		language : {'type':String},
-		audio : {'type':String},
-		season: {'type':String},
-		episode: {'type':String},
-		code : {'type':String},
-		title : {'type':String},
-		synopsis : {'type':String},
-		poster : {'type':String},
-		trailer : {'type':String},
-		dateAdded: { type: Date, default: Date.now },
-		files : [file]
-	},
-	{ autoIndex : false }
-);
+var movies = new Schema({
+	movieType : String,
+	name : String,
+	season : String,
+	title : String,
+	synopsis : String,
+	trailer : String,
+	picture : String,
+	videos : [file],
+	prevDir : String,
+	prevDirRelative : String,
+	dateAdded: { type: Date, default: Date.now },
+});
 
 //Others
 var others = new Schema(
 	{
-		_id : {'type': String, 'unique':true},
+		name : String,
 		dateAdded: { type: Date, default: Date.now },
-		title : {'type':String},
+		prevDir : String,
+		prevDirRelative : String,
 		files : [file]
-	},
-	{ autoIndex : false }
+	}
 );
 
 //The pathes schema
-var PathesSchema = new Schema({
-	'folderKey': {'type': String, 'unique': true},
-	'albums' : [{'type' : String, ref: 'Albums'}],
-	'movies' : [{'type' : String, ref: 'Movies'}],
-	'others' : [{'type' : String, ref: 'Others'}],
+var PathsSchema = new Schema({
+	'path': {'type': String, 'unique': true},
+	'albums' : [{'type' : ObjectId, ref: 'Albums'}],
+	'movies' : [{'type' : ObjectId, ref: 'Movies'}],
+	'others' : [{'type' : ObjectId, ref: 'Others'}],
 	dateUpdated : { type: Date, default: Date.now }
-	},
-	{ autoIndex : false }
-
+	}
 );
 
 /* Basic user schema */
@@ -93,7 +71,7 @@ var UsersSchema = new Schema({
 	username : { 'type' : String, 'match': /^[a-zA-Z0-9-_]{3,15}$/, 'required': true },
 	hash : { 'type' : String },
 	role : { 'type' : String, 'default': 'user' },
-	pathes : [{'type' : String, ref:'Pathes'}]
+	paths : [{'type' : ObjectId, ref:'Paths'}]
 });
 
 /* Setting a virtual schema for the session */
@@ -108,8 +86,7 @@ UsersSchema.virtual('session').get(function() {
 
 
 module.exports = mongoose.model('Users', UsersSchema);
-module.exports = mongoose.model('Config', ConfigSchema);
-module.exports = mongoose.model('Pathes', PathesSchema);
+module.exports = mongoose.model('Paths', PathsSchema);
 
 //Exporting individual schemas (movies,albums,others)
 module.exports = mongoose.model('Movies', movies);

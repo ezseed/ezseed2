@@ -300,7 +300,7 @@ Packer.prototype = {
                       }
 
                       $titre.css({'width': newImage.w});
-                      $titre.find('h1').quickfit({'width': newImage.w, 'min': '13', 'max':'20', 'truncate':true});
+                      $titre.find('h1').quickfit({'width': newImage.w, 'min': '13', 'max':'18', 'truncate':true});
 
                   }
               );

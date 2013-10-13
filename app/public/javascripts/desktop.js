@@ -1,4 +1,5 @@
 jQuery(function($) {
+
     function loader() {
         var $loader = $('#loader');
     
@@ -203,7 +204,7 @@ jQuery(function($) {
                 setTimeout(function() {
                     $section.isotope('reLayout');
                     loader();
-                                    $section.css('opacity','1');
+                    $section.css('opacity','1');
 
                 }, 750);
 
@@ -253,9 +254,83 @@ jQuery(function($) {
     });
 
 
+    /* Render function */
+    var View = $.Ejs();
+
+    var render = {
+        files : function(paths, callback) {
+
+            async.map(paths, render.path, function(err, results){
+
+                //console.log('Results', results);
+                //Merging results
+                var i = results.length - 1, html = "";
+
+                do {
+                    html += results[i].movies + results[i].albums + results[i].others;
+                } while(i--)
+
+                callback(err, html);
+            });
+            
+        }, 
+        path : function(path, cb) {
+            
+            async.parallel({
+                movies : function(callback) 
+                {
+                    if(path.movies.length) {
+                        render.movies(path.movies,function(err, html) {
+                            callback(err, html);
+                        });
+                    } else
+                        callback(null, '');
+                },
+                albums : function(callback) 
+                {
+                    if(path.albums.length) {
+                        render.albums(path.albums,function(err, html) {
+                            callback(err, html);
+                        });
+                    } else
+                        callback(null, '');
+
+                },
+                others : function(callback) 
+                {
+                    if(path.others.length) {
+                        render.others(path.others,function(err, html) {
+                            callback(err, html);
+                        });
+                    } else 
+                        callback(null, '');
+
+                }
+            },
+            //Callback Paths
+            function(err, results){
+                cb(err, results);
+            });
+        },
+        movies : function(movies, cb) {
+            View.render('movies', { movies : movies }, function(err, html) {
+                cb(err, html);
+            });
+        },
+        albums : function(albums, cb) {
+            View.render('albums', { albums : albums }, function(err, html) {
+                cb(err, html);
+            });
+        },
+        others : function(others, cb) {
+            View.render('others', { others : others }, function(err, html) {
+                cb(err, html);
+            });
+        }
+    }      
 
     /*Sockets Client size*/
-    var View = $.Ejs();
+
 
     var socket = io.connect('http://localhost:3001');
     //var reload = setInterval(socket.emit('reload', user), 10000);
@@ -270,6 +345,7 @@ jQuery(function($) {
 
 
     socket.on('files', function(d) {
+
         d = JSON.parse(d);
         
         var firstLoad = false;
@@ -310,14 +386,13 @@ jQuery(function($) {
 
         } else {
             loader();
-            //var nbAjouts = d.pathes.movies.length + d.pathes.albums.length + d.pathes.others.length;
-            //showNotification({title: 'Fichier ajouté',text: nbAjouts + ' fichier(s) ajouté(s)'});
-
+            
+            showNotification({title: 'Fichier ajouté',text: d.count + ' fichier(s) ajouté(s)'});
         }
 
-        View.render('paths', { paths : d.pathes }, function(err, html) {
-            if(err) console.log(err);
+        console.log('Receiving files', d.paths);
 
+        render.files(d.paths, function(err, html) {
             var $items = $(html);
             
             $section.isotope( 'insert', $items, function() {
@@ -329,14 +404,9 @@ jQuery(function($) {
                     $section.animate({'opacity':'1'}, '450');
 
             });
-
-
         });
 
-       
-        console.log(d);
-
-    	});
+    });
 
     socket.on('remove', function(id) {
 

@@ -1,8 +1,7 @@
 //espace disque
-//Ajouter fichiers plus rapidemment
-//Régler others > limit
+
 //gérer la suppression
-//gérer les séries + episodes
+
 //Admin !!!
 /**
  * Module dependencies.
@@ -20,11 +19,21 @@ var express = require('express')
   , cache = require('memory-cache')
 ;
 
+var jf = require('jsonfile');
+
+//to be removed
+// global.rootPath = __dirname;
+
+global.config = jf.readFileSync(__dirname + '/config.json');
+
+//Writing conf file
+if(global.config.root.length == 0) {
+  global.config.root = __dirname;
+  jf.writeFileSync(__dirname + '/config.json', global.config);
+}
 
 var app = express();
 
-
-//process.setMaxListeners(50);
 
 // all environments
 app.set('port', process.env.PORT || 3001);
@@ -49,7 +58,13 @@ app.use(function(req, res, next){
   if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
   if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
 
-  res.locals.appDir = process.cwd();
+  res.locals.appDir = __dirname; //tomove
+
+  res.locals.config = _.extend(global.config, 
+                                { 
+                                  location : path.dirname(req.originalUrl) //request path dirname 
+                                });
+
   res.locals.location = path.dirname(req.originalUrl);
 
   if(req.session.user) {
@@ -124,7 +139,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 
-var io = require('./utils/sockets').listen(server);
+var io = require('./core/sockets').listen(server);
 // //less log
 // io.set('log level', 1);
 

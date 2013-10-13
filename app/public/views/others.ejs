@@ -1,0 +1,122 @@
+<%
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    if (i == 0) return bytes + ' ' + sizes[i]; 
+    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+};
+
+
+others.forEach(function(other) {
+
+	if(other.files.length > 1) {
+		var tailleDossier = 0;
+
+		for(var i = 0; i < other.files.length; i++) {
+			tailleDossier += parseInt(other.files[i].size);
+		}
+
+	}
+%>
+	<div data-id="<%- other._id %>" class="element list other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+		<div class="pullLeft">
+			<% if(other.files.length > 1) {%>
+			<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+			<% } else {%>
+			<a href="/download/<%- other._id %>" title="Télécharger">
+			<% } %>
+				<div class="cover">
+					<div class="cover-hover">
+						<i class="entypo-play"></i>
+					</div>
+					<i class="entypo-box"></i>
+				</div>
+			</a>
+		</div>
+		<div class="list-infos">
+			<h1 class="league-gothic"><%- other.name %></h1>
+			<div class="button-group">
+				<% if(other.files.length > 1) {%>
+				<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+				<% } else {%>
+				<a href="/download/<%- other._id %>" title="Télécharger">
+				<% } %>
+					<i class="entypo-download"></i>
+				</a>
+
+				<a href="/delete/other/<%- other._id %>" title="Supprimer">
+					<i class="entypo-trash"></i>
+				</a>
+			</div>
+			<hr />
+			<p class="infos">
+				<% if(other.files) {%>
+				Extension : <%- other.files[0].ext %> <br />
+					<% if(other.files.length == 1) { %>
+					Taille : <%- bytesToSize(other.files[0].size) %>
+					<% } %>
+				<% } %>
+			</p>
+		</div>
+		<% if(other.files.length > 1) { %>
+			<div class="showFiles">
+				<i class="entypo-attach"></i>Fichiers du dossier
+			</div>
+			<div class="files">
+				<table>
+					<thead>
+						<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
+					</thead>
+					<tbody>
+						<%	var i = 1, tailleDossier = 0;
+						other.files.sort(function (a, b) {
+						    if (a.name == b.name) {
+						        return 0;
+						    } else if (a.name > b.name) {
+						        return 1;
+						    }
+						    return -1;
+						});
+
+						other.files.forEach(function(file) {
+						%>
+						<tr>
+							<td><%- i %></td>
+							<td style="text-align:left"><%- file.name %></td>
+							<td><%- bytesToSize(file.size) %></td>
+							<td>-</td>
+						</tr>			
+						<% 
+							i++;
+						}); 
+						%>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+							<td>
+								<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		<% } %>
+	</div>
+	<div data-id="<%- other._id %>" class="element miniature other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+		<div class="titre"><h1 class="league-gothic" title="<%- other.name %>"><%- other.name %></h1></div>
+		<% if(other.files.length > 1) {%>
+		<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+		<% } else {%>
+		<a href="/download/<%- other._id %>" title="Télécharger">
+		<% } %>
+			<i class="entypo-box"></i>
+		</a>
+	</div>
+	<div data-id="<%- other._id %>" class="element table other" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+		<i class="entypo-box"></i> <%- other.name %>
+	</div>
+	<%
+	});
+	%>

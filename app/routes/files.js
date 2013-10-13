@@ -5,13 +5,12 @@ var fs = require('fs')
 	, _ = require('underscore')
 	, pathInfo = require('path')
 	, users = require('../models/helpers/users.js')
-	, fileManager = require('../models/helpers/files.js')
-	, removeFile = require('../utils/removeFile.js').removeFile;
+	, fileManager = require('../models/helpers/files.js');
 
 //Requires all the modedl database
 var mongoose = require('mongoose')
 	, models = require('../models')
-	, Pathes = mongoose.model('Pathes')
+	, Paths = mongoose.model('Paths')
 	, Movies = mongoose.model('Movies')
 	, Albums = mongoose.model('Albums')
 	, Others = mongoose.model('Others')
@@ -28,12 +27,12 @@ exports.download = function(req, res) {
 
 exports.downloadArchive = function(req, res) {
 
-	Users.findById(req.session.user.id).lean(true).populate('pathes').exec(function(err, docs) {
-		Pathes.populate(docs, 
+	Users.findById(req.session.user.id).lean(true).populate('Paths').exec(function(err, docs) {
+		Paths.populate(docs, 
 			[
-			  { path : 'pathes.movies', model: Movies, match: { _id: req.params.id} },
-			  { path : 'pathes.albums', model: Albums, match: { _id: req.params.id} },
-			  { path : 'pathes.others', model: Others, match: { _id: req.params.id} }
+			  { path : 'Paths.movies', model: Movies, match: { _id: req.params.id} },
+			  { path : 'Paths.albums', model: Albums, match: { _id: req.params.id} },
+			  { path : 'Paths.others', model: Others, match: { _id: req.params.id} }
 			],
 			function(err, docs) {
 				if(err) { console.log(err); }
@@ -42,7 +41,7 @@ exports.downloadArchive = function(req, res) {
 				var dir = __dirname.replace('routes', 'public');
 				var name;
 
-				_.each(docs.pathes, function(path, key) {
+				_.each(docs.paths, function(path, key) {
 					if(_.isArray(path) && path.length > 0) {
 						if (key == 'albums' && name == undefined) {
 							name = path[0].title;
@@ -76,12 +75,12 @@ exports.downloadArchive = function(req, res) {
 exports.archive = function(req, res) {
 	var archive = {};
 
-	Users.findById(req.session.user.id).lean(true).populate('pathes').exec(function(err, docs) {
-		Pathes.populate(docs, 
+	Users.findById(req.session.user.id).lean(true).populate('Paths').exec(function(err, docs) {
+		Paths.populate(docs, 
 			[
-			  { path : 'pathes.movies', model: Movies, match: { _id: req.params.id} },
-			  { path : 'pathes.albums', model: Albums, match: { _id: req.params.id} },
-			  { path : 'pathes.others', model: Others, match: { _id: req.params.id} }
+			  { path : 'Paths.movies', model: Movies, match: { _id: req.params.id} },
+			  { path : 'Paths.albums', model: Albums, match: { _id: req.params.id} },
+			  { path : 'Paths.others', model: Others, match: { _id: req.params.id} }
 			],
 			function(err, docs) {
 				if(err) { console.log(err); }
@@ -90,7 +89,7 @@ exports.archive = function(req, res) {
 				var dir = __dirname.replace('routes', 'public');
 				var appDir = process.cwd().replace('/app', '');
 
-				_.each(docs.pathes, function(path, key) {
+				_.each(docs.Paths, function(path, key) {
 					if(_.isArray(path) && path.length > 0) {
 						if (key == 'albums' && archive.path == undefined) {
 							//archive.name = path[0].artist + ' - ' + path[0].album;
@@ -170,12 +169,12 @@ exports.archive = function(req, res) {
 },
 //Improve files alone / folder !!
 exports.delete = function(req, res) {
-
+	//only unlink folder recursive, watcher'll do the rest
 	users.paths(req.session.user.id, function(err, paths) {
-		removeFile({pathsKeys : paths.pathsKeys, f:new Buffer(req.params.id, 'hex').toString()}, function(err, key) {
-			if(err) console.log(err);
-			res.redirect('/');
-		});
+		// removeFile({pathsKeys : paths.pathsKeys, f:new Buffer(req.params.id, 'hex').toString()}, function(err, key) {
+		// 	if(err) console.log(err);
+		// 	res.redirect('/');
+		// });
 	});
 
 }
