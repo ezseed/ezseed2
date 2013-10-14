@@ -11,6 +11,7 @@ var express = require('express')
   , routes = require('./routes')
   //????
   , user = require('./routes/user')
+  , admin = require('./routes/admin')
   , streaming = require('./routes/streaming')
   , files = require('./routes/files')
   , http = require('http')
@@ -62,10 +63,11 @@ app.use(function(req, res, next){
 
   res.locals.config = _.extend(global.config, 
                                 { 
-                                  location : path.dirname(req.originalUrl) //request path dirname 
+                                  location : req.originalUrl //request path dirname 
                                 });
 
-  res.locals.location = path.dirname(req.originalUrl);
+  res.locals.location = req.originalUrl;
+  console.log(res.locals.location);
 
   if(req.session.user) {
     var u = req.session.user;
@@ -106,6 +108,8 @@ app.get('/', user.restrict, routes.index);
 app.get('/login', user.login);
 app.get('/logout', user.logout);
 app.post('/login', user.authenticate);
+
+app.get('/admin', user.restrict, admin.restrict, admin.index);
 
 app.get('/archive/(:id)', user.restrict, files.archive);
 app.get('/download/archive/(:id)', files.downloadArchive);

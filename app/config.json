@@ -1,6 +1,6 @@
 {
   "path": "/Users/soyuka/Sites/ezseed2/downloads",
-  "maxFilesLimit": 500,
+  "fetchTime": 5000,
   "root": "/Users/soyuka/Sites/ezseed2/app",
   "location": "/install/folder"
 }

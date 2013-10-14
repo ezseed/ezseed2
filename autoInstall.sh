@@ -8,7 +8,7 @@ apt-get update
 
 # Dependecies
 # whois = mkpasswd
-apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python -y
+apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools -y
 
 mkdir /data
 mkdir /data/db
@@ -18,7 +18,7 @@ git clone https://github.com/joyent/node.git
 cd node
  
 # 'git tag' shows all available versions: select the latest stable.
-git checkout v0.10.16
+git checkout v0.10.20
  
 # Configure seems not to find libssl by default so we give it an explicit pointer.
 # Optionally: you can isolate node by adding --prefix=/opt/node
@@ -35,3 +35,5 @@ then
 else
 	npm install pm2 -g
 fi
+
+

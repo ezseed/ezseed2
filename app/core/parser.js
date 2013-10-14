@@ -150,6 +150,7 @@ module.exports.processMovies = function(params, callback) {
 			} else {
 				e = _.extend(e, release.getTags.video(e.name));
 
+				//ici
 				//Movies types are the same, we look after the same name | same season
 				indexMatch = findIndex(movies, function(movie) { 
 					if(movie.movieType == e.movieType) {

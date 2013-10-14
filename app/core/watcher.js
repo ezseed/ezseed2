@@ -1,250 +1,257 @@
 var _ = require('underscore')
-  , chokidar = require('chokidar')
-  , users = require('./helpers/users.js')
   , pathInfo = require('path')
-  , mime = require('mime')
   , explorer = require('./explorer')
+  , async = require('async')
+  , fs = require('fs')
+  , jf = require('jsonfile')
   , db = require('./database.js');
 
-//Add caching ?
+var Inotify = require('inotify').Inotify, EventEmitter = require('events').EventEmitter, util = require('util');
 
-/**
-* Similar to _.find but return the first index of the array matching the iterator
-**/
-var findIndex = function(arr, iterator) {
-	var i = arr.length - 1, index = null;
+//Watcher from https://npmjs.org/package/inotifywatch
+function Watcher(filepath, options, callback) {
 
-	if(i >= 0){
-		do {
-			if(iterator(arr[i])) {
-				index = i;
-				break;
-			}
-		} while(i--)
-	}
-
-	return index;
+  var self = this;
+  EventEmitter.call(self);
+  if (typeof options === 'function') {
+    callback = options;
+    options = null;
+  }
+  options = options || {
+    persistent: true
+    //, events: Inotify.IN_ALL_EVENTS
+  };
+  var watchFor =
+    Inotify.IN_MODIFY |
+    Inotify.IN_CREATE |
+    Inotify.IN_DELETE |
+    Inotify.IN_DELETE_SELF |
+    Inotify.IN_MOVE;
+  var inotify = new Inotify(options.persistent);
+  var trampoline = function (ev, data) {
+    if (callback)
+      callback(ev, data);
+    self.emit(ev, data);
+  };
+  var moved_from;
+  inotify.addWatch({
+    path: filepath,
+    watch_for: options.events || watchFor,
+    callback: function (event) {
+      if (event.mask & Inotify.IN_ACCESS) {
+        trampoline('access', event.name);
+      } else if (event.mask & Inotify.IN_MODIFY) {
+        trampoline('modify', event.name);
+      } else if (event.mask & Inotify.IN_OPEN) {
+        trampoline('open', event.name);
+      } else if (event.mask & Inotify.IN_CLOSE_NOWRITE) {
+        trampoline('close', event.name);
+      } else if (event.mask & Inotify.IN_CLOSE_WRITE) {
+        trampoline('close', event.name);
+      } else if (event.mask & Inotify.IN_ATTRIB) {
+        trampoline('attribute', event.name);
+      } else if (event.mask & Inotify.IN_CREATE) {
+        trampoline('create', event.name);
+      } else if (event.mask & Inotify.IN_DELETE) {
+        trampoline('delete', event.name);
+      } else if (event.mask & Inotify.IN_DELETE_SELF) {
+        trampoline('delete', event.name);
+      } else if (event.mask & Inotify.IN_MOVE_SELF) {
+        trampoline('move self', event.name);
+      } else if (event.mask & Inotify.IN_IGNORED) {
+        trampoline('ignored', event.name);
+      } else if (event.mask & Inotify.IN_MOVED_FROM) {
+        trampoline('moved from', event.name);
+        moved_from = event;
+      } else if (event.mask & Inotify.IN_MOVED_TO) {
+        trampoline('moved to', event.name);
+        if (moved_from && moved_from.cookie === event.cookie) {
+          trampoline('move', { from: moved_from.name, to: event.name });
+          moved_from = null;
+        }
+      }
+    }
+  });
+  self.close = inotify.close.bind(inotify);
+  return self;
 }
+util.inherits(Watcher, EventEmitter);
 
+var Watch = function(params) {
+	var self = this;
 
-var lastUpdate, removedFiles = [];
+	self.addTimeout = null;
+	self.removeTimeout = null;
+	self.removedFiles = [];
+	self.path = params.path;
+	self.uid = params.uid;
+	self.pid = params.pid;
 
-var countDatas = function(p, cb) {
-	var count = 0;
+	return _.extend(self, {
+		eventHandler : function(event, data) {
 
-	if(!_.isArray(p))
-		p = [p];
+			if(event == 'delete')
+				this.delete(data);
+			else if(event == 'move' || event == 'moved' || event == 'moved to' || event == 'create')
+				this.create(data);
+			else
+				this.unknown(data);
+		},
 
-	_.each(p, function(e, i) {
-		count += e.albums.length + e.movies.length + e.others.length;
-	});
+		delete : function(filename) {
+			var self = this;
 
-	cb(count);
-}
+			self.removedFiles.push(
+				pathInfo.join(self.path, filename)
+			);
 
+			if(self.removeTimeout !== null)
+				clearTimeout(self.removeTimeout);
 
-var updateFiles = function(params) {
+			self.removeTimeout = setTimeout(function() {
+				console.log('removeFile');
 
-    explorer.explore(params, function(err, update) {
+				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles}, function() {
+					self.removedFiles = [];
+					self.removeTimeout = null;
+					watcher.writeRemovedFiles(self);
+				});
+			}, 750);
 
-        db.files.byUser(params.uid, lastUpdate, function(err, files) {
+		},
 
-            countDatas(files.paths, function(count) {
-            	if(count !== 0) {
-	                //Broadcast only to client !
-	                console.log('Watcher Updating client');
+		create : function(filename) {
+			var self = this;
 
-	                params.io.sockets.socket(params.sid).emit('files', JSON.stringify(_.extend({count : count}, files)));
+			if(self.addTimeout !== null)
+				clearTimeout(this.addTimeout);
 
-	                users.usedSize(params, function(size) {
-	                    params.io.sockets.socket(params.sid).emit('size', size);
-	                    
-	                    //Files sent we save the date
-	                    lastUpdate = new Date();
+			self.addTimeout = setTimeout(function() {
+				console.log('updateFiles');
 
-	                    params.watcher.close();
+				watcher.updateFiles(self.uid, function() {
+					self.addTimeout = null;
+				});
 
-	                });
-	            }
-            });
-        });
-    });
+			}, 750);
+		},
 
-}
+		unknown : function(filename) {
+			console.log('Unknow event', filename);
+		}
+	}, new Watcher(self.path, function(event, data) {
+		self.eventHandler(event, data);
+	}) );
+};
 
-var removeFiles = function(params) {
-	db.files.byUser(params.uid, 0, function(err, pathsFiles) {
+// util.inherits(Watch, Watcher);
 
-		pathsFiles = pathsFiles.paths;
-		
-		var files = []
-		  , i = pathsFiles.length - 1 //paths cursor
-		  , j = removedFiles.length - 1 //removedFiles cursor
-		  , dirnames = []
-		  ;
+var watcher = {
+	removedIds : [],
+	watchers : [],
+	initFetch : function() {
 
-		//All files from paths to array
-		do {
-			files.push(pathsFiles[i].movies, pathsFiles[i].albums, pathsFiles[i].others);
-		} while(i--)
-
-		files = _.flatten(files);
-
-		//Get the dirname from each removed files
-		do {
-			dirnames.push(pathInfo.dirname(removedFiles[j]));
-		} while(j--)
-
-		dirnames = _.uniq(dirnames);
-
-		var k = dirnames.length - 1;
-
-		do {
-			//Finds by prevDir
-			var toRemove = _.where(files, {prevDir : dirnames[k]}), elements;
-
-			//searches for the file path in an element
-			_.each(toRemove, function(e) {
-
-				if(e.songs !== undefined) {
-					type = 'albums';
-					elements = e.songs;
-				} else if (e.videos !== undefined) {
-					type = 'movies';
-					elements = e.videos;
-				} else {
-					type = "others";
-					elements = e.files;
-				}
-
-				//If we find it, we can remove safely from DB
-				if( _.findWhere(elements, {path : removedFiles[k]}) !== undefined ) {
-
-					db.files[type].delete(e._id, function(err) {
-						params.io.sockets.socket(params.sid).emit('remove', e._id);
-					});
-
-					return false;
-				}
-
+		db.users.getAll(function(err, users) {
+			var paths = [];
+			_.each(users, function(u) {
+				_.each(u.paths, function(p) {
+					watcher.watchers.push(
+						new Watch(
+							{path : p.path, uid:u._id, pid:p._id}
+						)
+					);
+				});
 			});
 
-		} while(k--)
+			console.log(watcher.watchers);
+		});
+	},
+	updateFiles : function(uid, cb) {
+		db.paths.byUser(uid, function(err, paths) {
+            explorer.explore(paths, function(err, update) {
+            	cb();
+            });
+        });
+	},
+	writeRemovedFiles : function(watch) {
 
-		//reset
-		removedFiles = [];
-	});
-}
+		var path = pathInfo.join(__dirname, '/public/tmp/', watch.uid+'.json');
 
-var removeWatcher, removeTimeout;
+		if(!fs.existsSync(path))
+			jf.writeFileSync(path, watch.removedFiles);
+		else
+			jf.writeFileSync(path, _.union(jf.readFileSync(path), watch.removedFiles));
 
-var initRemoveWatcher = function(params) {
-		//Starts watching by omitting invisible files 
-	//(see https://github.com/paulmillr/chokidar/issues/47)	
-	removeWatcher = chokidar.watch(params.paths,
-		{ 
-			ignored: function(p) {
-	    		return /^\./.test(pathInfo.basename(p));
-	    	},
-	    	binaryInterval: 100,
-	    	persistent:true
-  		}
-  	);
-console.log(params);
-	removeWatcher.on('unlink', function(f) {
+		watch.removedFiles = [];
+	},
+	removeFiles : function(params, cb) {
+		var removedFiles = params.removedFiles, done = 0;
 
-		removedFiles.push(f);
+		db.files.byUser(params.uid, 0, function(err, pathsFiles) {
 
-		if(removeTimeout !== undefined)
-			clearTimeout(removeTimeout);
+			pathsFiles = pathsFiles.paths;
+			
+			var files = []
+			  , i = pathsFiles.length - 1 //paths cursor
+			  , j = removedFiles.length - 1 //removedFiles cursor
+			  , dirnames = []
+			  ;
 
-		removeTimeout = setTimeout(function() {
-			console.log('removeFile');
-			removeFiles(params);
-		}, 1000);
+			//All files from paths to array
+			do {
+				files.push(pathsFiles[i].movies, pathsFiles[i].albums, pathsFiles[i].others);
+			} while(i--)
 
-		//TODO
-		// users.paths(params.uid, function(err, paths) {
-			// removeFile({pathsKeys : paths.pathsKeys, f:f, unlink:false}, function(err, key) {
-			// 	if(err) console.log(err);
-			// 	params.io.sockets.socket(params.sid).emit('remove', key);
+			files = _.flatten(files);
 
-			// 	users.usedSize(params, function(size) {
+			//Get the dirname from each removed files
+			do {
+				dirnames.push(pathInfo.dirname(removedFiles[j]));
+			} while(j--)
 
-   //              	params.io.sockets.socket(params.sid).emit('size', size);
+			dirnames = _.uniq(dirnames);
 
-   //              });
+			var k = dirnames.length - 1;
 
-			// });
-		// });
+			do {
+				//Finds by prevDir
+				var toRemove = _.where(files, {prevDir : dirnames[k]}), elements;
 
-	});
-}
+				//searches for the file path in an element
+				_.each(toRemove, function(e) {
 
-var addTimeout;
+					if(e.songs !== undefined) {
+						type = 'albums';
+						elements = e.songs;
+					} else if (e.videos !== undefined) {
+						type = 'movies';
+						elements = e.videos;
+					} else {
+						type = "others";
+						elements = e.files;
+					}
 
-/*
-* Watcher method
-* watching with chokidar and saving the new files to DB
-* @param pathsToWatch Array paths
-* @param pathsKeys Array paths hex
-*/
-exports.watch = function(params) {
+					//If we find it, we can remove safely from DB
+					if( _.findWhere(elements, {path : removedFiles[k]}) !== undefined ) {
 
-	lastUpdate = params.lastUpdate;
+						db.files[type].delete(e._id, function(err) {
+							watcher.removedIds.push(e._id);
+							done++;
 
-	//Starts watching by omitting invisible files 
-	//(see https://github.com/paulmillr/chokidar/issues/47)	
-	var watcher = chokidar.watch(params.paths,
-		{ 
-			ignored: function(p) {
-	    		return /^\./.test(pathInfo.basename(p));
-	    	},
-	    	binaryInterval: 100,
-	    	persistent:false,
-	    	ignoreInitial:true
-  		}
-  	);
+							if(done == removedFiles.length)
+								cb();
+						});
 
-  	watcher.setMaxListeners(100);
+						return false;
+					}
 
-	//File is added
-	watcher.on('add', function(f, stat) {
+				});
 
-		if(addTimeout !== undefined)
-			clearTimeout(addTimeout);
+			} while(k--)
 
-		addTimeout = setTimeout(function() {
-			console.log('updateFiles');
-			updateFiles(_.extend({watcher: watcher,}, params));
-		}, 1000);
+			
+		});
+	}
+};
 
-
-	});
-
-	if(removeWatcher === undefined)
-		initRemoveWatcher(params);
-	
-}
-
-exports.tmpWatcher = function(params) {
-    var io = params.io, id;
-
-	//Starts watching by omitting invisible files 
-	//(see https://github.com/paulmillr/chokidar/issues/47)	
-	var watcher = chokidar.watch(params.archive.path,
-		{ 
-			ignored: function(p) {
-	    		return /^\./.test(pathInfo.basename(p));
-	    	},
-	    	persistent:false
-
-  		}
-  	);
-
-  	watcher.on('change', function(p, stats) {
-  		var id = pathInfo.basename(p).replace('.zip', '');
-  		io.sockets.socket(params.sid).emit('compressing', {'done': stats.size, 'id':id});
-	});
-
-}
+module.exports = watcher;

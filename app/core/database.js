@@ -1,6 +1,6 @@
 //Requires all the modedl database
 var mongoose = require('mongoose')
-	, models = require(global.config.root + '/models')
+	, models = require('../models')
 	, Paths = mongoose.model('Paths')
 	, Users = mongoose.model('Users')
 	, Movies = mongoose.model('Movies')
@@ -49,6 +49,37 @@ module.exports = {
   				)
   			});
   		},
+      byId : function(id, cb) {
+        var result = [], errs = [];
+
+        Movies.findById(id).lean().exec(function(err, docs) {
+          if(docs !== null) result.push(docs);
+          if(err !== null) errs.push(err);
+          Albums.findById(id).lean().exec(function(err, docs) {
+           if(docs !== null)result.push(docs);
+           if(err !== null) errs.push(err);
+            Others.findById(id).lean().exec(function(err, docs) {
+              if(docs !== null)result.push(docs);
+              if(err !== null) errs.push(err);
+              cb(err, result[0]);
+            });
+          });
+        });
+
+        // Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
+        //   Paths.populate(docs, 
+        //     [
+        //         { path: 'paths.movies', model: Movies, match: { _id: id}, lean : true },
+        //         { path: 'paths.albums', model: Albums, match: { _id: id}, lean : true },
+        //         { path: 'paths.others', model: Others, match: { _id: id}, lean : true }
+        //       ],
+        //       function(err, docs) {
+        //         cb(err, docs);
+              
+        //       }
+        //   )
+        // });
+      },
   		albums : {
   			delete : function(id, cb) {
   				Albums.findByIdAndRemove(id, function(err) {

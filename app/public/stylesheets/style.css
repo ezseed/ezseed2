@@ -186,7 +186,7 @@ nav#display {
 	-moz-border-radius-bottomleft: 5px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
-	background: #373634;
+	background: #373634 url('/images/grey.png');
 	padding-top: 10px;
 	-webkit-box-shadow: inset 0px 2px 7px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: inset 0px 2px 7px 0px rgba(0,0,0,0.75);

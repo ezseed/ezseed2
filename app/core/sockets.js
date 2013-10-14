@@ -1,9 +1,10 @@
-var socketio = require('socket.io'),
-    explorer = require('./explorer'),
-    users = require('../models/helpers/users.js'),
-    watcher = require('./watcher'),
-    db = require('../core/database.js'),
-    _ = require('underscore');
+var socketio = require('socket.io')
+  , explorer = require('./explorer')
+  , pathInfo = require('path')
+  , cache = require('memory-cache')
+  , users = require('../core/helpers/users.js')
+  , db = require('../core/database.js')
+  , _ = require('underscore');
 
 
 module.exports.listen = function(app) {
@@ -25,28 +26,52 @@ module.exports.listen = function(app) {
 
                         io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
 
-                        users.usedSize(paths, function(size) {
-
-                            io.sockets.socket(socket.id).emit('size', size);
-                            
-                            var watcherParams = _.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date});
-
-                            //Now we might watch !
-                            watcher.watch(watcherParams);
-
-                        });
                     });
+
+                    users.usedSize(paths, function(size) {
+
+                        io.sockets.socket(socket.id).emit('size', size);
+
+                    });
+
+                    var interval = cache.get('interval_' + uid);
+
+                    if(interval === null) {
+                        cache.put(
+                            'interval_' + uid, 
+                            setInterval(function() {
+                                users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
+                            }, global.config.fetchTime)
+                        );
+                    }
+
                 });
             });
         });
 
         //Adds a tmp watcher + socket id, watch change of specific archive
         socket.on('archive', function(id) {
-            watcher.tmpWatcher({
-                'archive' : { 'path' : process.cwd() + '/public/tmp/'},
-                'sid' : socket.id,
-                io : io
+            
+            var chokidar = require('chokidar');
+
+            //Starts watching by omitting invisible files 
+            //(see https://github.com/paulmillr/chokidar/issues/47) 
+            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/tmp'),
+                { 
+                    ignored: function(p) {
+                        return /^\./.test(pathInfo.basename(p));
+                    },
+                    persistent:false
+
+                }
+            );
+
+            watcher.on('change', function(p, stats) {
+                var id = pathInfo.basename(p).replace('.zip', '');
+                io.sockets.socket(socket.id).emit('compressing', {'done': stats.size, 'id':id});
             });
+
+
         });
 
    });

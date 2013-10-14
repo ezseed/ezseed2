@@ -12,7 +12,7 @@ var _ = require('underscore')
 
 
 exports.explore = function(params, cb) {
-	
+
 	var explorePath = function(pathToWatch, pathCallback) {
 
 		//Get db files first
