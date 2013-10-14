@@ -52,7 +52,7 @@ others.forEach(function(other) {
 			<hr />
 			<p class="infos">
 				<% if(other.files) {%>
-				Extension : <%- other.files[0].ext %> <br />
+				Type : <%- other.files[0].type %> <br />
 					<% if(other.files.length == 1) { %>
 					Taille : <%- bytesToSize(other.files[0].size) %>
 					<% } %>
@@ -61,7 +61,7 @@ others.forEach(function(other) {
 		</div>
 		<% if(other.files.length > 1) { %>
 			<div class="showFiles">
-				<i class="entypo-attach"></i>Fichiers du dossier
+				<i class="entypo-attach"></i>Fichiers
 			</div>
 			<div class="files">
 				<table>

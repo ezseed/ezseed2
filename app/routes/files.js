@@ -10,11 +10,19 @@ var fs = require('fs')
 
 exports.download = function(req, res) {
 	//to do add db Files search.
-	var path = new Buffer(req.params.id, 'hex').toString(); 
+	db.files.byId(req.params.id, function(err, doc) {
+		if(req.params.fid !== undefined) {
+			var file = db.file.byId(doc, req.params.fid);
 
-	path = path.replace('../', __dirname.replace('routes', 'public') + '/');
+			res.download(file.path);
+		} else {
+			var files = doc.songs || doc.movies || doc.files;
 
-	res.download(path);
+			res.download(files[0].path);
+		}
+	});
+
+
 }
 
 exports.downloadArchive = function(req, res) {
@@ -48,6 +56,37 @@ exports.downloadArchive = function(req, res) {
 				
 }
 
+var archiveFiles = function(archive, filePaths, callback) {
+	var output = fs.createWriteStream(archive.zip);
+	var zip = archiver('zip');
+	
+	zip.on('error', function(err) {
+		callback(err);
+	});
+
+	zip.pipe(output);
+
+
+	async.each(filePaths, function(item, cb) {
+
+		zip.append(
+			fs.createReadStream(pathInfo.normalize(item)), 
+			{ name: pathInfo.basename(pathInfo.dirname(item)) + '/' + pathInfo.basename(item) },  //, store: true
+			function(err) {
+				cb(err);
+			}
+		);
+	}, function(err){
+	   if(err) callback(err);
+	   zip.finalize(function(err, written) {
+			if (err) callback(err);
+
+			callback(null);
+		});
+	});
+
+}
+
 //Take _id as archive name + no tmp/user only 1 tmp
 //To be improved
 exports.archive = function(req, res) {
@@ -70,43 +109,31 @@ exports.archive = function(req, res) {
 					//sends json redirect download
 					res.json({'error':null, 'download':true});
 
-				} else {
-
-					var output = fs.createWriteStream(archive.zip);
-					var zip = archiver('zip');
+				//If it's a tvserie we need the videos paths
+				} else if(!_.isEmpty(doc.season)) {
 					
-					zip.on('error', function(err) {
-						console.log('Zip error : ' + err);
-					  throw err;
+					var filePaths = [];
+
+					for(var k in doc.videos)
+						filePaths.push(doc.videos[k].path);
+
+					archive.path = doc.name + ' - ' + doc.season;
+
+					archiveFiles(archive, filePaths, function(err) {
+						if(err)
+							res.json({'error' : 'Erreur zip :' + err});
+						else
+							res.json({'error':null, 'download':true});
 					});
 
-					zip.pipe(output);
+				} else {
 
 					explorer.getFiles(archive.path, function(err, filePaths) {
-						
 						if(err)
 							res.json({'error' : 'Aucun fichiers trouvés'});
 						else {
-							async.eachSeries(filePaths, function(item, cb) {
-								zip.append(
-									fs.createReadStream(pathInfo.normalize(item)), 
-									{ name: pathInfo.basename(archive.path) + '/' + item.replace(archive.path, '') },  //, store: true
-									function(err) {
-										cb(err);
-									}
-								);
-							}, function(err){
-							   if(err) console.log(err);
-							   zip.finalize(function(err, written) {
-									if (err) {
-										console.log(err);
-									throw err;
-									}
-
-									var json = {'error':null, 'download':true};
-									res.send(JSON.stringify(json));
-							
-								});
+							archiveFiles(archive, filePaths, function(err) {
+								res.json({'error':null, 'download':true});
 							});
 						}
 					});

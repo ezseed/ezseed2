@@ -114,9 +114,12 @@ app.get('/admin', user.restrict, admin.restrict, admin.index);
 app.get('/archive/(:id)', user.restrict, files.archive);
 app.get('/download/archive/(:id)', files.downloadArchive);
 app.get('/download/(:id)', files.download);
+app.get('/download/(:id)/(:fid)', files.download);
 app.get('/delete/(:type)/(:id)', user.restrict, files.delete);
 
 app.get('/watch/(:id)', streaming.watch);
+app.get('/watch/(:id)/(:fid)', streaming.watch);
+
 // app.get('/stream/(:id)', streaming.stream);
 app.get('/listen/(:id)', streaming.listen);
 

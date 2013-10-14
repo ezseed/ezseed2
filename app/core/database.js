@@ -9,6 +9,7 @@ var mongoose = require('mongoose')
 	, cache = require('memory-cache')
 	, async = require('async');
 
+var _ = require('underscore');
 
 module.exports = {
 	paths : {
@@ -32,6 +33,14 @@ module.exports = {
 			});
 		}
 	}, 
+  file : {
+    byId : function(obj, id) {
+      var o = obj.songs || obj.videos || obj.files;
+
+      return _.filter(o, function(o){ return o._id == id; })[0];
+
+    }
+  },
   files : {
   		byUser : function (uid, lastUpdate, cb) {
 
@@ -65,20 +74,6 @@ module.exports = {
             });
           });
         });
-
-        // Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
-        //   Paths.populate(docs, 
-        //     [
-        //         { path: 'paths.movies', model: Movies, match: { _id: id}, lean : true },
-        //         { path: 'paths.albums', model: Albums, match: { _id: id}, lean : true },
-        //         { path: 'paths.others', model: Others, match: { _id: id}, lean : true }
-        //       ],
-        //       function(err, docs) {
-        //         cb(err, docs);
-              
-        //       }
-        //   )
-        // });
       },
   		albums : {
   			delete : function(id, cb) {
@@ -115,6 +110,11 @@ module.exports = {
   					cb(err);
   				});
   			},
+        byId : function(id, cb) {
+          Movies.findById(id).lean(true).exec(function(err, doc) {
+            cb(err, doc);
+          });
+        },
   			save : function (obj, saveCallback) {
   				async.each(obj.movies, 
   					function(movie, cb) {

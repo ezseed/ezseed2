@@ -98,7 +98,7 @@ jQuery(function($) {
         $element = $(this).parent();
 
         if($files.is(':hidden')) {
-            $button.html('<i class="entypo-attach"></i>Cacher les fichiers');
+            $button.html('<i class="entypo-attach"></i>Cacher');
 
             var margin = $files.height() + 20;
             $element.css({'margin-bottom':'+'+margin+'px'});
@@ -236,18 +236,23 @@ jQuery(function($) {
 
         $archiving.show();
 
+        $(window).bind('beforeunload', function() {
+            return 'Une compression est en cours';
+        });
+
         $.get($(this).attr('href'), function(res) {
             if(res.error == null) {
                 window.location.href = '/download/archive/'+id;
             }
 
-            $archiving.find('.progress').text('Téléchargement en cours...');
+            $archiving.find('.percent').text('Téléchargement en cours...');
             $archiving.find('.progress').css('width', '100%');
 
             //todo show err
             setTimeout(function() {
+                $(window).unbind('beforeunload');
                 $archiving.fadeOut('800');
-                $archiving.find('.progress').delay('800').text('0%');
+                $archiving.find('.percent').delay('800').text('0%');
             }, 3000);
 
         }, 'json');
@@ -339,8 +344,6 @@ jQuery(function($) {
 
     socket.on('size', function(size) {
         $('#diskSpace .used').text(size);
-
-        console.log(size);
     });
 
 
@@ -429,7 +432,7 @@ jQuery(function($) {
         $archiving =  $('#archiving'),
         size = $el.find('a.archive').attr('data-full-size');
 
-        var percentDone = (data.done / parseInt(size)) * 100; 
+        var percentDone = (parseInt(data.done) / parseInt(size)) * 100; 
 
         percentDone = Math.round(percentDone * 100) / 100;
 

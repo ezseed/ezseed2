@@ -83,7 +83,7 @@ albums.forEach(function(album) {
 
 		<% if(album.songs.length) { %>
 			<div class="showFiles">
-				<i class="entypo-attach"></i>Fichiers du dossier
+				<i class="entypo-attach"></i>Fichiers
 			</div>
 			<div class="files">
 				<table>
@@ -108,7 +108,7 @@ albums.forEach(function(album) {
 							<td><%- i %></td>
 							<td style="text-align:left"><%- file.name %></td>
 							<td><%- bytesToSize(file.size) %></td>
-							<td>-</td>
+							<td><a href="/download/<%- album._id %>-<%- file._id%>"><i class="entypo-download"></i></a></td>
 						</tr>			
 						<% 
 							i++;

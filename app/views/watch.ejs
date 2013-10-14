@@ -36,9 +36,9 @@
       <hr>
       <ul>
       <%
-      for(var i in season) {
+      for(var i in movie.videos) {
       %>
-         <a <%if(season[i].episode == movie.episode) { %>class="active" href="#" <% } else { %>href="/watch/<%-season[i]._id%>"<%}%>><li><span class="title"><%- season[i].title + ' - E' + season[i].episode %></span></li></a>
+         <a <%if(movie.videos[i].episode == movie.episode) { %>class="active" href="#" <% } else { %>href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><li><span class="title"><%- movie.title + ' - E' + movie.videos[i].episode %></span></li></a>
       <% 
       }
       %>

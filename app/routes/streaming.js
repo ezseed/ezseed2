@@ -12,27 +12,38 @@ var mongoose = require('mongoose')
 
 var ffmpeg = require('fluent-ffmpeg');
 
+
+var db = require('../core/database.js');
+
 exports.watch = function(req, res) {
-	var path = new Buffer(req.params.id, 'hex').toString(); 
-	
-	Movies.findById(req.params.id).lean(true).exec(function(err, doc) {
+	db.files.movies.byId(req.params.id, function(err, doc) {
 		if(err) { 
 			console.log(err);
 			req.session.error = 'Aucun fichier trouvé';
 			res.redirect('/');
 		} else {
 
-			var cwd = process.cwd().replace('/app', '');
+			var file;
+
+			if(req.params.fid === undefined)
+				file = doc.videos[0];
+			else
+				file = db.file.byId(doc, req.params.fid);
+			
+			path = file.path;
+
+			doc.episode = file.episode;
+
+			//current working dir
+			var cwd = global.config.root.replace('/app', '');
 
 			path = path.replace(cwd, '');
 
 			var fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + path;
 
-			if(doc.type == 'tvseries') {
-				Movies.find({title:doc.title, season: doc.season}).lean(true).exec(function(err, serie) {
-					res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, path: path, fullUrl: fullUrl, id:req.params.id, season : serie  });
-				});
-			} else
+			if(doc.movieType == 'tvseries')
+				res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, path: path, fullUrl: fullUrl, id:req.params.id, season : true  });
+			else
 				res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, path: path, fullUrl: fullUrl, id:req.params.id, season: null  });
 			
 		}

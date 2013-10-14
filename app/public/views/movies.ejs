@@ -31,14 +31,14 @@ movies.forEach(function(movie) {
 			</a>
 		</div>
 		<div class="list-infos">
-			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %>- S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %></h1>
+			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %></h1>
 
 			<div class="button-group">
 				<a href="/watch/<%- movie._id %>" title="Visionner">
 					<i class="entypo-eye"></i>
 				</a>
 
-				<% if(movie.videos.length > 1) {%>
+				<% if(movie.videos.length > 1 ) { %>
 				<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
 				<% } else {%>
 				<a href="/download/<%- movie._id %>" title="Télécharger">
@@ -72,7 +72,7 @@ movies.forEach(function(movie) {
 		</div>
 		<% if(movie.videos.length > 1) { %>
 			<div class="showFiles">
-				<i class="entypo-attach"></i><% if(movie.type == 'tvseries') { %>Episodes<%} else {%>Fichiers du dossier<%}%>
+				<i class="entypo-attach"></i><% if(movie.type == 'tvseries') { %>Episodes<%} else {%>Fichiers<%}%>
 			</div>
 			<div class="files">
 				<table>
@@ -105,7 +105,7 @@ movies.forEach(function(movie) {
 					</tbody>
 					<tfoot>
 						<tr>
-							<% if(movie.videos[0].episode === undefined ) { %> 
+							<% if(movie.videos[0].episode === null ) { %> 
 								<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
 								<td>
 									<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
