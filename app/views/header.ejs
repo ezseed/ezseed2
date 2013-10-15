@@ -12,14 +12,24 @@
     <link rel="icon" type="image/png" href="/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/loader.css" />
 
-    <script type="text/javascript" src="/javascripts/jquery.js"></script>
+    <script src="/javascripts/jquery.js"></script>
+    <script src="/javascripts/jquery.ejs.js"></script>
+    <script src="/javascripts/async.js"></script>
+    <script src="/javascripts/underscore.js"></script>
+    <script src="/javascripts/jquery.cookie.js"></script>
+
     <% if(user) { %>
     <script src="/socket.io/socket.io.js"></script>
     <% } %>
-    <% if(location == '/listen') { %>
+    <% if(location.indexOf('/listen') === 0) { %>
     <link rel="stylesheet" type="text/css" href="/stylesheets/jplayer/jplayer.blue.monday.css">
-    <script type="text/javascript" src="/javascripts/jplayer.min.js"></script>
-    <script type="text/javascript" src="/javascripts/jplayer.playlist.min.js"></script>
+    <script src="/javascripts/jplayer.min.js"></script>
+    <script src="/javascripts/jplayer.playlist.min.js"></script>
+    <% } %>
+    <% if (location.indexOf('/admin') === 0) {%>
+    <script src="/javascripts/jquery.collapse.js"></script>
+    <script src="/javascripts/jquery.collapse_storage.js"></script>
+    <script src="/javascripts/customselect.js"></script>
     <% } %>
     <style>
       .error {
@@ -63,8 +73,8 @@
             <div id="usedBar" style="width:25%"></div>
             <span class="text">Espace Disque</span>
             <span class="size">
-              <span class="used"></span>
-              <span class="left">/ Go</span>
+              <span class="used"><% if(usedSize !== undefined) { %> <%= usedSize %> <% } %></span>
+              <span class="left">/ <% if(config.availableSpace !== undefined) { %> <%= config.availableSpace %> <% } %></span>
             </span>
           </div>
         <% } else { %> 

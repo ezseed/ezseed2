@@ -2,5 +2,9 @@
   "path": "/Users/soyuka/Sites/ezseed2/downloads",
   "fetchTime": 5000,
   "root": "/Users/soyuka/Sites/ezseed2/app",
-  "location": "/install/folder"
+  "location": "/admin/config",
+  "torrentLink": "embed",
+  "diskSpace": "1048576",
+  "videoPlayer": "divx",
+  "availableSpace": "1 TB"
 }

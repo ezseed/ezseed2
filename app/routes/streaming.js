@@ -54,20 +54,20 @@ exports.watch = function(req, res) {
 exports.listen = function(req, res) {
 	//var path = new Buffer(req.params.id, 'hex').toString(); 
 	
-	Albums.findById(req.params.id).lean(true).exec(function(err, doc) {
+	db.files.albums.byId(req.params.id, function(err, doc) {
 		if(err) { 
 			console.log(err);
 			req.session.error = 'Aucun fichier trouvé';
 			res.redirect('/');
 		} else {
 
-			var cwd = process.cwd().replace('/app', '');
+			var cwd = global.config.root.replace('/app', '');
 
-			for(var i in doc.files)			
-				 doc.files[i].fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + doc.files[i].path.replace(cwd, '');
+			for(var i in doc.songs)			
+				 doc.songs[i].fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + doc.songs[i].path.replace(cwd, '');
 			
 
-			res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:req.params.id });
+			res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:doc._id });
 			
 		}
 		

@@ -837,7 +837,6 @@ input {
 	font-size: 1em;
 }
 
-
 input::-webkit-input-placeholder {
 	opacity: .7;
 	color: #272726;
@@ -991,6 +990,115 @@ input:-moz-placeholder {
 #timeline > ul li:hover span.title { display:block; }
 
 #timeline > ul a {color:#b2b2af;	text-shadow: 0 -1px 0 #303030;}
+
+/**
+ * Admin
+ */
+
+#admin {
+	background-color: #474747;
+	-moz-box-shadow: 0 0 7px rgba(40,40,39,.60);
+	-webkit-box-shadow: 0 0 7px rgba(40,40,39,.60);
+	box-shadow: 0 0 7px rgba(40,40,39,.60);
+	border:2px solid #e15d33;
+}
+
+#admin h2 {
+	font-weight: normal;
+	margin:0;
+	border-bottom:1px solid rgba(235, 225, 200, 0.2);
+	width: 100%;
+	cursor: pointer;
+	color:#B2B2AF;
+}
+
+#admin h2.open, #admin h2:hover {
+	color:#D8D8CA;
+}
+
+#admin h2.last{
+	border-bottom: 0;
+}
+
+#admin h2 a {
+	padding:10px;
+	color:inherit;
+	display: block;
+	width: 100%;
+	text-decoration: none!important;
+}
+
+#admin h2 + div {
+  height: auto;
+  color:#B2B2AF;
+  background: #373634 url('/images/grey.png');
+}
+
+#admin h2.open + div {
+	border-bottom:1px solid rgba(235, 225, 200, 0.2);
+}
+
+#admin .content {
+  padding: 10px;
+}
+
+#admin .user-more {
+	display:none;
+}
+
+#admin input {
+	height:auto;
+	width: auto;
+	padding-left:4px;
+	margin:0;
+	width:175px;
+	display:inline-block;
+}
+
+#admin form#configuration input {
+	width: 150px;
+}
+
+#admin form#configuration {
+	width:500px;
+	margin: 0 auto;
+}
+
+#admin form#configuration .form-block {
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.form-block .input-helper {
+	margin-left: 5px;
+}
+
+.form-block input, .form-block .input-helper, .form-block .customSelect {
+	float:right;
+}
+
+ .form-block select {
+ 	right:0;
+ }
+
+span.customSelect {
+	cursor:pointer;
+	border: 1px solid #b14827;
+	color: #272726;
+	text-shadow: 0 -1px 0 rgba(101,38,17,.5);
+	-moz-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
+	-webkit-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
+	box-shadow: inset 0 0 3px rgba(222,86,47,.9);
+	padding:1px;
+	padding-left: 4px;
+	font-size: 1em;
+	width: 175px;
+	background:#c9532d url(/images/arrow-down.png) right center no-repeat;
+}
+
+button:focus, input:focus, select:focus {
+	outline: 0;
+}
 
 #toTop {
 	position: fixed;

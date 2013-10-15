@@ -9,11 +9,12 @@
 
 var express = require('express')
   , routes = require('./routes')
-  //????
   , user = require('./routes/user')
   , admin = require('./routes/admin')
   , streaming = require('./routes/streaming')
   , files = require('./routes/files')
+  , db = require('./core/database')
+  , users = require('./core/helpers/users')
   , http = require('http')
   , _ = require('underscore')
   , path = require('path')
@@ -34,7 +35,6 @@ if(global.config.root.length == 0) {
 }
 
 var app = express();
-
 
 // all environments
 app.set('port', process.env.PORT || 3001);
@@ -73,10 +73,17 @@ app.use(function(req, res, next){
     var u = req.session.user;
     delete u.hash;
     res.locals.user = u;
-  } else
-    res.locals.user = null;
+    db.paths.byUser(u.id, function(err, paths) {
+      users.usedSize(paths, function(size) {
+        res.locals.usedSize = size;
+        next();
+      });
+    });
 
-  next();
+  } else {
+    res.locals.user = null;
+    next();
+  }
 });
 
 //Needs to be the last one called (http://stackoverflow.com/questions/12550067/expressjs-3-0-how-to-pass-res-locals-to-a-jade-view)
@@ -87,10 +94,10 @@ var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/ezseed');
 
-var db = mongoose.connection;
+var mongo = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
+mongo.on('error', console.error.bind(console, 'connection error:'));
+mongo.once('open', function callback () {
   console.log('DB opened successfuly !');
 });
 
@@ -108,8 +115,6 @@ app.get('/', user.restrict, routes.index);
 app.get('/login', user.login);
 app.get('/logout', user.logout);
 app.post('/login', user.authenticate);
-
-app.get('/admin', user.restrict, admin.restrict, admin.index);
 
 app.get('/archive/(:id)', user.restrict, files.archive);
 app.get('/download/archive/(:id)', files.downloadArchive);
@@ -141,12 +146,17 @@ var err = null;
   }
 //});
 
+app.get('/admin', user.restrict, admin.restrict, admin.index);
+app.post('/admin/config', user.restrict, admin.restrict, admin.config);
+app.get('/admin/path', user.restrict, admin.restrict, admin.path);
+app.post('/admin/path', user.restrict, admin.restrict, admin.createPath);
+
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-
 var io = require('./core/sockets').listen(server);
+
+
 // //less log
 // io.set('log level', 1);
 

@@ -124,7 +124,7 @@ var Watch = function(params) {
 			var self = this;
 
 			if(self.addTimeout !== null)
-				clearTimeout(this.addTimeout);
+				clearTimeout(self.addTimeout);
 
 			self.addTimeout = setTimeout(function() {
 				console.log('updateFiles');
@@ -184,6 +184,7 @@ var watcher = {
 
 		watch.removedFiles = [];
 	},
+	//add path ID to unset from array type
 	removeFiles : function(params, cb) {
 		var removedFiles = params.removedFiles, done = 0;
 

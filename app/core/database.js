@@ -26,6 +26,11 @@ module.exports = {
 			    cb(err, {paths : paths, docs : docs.paths});
 			});
 		},
+    getAll : function(cb) {
+      Paths.find().lean().exec(function(err, docs) {
+        cb(err, docs);
+      });
+    },
 		find : function(id, cb) {
 			Paths.findById(id).populate('movies albums others').lean().exec(function (err, docs) {
 
@@ -81,6 +86,11 @@ module.exports = {
   					cb(err);
   				});
   			},
+        byId : function(id, cb) {
+          Albums.findById(id).lean(true).exec(function(err, doc) {
+            cb(err, doc);
+          });
+        },
   			save : function (obj, saveCallback) {
   				async.each(obj.albums, 
   					function(album, cb) {
