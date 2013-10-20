@@ -2,7 +2,6 @@
 
 username=$1
 password=$2
-userdir=$3
 appdir=$4
 
 # if [ -f /etc/init.d/transmission-daemon ]
@@ -16,15 +15,16 @@ appdir=$4
 # fi
 
 echo "Adding user"
-useradd $username -p $(mkpasswd -H md5 $password) -G debian-transmission -d $userdir -m
+python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $username $password
+mkdir /home/$username
+useradd --home-dir /home/$username --groups users debian-transmission --password broken $username
+chown -R $username /home/$username/
+su $username -c "mkdir -p ~/downloads ~/rtorrent/watch ~/rtorrent/session"
+su $username -c "touch /home/$username/rtorrent/session/rpc.socket"
+usermod -p $(mkpasswd -H md5 "$password") $username
+#Fin
 
-chown -R $username:debian-transmission $userdir
-chmod 775 $userdir
-
-#echo "Adding tmp folder"
-#cd $userdir/tmp
-#mkdir $username
-#chmod 777 $username
+#useradd $username -p $(mkpasswd -H md5 $password) -G debian-transmission -d $userdir -m
 
 echo "Set new transmission-daemon-$username"
 cp /usr/bin/transmission-daemon /usr/bin/transmission-daemon-$username
@@ -71,13 +71,11 @@ chmod -R 755 /etc/transmission-daemon-$username
 #echo "Adding user config username/peerport/rpcport/daysleft"
 #echo -e "$username;$peerport;$rpcport;30"  >> $userdir/config/users
 
-#echo "Reloading apache"
-#/etc/init.d/apache2 reload
-
 # echo "Starting Transmission"
 service transmission-daemon-$username start
 service transmission-daemon-$username stop
 
+#update-rc.d ./daemons.sh defaults
 
 echo "Done"
 

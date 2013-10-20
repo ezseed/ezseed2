@@ -1,6 +1,6 @@
 #!/bin/bash
-username=$1
-opt=$2
+username=$2
+opt=$1
 
 service transmission-daemon-$username $opt
 

@@ -22,6 +22,8 @@ fi
 USER=$1
 ###
 
+./daemon.sh stop $USER
+
 ###
 #On tue tout ce que possede l'user#
 killall -9 -u $USER

@@ -24,8 +24,7 @@ python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
 mkdir /home/$USER
 useradd --home-dir /home/$USER --groups users --password broken $USER
 chown -R $USER /home/$USER/
-su $USER -c 'mkdir -p ~/downloads ~/rtorrent/watch ~/rtorrent/session'
-su $USER -c 'touch /home/$USER/rtorrent/session/rpc.socket'
+su $USER -c 'mkdir -p ~/downloads ~/uploads'
 usermod -p $(mkpasswd -H md5 "$PW") $USER
 #Fin
 ##########
@@ -52,14 +51,25 @@ chown -R $USER /home/$USER
 
 ##########
 #On fait la conf ruTorrent
-mkdir /var/rutorrent/rutorrent/conf/users/$USER
-cat > /var/rutorrent/rutorrent/conf/users/$USER/config.php<< EOF
+mkdir /var/www/rutorrent/conf/users/$USER
+cat > /var/www/rutorrent/conf/users/$USER/config.php<< EOF
 <?php
 \$scgi_port = 0;
 \$scgi_host = "unix:///home/$USER/rtorrent/session/rpc.socket";
 \$XMLRPCMountPoint = "/RPC00001";
+\$pathToExternals = array(
+    "php"   => '',               
+    "curl"  => '/usr/bin/curl',  
+    "gzip"  => '',               
+    "id"    => '',               
+    "stat"  => '/usr/bin/stat',  
+);
 ?>
 EOF
-chmod -R 777 /var/rutorrent/rutorrent/
+chmod -R 777 /var/www/rutorrent/
+
+./daemon.sh start $USER
+
 #Fin du script
 ##########
+
