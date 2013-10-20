@@ -43,8 +43,8 @@ then
 else
 	npm install pm2 -g
 	mv ezseed2/ /var/www
-	cd /var/www/ezseed2
-	npm install
+	cd /var/www/ezseed2/app
+	npm install --save
 fi
 
 
