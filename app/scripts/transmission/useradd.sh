@@ -16,10 +16,9 @@ appdir=$3
 
 echo "Adding user"
 mkdir /home/$username
-useradd --home-dir /home/$username --groups users debian-transmission --password broken $username
+useradd --home-dir /home/$username --groups users,debian-transmission --password broken $username
 chown -R $username /home/$username/
-su $username -c "mkdir -p ~/downloads ~/rtorrent/watch ~/rtorrent/session"
-su $username -c "touch /home/$username/rtorrent/session/rpc.socket"
+su $username -c "mkdir -p ~/downloads ~/incomplete"
 usermod -p $(mkpasswd -H md5 "$password") $username
 #Fin
 
