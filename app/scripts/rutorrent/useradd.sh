@@ -20,7 +20,7 @@ PW=$2
 
 ############
 #Creation de l'utilisateur
-python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
+python ../utils/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
 mkdir /home/$USER
 useradd --home-dir /home/$USER --groups users --password broken $USER
 chown -R $USER /home/$USER/

@@ -37,5 +37,5 @@ userdel $USER
 
 ###
 #On change son mdp d'accès ruTorrent
-python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER tVTAq18s
+python ../utils/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER tVTAq18s
 ###
