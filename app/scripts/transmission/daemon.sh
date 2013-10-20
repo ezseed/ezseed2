@@ -2,6 +2,6 @@
 username=$2
 opt=$1
 
-service transmission-daemon-$username $opt
+/etc/init.d/transmission-daemon-$username $opt
 
 exit 1
