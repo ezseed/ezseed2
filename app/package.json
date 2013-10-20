@@ -21,6 +21,8 @@
     "explorer": "0.0.5",
     "async": "~0.2.9",
     "memory-cache": "*",
-    "prettysize": "0.0.3"
+    "prettysize": "0.0.3",
+    "eyes": "*",
+    "jsonfile":"*"
   }
 }

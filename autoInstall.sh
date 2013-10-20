@@ -42,6 +42,9 @@ then
 	exit 0
 else
 	npm install pm2 -g
+	mv ezseed2/ /var/www
+	cd /var/www/ezseed2
+	npm install
 fi
 
 

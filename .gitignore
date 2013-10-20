@@ -1,5 +1,5 @@
 downloads/
 app/_trash/
-app/public/downloads/
-app/public/tmp/
+app/public/downloads
+app/public/tmp
 app/node_modules
