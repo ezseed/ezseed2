@@ -2,7 +2,7 @@
 
 username=$1
 password=$2
-appdir=$4
+appdir=$3
 
 # if [ -f /etc/init.d/transmission-daemon ]
 # then
@@ -72,8 +72,8 @@ chmod -R 755 /etc/transmission-daemon-$username
 #echo -e "$username;$peerport;$rpcport;30"  >> $userdir/config/users
 
 # echo "Starting Transmission"
-service transmission-daemon-$username start
-service transmission-daemon-$username stop
+#/etc/init.d/transmission-daemon-$username start
+#/etc/init.d/transmission-daemon-$username stop
 
 #update-rc.d ./daemons.sh defaults
 
