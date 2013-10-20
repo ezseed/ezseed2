@@ -15,7 +15,6 @@ appdir=$3
 # fi
 
 echo "Adding user"
-python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $username $password
 mkdir /home/$username
 useradd --home-dir /home/$username --groups users debian-transmission --password broken $username
 chown -R $username /home/$username/
