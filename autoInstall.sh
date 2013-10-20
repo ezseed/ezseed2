@@ -1,5 +1,12 @@
 #!/bin/bash
-
+#################
+# ___  ___  ___  ___  ___  ___     _  _  ___ 
+#(  _)(_  )/ __)(  _)(  _)(   \   ( )( )(__ \
+# ) _) / / \__ \ ) _) ) _) ) ) )   \\// / __/
+#(___)(___)(___/(___)(___)(___/    (__) \___)
+#
+################
+#
 # Adding mongodb source
 apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' | tee /etc/apt/sources.list.d/10gen.list
