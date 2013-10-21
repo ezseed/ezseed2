@@ -84,8 +84,6 @@ var validators = {
 		} else if(nb == 1)
 			throw new Error("Il faut un fichier pem et un fichier key".error);
 		
-		console.log(sslkeys);
-
 		if(sslkeys.length == 0)
 			sslkeys = ssl;
 
@@ -359,10 +357,10 @@ var install = {
 
 		console.log("ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)".info);
 		
-		promptly.prompt("Entrez une clé SSL ", {validator : validators.ssl}, function(err, sslkeys) {
+		promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl}, function(err, sslkeys) {
 			var l = sslkeys.length;
 
-			if(typeof sslkeys == 'array') {	
+			if(l == 2) {	
 				var cmd = new Buffer("\
 						mv " + sslkeys[0].path + " " + __dirname + "ezseed" + sslkeys[0].ext + " && \
 						mv " + sslkeys[1].path + " " + __dirname + "ezseed" + sslkeys[1].ext + " && \
