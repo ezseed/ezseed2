@@ -1,7 +1,12 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+appdir="$(cd $DIR && cd ../../ && pwd)"
+
 #Deleting user + transmission
 username=$1
+
+/etc/init.d/transmission-daemon-$username stop
 
 killall -9 -u $username
 
@@ -11,4 +16,9 @@ rm -r /var/lib/transmission-daemon-$username
 rm -r /etc/transmission-daemon-$username
 rm /etc/default/transmission-daemon-$username
 
-userdel -r $username
+rm $appdir/scripts/transmission/config/settings.$username.json
+rm -rf /home/$username
+
+userdel $username
+
+exit 0

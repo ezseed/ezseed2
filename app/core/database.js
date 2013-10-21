@@ -33,17 +33,35 @@ module.exports = {
     },
 		find : function(id, cb) {
 			Paths.findById(id).populate('movies albums others').lean().exec(function (err, docs) {
-
 				cb(err, docs);
 			});
-		}
+		}, 
+    save : function(path, username, cb) {
+      cb = typeof username === 'function' ? user : cb;
+
+      var p = new Paths({
+       'path' : path
+      });
+
+      path.save(function(err) {
+       if(err) console.log(err);
+      });
+
+      path.on('save', function(obj) {
+        if(typeof username !== 'function') {
+          Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
+            cb(err, obj);
+          });
+        } else
+          cb(null, obj);
+      });
+    }
 	}, 
   file : {
     byId : function(obj, id) {
       var o = obj.songs || obj.videos || obj.files;
 
       return _.filter(o, function(o){ return o._id == id; })[0];
-
     }
   },
   files : {
@@ -183,6 +201,16 @@ module.exports = {
       Users.find().lean().populate('paths').exec(function(err, docs) {
         cb(err, docs);
       });
+    },
+    //Just an alias
+    create : function(username, password, cb) {
+      Users.create(username, password, cb);
+    },
+    count : function(cb) {
+      Users.count(cb);
+    },
+    delete : function(username, cb) {
+      Users.findOneAndRemove({username: username}, cb);
     }
   }
 };

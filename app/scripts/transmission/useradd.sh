@@ -20,7 +20,7 @@ echo "Adding user"
 mkdir /home/$username
 useradd --home-dir /home/$username --groups users,debian-transmission --password broken $username
 chown -R $username /home/$username/
-su $username -c "mkdir -p ~/downloads ~/incomplete"
+su $username -c "mkdir -p ~/downloads ~/uploads ~/incomplete"
 usermod -p $(mkpasswd -H md5 "$password") $username
 #Fin
 
@@ -79,4 +79,4 @@ chmod -R 755 /etc/transmission-daemon-$username
 
 echo "Done"
 
-exit 1
+exit 0

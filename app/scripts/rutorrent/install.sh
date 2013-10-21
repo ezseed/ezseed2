@@ -85,3 +85,5 @@ mkdir /etc/phpcgi
 
 service php5-fpm restart
 service nginx restart
+
+exit 0

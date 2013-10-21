@@ -78,3 +78,4 @@ $DIR/daemon.sh start $USER
 #Fin du script
 ##########
 
+exit 0

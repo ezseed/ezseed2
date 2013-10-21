@@ -24,7 +24,7 @@ fi
 USER=$1
 ###
 
-su $USER -c "$DIR/daemon.sh stop $USER"
+$DIR/daemon.sh stop $USER
 
 ###
 #On tue tout ce que possede l'user#
@@ -41,3 +41,5 @@ userdel $USER
 #On change son mdp d'accès ruTorrent
 python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER tVTAq18s
 ###
+
+exit 0

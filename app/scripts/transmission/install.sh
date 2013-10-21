@@ -9,3 +9,5 @@ else
 	echo "Stopping transmission-daemon"
 	/etc/init.d/transmission-daemon stop
 fi
+
+exit 0
