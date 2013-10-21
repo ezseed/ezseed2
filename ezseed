@@ -364,10 +364,10 @@ var install = {
 				var cmd = new Buffer("\
 						mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
 						mv " + sslkeys[1].path + " " + __dirname + "/ezseed" + sslkeys[1].ext + " && \
-						chmod 0600 ezseed.key  && chmod 0644 ezseed.pem && \
 						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/").toString();
 
 				exec(cmd, function(error, stdout, stderr) {
+					console.log(stderr);
 					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
 						callback(null, {});
 					});
