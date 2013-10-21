@@ -73,11 +73,13 @@ var torrent = {
 		var running = spawn(shell_path);
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -92,11 +94,13 @@ var torrent = {
 		var running = spawn(shell_path);
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -117,11 +121,13 @@ var userdel = {
 		var running = spawn(shell_path, [username]);
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -138,11 +144,13 @@ var userdel = {
 		var running = spawn(shell_path, [username]);
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -164,11 +172,13 @@ var useradd = {
 		  , userPath = pathInfo.join(path, username, 'downloads');
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -187,11 +197,13 @@ var useradd = {
 		  , userPath = pathInfo.join(path, username, 'downloads');
 
 		running.stdout.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.info);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data);
+			var string = new Buffer(data).toString();
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
