@@ -72,12 +72,10 @@ var validators = {
 
 		nb = ssl.length;
 
-		console.log(ssl, nb);
-
 		if(nb == 2) {
 			while(nb--) {
 				var ext = pathInfo.extname(ssl[nb]);
-				if(ext != 'pem' && ext != 'key')
+				if(ext != '.pem' && ext != '.key')
 					throw new Error("Il faut un fichier pem et un fichier key".error);
 		
 				sslkeys[nb] = {path : ssl[nb], ext: ext};
@@ -366,8 +364,8 @@ var install = {
 
 			if(typeof sslkeys == 'array') {	
 				var cmd = new Buffer("\
-						mv " + sslkeys[0].path + " " + __dirname + "ezseed." + sslkeys[0].ext + " && \
-						mv " + sslkeys[1].path + " " + __dirname + "ezseed." + sslkeys[1].ext + " && \
+						mv " + sslkeys[0].path + " " + __dirname + "ezseed" + sslkeys[0].ext + " && \
+						mv " + sslkeys[1].path + " " + __dirname + "ezseed" + sslkeys[1].ext + " && \
 						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/");
 
 				console.log(cmd);
