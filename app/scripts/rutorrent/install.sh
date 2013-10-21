@@ -58,9 +58,6 @@ rm -R rtorrent libtorrent
 mkdir /usr/local/nginx
 touch /usr/local/nginx/rutorrent_passwd
 
-#Certificat ssl
-openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/rutorrent.pem -keyout /usr/local/nginx/rutorrent.key -subj '/CN=rutorrent/O=EzSeed/C=FR'
-
 #ajout de l'environnement
 echo "include /usr/local/bin" >> /etc/ld.so.conf
 ldconfig

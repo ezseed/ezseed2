@@ -4,3 +4,4 @@ app/public/downloads
 app/public/tmp
 node_modules/
 app/scripts/transmission/config/settings.*.json
+app/config.json

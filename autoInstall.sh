@@ -24,9 +24,6 @@ mkdir /data/db
 # whois = mkpasswd
 apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools nginx php5-fpm -y
 
-#Ajout de la config nginx
-cat $DIR/nginx.conf > /etc/nginx/nginx.conf
-
 #Install node js
 git clone https://github.com/joyent/node.git
 cd node

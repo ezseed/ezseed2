@@ -45,6 +45,7 @@ var ASCII = new Buffer("\
 
 console.log(ASCII.yellow.bold);
 console.log("Made with love by ".magenta + "soyuka".bold.magenta);
+console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
 
 /**
  * Prompt validators
@@ -62,6 +63,28 @@ var validators = {
 			throw new Error("Le chemin spécifié n'est pas valide".error);
 
 		return p;
+	},
+	ssl : function(ssl) {
+		var nb = ssl.length, sslkeys = [];
+
+		ssl = nb != 0 ? ssl.split(' ') : '';
+
+		if(nb == 2) {
+			while(nb--) {
+				var ext = pathInfo.extname(ssl[nb]);
+				if(ext != 'pem' && ext != 'key')
+					throw new Error("Il faut un fichier pem et un fichier key".error);
+		
+				sslkeys[nb] = {path : ssl[nb], ext: ext, dirname : pathInfo.dirname(ssl[nb])};
+			}
+
+		} else if(nb == 1)
+			throw new Error("Il faut un fichier pem et un fichier key".error);
+		
+		if(sslkeys.length === 0)
+			sslkeys = ssl;
+
+		return ssl;
 	}
 };
 
@@ -79,7 +102,10 @@ var torrent = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -100,7 +126,10 @@ var torrent = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -127,7 +156,10 @@ var userdel = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -150,7 +182,10 @@ var userdel = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -178,7 +213,11 @@ var useradd = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -203,7 +242,11 @@ var useradd = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+
+			if(cache.get('force') === true)
+				console.log(string.error);
+			else
+				throw string.error;
 		});
 
 		running.on('exit', function (code) {
@@ -307,6 +350,37 @@ var install = {
 
 
 	},
+	nginx_conf: function(callback) {
+
+		console.log("ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)".info);
+		
+		promptly.prompt("Entrez une clé SSL ", {validator : validators.ssl}, function(err, sslkeys) {
+			var l = sslkeys.length;
+
+			if(typeof sslkeys == 'array') {	
+				var cmd = new Buffer('\
+						"mv " + sslkeys[0].path + " " + __dirname + "ezseed." + sslkeys[0].ext + " && "\
+						+ "mv " + sslkeys[1].path + " " + __dirname + "ezseed." + sslkeys[1].ext + " && "\
+						+ "mv *ezseed.key ezseed.pem* /usr/local/local/nginx/"'
+					);
+				exec(cmd, function(error, stdout, stderr) {
+					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
+						callback(null, {});
+					});
+				});
+					 
+			} else {
+				var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
+				exec(cmd, function(error, stdout, stderr) {
+					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
+						callback(null, {});
+					});
+				});
+			}
+
+		});
+
+	},
 	client_torrent: function(callback, client) {
 		if(client) {
 			torrent[client](function(client) {
@@ -324,10 +398,13 @@ var install = {
 
 program
 	.command('install')
-	.action(function() {
+	.option('-f, --force', 'force install (will not throw errors)')
+	.action(function(options) {
+		if(options.force)
+			cache.put('force', true);
+		
 		async.series(install,
 		function(err, results) {
-			console.log(err, results);
 			if(results.client_torrent === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				process.exit(1);
