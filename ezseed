@@ -362,11 +362,11 @@ var install = {
 
 			if(l == 2) {	
 				var cmd = new Buffer("\
-						mv " + sslkeys[0].path + " " + __dirname + "ezseed" + sslkeys[0].ext + " && \
-						mv " + sslkeys[1].path + " " + __dirname + "ezseed" + sslkeys[1].ext + " && \
+						mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
+						mv " + sslkeys[1].path + " " + __dirname + "/ezseed" + sslkeys[1].ext + " && \
+						chmod 0600 ezseed.key  && chmod 0644 ezseed.pem\
 						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/").toString();
 
-				console.log(cmd);
 				exec(cmd, function(error, stdout, stderr) {
 					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
 						callback(null, {});
@@ -391,7 +391,7 @@ var install = {
 				callback(null, client);
 			});
 		} else {
-			promptly.choose('Choisissez le client torrent à installer [rutorrent|transmission|aucun] : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
+			promptly.choose('Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 			    torrent[client](function(client) {
 			    	callback(null, client);
 			    });
