@@ -1,8 +1,8 @@
 {
-  "path": "/Users/soyuka/Sites/ezseed2/downloads",
+  "path": "/home",
   "fetchTime": 5000,
-  "root": "/Users/soyuka/Sites/ezseed2/app",
-  "location": "/admin/config",
+  "root": "",
+  "location": "",
   "torrentLink": "embed",
   "diskSpace": "1048576",
   "videoPlayer": "divx",
