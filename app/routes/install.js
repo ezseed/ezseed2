@@ -41,13 +41,11 @@ exports.folder = function(req, res) {
 			'<fieldset>'+
 				'<legend>Chemin du dossier à parser (absolu) : </legend>'+
 				'<label for="path">Chemin<sup>*</sup></label>'+
-				'<input type="text" name="path" style="width:350px" value="' + path.join(global.config.root.replace('app',''), 'downloads') + '" />'+
+				'<input type="text" name="path" style="width:350px" value="/home" />'+
 				'<button type="submit">Envoyer</button>'+
 				'<p>'+
 				'Ce dossier servira à conserver les fichiers téléchargés par les différents utilisateurs.<br>'+
 				'Chaque utilisateur reçoit son propre dossier par après dans ce dossier et il est possible d\'y ajouter des dossiers à partager.<br/>'+
-				'Assurez-vous que le dossier ne contient <strong>aucuns</strong> sous dossiers pouvant provoquer une erreur du script.<br /><br />'+
-				'<small><sup>*</sup>laissez par défaut si vous n\'êtes pas sûr, le dossier doit avoir les droits en lecture/écriture</small>'+
 				'</p>'+
 			'</fieldset>'+
 		'</form>');
@@ -59,10 +57,14 @@ exports.folder = function(req, res) {
 * GET Torrent
 */
 exports.torrent = function(req, res) {
-	res.send('<h1>Installation d\'un client torrent</h1>\
+	res.send('<h1>Installation d\'un client torrent pour le compte admin</h1>\
 		<form method="POST" action="/install/transmission">\
 		<label>Mot de passe pour transmission</label><input type="password" name="password" required><br>\
-		<input type="submit" value="Installer transmission"></form><a href="/install/complete">Passer cette étape</a>');
+		<input type="submit" value="Installer transmission"></form><br>\
+		<form method="POST" action="/install/rutorrent">\
+		<label>Mot de passe pour rutorrent</label><input type="password" name="password" required><br>\
+		<input type="submit" value="Installer rutorrent">/!\\ peut être long /!\\</form><br>\
+		<a href="/install/complete">Passer cette étape</a>');
 }
 
 exports.complete = function(req, res) {
@@ -123,38 +125,32 @@ exports.folderCreation = function(req, res) {
 
 			var userPath = path.join(req.body.path, req.session.user.username);
 
-			fs.mkdir(userPath, function(err) {
-				if(err) console.log(err);
+			var exec = require('child_process').exec,
+				child;
 
-				var exec = require('child_process').exec,
-					child;
+			child = exec('ln -sf '+ req.body.path +' ' + global.config.root + '/public/downloads',
+			  	function (error, stdout, stderr) {
+				   
+				    var path = new Paths({
+						'path' : userPath
+					});
 
-				child = exec('ln -sf '+ req.body.path +' ' + global.config.root + '/public/downloads',
-				  	function (error, stdout, stderr) {
-					   
-					    var path = new Paths({
-							'path' : userPath
-						});
+					path.save(function(err) {
+						if(err) console.log(err);
+					});
 
-								
-						path.save(function(err) {
+					path.on('save', function(obj) {
+						//Add it to the user pathes, by id = faster :)
+					//$push: { 
+						Users.findByIdAndUpdate(req.session.user.id, { paths: [obj._id] }, function(err) { 
 							if(err) console.log(err);
+							req.session.user.dir = userPath;
+							res.redirect('/install/torrent');
 						});
+					});
 
-						path.on('save', function(obj) {
-							//Add it to the user pathes, by id = faster :)
-						//$push: { 
-							Users.findByIdAndUpdate(req.session.user.id, { paths: [obj._id] }, function(err) { 
-								if(err) console.log(err);
-								req.session.user.dir = userPath;
-								res.redirect('/install/torrent');
-							});
-						});
-
-					}
-				);
-
-			});
+				}
+			);
 			
 		} else {
 			req.session.error = "Merci d'entrer un chemin valide";
@@ -169,35 +165,27 @@ exports.folderCreation = function(req, res) {
 exports.transmission = function(req, res) {
 
 	var execFile = require("child_process").execFile,
-    installShell = process.cwd() + '/scripts/transmission/transmission.install.sh';
+    installShell = global.config.root + '/scripts/transmission/install.sh';
 
-    fs.chmodSync(installShell, '777');
-
-    fs.chmodSync(process.cwd() +'/scripts/transmission/transmission.user.sh', '777');
-
-    fs.chmodSync(process.cwd() +'/scripts/transmission/transmission.sh', '777');
-
-    execFile(installShell, process.cwd(), null,
+    execFile(installShell,null, null,
 	  	function (error, stdout, stderr) {
 
 		    //Creating user
-		    execFile(process.cwd() +'/scripts/transmission/transmission.user.sh', 
-		    	[req.session.user.username, req.body.password, req.session.user.dir, process.cwd()],
+		    execFile(global.config.root +'/scripts/transmission/useradd.sh', 
+		    	[req.session.user.username, req.body.password], //args
 		    	null,
 		    	function(err, stdout, sdterr) {
 
-
-		    		var settings = process.cwd() + '/scripts/transmission/config/settings.'+req.session.user.username+'.json';
+		    		var settings = global.config.root + '/scripts/transmission/config/settings.'+req.session.user.username+'.json';
 
 					fs.readFile(settings, function (err, data) {
 						if (err) throw err;
 						var d = JSON.parse(data);
 
-
 						//Default settings replacement
 						d['ratio-limit-enabled'] = true;
 						d['incomplete-dir-enabled'] = true;
-						d['incomplete-dir'] = process.cwd() + '/incomplete';
+						d['incomplete-dir'] = global.config.root + '/incomplete';
 						d['peer-port-random-on-start'] = true;
 						d['lpd-enabled'] = true;
 						d['peer-socket-tos'] = 'lowcost';
@@ -207,11 +195,7 @@ exports.transmission = function(req, res) {
 						d['rpc-authentication-required'] = true;
 						d['rpc-username'] = req.session.user.username;
 
-						d['download-dir'] = req.session.user.dir.substr(0, -1);
-
-
-						//fs.chownSync(req.session.user.dir, 'debian-transmission', 'soyuka');
-						fs.chmodSync(req.session.user.dir, '775')
+						d['download-dir'] = req.session.user.dir;
 
 						Users.count(function (err, count) {
 
@@ -219,8 +203,8 @@ exports.transmission = function(req, res) {
 
 							fs.writeFileSync(settings, JSON.stringify(d));
 
-							execFile(process.cwd() +'/scripts/transmission/transmission.sh', 
-						    	[req.session.user.username, 'start'],
+							execFile(global.config.root +'/scripts/transmission/daemon.sh', 
+						    	['start', req.session.user.username],
 						    	null,
 						    	function(err, stdout, sdterr) {
 
@@ -241,11 +225,26 @@ exports.transmission = function(req, res) {
 
 		}
 	);
+}
 
+/*
+* POST install rutorrent - run shell !
+*/
+exports.transmission = function(req, res) {
 
+	var execFile = require("child_process").execFile,
+    installShell = global.config.root + '/scripts/rutorrent/install.sh';
 
-
-
-
-
+    execFile(installShell, null, null,
+	  	function (error, stdout, stderr) {
+		    //Creating user
+		    execFile(global.config.root +'/scripts/rutorrent/useradd.sh', 
+		    	[req.session.user.username, req.body.password],
+		    	null,
+		    	function(err, stdout, sdterr) {
+					res.redirect('/install/complete');
+		    	}
+		    )
+		}
+	);
 }

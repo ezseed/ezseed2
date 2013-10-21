@@ -15,7 +15,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config
 
 ##Rutorrent tools##
-apt-get -y php5-cli unrar unzip ffmpeg curl php5-curl mediainfo nginx php5-fpm subversion
+apt-get -y php5-cli unrar unzip ffmpeg curl php5-curl mediainfo subversion
 
 #Téléchargement + déplacement de rutorrent (web)
 #rutorrent
@@ -56,9 +56,6 @@ make install
 cd ../
 
 rm -R rtorrent libtorrent
-
-#Ajout de la config nginx
-cat $DIR/nginx.conf > /etc/nginx/nginx.conf
 
 #Création des dossiers
 mkdir /usr/local/nginx

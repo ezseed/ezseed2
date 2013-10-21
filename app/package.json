@@ -1,6 +1,6 @@
 {
   "name": "ezseed2",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -23,6 +23,7 @@
     "memory-cache": "*",
     "prettysize": "0.0.3",
     "eyes": "*",
-    "jsonfile":"*"
+    "jsonfile":"*",
+    "inotify":"*"
   }
 }
