@@ -65,6 +65,8 @@ var validators = {
 		return p;
 	},
 	ssl : function(ssl) {
+		console.log(ssl);
+		
 		var nb = ssl.length, sslkeys = [];
 
 		ssl = nb != 0 ? ssl.split(' ') : '';
@@ -77,7 +79,7 @@ var validators = {
 				if(ext != 'pem' && ext != 'key')
 					throw new Error("Il faut un fichier pem et un fichier key".error);
 		
-				sslkeys[nb] = {path : ssl[nb], ext: ext, dirname : pathInfo.dirname(ssl[nb])};
+				sslkeys[nb] = {path : ssl[nb], ext: ext};
 			}
 
 		} else if(nb == 1)
