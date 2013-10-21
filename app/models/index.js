@@ -90,6 +90,8 @@ UsersSchema.virtual('session').get(function() {
 var bcrypt = require('bcrypt-nodejs');
 
 UsersSchema.statics.create = function(username, password, done) {
+	var Users = this;
+	
 	//Generates the hash
 	bcrypt.hash(password, null, null, function(err, hash) {
 		//We save only the hash
