@@ -296,6 +296,7 @@ program
 	.action(function() {
 		async.series(install,
 		function(err, results) {
+			console.log(err, results);
 			if(results.client_torrent === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				process.exit(1);
