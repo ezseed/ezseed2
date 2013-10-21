@@ -277,13 +277,11 @@ var install = {
 	},
 	client_torrent: function(callback, client) {
 		if(client) {
-			cache.put('client', client);
 			torrent[client](function(client) {
 				callback(null, client);
 			});
 		} else {
-			promptly.choose('Choisissez le client torrent à installer [rutorrent|transmission|aucun] : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, value) {
-			    cache.put('client', client);
+			promptly.choose('Choisissez le client torrent à installer [rutorrent|transmission|aucun] : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 			    torrent[client](function(client) {
 			    	callback(null, client);
 			    });
@@ -357,6 +355,9 @@ program
 		});
 	});
 
+program.command('test').action(function() {
+	console.log(torrent['transmission'])
+})
 
 mongoose.connect('mongodb://localhost/ezseed');
 
