@@ -87,37 +87,6 @@ UsersSchema.virtual('session').get(function() {
 	}
 });
 
-var bcrypt = require('bcrypt-nodejs');
-
-UsersSchema.statics.create = function(username, password, done) {
-	var Users = this;
-	
-	//Generates the hash
-	bcrypt.hash(password, null, null, function(err, hash) {
-		//We save only the hash
-		var user = new Users ({
-		  username : username,
-		  role : 'admin',
-		  hash : hash
-		});
-
-		user.save(function(err, u) {
-			if(err) {
-				//Checking for the username validation - see models/index.js
-				if(_.isEqual(err.name, 'ValidationError'))
-					done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
-				else
-					done(err, null);
-			}
-		});
-
-		user.on('save', function(u) {
-			done(null, u);
-		});
-	});
-}
-
-
 module.exports = mongoose.model('Users', UsersSchema);
 module.exports = mongoose.model('Paths', PathsSchema);
 

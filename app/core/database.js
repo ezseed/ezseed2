@@ -202,9 +202,33 @@ module.exports = {
         cb(err, docs);
       });
     },
-    //Just an alias
-    create : function(username, password, cb) {
-      Users.create(username, password, cb);
+    create : function(username, password, done) {
+
+      var bcrypt = require('bcrypt-nodejs');
+
+      //Generates the hash
+      bcrypt.hash(password, null, null, function(err, hash) {
+
+        //We save only the hash
+        var user = new Users ({
+          username : username,
+          role : 'admin',
+          hash : hash
+        });
+
+        user.save(function(err) {
+          console.log(err);
+          if(err) {
+            //Checking for the username validation - see models/index.js
+            if(_.isEqual(err.name, 'ValidationError'))
+              done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
+            else
+              done(err, null);
+          } else
+            done(null, user);
+        });
+
+      });
     },
     count : function(cb) {
       Users.count(cb);

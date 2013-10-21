@@ -16,6 +16,7 @@ var program = require('commander')
   , db = require('./app/core/database.js')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
+  , mongoose = require('mongoose')
   ;
 
 colors.setTheme({
@@ -356,6 +357,15 @@ program
 		});
 	});
 
-program.parse(process.argv);
 
-if (!program.args.length) program.help();
+mongoose.connect('mongodb://localhost/ezseed');
+
+var mongo = mongoose.connection;
+
+mongo.on('error', console.error.bind(console, 'connection error:'.error));
+mongo.once('open', function callback () {
+	program.parse(process.argv);
+	if (!program.args.length) program.help();
+});
+
+
