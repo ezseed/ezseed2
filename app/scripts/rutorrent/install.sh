@@ -8,6 +8,9 @@ if [ "$(id -u)" != "0" ]; then
 fi
 ###
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
 ##Building tools##
 apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config
 
@@ -55,7 +58,7 @@ cd ../
 rm -R rtorrent libtorrent
 
 #Ajout de la config nginx
-cat ./nginx.conf > /etc/nginx/nginx.conf
+cat $DIR/nginx.conf > /etc/nginx/nginx.conf
 
 #Création des dossiers
 mkdir /usr/local/nginx

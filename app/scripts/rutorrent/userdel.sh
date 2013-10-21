@@ -5,6 +5,8 @@
 #DEL SCIRPT#
 ############
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 ###
 #Vérification du root
 if [ "$(id -u)" != "0" ]; then
@@ -22,7 +24,7 @@ fi
 USER=$1
 ###
 
-./daemon.sh stop $USER
+su $USER -c "$DIR/daemon.sh stop $USER"
 
 ###
 #On tue tout ce que possede l'user#
@@ -37,5 +39,5 @@ userdel $USER
 
 ###
 #On change son mdp d'accès ruTorrent
-python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER tVTAq18s
+python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER tVTAq18s
 ###

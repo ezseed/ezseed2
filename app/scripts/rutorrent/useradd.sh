@@ -18,20 +18,22 @@ fi
 
 USER=$1
 PW=$2
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ############
 #Creation de l'utilisateur
-python htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
+python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
 mkdir /home/$USER
 useradd --home-dir /home/$USER --groups users --password broken $USER
 chown -R $USER /home/$USER/
-su $USER -c 'mkdir -p ~/downloads ~/uploads'
+su $USER -c 'mkdir -p ~/downloads ~/uploads ~/rtorrent ~/rtorrent/session'
 usermod -p $(mkpasswd -H md5 "$PW") $USER
 #Fin
 ##########
 
 ##########
 #On met la conf rTorrent
+su $USER -c "touch /home/$USER/.rtorrent.rc"
 cat > /home/$USER/.rtorrent.rc<< EOF
 execute = {sh,-c,rm -f /home/$USER/rtorrent/session/rpc.socket}
 scgi_local = /home/$USER/rtorrent/session/rpc.socket
@@ -46,7 +48,9 @@ encryption = allow_incoming, try_outgoing, enable_retry
 trackers.enable = 1
 use_udp_trackers = yes
 EOF
-chown -R $USER /home/$USER
+
+chown -R $USER  /home/$USER
+
 #Fin
 ##########
 
@@ -69,7 +73,7 @@ cat > /var/www/rutorrent/conf/users/$USER/config.php<< EOF
 EOF
 chmod -R 777 /var/www/rutorrent/
 
-./daemon.sh start $USER
+$DIR/daemon.sh start $USER
 
 #Fin du script
 ##########

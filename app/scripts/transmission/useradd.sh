@@ -2,7 +2,9 @@
 
 username=$1
 password=$2
-appdir=$3
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+appdir="$(cd $DIR && cd ../../ && pwd)"
 
 # if [ -f /etc/init.d/transmission-daemon ]
 # then
