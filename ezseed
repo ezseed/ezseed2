@@ -248,7 +248,7 @@ var install = {
 		
 		console.log("Le dossier ci-dessous sert à partager les fichiers avec nodejs, si vous n'êtes pas sûr laissez par défaut.".warn);
 
-		promptly.prompt('Chemin des dossiers à parser :', {validator : validators.path, default: '/home'}, function(err, path) {
+		promptly.prompt('Chemin des dossiers à parser : [/home]', {validator : validators.path, default: '/home'}, function(err, path) {
 
 			var config = {
 					"path": path,

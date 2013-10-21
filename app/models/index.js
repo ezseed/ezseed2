@@ -71,7 +71,7 @@ var PathsSchema = new Schema({
 
 /* Basic user schema */
 var UsersSchema = new Schema({
-	username : { 'type' : String, 'match': /^[a-zA-Z0-9-_]{3,15}$/, 'required': true },
+	username : { 'type' : String, 'match': /^[a-zA-Z0-9-_]{3,15}$/, 'required': true, 'unique':true },
 	hash : { 'type' : String },
 	role : { 'type' : String, 'default': 'user' },
 	paths : [{'type' : ObjectId, ref:'Paths'}]

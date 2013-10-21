@@ -217,7 +217,6 @@ module.exports = {
         });
 
         user.save(function(err) {
-          console.log(err);
           if(err) {
             //Checking for the username validation - see models/index.js
             if(_.isEqual(err.name, 'ValidationError'))
