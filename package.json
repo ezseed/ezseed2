@@ -2,12 +2,9 @@
   "name": "ezseed2",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "start": "node install.js"
-  },
   "dependencies": {
     "express": "3.2.5",
-    "ejs": "*",
+    "ejs": "~0.8.4",
     "underscore": "~1.4.4",
     "underscore.string": "~2.3.1",
     "bcrypt-nodejs": "0.0.3",
@@ -20,11 +17,11 @@
     "archiver": "~0.4.5",
     "explorer": "0.0.5",
     "async": "~0.2.9",
-    "memory-cache": "*",
+    "memory-cache": "~0.0.5",
     "prettysize": "0.0.3",
-    "eyes": "*",
-    "jsonfile": "*",
-    "inotify": "*",
+    "eyes": "~0.1.8",
+    "jsonfile": "1.1.0",
+    "inotify": "~1.2.1",
     "commander": "~2.0.0",
     "promptly": "~0.2.0",
     "colors": "~0.6.2"
