@@ -357,7 +357,7 @@ var install = {
 
 		console.log("ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)".info);
 		
-		promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl}, function(err, sslkeys) {
+		promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
 			var l = sslkeys.length;
 
 			if(l == 2) {	
