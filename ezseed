@@ -65,11 +65,12 @@ var validators = {
 		return p;
 	},
 	ssl : function(ssl) {
-		console.log(ssl);
-		
+
 		var nb = ssl.length, sslkeys = [];
 
 		ssl = nb != 0 ? ssl.split(' ') : '';
+
+		nb = ssl.length;
 
 		console.log(ssl, nb);
 
