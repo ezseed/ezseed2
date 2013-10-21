@@ -1,12 +1,14 @@
 #!/bin/bash
-#################
-# ___  ___  ___  ___  ___  ___     _  _  ___ 
-#(  _)(_  )/ __)(  _)(  _)(   \   ( )( )(__ \
-# ) _) / / \__ \ ) _) ) _) ) ) )   \\// / __/
-#(___)(___)(___/(___)(___)(___/    (__) \___)
-#
-################
-#
+###################################################
+#   ___  ___  ___  ___  ___  ___     _  _  ___    #
+#  (  _)(_  )/ __)(  _)(  _)(   \   ( )( )(__ \   #
+#   ) _) / / \__ \ ) _) ) _) ) ) )   \\// / __/   #
+#  (___)(___)(___/(___)(___)(___/    (__) \___)   #
+#  									   © soyuka   #
+###################################################
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Adding mongodb source
 apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' | tee /etc/apt/sources.list.d/10gen.list
@@ -14,12 +16,16 @@ echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' |
 apt-get update
 apt-get upgrade -y
 
-# Dependecies
-# whois = mkpasswd
-apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools -y
-
+#mongodb
 mkdir /data
 mkdir /data/db
+
+# Dependecies
+# whois = mkpasswd
+apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools nginx php5-fpm -y
+
+#Ajout de la config nginx
+cat $DIR/nginx.conf > /etc/nginx/nginx.conf
 
 #Install node js
 git clone https://github.com/joyent/node.git
@@ -42,7 +48,7 @@ then
 	exit 0
 else
 	npm install pm2 -g
-	mv ezseed2/ /var/www
+	mv $DIR/../ezseed2/ /var/www
 	cd /var/www/ezseed2/app
 	npm install --save
 fi
