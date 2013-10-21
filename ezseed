@@ -358,11 +358,11 @@ var install = {
 			var l = sslkeys.length;
 
 			if(typeof sslkeys == 'array') {	
-				var cmd = new Buffer('\
-						"mv " + sslkeys[0].path + " " + __dirname + "ezseed." + sslkeys[0].ext + " && "\
-						+ "mv " + sslkeys[1].path + " " + __dirname + "ezseed." + sslkeys[1].ext + " && "\
-						+ "mv *ezseed.key ezseed.pem* /usr/local/local/nginx/"'
-					);
+				var cmd = new Buffer("\
+						mv " + sslkeys[0].path + " " + __dirname + "ezseed." + sslkeys[0].ext + " && \
+						mv " + sslkeys[1].path + " " + __dirname + "ezseed." + sslkeys[1].ext + " && \
+						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/");
+				
 				exec(cmd, function(error, stdout, stderr) {
 					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
 						callback(null, {});
