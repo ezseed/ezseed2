@@ -67,14 +67,17 @@ var validators = {
 
 var torrent = {
 	rutorrent : function(done) {
-		var running = spawn(__dirname + '/app/scripts/rutorrent/install.sh');
+		var shell_path = __dirname + '/app/scripts/rutorrent/install.sh';
+		fs.chmodSync(shell_path, '775');
+		
+		var running = spawn(shell_path);
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -83,14 +86,17 @@ var torrent = {
 		});
 	},
 	transmission : function(done) {
-		var running = spawn(__dirname + '/app/scripts/transmission/install.sh');
+		var shell_path = __dirname + '/app/scripts/transmission/install.sh';
+		fs.chmodSync(shell_path, '775');
+		
+		var running = spawn(shell_path);
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -105,14 +111,17 @@ var torrent = {
 
 var userdel = {
 	rutorrent : function(username, done) {
-		var running = spawn(__dirname + '/app/scripts/rutorrent/userdel.sh', [username]);
+		var shell_path = __dirname + '/app/scripts/rutorrent/userdel.sh';
+		fs.chmodSync(shell_path, '775');
+		
+		var running = spawn(shell_path, [username]);
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -123,14 +132,17 @@ var userdel = {
 		});
 	},
 	transmission: function(username, done) {
-		var running = spawn(__dirname + '/app/scripts/transmission/userdel.sh', [username]);
+		var shell_path =__dirname + '/app/scripts/transmission/userdel.sh';
+		fs.chmodSync(shell_path, '775');
+
+		var running = spawn(shell_path, [username]);
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -144,16 +156,19 @@ var userdel = {
 
 var useradd = {
 	rutorrent : function(username, password, done) {
-		var running = spawn(__dirname + '/app/scripts/rutorrent/useradd.sh', [username, password])
+		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
+		fs.chmodSync(shell_path, '775');
+
+		var running = spawn(shell_path, [username, password])
 		  , path = cache.get('path') ? cache.get('path') : '/home'
 		  , userPath = pathInfo.join(path, username, 'downloads');
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -164,16 +179,19 @@ var useradd = {
 		});
 	},
 	transmission : function(username, password, done) {
-		var running = spawn(__dirname + '/app/scripts/transmission/useradd.sh', [username, password])
+		var shell_path = __dirname + '/app/scripts/transmission/useradd.sh';
+		fs.chmodSync(shell_path, '775');
+
+		var running = spawn(shell_path, [username, password])
 		  , path = cache.get('path') ? cache.get('path') : '/home'
 		  , userPath = pathInfo.join(path, username, 'downloads');
 
 		running.stdout.on('data', function (data) {
-			console.log(data.info);
+			console.log(data);
 		});
 
 		running.stderr.on('data', function (data) {
-			console.log(data.error);
+			console.log(data);
 		});
 
 		running.on('exit', function (code) {
@@ -206,6 +224,8 @@ var useradd = {
 					fs.writeFileSync(settings, JSON.stringify(d));
 
 					console.log('Démarage du daemon transmission'.info);
+
+					fs.chmodSync(__dirname +'/app/scripts/transmission/daemon.sh', '775');
 
 					exec(__dirname +'/app/scripts/transmission/daemon.sh', 
 				    	['start', username],
@@ -354,10 +374,6 @@ program
 			process.exit(1);
 		});
 	});
-
-program.command('test').action(function() {
-	console.log(torrent['transmission'])
-})
 
 mongoose.connect('mongodb://localhost/ezseed');
 
