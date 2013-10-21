@@ -398,7 +398,7 @@ var install = {
 			var choose = function() {
 				promptly.choose('Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 					if(client == 'aucun') {
-						promptly.confirm("Êtes vous sûr de ne pas vouloir installer de client ? (l'utilisateur système ne sera pas créé) y/n", function (err, value) {
+						promptly.confirm("Êtes vous sûr de ne pas vouloir installer de client ? (l'utilisateur système ne sera pas créé) Y/n", {default : 'y'}, function (err, value) {
 						    if(value === true) {
 						    	torrent[client](function(client) {
 							    	callback(null, client);
