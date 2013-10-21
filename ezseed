@@ -364,7 +364,7 @@ var install = {
 				var cmd = new Buffer("\
 						mv " + sslkeys[0].path + " " + __dirname + "ezseed" + sslkeys[0].ext + " && \
 						mv " + sslkeys[1].path + " " + __dirname + "ezseed" + sslkeys[1].ext + " && \
-						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/");
+						mv *ezseed.key ezseed.pem* /usr/local/local/nginx/").toString();
 
 				console.log(cmd);
 				exec(cmd, function(error, stdout, stderr) {
