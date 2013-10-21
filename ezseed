@@ -443,11 +443,15 @@ program
 program
 	.command('useradd <rutorrent|transmission> <username>')
 	.option('-p, --password [password]', 'specify password')
-	.option('-P, --path [path]', 'specify userdir path')
+	.option('-P, --path [path]', 'specify userdir path [depreceated]')
+	.option('-f, --force', 'force')
 	.description("Ajout d'un utilisateur au client spécifié")
 	.action(function(client, username, options) {
 		if(options.path)
 			cache.put('path', options.path);
+
+		if(options.force)
+			cache.put('force', true);
 
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
