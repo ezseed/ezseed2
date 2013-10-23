@@ -36,7 +36,7 @@ module.exports.listen = function(app) {
 
                     var interval = cache.get('interval_' + uid);
 
-                    if(interval === null) {
+                    if(!interval) {
                         cache.put(
                             'interval_' + uid, 
                             setInterval(function() {
