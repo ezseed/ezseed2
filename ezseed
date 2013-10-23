@@ -427,7 +427,7 @@ var install = {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
-	.option('-st --skipTorrentClientInstallation', 'Skip torrent client installation')
+	.option('-skip, --skipTorrentClientInstallation', 'Skip torrent client installation')
 	.action(function(options) {
 		if(options.force)
 			cache.put('force', true);
