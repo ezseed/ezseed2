@@ -1,7 +1,7 @@
 {
   "path": "/home",
   "fetchTime": 5000,
-  "root": "",
+  "root": "/var/www/ezseed2/app",
   "location": "",
   "torrentLink": "embed",
   "diskSpace": "1048576",
