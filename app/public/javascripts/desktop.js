@@ -336,7 +336,7 @@ jQuery(function($) {
 
     /*Sockets Client size*/
 
-    var socket = io.connect('wss://'+ip_server+':3001');
+    var socket = io.connect('wss://'+document.domain+':3001');
 
     //var reload = setInterval(socket.emit('reload', user), 10000);
 
