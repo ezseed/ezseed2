@@ -429,14 +429,14 @@ program
 		
 		async.series(install,
 		function(err, results) {
-			if(results.client_torrent === null) {
+			if(results.client === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				process.exit(1);
 			} else {
-				console.log("Création du compte " + results.client_torrent.client + " pour l'administrateur".info);
+				console.log("Création du compte " + results.client + " pour l'administrateur".info);
 				
 				var u = cache.get('user');
-				useradd[results.client_torrent.client](u.username, u.password, function() {
+				useradd[results.client](u.username, u.password, function() {
 					cache.clear();
 					console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
 				});
