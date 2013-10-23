@@ -427,7 +427,7 @@ var install = {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
-	.option('-notorrent, --notorrent', 'Skip torrent client installation')
+	.option('-n, --notorrent', 'Skip torrent client installation')
 	.action(function(options) {
 		if(options.force)
 			cache.put('force', true);
@@ -448,6 +448,7 @@ program
 				useradd[results.client_torrent](u.username, u.password, function() {
 					cache.clear();
 					console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
+					process.exit(1);
 				});
 			}
 		  
