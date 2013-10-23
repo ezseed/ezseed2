@@ -224,7 +224,7 @@ var useradd = {
 		});
 
 		running.on('exit', function (code) {
-			db.path.save(userPath, username, function(err, p) {
+			db.paths.save(userPath, username, function(err, p) {
 		 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
 		 		done(null, 'rutorrent');
 		 	});

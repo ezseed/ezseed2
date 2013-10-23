@@ -12,7 +12,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 ##Rutorrent and building tools##
-apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config subversion php5-cli unrar unzip ffmpeg curl php5-curl mediainfo
+apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config subversion php5-cli unrar unzip ffmpeg curl php5-curl mediainfo screen
 
 #Téléchargement + déplacement de rutorrent (web)
 #rutorrent
