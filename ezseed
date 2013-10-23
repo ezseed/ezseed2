@@ -380,7 +380,7 @@ var install = {
 			} else {
 				var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
 				exec(cmd, function(error, stdout, stderr) {
-					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
+					exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
 						callback(null, {});
 					});
 				});

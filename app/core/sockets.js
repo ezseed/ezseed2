@@ -9,7 +9,7 @@ var socketio = require('socket.io')
 
 module.exports.listen = function(app) {
 
-    io = socketio.listen(app);
+    io = socketio.listen(app, {secure: true});
     io.set('log level', 1);
 
     io.sockets.on('connection', function (socket) {
