@@ -113,7 +113,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de rutorrent terminée'.info);
-			done(null, {client: 'rutorrent'});
+			done(null, 'rutorrent');
 		});
 	},
 	transmission : function(done) {
@@ -137,7 +137,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de transmission terminée'.info);
-			done(null, {client : 'transmission'});
+			done(null, 'transmission');
 		});
 	},
 	aucun : function(done) {
@@ -168,7 +168,7 @@ var userdel = {
 		running.on('exit', function (code) {
 			db.user.delete(username, function(err) {
 		 		console.log("Utilisateur "+ username + " supprimé".info);
-		 		done(null, {client : 'rutorrent'});
+		 		done(null, 'rutorrent');
 		 	});
 		});
 	},
@@ -194,7 +194,7 @@ var userdel = {
 		running.on('exit', function (code) {
 			db.user.delete(username, function(err) {
 		 		console.log("Utilisateur "+ username + " supprimé".info);
-		 		done(null, {client : 'transmission'});
+		 		done(null, 'transmission');
 		 	});
 		});
 	}
@@ -226,7 +226,7 @@ var useradd = {
 		running.on('exit', function (code) {
 			db.path.save(userPath, username, function(err, p) {
 		 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-		 		done(null, {client : 'rutorrent'});
+		 		done(null, 'rutorrent');
 		 	});
 		});
 	},
@@ -291,7 +291,7 @@ var useradd = {
 				    	function(err, stdout, sdterr) {
 				    		db.path.save(userPath, username, function(err, p) {
 						 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-						 		done(null, {client : 'transmission'});
+						 		done(null,'transmission');
 						 	});
 						}
 					);
@@ -409,7 +409,7 @@ var install = {
 						});
 					} else {
 						if(cache.get('skipTorrentClientInstallation') === true)
-							callback(null, {client : client});
+							callback(null, client);
 						else
 						    torrent[client](function(client) {
 						    	callback(null, client);
@@ -427,7 +427,7 @@ var install = {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
-	.option('-skip, --skipTorrentClientInstallation', 'Skip torrent client installation')
+	.option('-notorrent, --skipTorrentClientInstallation', 'Skip torrent client installation')
 	.action(function(options) {
 		if(options.force)
 			cache.put('force', true);
@@ -436,15 +436,15 @@ program
 			cache.put('skipTorrentClientInstallation', true);
 
 		async.series(install,
-		function(err, results) {
-			if(results.client === null) {
+		function(err, client) {
+			if(client === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				process.exit(1);
 			} else {
-				console.log("Création du compte " + results.client + " pour l'administrateur".info);
+				console.log("Création du compte " + client + " pour l'administrateur".info);
 				
 				var u = cache.get('user');
-				useradd[results.client](u.username, u.password, function() {
+				useradd[client](u.username, u.password, function() {
 					cache.clear();
 					console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
 				});
