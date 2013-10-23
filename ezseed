@@ -408,7 +408,7 @@ var install = {
 							}
 						});
 					} else {
-						if(cache.get('skipTorrentClientInstallation') === true)
+						if(cache.get('notorrent') === true)
 							callback(null, client);
 						else
 						    torrent[client](function(client) {
@@ -427,13 +427,13 @@ var install = {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
-	.option('-notorrent, --skipTorrentClientInstallation', 'Skip torrent client installation')
+	.option('-notorrent, --notorrent', 'Skip torrent client installation')
 	.action(function(options) {
 		if(options.force)
 			cache.put('force', true);
 		
-		if(options.skipTorrentClientInstallation)
-			cache.put('skipTorrentClientInstallation', true);
+		if(options.notorrent)
+			cache.put('notorrent', true);
 
 		async.series(install,
 		function(err, client) {
@@ -444,6 +444,7 @@ program
 				console.log("Création du compte " + client + " pour l'administrateur".info);
 				
 				var u = cache.get('user');
+				console.log(u, client);
 				useradd[client](u.username, u.password, function() {
 					cache.clear();
 					console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
