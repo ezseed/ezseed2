@@ -67,7 +67,8 @@ app.use(function(req, res, next){
                                 });
 
   res.locals.location = req.originalUrl;
-  console.log(res.locals.location);
+  res.locals.ip_server = require('os').hostname();
+  console.log(res.locals.ip_server);
 
   if(req.session.user) {
     var u = req.session.user;
