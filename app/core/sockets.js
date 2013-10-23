@@ -40,7 +40,6 @@ module.exports.listen = function(app) {
                         cache.put(
                             'interval_' + uid, 
                             setInterval(function() {
-                                console.log('Fetching');
                                 users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
                             }, global.config.fetchTime)
                         );

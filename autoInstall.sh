@@ -47,7 +47,10 @@ else
 	npm install pm2 -g
 	mkdir /var/log/ezseed
 	mv $DIR/../ezseed2/ /var/www
+	mkdir /var/www/ezseed2/app/public/tmp
+	chmod 775 /var/www/ezseed2/app/public/tmp
 	cd /var/www/ezseed2/
+
 	npm install --save
 fi
 

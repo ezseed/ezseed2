@@ -175,7 +175,7 @@ var watcher = {
 	},
 	writeRemovedFiles : function(watch) {
 
-		var path = pathInfo.join(__dirname, '/public/tmp/', watch.uid+'.json');
+		var path = pathInfo.join(__dirname, '/../public/tmp/', watch.uid+'.json');
 
 		if(!fs.existsSync(path))
 			jf.writeFileSync(path, watch.removedFiles);
