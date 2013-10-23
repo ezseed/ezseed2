@@ -395,7 +395,7 @@ var install = {
 				callback(null, client);
 			});
 		} else {
-			var choose = function() {
+			var choose = function(callback) {
 				promptly.choose('Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 					if(client == 'aucun') {
 						promptly.confirm("Êtes vous sûr de ne pas vouloir installer de client ? (l'utilisateur système ne sera pas créé) Y/n", {default : 'y'}, function (err, value) {
@@ -408,14 +408,18 @@ var install = {
 							}
 						});
 					} else {
-					    torrent[client](function(client) {
-					    	callback(null, client);
-					    });
+						if(cache.get('skipTorrentClientInstallation') === true)
+							callback(null, {client : client});
+						else
+						    torrent[client](function(client) {
+						    	callback(null, client);
+						    });
 					}
 				});
 			}
 
-			choose();
+			choose(callback);
+			
 		}
 	}
 };
@@ -423,10 +427,14 @@ var install = {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
+	.option('-st --skipTorrentClientInstallation', 'Skip torrent client installation')
 	.action(function(options) {
 		if(options.force)
 			cache.put('force', true);
 		
+		if(options.skipTorrentClientInstallation)
+			cache.put('skipTorrentClientInstallation', true);
+
 		async.series(install,
 		function(err, results) {
 			if(results.client === null) {
