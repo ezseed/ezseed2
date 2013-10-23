@@ -43,11 +43,11 @@ module.exports = {
        'path' : path
       });
 
-      path.save(function(err) {
+      p.save(function(err) {
        if(err) console.log(err);
       });
 
-      path.on('save', function(obj) {
+      p.on('save', function(obj) {
         if(typeof username !== 'function') {
           Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
             cb(err, obj);
