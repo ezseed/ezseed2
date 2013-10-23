@@ -30,6 +30,7 @@ apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncu
 svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent/
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/
 mv ./plugins/* ./rutorrent/plugins/
+rm -R ./plugins
 mv rutorrent/ /var/www
 
 #clone rtorrent et libtorrent
