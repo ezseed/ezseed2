@@ -28,7 +28,7 @@ var admin = {
 	, createPath : function(req, res) {
 		if(req.body.path.length) {
 			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
-				db.paths.save(req.body.path, req.body.username, function(err, p) {
+				db.paths.save(pathInfo.join(global.config.path, req.body.path), req.body.username, function(err, p) {
 					req.session.success = "Chemin sauvegardé en base de données";
 					res.redirect('admin');
 				});
