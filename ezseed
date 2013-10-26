@@ -512,21 +512,33 @@ program
 		if(options.force)
 			cache.put('force', true);
 
-		if(options.role)
-			cache.put('role', options.role);
+		var next = function(options) {
 
-		if(options.password === undefined) {
-			promptly.password('Mot de passe :', function(err, pw) {
-				useradd[client](username, pw, function() {
+			if(options.password === undefined) {
+				promptly.password('Mot de passe :', function(err, pw) {
+					useradd[client](username, pw, function() {
+						cache.clear();
+						process.exit(1);
+					});
+				});
+			} else 
+				useradd[client](username, options.password, function() {
 					cache.clear();
 					process.exit(1);
 				});
+		};
+
+		if(options.role) {
+
+			promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
+				cache.put('role', role);
+				next(options);
 			});
-		} else 
-			useradd[client](username, options.password, function() {
-				cache.clear();
-				process.exit(1);
-			});
+		} else
+			next(options);
+		
+
+		
 	});
 
 program
