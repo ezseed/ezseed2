@@ -7,8 +7,14 @@
 ```
 
 #Installation
+```
+apt-get install git-core
+git clone https://user@github.com/soyuka/ezseed2/
+git checkout rc1-b #passe sur la béta
+```
 
-Clone the repository
+Ensuite exécutez autoInstall, le script se chargera de bouger le site dans /var/www/ezseed2
+
 ```
 chmod +x ./autoInstall.sh && ./autoInstall.sh #will install dependecies nodejs, nginx
 ./ezseed install

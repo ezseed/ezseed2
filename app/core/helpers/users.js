@@ -25,12 +25,12 @@ var usedSize = function(paths, cb) {
   var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
 
   if(cachedSize)
-    cb(pretty(cachedSize));
+    cb({size : cachedSize, pretty : pretty(cachedSize)});
   else {
     async.map(paths.paths, directorySize, function(err, sizes){
         var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
         cache.put(key, size, 10000);
-        cb(pretty(size));
+        cb({size : size, pretty : pretty(size)});
     });
   } 
 } 
