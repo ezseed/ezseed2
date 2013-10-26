@@ -53,6 +53,8 @@ else
 	cd /var/www/ezseed2/
 
 	npm install --save
+
+	echo "Check that ezseed2 is in /var/www/, if it's not please move it there. Then you'll need to do : npm install && mkdir /var/www/ezseed2/app/public/tmp"
 fi
 
 
