@@ -2,6 +2,7 @@ var db = require('../core/database.js')
   , _ = require('underscore')
   , fs = require('fs')
   , pretty = require('prettysize')
+  , pathInfo = require('path')
   , jf = require('jsonfile');
 
 var admin = {
