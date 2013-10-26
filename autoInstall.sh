@@ -29,7 +29,7 @@ git clone https://github.com/joyent/node.git
 cd node
  
 # 'git tag' shows all available versions: select the latest stable.
-git checkout v0.10.20
+git checkout v0.10.21
  
 # Configure seems not to find libssl by default so we give it an explicit pointer.
 # Optionally: you can isolate node by adding --prefix=/opt/node
