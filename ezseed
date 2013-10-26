@@ -166,7 +166,7 @@ var userdel = {
 		});
 
 		running.on('exit', function (code) {
-			db.user.delete(username, function(err) {
+			db.users.delete(username, function(err) {
 		 		console.log("Utilisateur "+ username + " supprimé".info);
 		 		done(null, 'rutorrent');
 		 	});
@@ -192,7 +192,7 @@ var userdel = {
 		});
 
 		running.on('exit', function (code) {
-			db.user.delete(username, function(err) {
+			db.users.delete(username, function(err) {
 		 		console.log("Utilisateur "+ username + " supprimé".info);
 		 		done(null, 'transmission');
 		 	});
