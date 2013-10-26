@@ -41,6 +41,7 @@ module.exports.listen = function(app) {
                             'interval_' + uid, 
                             setInterval(function() {
                                 users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
+                                users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
                             }, global.config.fetchTime)
                         );
                     }

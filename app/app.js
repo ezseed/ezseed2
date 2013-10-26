@@ -8,11 +8,6 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , admin = require('./routes/admin')
-  , streaming = require('./routes/streaming')
-  , files = require('./routes/files')
   , db = require('./core/database')
   , users = require('./core/helpers/users')
   , http = require('http')
@@ -47,6 +42,10 @@ app.use(express.cookieParser('secret'));
 app.use(express.session());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req,res, next) {
+  req.user = req.session.user;
+  next();
+});
 //app.use(express.static('/home/myName/allMyMedia/'));
 
 //Middleware session
@@ -110,6 +109,13 @@ if ('development' == app.get('env')) {
 * App starts here 
 */
 
+  //TO BE REMOVED
+  var routes = require('./routes')
+  , user = require('./routes/user')
+  , admin = require('./routes/admin')
+  , streaming = require('./routes/streaming')
+  , files = require('./routes/files');
+
 app.get('/', user.restrict, routes.index);
 app.get('/login', user.login);
 app.get('/logout', user.logout);
@@ -127,28 +133,7 @@ app.get('/watch/(:id)/(:fid)', streaming.watch);
 // app.get('/stream/(:id)', streaming.stream);
 app.get('/listen/(:id)', streaming.listen);
 
-//dummy install
-var err = null;
-//fs.stat('./routes/install.js', function(err, stat) {
-  if(err == null) {
-    var install = require('./routes/install');
-    app.get('/install', install.install);
-    app.post('/install/create', install.create);
-
-    app.get('/install/folder', install.folder);
-    app.post('/install/folder/create', install.folderCreation);
-
-    app.get('/install/complete', install.complete);
-
-    app.get('/install/torrent', install.torrent);
-    app.post('/install/transmission', install.transmission);
-  }
-//});
-
-app.get('/admin', user.restrict, admin.restrict, admin.index);
-app.post('/admin/config', user.restrict, admin.restrict, admin.config);
-app.get('/admin/path', user.restrict, admin.restrict, admin.path);
-app.post('/admin/path', user.restrict, admin.restrict, admin.createPath);
+require('./routes/admin.js')(app);
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

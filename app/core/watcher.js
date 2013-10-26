@@ -112,7 +112,6 @@ var Watch = function(params) {
 				console.log('removeFile');
 
 				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles}, function() {
-					self.removedFiles = [];
 					self.removeTimeout = null;
 					watcher.writeRemovedFiles(self);
 				});

@@ -1,58 +1,81 @@
 var db = require('../core/database.js')
   , _ = require('underscore')
+  , fs = require('fs')
   , pretty = require('prettysize')
   , jf = require('jsonfile');
 
-/*
- * GET /admin
- */
-exports.index = function(req, res) {
-	db.users.getAll(function(err, users) {
-		db.paths.getAll(function(err, paths) {
-			res.render('admin', { title: 'Ezseed V2 - Administration', users:users, paths: paths });
+var admin = {
+	/*
+	 * GET /admin
+	 */
+	index : function(req, res) {
+		db.users.getAll(function(err, users) {
+			// db.paths.getAll(function(err, paths) {
+				res.render('admin', { title: 'Ezseed V2 - Administration', users:users }); //,paths: paths
+			// });
 		});
-	});
-}
-
-/*
- * GET /admin/path
- */
-exports.path = function(req, res) {
-	res.render('admin/path', {title : 'Nouveau répertoire'});
-}
-
-exports.createPath = function(req, res) {
-	
-}
-
-/*
- * POST /admin/config
- * Saves the configuration
- */
-exports.config = function(req, res) {
-	var conf = global.config;
-
-	conf = _.extend(conf, {
-		torrentLink : req.body.torrent,
-		availableSpace : pretty(req.body.disk*1024*1024),
-		diskSpace : req.body.disk,
-		videoPlayer : req.body.videoPlayer
-	});
-
-	jf.writeFileSync(global.config.root + '/config.json', conf);
-
-	res.redirect('/admin');
-}
-
-/**
- * Restrict on admin only based on the role
- */
-exports.restrict = function (req, res, next) {
-	if (req.session.user && req.session.user.role == 'admin') {
-		next();
-	} else {
-		req.session.error = "L'accès à cette section n'est pas autorisé ! <i class='entypo-cross pullRight'></i>";
-		res.redirect('/');
 	}
+
+	/*
+	 * GET /admin/path
+	 */
+	, path : function(req, res) {
+		res.render('admin/path', {title : 'Nouveau répertoire', basePath : global.config.path, username : req.params.username});
+	}
+
+	, createPath : function(req, res) {
+		console.log(req.body);
+		if(fs.existsSync(global.config.path + req.body.path)) {
+			db.paths.save(req.body.path, req.body.username, function(err, p) {
+				req.session.success = "Chemin sauvegardé en base de données";
+				res.redirect('admin');
+			});
+		} else {
+			req.session.error = "Le dossier n'existe pas";
+			res.redirect('admin/path/'+req.body.username);
+		}
+	}
+
+	/*
+	 * POST /admin/config
+	 * Saves the configuration
+	 */
+	, config : function(req, res) {
+		var conf = global.config;
+
+		conf = _.extend(conf, {
+			torrentLink : req.body.torrent,
+			availableSpace : pretty(req.body.disk*1024*1024),
+			diskSpace : req.body.disk,
+			videoPlayer : req.body.videoPlayer
+		});
+
+		jf.writeFileSync(global.config.root + '/config.json', conf);
+
+		res.redirect('/admin');
+	}
+
+	/**
+	 * Restrict on admin only based on the role
+	 */
+	, restrict : function (req, res, next) {
+
+		require('./user').restrict(req, res, function() {
+			if (req.session.user && req.session.user.role == 'admin') {
+				next();
+			} else {
+				req.session.error = "L'accès à cette section n'est pas autorisé ! <i class='entypo-cross pullRight'></i>";
+				res.redirect('/');
+			}
+		});
+	}
+
+}
+
+module.exports = function(app) {
+	app.get('/admin', admin.restrict, admin.index);
+	app.post('/admin/config', admin.restrict, admin.config);
+	app.get('/admin/path/:username', admin.restrict, admin.path);
+	app.post('/admin/path', admin.restrict, admin.createPath);
 }
 

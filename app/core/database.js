@@ -202,7 +202,9 @@ module.exports = {
         cb(err, docs);
       });
     },
-    create : function(username, password, done) {
+    //username, password, client, role
+    create : function(u, done) {
+      var password = u.password, username = u.username;
 
       var bcrypt = require('bcrypt-nodejs');
 
@@ -210,21 +212,37 @@ module.exports = {
       bcrypt.hash(password, null, null, function(err, hash) {
 
         //We save only the hash
-        var user = new Users ({
-          username : username,
-          role : 'admin',
-          hash : hash
-        });
+        // var user = new Users ({
+        //   username : username,
+        //   role : 'admin',
+        //   client : client,
+        //   hash : hash
+        // });
 
-        user.save(function(err) {
-          if(err) {
-            //Checking for the username validation - see models/index.js
-            if(_.isEqual(err.name, 'ValidationError'))
-              done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
-            else
-              done(err, null);
-          } else
-            done(null, user);
+        Users.findOne({username : username}, function (err, doc){
+          if(doc) {
+            doc.role = u.role ? u.role : 'user';
+            doc.hash = hash;
+            doc.client = u.client ? u.client : 'aucun';
+          } else {
+            doc = new Users ({
+              username : username,
+              role : u.role ? u.role : 'user',
+              hash : hash,
+              client : u.client ? u.client : 'aucun'
+            });
+          }
+          
+          doc.save(function(err) {
+            if(err) {
+              //Checking for the username validation - see models/index.js
+              if(_.isEqual(err.name, 'ValidationError'))
+                done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
+              else
+                done(err, null);
+            } else
+              done(null, doc);
+          });
         });
 
       });
@@ -234,6 +252,20 @@ module.exports = {
     },
     delete : function(username, cb) {
       Users.findOneAndRemove({username: username}, cb);
+    },
+    update : function(username, update, cb) {
+      if(update.password !== undefined) {
+         var bcrypt = require('bcrypt-nodejs');
+
+        //Generates the hash
+        bcrypt.hash(password, null, null, function(err, hash) {
+          update = _.extend(update, {hash : hash});
+          delete update.password;
+          Users.findOneAndUpdate({username:username}, update, null, cb);
+        });
+      } else {
+        Users.findOneAndUpdate({username:username}, update, null, cb);
+      }
     }
   }
 };

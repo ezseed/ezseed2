@@ -63,17 +63,23 @@ Date.prototype.getFrenchDateAsString = function() {
 					<div class="pullRight">
 						<a title="Supprimer l'utilisateur" href="/admin/user/<%= e._id %>/delete"><i class="entypo-erase"></i></a>
 						<a title="Modifier le mot de passe" href="/aming/user/<%= e._id %>/password"><i class="entypo-key"></i></a>
+
 						<a title="Détails" href="#more"><i class="entypo-plus-circled"></i></a>
 					</div>
 					<div class="user-more">
+						<a href="/admin/path/<%= e.username%>" class="pullRight" style="text-decoration:none;"><i class="entypo-install"></i> Ajouter un répertoire</a>
 						<h4>Dossiers surveillés</h4>
+						<ul>
 						<% 
 							var nbUserPaths = e.paths.length;
 							while(nbUserPaths--) {
 								var p = e.paths[nbUserPaths];
 							%>
-								<%= p.path %> <br>
+								<li><%= p.path %> <br><small><i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
 							<% } %>
+						</ul>
+						Utilise <%= e.client %>.
+
 					</div>
 				</li>
 			<% } %>
@@ -83,33 +89,6 @@ Date.prototype.getFrenchDateAsString = function() {
 				<li>Supprimer user</li>
 				<li>Editer user</li>
 				<li>Liste répertoires</li>
-			</ul> -->
-		</div>
-	</div>
-	<h2><i class="entypo-database"></i> Répertoires surveillés</h2>
-	<div>
-		<div class="content">
-			<a href="/admin/path" class="pullRight" style="text-decoration:none;"><i class="entypo-install"></i> Ajouter un répertoire</a><br>
-
-			<ol>
-			<% var nbPaths = paths.length; %>
-			<%
-			while(nbPaths--) {
-				var p = paths[nbPaths];
-			%>	
-				<li>
-					<div class="pullRight">
-						<a title="Supprimer le répertoire" href="/admin/path/<%= p._id %>/delete"><i class="entypo-erase"></i></a>
-					</div>
-					<%= p.path %>
-					<br><br>Mis à jour : <i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)
-				</li>
-			<% 
-			}
-			%>
-			<!-- <ul>
-				<li>Ajouter un répertoire</li>
-				<li>Supprimer rép + contenu</li>
 			</ul> -->
 		</div>
 	</div>

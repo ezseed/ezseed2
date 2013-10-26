@@ -1,7 +1,10 @@
 var _ = require('underscore')
   , cache = require('memory-cache')
   , pretty = require('prettysize')
+  , jf = require('jsonfile')
+  , fs = require('fs')
   , async = require('async')
+  , pathInfo = require('path')
   , db = require('../database.js');
 
 var directorySize = function(path, cb) {
@@ -53,7 +56,9 @@ module.exports.fetchDatas = function(params) {
   var lastUpdate = cache.get('lastUpdate');
 
   if(lastUpdate === null)
-    cache.put('lastUpdate', params.lastUpdate);
+   cache.put('lastUpdate', params.lastUpdate);
+  
+  var io = params.io;
 
   db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
 
@@ -69,5 +74,21 @@ module.exports.fetchDatas = function(params) {
       });
   });
 
+}
 
+module.exports.fetchRemoved = function(params) {
+  var path = pathInfo.join(global.config.root, '/public/tmp/', params.uid+'.json');
+
+  if(!fs.existsSync(path))
+    jf.writeFileSync(path, []);
+
+  var files = jf.readFileSync(path)
+    , nb = files.length;
+
+    console.log(files);
+
+    while(nb--)
+      io.sockets.socket(params.sid).emit('remove', files[nb]);
+    
+    jf.writeFileSync(path, []);
 }

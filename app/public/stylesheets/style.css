@@ -1001,6 +1001,7 @@ input:-moz-placeholder {
 	-webkit-box-shadow: 0 0 7px rgba(40,40,39,.60);
 	box-shadow: 0 0 7px rgba(40,40,39,.60);
 	border:2px solid #e15d33;
+	color:#B2B2AF;
 }
 
 #admin h2 {
@@ -1044,6 +1045,14 @@ input:-moz-placeholder {
 
 #admin .user-more {
 	display:none;
+	border: 1px solid #D8D8CA;
+	margin: 10px;
+	padding: 7px;
+	background-color: #474747;
+}
+
+#admin .user-more h4 {
+	margin-top: 0;
 }
 
 #admin input {

@@ -201,6 +201,13 @@ var userdel = {
 };
 
 var useradd = {
+	aucun : function(username, password, done) {
+		db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
+    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
+    		cache.put('user', {username : username, password : password});
+    		done(null,"aucun");
+    	});
+	},
 	rutorrent : function(username, password, done) {
 		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
 		fs.chmodSync(shell_path, '775');
@@ -224,10 +231,12 @@ var useradd = {
 		});
 
 		running.on('exit', function (code) {
-			db.paths.save(userPath, username, function(err, p) {
-		 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-		 		done(null, 'rutorrent');
-		 	});
+			db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
+				db.paths.save(userPath, username, function(err, p) {
+			 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+			 		done(null, 'rutorrent');
+			 	});
+			});
 		});
 	},
 	transmission : function(username, password, done) {
@@ -289,10 +298,12 @@ var useradd = {
 				    	['start', username],
 				    	null,
 				    	function(err, stdout, sdterr) {
-				    		db.path.save(userPath, username, function(err, p) {
-						 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-						 		done(null,'transmission');
-						 	});
+					    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
+					    		db.path.save(userPath, username, function(err, p) {
+							 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+							 		done(null,'transmission');
+							 	});
+							});
 						}
 					);
 
@@ -314,7 +325,7 @@ var install = {
 
 		promptly.prompt('Username : ', { validator: validators.user}, function (err, username) {
 		    promptly.password('Password : ', function(err, password) {
-		    	db.users.create(username, password, function(err, user) {
+		    	db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
 		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
 		    		cache.put('user', {username : username, password : password});
 		    		callback(null,{});
@@ -424,6 +435,15 @@ var install = {
 	}
 };
 
+var password = {
+	rutorrent : function() {
+
+	},
+	transmission : function() {
+
+	}
+}
+
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
@@ -439,6 +459,7 @@ program
 		function(err, results) {
 			if(results.client_torrent === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
+				console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
 				process.exit(1);
 			} else {
 				console.log("Création du compte " + results.client_torrent + " pour l'administrateur".info);
@@ -446,9 +467,11 @@ program
 				var u = cache.get('user');
 
 				useradd[results.client_torrent](u.username, u.password, function() {
-					cache.clear();
-					console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
-					process.exit(1);
+					db.users.update(u.username, {client : results.client_torrent}, function(err) {
+						cache.clear();
+						console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
+						process.exit(1);
+					});
 				});
 			}
 		  
@@ -467,9 +490,10 @@ program
 	});
 
 program
-	.command('useradd <rutorrent|transmission> <username>')
+	.command('useradd <rutorrent|transmission|aucun> <username>')
 	.option('-p, --password [password]', 'specify password')
 	.option('-P, --path [path]', 'specify userdir path [depreceated]')
+	.option('-r, --role', '<admin|[user]>')
 	.option('-f, --force', 'force')
 	.description("Ajout d'un utilisateur au client spécifié")
 	.action(function(client, username, options) {
@@ -479,9 +503,12 @@ program
 		if(options.force)
 			cache.put('force', true);
 
+		if(options.role)
+			cache.put('role', options.role);
+
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
-				useradd[client](username, options.password, function() {
+				useradd[client](username, pw, function() {
 					cache.clear();
 					process.exit(1);
 				});
@@ -501,6 +528,26 @@ program
 			process.exit(1);
 		});
 	});
+
+program
+	.command('password <rutorrent|transmission> <username> ')
+	.option('-p, --password [password]', 'specify password')
+	.description('Change username password')
+	.action(function(clients, username, options) {
+		if(options.password === undefined) {
+			promptly.password('Mot de passe :', function(err, pw) {
+				password[client](username, pw, function() {
+					cache.clear();
+					process.exit(1);
+				});
+			});
+		} else {
+			password[client](username, options.password, function() {
+				cache.clear();
+				process.exit(1);
+			});
+		}
+	})
 
 mongoose.connect('mongodb://localhost/ezseed');
 
