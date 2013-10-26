@@ -173,6 +173,9 @@ var watcher = {
         });
 	},
 	writeRemovedFiles : function(watch) {
+		if(!fs.existsSync(__dirname + '/public/tmp'))
+			fs.mkdirSync(__dirname + '/public/tmp', '0775');
+
 
 		var path = pathInfo.join(__dirname, '/../public/tmp/', watch.uid+'.json');
 
