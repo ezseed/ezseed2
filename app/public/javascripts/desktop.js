@@ -343,7 +343,10 @@ jQuery(function($) {
     socket.emit('update', user.id);
 
     socket.on('size', function(size) {
-        $('#diskSpace .used').text(size);
+        var mb = size.size / 1024 / 1024;
+
+        $('#diskSpace #usedBar').css('width',  mb / config.diskSpace * 100 + '%');
+        $('#diskSpace .used').text(size.pretty);
     });
 
 
