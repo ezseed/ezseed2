@@ -298,7 +298,7 @@ var useradd = {
 				    	['start', username],
 				    	function(err, stdout, sdterr) {
 					    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
-					    		db.path.save(userPath, username, function(err, p) {
+					    		db.paths.save(userPath, username, function(err, p) {
 							 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
 							 		done(null,'transmission');
 							 	});
