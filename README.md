@@ -6,7 +6,7 @@
 
 ```
 
-*Installation*
+#Installation
 
 Clone the repository
 ```
