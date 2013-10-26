@@ -10,6 +10,7 @@
 ```
 apt-get install git-core
 git clone https://user@github.com/soyuka/ezseed2/
+cd ezseed2
 git checkout rc1-b #passe sur la béta
 ```
 
