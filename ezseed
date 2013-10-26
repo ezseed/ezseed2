@@ -550,7 +550,7 @@ program
 	.command('userdel <rutorrent|transmission> <username>')
 	.option('-f, --force', 'force')
 	.description("Suppression de l'utilisateur /!\\ tous les fichiers seront supprimés")
-	.action(function(client, username) {
+	.action(function(client, username, options) {
 		if(options.force)
 			cache.put('force', true);
 
