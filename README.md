@@ -26,11 +26,15 @@ cd /var/www/ezseed2
 ```
 
 Pour les options de pm2 voir sur le repo : https://github.com/Unitech/pm2
+```
 pm2 start ezseed.json
 pm2 list
 pm2 logs
+```
 
-Les logs de l'application sont dans /var/log/ezseed/
+Les logs de l'application sont dans `/var/log/ezseed/`
 
 Pour update ezseed par exemple :
+```
 git pull && pm2 restart ezseed
+```
