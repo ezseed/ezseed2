@@ -15,8 +15,10 @@ var directorySize = function(path, cb) {
       function (error, stdout, stderr) {
 
         var size = stdout.match(/([0-9]+)/);
-
-        cb(error, size[0]*1024);
+        if(typeof size == 'array')
+          cb(error, size[0]*1024);
+        else
+          cb('Pas de fichiers', 0);
     }
   );
 } 
