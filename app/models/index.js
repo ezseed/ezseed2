@@ -84,7 +84,8 @@ UsersSchema.virtual('session').get(function() {
 		'id' : this._id,
 		'username' : this.username,
 		'role' : this.role,
-		'pathes' : this.pathes
+		'paths' : this.pathes,
+		'client' : this.client
 	}
 });
 

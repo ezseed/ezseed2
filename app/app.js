@@ -133,6 +133,15 @@ app.get('/watch/(:id)/(:fid)', streaming.watch);
 // app.get('/stream/(:id)', streaming.stream);
 app.get('/listen/(:id)', streaming.listen);
 
+app.get('/torrents', user.restrict, function(req, res) {
+  console.log(req.session.user);
+  var link = global.config.torrentLink;
+  if(link == 'embed')
+    res.render('torrents', {title : 'Torrents'});
+  else
+    res.redirect('/'+req.session.user.client);
+});
+
 require('./routes/admin.js')(app);
 
 var server = http.createServer(app).listen(app.get('port'), function(){

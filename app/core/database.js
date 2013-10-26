@@ -55,6 +55,13 @@ module.exports = {
         } else
           cb(null, obj);
       });
+    },
+    remove : function(id, uid, cb) {
+      Paths.findByIdAndRemove(id, function(err) {
+        Users.findByIdAndUpdate(uid, {$pull : {paths : id}}, function(err) {
+          cb(err);
+        });
+      });
     }
 	}, 
   file : {

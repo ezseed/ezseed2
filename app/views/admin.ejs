@@ -71,14 +71,17 @@ Date.prototype.getFrenchDateAsString = function() {
 						<h4>Dossiers surveillés</h4>
 						<ul>
 						<% 
-							var nbUserPaths = e.paths.length;
-							while(nbUserPaths--) {
-								var p = e.paths[nbUserPaths];
-							%>
-								<li><%= p.path %> <br><small><i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
-							<% } %>
-						</ul>
-						Utilise <%= e.client %>.
+							if(e.paths) {
+								var nbUserPaths = e.paths.length;
+								while(nbUserPaths--) {
+									var p = e.paths[nbUserPaths];
+								%>
+									<li><%= p.path %> <a href="/admin/path/<%= e._id%>/<%= p._id %>/delete" title="les données seront conservées">Enlever</a><br><small><i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
+								<% } 
+							}
+						%>
+						</ul><br>
+						Utilise <%= e.client %> - <a href="/admin/user/transmission/<%= e._id %>">modifier la configuration.</a>
 
 					</div>
 				</li>

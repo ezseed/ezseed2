@@ -11,6 +11,7 @@ var admin = {
 	index : function(req, res) {
 		db.users.getAll(function(err, users) {
 			// db.paths.getAll(function(err, paths) {
+		console.log(users);
 				res.render('admin', { title: 'Ezseed V2 - Administration', users:users }); //,paths: paths
 			// });
 		});
@@ -24,16 +25,29 @@ var admin = {
 	}
 
 	, createPath : function(req, res) {
-		console.log(req.body);
-		if(fs.existsSync(global.config.path + req.body.path)) {
-			db.paths.save(req.body.path, req.body.username, function(err, p) {
-				req.session.success = "Chemin sauvegardé en base de données";
-				res.redirect('admin');
-			});
+		if(req.body.path.length) {
+			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
+				db.paths.save(req.body.path, req.body.username, function(err, p) {
+					req.session.success = "Chemin sauvegardé en base de données";
+					res.redirect('admin');
+				});
+			} else {
+				req.session.error = "Le dossier n'existe pas";
+				res.redirect('admin/path/'+req.body.username);
+			}
 		} else {
-			req.session.error = "Le dossier n'existe pas";
+			req.session.error = "Veuillez entrer un chemin";
 			res.redirect('admin/path/'+req.body.username);
 		}
+	}
+
+	, deletePath : function(req, res) {
+		db.paths.remove(req.params.id, req.params.uid, function(err) {
+			if(err) req.session.error = err;
+			else req.session.success = "Chemin supprimé de la base de données";
+
+			res.redirect('admin');
+		})
 	}
 
 	/*
@@ -77,5 +91,7 @@ module.exports = function(app) {
 	app.post('/admin/config', admin.restrict, admin.config);
 	app.get('/admin/path/:username', admin.restrict, admin.path);
 	app.post('/admin/path', admin.restrict, admin.createPath);
+
+	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 }
 
