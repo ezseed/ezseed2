@@ -44,7 +44,7 @@ module.exports = {
       });
 
       p.save(function(err) {
-       if(err) cb(err, {});
+       if(err) console.log(err);
       });
 
       p.on('save', function(obj) {
