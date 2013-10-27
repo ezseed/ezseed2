@@ -12,7 +12,6 @@ var admin = {
 	index : function(req, res) {
 		db.users.getAll(function(err, users) {
 			// db.paths.getAll(function(err, paths) {
-		console.log(users);
 				res.render('admin', { title: 'Ezseed V2 - Administration', users:users }); //,paths: paths
 			// });
 		});
