@@ -91,6 +91,8 @@ module.exports = {
 			          { path: 'paths.others', model: Others, match: { dateAdded: {"$gt":lastUpdate} }, lean : true }
 			        ],
 			        function(err, docs) {
+                console.log('Files byUser', err, docs);
+                
 			          cb(err, docs);
 			        }
   				)
