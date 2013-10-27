@@ -258,7 +258,18 @@ module.exports = {
       Users.count(cb);
     },
     delete : function(username, cb) {
-      Users.findOneAndRemove({username: username}, cb);
+      Users.findOne({username : username}, function(err, doc) {
+        var nbPaths = doc.paths.length;
+        console.log('Deleting' + doc);
+        if(nbPaths) {
+          while(nbPaths--) {
+            Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
+
+            });
+          }
+        }
+        Users.findByIdAndRemove(doc._id, cb);
+      });
     },
     update : function(username, update, cb) {
       if(update.password !== undefined) {
