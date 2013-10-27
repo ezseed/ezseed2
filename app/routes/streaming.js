@@ -27,7 +27,7 @@ exports.watch = function(req, res) {
 
 			path = path.replace(cwd, '').replace(global.config.path, '/downloads');
 
-			var fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + path;
+			var fullUrl = 'http://' + req.host + path;
 
 			if(doc.movieType == 'tvseries')
 				res.render('watch', { title: 'Ezseed V2 - ' + doc.title , movie: doc, path: path, fullUrl: fullUrl, id:req.params.id, season : true  });
@@ -52,7 +52,7 @@ exports.listen = function(req, res) {
 			var cwd = global.config.root.replace('/app', '');
 
 			for(var i in doc.songs)			
-				 doc.songs[i].fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+				 doc.songs[i].fullUrl = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
 			
 
 			res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:doc._id });
