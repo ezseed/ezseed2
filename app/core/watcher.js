@@ -153,21 +153,19 @@ var watcher = {
 	watchers : [],
 	initFetch : function() {
 		db.users.getAll(function(err, users) {
-			console.log(users);
 			var paths = [];
 			_.each(users, function(u) {
 				_.each(u.paths, function(p) {
-					console.log(p);
 					watcher.watchers.push(
 						new Watch(
 							{path : p.path, uid:u._id, pid:p._id}
 						)
 					);
+					console.log(this.watchers);
 				});
 			});
 		});
 
-		console.log(this.watchers);
 	},
 	updateFiles : function(uid, cb) {
 		console.log('Updating files - watcher');
