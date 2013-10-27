@@ -17,9 +17,7 @@ var express = require('express')
 ;
 
 var jf = require('jsonfile');
-
-//to be removed
-// global.rootPath = __dirname;
+var MongoStore = require('connect-mongo')(express);
 
 global.config = jf.readFileSync(__dirname + '/config.json');
 
