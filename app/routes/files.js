@@ -16,11 +16,7 @@ exports.download = function(req, res) {
 
 			res.download(file.path);
 		} else {
-
-			console.log(doc);
-			var files = doc.songs || doc.movies || doc.files;
-
-			console.log(files);
+			var files = doc.songs || doc.videos || doc.files;
 
 			res.download(files[0].path);
 		}
