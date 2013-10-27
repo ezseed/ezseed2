@@ -150,7 +150,6 @@ app.get('/watch/(:id)/(:fid)', streaming.watch);
 app.get('/listen/(:id)', streaming.listen);
 
 app.get('/torrents', user.restrict, function(req, res) {
-  console.log(req.session.user);
   var link = global.config.torrentLink;
   if(link == 'embed')
     res.render('torrents', {title : 'Torrents'});
