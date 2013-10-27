@@ -74,18 +74,18 @@ exports.logout = function(req, res) {
 exports.authenticate = function(req, res) {
 	authenticate(req.body.username, req.body.password, function(err, user){
 	if (user) {
-	  // Regenerate session when signing in
-	  // to prevent fixation 
-	  req.session.regenerate(function(){
-	    // Store the user's primary key 
-	    // in the session store to be retrieved,
-	    // or in this case the entire user object
-	    req.session.user = user;
-	    // req.session.success = 'Authenticated as ' + user.name
-	    //   + ' click to <a href="/logout">logout</a>. '
-	    //   + ' You may now access <a href="/restricted">/restricted</a>.';
-	    res.redirect('/');
-	  });
+	  // // Regenerate session when signing in
+	  // // to prevent fixation 
+	  // req.session.regenerate(function(){
+	  //   // Store the user's primary key 
+	  //   // in the session store to be retrieved,
+	  //   // or in this case the entire user object
+	  //   // req.session.success = 'Authenticated as ' + user.name
+	  //   //   + ' click to <a href="/logout">logout</a>. '
+	  //   //   + ' You may now access <a href="/restricted">/restricted</a>.';
+	  // });
+	  req.session.user = user;
+	  res.redirect('/');
 	} else {
 	  req.session.error = 'Mauvaises informations de connexion  <i class="entypo-cross pullRight"></i>';
 	  res.redirect('login');
