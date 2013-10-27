@@ -25,7 +25,7 @@ exports.watch = function(req, res) {
 			//current working dir
 			var cwd = global.config.root.replace('/app', '');
 
-			path = path.replace(cwd, '');
+			path = path.replace(cwd, '').replace(global.config.path, '/downloads');
 
 			var fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + path;
 
