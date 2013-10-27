@@ -85,6 +85,24 @@ var admin = {
 		});
 	}
 
+	, editTransmissionConfiguration : function(req, res) {
+		var transmissionConfig = jf.readFileSync(__dirname + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
+
+		res.render('admin/transmission', {config : transmissionConfig});
+	}
+
+	, saveTransmissionConfiguration : function(req, res) {
+		var exec = require('child_process').exec;
+		var username = req.params.username;
+
+		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
+			jf.writeFileSync(__dirname + '/../scripts/transmission/config/settings.'+username+'.json', req.body.config);
+			exec('/etc/init.d/transmission-daemon-'+username + ' start', function(err, stdout, sdterr) {
+				res.redirect('/admin');
+			});
+		});
+	}
+
 }
 
 module.exports = function(app) {
@@ -94,5 +112,8 @@ module.exports = function(app) {
 	app.post('/admin/path', admin.restrict, admin.createPath);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
+
+	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
+	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);
 }
 

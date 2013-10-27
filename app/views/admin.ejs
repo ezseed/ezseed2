@@ -81,8 +81,10 @@ Date.prototype.getFrenchDateAsString = function() {
 							}
 						%>
 						</ul><br>
-						Utilise <%= e.client %> - <a href="/admin/user/transmission/<%= e._id %>">modifier la configuration.</a>
-
+						Utilise <%= e.client %>
+						<% if(e.client == 'transmission') { %>
+						 - <a href="/admin/user/transmission/<%= e.username %>">modifier la configuration.</a>
+						<% } %>
 					</div>
 				</li>
 			<% } %>

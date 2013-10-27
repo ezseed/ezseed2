@@ -294,8 +294,7 @@ var useradd = {
 
 					fs.chmodSync(__dirname +'/app/scripts/transmission/daemon.sh', '775');
 
-					exec('/etc/init.d/transmission-daemon-'+username + ' start', 
-				    	['start', username],
+					exec('/etc/init.d/transmission-daemon-'+username + ' start',
 				    	function(err, stdout, sdterr) {
 					    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
 					    		db.paths.save(userPath, username, function(err, p) {
