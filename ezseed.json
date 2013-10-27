@@ -1,15 +1,11 @@
 [{
 	"name"      : "watcher",
 	"script"    : "./app/watcher.js",
-	"instances" : "max",
 	"error_file": "/var/log/ezseed/watcher-err.log",
-	"out_file"  : "/var/log/ezseed/watcher-out.log",
-	"options" : ["-u www-data"]
+	"out_file"  : "/var/log/ezseed/watcher-out.log"
 },{
-    "name"      : "ezseed",
-    "script"    : "./app/app.js",
-    "instances" : "max",
-  	"error_file": "/var/log/ezseed/ezseed-err.log",
-  	"out_file"  : "/var/log/ezseed/ezseed-out.log",
-  	"options" : ["-u www-data"]
+    	"name"      : "ezseed",
+    	"script"    : "./app/app.js",
+	"error_file": "/var/log/ezseed/ezseed-err.log",
+  	"out_file"  : "/var/log/ezseed/ezseed-out.log"
 }]
