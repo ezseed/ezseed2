@@ -78,7 +78,7 @@ app.use(function(req, res, next){
     res.locals.user = u;
 
     if(u.client == 'transmission') {
-      var transmissionConfig = jf.readFileSync('./scripts/transmission/config/settings.'+u.username+'.json');
+      var transmissionConfig = jf.readFileSync(__dirname + '/scripts/transmission/config/settings.'+u.username+'.json');
 
       u['rpc-port'] = transmissionConfig['rpc-port'];
     }
