@@ -6,8 +6,8 @@ var _ = require('underscore')
   , jf = require('jsonfile')
   , db = require('./database.js');
 
-if(!fs.existsSync(__dirname + '/public/tmp'))
-	fs.mkdirSync(__dirname + '/public/tmp', '0775');
+if(!fs.existsSync(__dirname + '/../public/tmp'))
+	fs.mkdirSync(__dirname + '/../public/tmp', '0775');
 
 var Inotify = require('inotify').Inotify, EventEmitter = require('events').EventEmitter, util = require('util');
 
