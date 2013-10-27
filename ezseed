@@ -113,7 +113,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de rutorrent terminée'.info);
-			done(null, 'rutorrent');
+			done(null, {client_torrent : 'rutorrent'});
 		});
 	},
 	transmission : function(done) {
@@ -137,7 +137,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de transmission terminée'.info);
-			done(null, 'transmission');
+			done(null, {client_torrent : 'transmission'});
 		});
 	},
 	aucun : function(done) {
