@@ -69,9 +69,9 @@ echo "Editing settings"
 
 #Symlink to node app
 #ln -sf /var/lib/transmission-daemon-$username/info/settings.json $appdir/scripts/transmission/config/settings.$username.json 
-cp /etc/transmission-daemon-$username/settings.json $appdir/scripts/transmission/config/settings.$username.json
+#cp /etc/transmission-daemon-$username/settings.json $appdir/scripts/transmission/config/settings.$username.json
 
-ln -sf $appdir/scripts/transmission/config/settings.$username.json /var/lib/transmission-daemon-$username/info/settings.json 
+ln -sf /etc/transmission-daemon-$username/settings.json $appdir/scripts/transmission/config/settings.$username.json 
 #ln -sf /var/lib/transmission-daemon-$username/info/settings.json /etc/transmission-daemon-$username/settings.json
 
 chown -R $username:$username /var/lib/transmission-daemon-$username
