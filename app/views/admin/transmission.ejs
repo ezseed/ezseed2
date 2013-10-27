@@ -4,9 +4,9 @@
 
 <div id="admin">
 	<form method="POST" action="" style="padding:10px" class="text-center">
-		<textarea name="config">
-			<%= JSON.stringify(config) %>
-		</textarea>
+		<textarea name="config" cols="10" rows="40">
+			<%= JSON.stringify(config, null, 4) %>
+		</textarea><br>
 		<input type="submit" value="Envoyer">
 	</form>
 </div>
