@@ -1,0 +1,15 @@
+<% include ../header %>
+
+<h1>Ajouter un répertoire</h1>
+
+<div id="admin">
+	<form method="POST" action="" style="padding:10px" class="text-center">
+		<textarea name="config">
+			<%= JSON.stringify(config) %>
+		</textarea>
+		<input type="submit" value="Envoyer">
+	</form>
+</div>
+
+<div id="toTop"><i class="entypo-up-bold"></i></div>
+<% include ../footer %>
