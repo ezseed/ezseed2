@@ -52,7 +52,7 @@ exports.listen = function(req, res) {
 			var cwd = global.config.root.replace('/app', '');
 
 			for(var i in doc.songs)			
-				 doc.songs[i].fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + doc.songs[i].path.replace(cwd, '');
+				 doc.songs[i].fullUrl = 'http://' + req.host + ':'+ req.app.settings.port + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
 			
 
 			res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:doc._id });
