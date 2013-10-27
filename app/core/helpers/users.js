@@ -8,11 +8,15 @@ var _ = require('underscore')
   , db = require('../database.js');
 
 var directorySize = function(path, cb) {
+  
+  console.log('Executing directory size');
 
   var exec = require('child_process').exec, child;
 
   child = exec('du -sk '+path,
       function (error, stdout, stderr) {
+        
+        console.log('Size', error, stdout, stderr);
 
         var size = stdout.match(/([0-9]+)/);
         if(typeof size == 'array')
