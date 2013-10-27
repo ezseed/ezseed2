@@ -88,10 +88,10 @@
           </nav>
 
           <div id="diskSpace" class="league-gothic">
-            <div id="usedBar" style="width:"></div>
+            <div id="usedBar" style="width:<%= usedSize.size / config.diskSpace %>"></div>
             <span class="text">Espace Disque</span>
             <span class="size">
-              <span class="used"><% if(usedSize !== undefined) { %> <%= usedSize %> <% } %></span>
+              <span class="used"><% if(usedSize !== undefined) { %> <%= usedSize.pretty %> <% } %></span>
               <span class="left">/ <% if(config.availableSpace !== undefined) { %> <%= config.availableSpace %> <% } %></span>
             </span>
           </div>
