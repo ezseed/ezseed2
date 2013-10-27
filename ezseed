@@ -406,17 +406,18 @@ var install = {
 	},
 	client_torrent: function(callback, client) {
 		if(client) {
-			torrent[client](function(client) {
-				callback(null, client);
+			torrent[client](function(err, results) {
+				callback(null, results);
 			});
 		} else {
+			
 			var choose = function(callback) {
 				promptly.choose('Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 					if(client == 'aucun') {
 						promptly.confirm("Êtes vous sûr de ne pas vouloir installer de client ? (l'utilisateur système ne sera pas créé) Y/n", {default : 'y'}, function (err, value) {
 						    if(value === true) {
-						    	torrent[client](function(client) {
-							    	callback(null, client);
+						    	torrent[client](function(err, results) {
+							    	callback(null, results);
 							    });
 							} else {
 								choose();
@@ -426,8 +427,8 @@ var install = {
 						if(cache.get('notorrent') === true)
 							callback(null, client);
 						else
-						    torrent[client](function(client) {
-						    	callback(null, client);
+						    torrent[client](function(err, results) {
+						    	callback(null, results);
 						    });
 					}
 				});
