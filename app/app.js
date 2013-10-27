@@ -39,7 +39,8 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
-    url: 'mongodb://127.0.0.1:27017/'
+    url: 'mongodb://127.0.0.1:27017/',
+    db : 'sessions'
   }),
   secret: '3xam9l3'
 }));
