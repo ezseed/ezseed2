@@ -18,6 +18,8 @@ exports.download = function(req, res) {
 		} else {
 			var files = doc.songs || doc.movies || doc.files;
 
+			console.log(files);
+
 			res.download(files[0].path);
 		}
 	});
