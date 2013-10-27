@@ -63,9 +63,6 @@ module.exports.fetchDatas = function(params) {
   var io = params.io;
 
   db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
-    if(err)
-      console.log('FetchDatas', err);
-
     if(files) {
       countDatas(files.paths, function(count) {
        if(count !== 0) {
@@ -77,8 +74,6 @@ module.exports.fetchDatas = function(params) {
           });
         }
       });
-    } else {
-      console.log('No paths', err, files);
     }
   });
 

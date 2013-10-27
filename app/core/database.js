@@ -86,7 +86,6 @@ module.exports = {
         console.log(uid);
 
   			Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
-          console.log(docs);
   				Paths.populate(docs, 
 			  		[
 			          { path: 'paths.movies', model: Movies, match: { dateAdded: {"$gt":lastUpdate} }, lean : true },
@@ -94,8 +93,6 @@ module.exports = {
 			          { path: 'paths.others', model: Others, match: { dateAdded: {"$gt":lastUpdate} }, lean : true }
 			        ],
 			        function(err, docs) {
-                console.log('Files byUser', err, docs);
-
 			          cb(err, docs);
 			        }
   				)

@@ -152,11 +152,7 @@ var watcher = {
 	removedIds : [],
 	watchers : [],
 	initFetch : function() {
-
 		db.users.getAll(function(err, users) {
-
-			console.log(users);
-			
 			var paths = [];
 			_.each(users, function(u) {
 				_.each(u.paths, function(p) {
@@ -167,8 +163,6 @@ var watcher = {
 					);
 				});
 			});
-
-			console.log(watcher.watchers);
 		});
 	},
 	updateFiles : function(uid, cb) {
