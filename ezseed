@@ -113,7 +113,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de rutorrent terminée'.info);
-			done(null, {client_torrent : 'rutorrent'});
+			done(null, 'rutorrent');
 		});
 	},
 	transmission : function(done) {
@@ -137,7 +137,7 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de transmission terminée'.info);
-			done(null, {client_torrent : 'transmission'});
+			done(null, 'transmission');
 		});
 	},
 	aucun : function(done) {
@@ -410,7 +410,7 @@ var install = {
 				callback(null, results);
 			});
 		} else {
-			
+
 			var choose = function(callback) {
 				promptly.choose('Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', ['rutorrent', 'transmission', 'aucun'], {default : 'aucun'}, function (err, client) {
 					if(client == 'aucun') {
