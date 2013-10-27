@@ -26,6 +26,8 @@ var directorySize = function(path, cb) {
 var usedSize = function(paths, cb) {
   var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
 
+  console.log(paths);
+
   if(cachedSize)
     cb({size : cachedSize, pretty : pretty(cachedSize)});
   else {
