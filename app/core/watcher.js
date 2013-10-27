@@ -165,7 +165,7 @@ var watcher = {
 			});
 		});
 
-		console.log(watchers);
+		console.log(this.watchers);
 	},
 	updateFiles : function(uid, cb) {
 		console.log('Updating files - watcher');
