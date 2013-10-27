@@ -96,7 +96,7 @@ var admin = {
 		var username = req.params.username;
 
 		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
-			jf.writeFileSync(__dirname + '/../scripts/transmission/config/settings.'+username+'.json', req.body.config);
+			jf.writeFileSync(__dirname + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
 			exec('/etc/init.d/transmission-daemon-'+username + ' start', function(err, stdout, sdterr) {
 				res.redirect('/admin');
 			});
