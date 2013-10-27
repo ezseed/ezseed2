@@ -74,7 +74,7 @@ module.exports.fetchDatas = function(params) {
           });
         }
       });
-    else {
+    } else {
       console.log('No paths');
     }
   });
