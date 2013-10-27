@@ -38,7 +38,7 @@ app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
-app.use(express.cookieParser()));
+app.use(express.cookieParser());
 app.use(express.session({
   store: new MongoStore({
     url: 'mongodb://127.0.0.1:27017/'
