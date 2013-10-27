@@ -88,7 +88,7 @@ var admin = {
 	, editTransmissionConfiguration : function(req, res) {
 		var transmissionConfig = jf.readFileSync(__dirname + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
 
-		res.render('admin/transmission', {config : transmissionConfig});
+		res.render('admin/transmission', {title: "Editer la configuration transmission", config : transmissionConfig});
 	}
 
 	, saveTransmissionConfiguration : function(req, res) {
