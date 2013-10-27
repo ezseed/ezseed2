@@ -24,6 +24,7 @@
     "inotify": "~1.2.1",
     "commander": "~2.0.0",
     "promptly": "~0.2.0",
-    "colors": "~0.6.2"
+    "colors": "~0.6.2",
+    "connect-mongo": "~0.3.3"
   }
 }
