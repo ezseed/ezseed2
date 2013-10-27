@@ -14,9 +14,10 @@ var directorySize = function(path, cb) {
   child = exec('du -sk '+path,
       function (error, stdout, stderr) {
         
-        console.log('Size', error, stdout, stderr);
-
         var size = stdout.match(/([0-9]+)/);
+
+        console.log(size);
+
         if(typeof size == 'array')
           cb(error, size[0]*1024);
         else if(typeof size == 'string')
@@ -35,6 +36,7 @@ var usedSize = function(paths, cb) {
   else {
     async.map(paths.paths, directorySize, function(err, sizes){
         var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
+        console.log('Size', size);
         cache.put(key, size, 10000);
         cb({size : size, pretty : pretty(size)});
     });
