@@ -92,7 +92,6 @@ module.exports = {
 			        ],
 			        function(err, docs) {
 			          cb(err, docs);
-			        
 			        }
   				)
   			});
