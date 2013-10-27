@@ -19,14 +19,19 @@ module.exports = {
           console.log(err);
           cb(err, {});
         } else {
-  			 	var paths = [], p = docs.paths;
 
-  			 	for(var i in p)
-  			 		if(p[i].path !== undefined && p[i].path !== 'paths')
-  				 		paths.push(p[i].path);
-  			
+          if(docs) {
+    			 	var paths = [], p = docs.paths;
 
-  			    cb(err, {paths : paths, docs : docs.paths});
+    			 	for(var i in p)
+    			 		if(p[i].path !== undefined && p[i].path !== 'paths')
+    				 		paths.push(p[i].path);
+    			
+
+    			    cb(err, {paths : paths, docs : docs.paths});
+          } else {
+            cb(err, {paths: [], docs : null});
+          }
         }
 			});
 		},
