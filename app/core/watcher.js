@@ -161,7 +161,7 @@ var watcher = {
 							{path : p.path, uid:u._id, pid:p._id}
 						)
 					);
-					console.log(this.watchers);
+					console.log(watcher.watchers);
 				});
 			});
 		});

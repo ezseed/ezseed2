@@ -16,8 +16,10 @@ var directorySize = function(path, cb) {
         
         var size = stdout.match(/([0-9]+)/);
 
+        console.log(size);
+        
         if(typeof size == 'array')
-          cb(error, size[0]*1024);
+          cb(null, size[0]*1024);
         else
           cb('Pas de fichiers', 0);
     }
