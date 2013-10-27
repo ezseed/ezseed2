@@ -129,7 +129,7 @@ var Watch = function(params) {
 				clearTimeout(self.addTimeout);
 
 			self.addTimeout = setTimeout(function() {
-				console.log('updateFiles');
+				console.log('Watcher updateFiles');
 
 				watcher.updateFiles(self.uid, function() {
 					self.addTimeout = null;
@@ -164,8 +164,11 @@ var watcher = {
 				});
 			});
 		});
+
+		console.log(watchers);
 	},
 	updateFiles : function(uid, cb) {
+		console.log('Updating files - watcher');
 		db.paths.byUser(uid, function(err, paths) {
             explorer.explore(paths, function(err, update) {
             	cb();
