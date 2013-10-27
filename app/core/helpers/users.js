@@ -9,8 +9,6 @@ var _ = require('underscore')
 
 var directorySize = function(path, cb) {
   
-  console.log('Executing directory size');
-
   var exec = require('child_process').exec, child;
 
   child = exec('du -sk '+path,
@@ -21,6 +19,8 @@ var directorySize = function(path, cb) {
         var size = stdout.match(/([0-9]+)/);
         if(typeof size == 'array')
           cb(error, size[0]*1024);
+        else if(typeof size == 'string')
+          cb(error, size * 1024)
         else
           cb('Pas de fichiers', 0);
     }
@@ -29,8 +29,6 @@ var directorySize = function(path, cb) {
 
 var usedSize = function(paths, cb) {
   var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
-
-  console.log(paths);
 
   if(cachedSize)
     cb({size : cachedSize, pretty : pretty(cachedSize)});
