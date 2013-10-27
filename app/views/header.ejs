@@ -64,9 +64,9 @@
             </a>
             <% if(user.client == 'transmission') { %>
               <% if(config.torrentLink == 'link') { %>
-                <a href="<%= host %>:<%= user['rpc-port'] %>" title="Accéder aux torrents">
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" title="Accéder aux torrents">
               <% } else if (config.torrentLink == 'window') { %>
-                <a href="<%= host %>:<%= user['rpc-port'] %>" target="_blank" title="Accéder aux torrents">
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" target="_blank" title="Accéder aux torrents">
               <% } else { %>
                 <a href="/torrents" title="Accéder aux torrents">
               <% } %>
