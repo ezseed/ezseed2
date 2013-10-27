@@ -39,22 +39,25 @@ make test
 
 make install
 
+cd $DIR
+
+rm -r node
+
 # it's alive ?
 if [ -z $(node -v) && -z $(npm -v) ]
 then
 	exit 0
 else
-	npm install pm2 -g
+	npm install pm2@0.6.3 -g #to be changed
 	mkdir /var/log/ezseed
 	mkdir /var/www
-	mv $DIR/../ezseed2 /var/www/ezseed2
+	cp -R $DIR /var/www/ezseed2
 	mkdir /var/www/ezseed2/app/public/tmp
 	chmod 775 /var/www/ezseed2/app/public/tmp
-	cd /var/www/ezseed2/
+	cd /var/www/ezseed2/ &&	npm install --save
 
-	npm install --save
-
-	echo "Check that ezseed2 is in /var/www/, if it's not please move it there. Then you'll need to do : npm install && mkdir /var/www/ezseed2/app/public/tmp"
+	echo "You might delete this rep : 'cd .. && rm -R ezseed\n"
+	echo "Then please exec 'cd /var/www/ezseed' and start installation : ./ezseed install -h"
 fi
 
 
