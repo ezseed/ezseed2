@@ -85,7 +85,11 @@ app.use(function(req, res, next){
 
     db.paths.byUser(u.id, function(err, paths) {
       users.usedSize(paths, function(size) {
-        res.locals.usedSize = size;
+        var percent = size.size / 1024 / 1024;
+
+        percent = percent / config.diskSpace * 100 + '%'
+
+        res.locals.usedSize = _.extend(size, {percent : percent});
         next();
       });
     });
