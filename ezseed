@@ -465,6 +465,7 @@ program
 
 		async.series(install,
 		function(err, results) {
+			console.log(results);
 			if(results.client_torrent === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
