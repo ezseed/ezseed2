@@ -82,6 +82,8 @@ module.exports = {
   },
   files : {
   		byUser : function (uid, lastUpdate, cb) {
+        
+        console.log(uid);
 
   			Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
   				Paths.populate(docs, 
@@ -92,7 +94,7 @@ module.exports = {
 			        ],
 			        function(err, docs) {
                 console.log('Files byUser', err, docs);
-                
+
 			          cb(err, docs);
 			        }
   				)
