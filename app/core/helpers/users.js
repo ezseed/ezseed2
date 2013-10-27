@@ -16,12 +16,8 @@ var directorySize = function(path, cb) {
         
         var size = stdout.match(/([0-9]+)/);
 
-        console.log(size);
-
         if(typeof size == 'array')
           cb(error, size[0]*1024);
-        else if(typeof size == 'string')
-          cb(error, size * 1024)
         else
           cb('Pas de fichiers', 0);
     }
@@ -35,6 +31,8 @@ var usedSize = function(paths, cb) {
     cb({size : cachedSize, pretty : pretty(cachedSize)});
   else {
     async.map(paths.paths, directorySize, function(err, sizes){
+        console.log(sizes);
+
         var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
         console.log('Size', size);
         cache.put(key, size, 10000);
