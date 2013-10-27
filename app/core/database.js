@@ -15,15 +15,19 @@ module.exports = {
 	paths : {
 		byUser : function (uid, cb) {
 			 Users.findById(uid).populate('paths').exec(function (err, docs) {
+        if (err) {
+          console.log(err);
+          cb(err, {});
+        } else {
+  			 	var paths = [], p = docs.paths;
 
-			 	var paths = [], p = docs.paths;
+  			 	for(var i in p)
+  			 		if(p[i].path !== undefined && p[i].path !== 'paths')
+  				 		paths.push(p[i].path);
+  			
 
-			 	for(var i in p)
-			 		if(p[i].path !== undefined && p[i].path !== 'paths')
-				 		paths.push(p[i].path);
-			
-
-			    cb(err, {paths : paths, docs : docs.paths});
+  			    cb(err, {paths : paths, docs : docs.paths});
+        }
 			});
 		},
     getAll : function(cb) {
