@@ -62,14 +62,24 @@
                 <i class="entypo-drive"></i>Bureau
               </button>
             </a>
-            <% 
-            if(config.torrentLink == 'link') {
-            %>
-            <a href="/<%= user.client %>" title="Accéder aux torrents">
-            <% } else if (config.torrentLink == 'window') { %>
-            <a href="/<%= user.client %>" target="_blank" title="Accéder aux torrents">
-            <% } else { %>
-            <a href="/torrents" title="Accéder aux torrents">
+            <% if(user.client == 'transmission') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" title="Accéder aux torrents">
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" target="_blank" title="Accéder aux torrents">
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents">
+              <% } %>
+            <% } else if(user.client == 'rutorrent') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="/rutorrent" title="Accéder aux torrents">
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="/rutorrent" target="_blank" title="Accéder aux torrents">
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents">
+              <% } %>
+            <% } else { %>
+              <a href="#aucun">
             <% } %>
               <button id="torrents">
                 <i class="entypo-network"></i>Torrents

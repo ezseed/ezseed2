@@ -15,8 +15,10 @@ var directorySize = function(path, cb) {
       function (error, stdout, stderr) {
 
         var size = stdout.match(/([0-9]+)/);
-
-        cb(error, size[0]*1024);
+        if(typeof size == 'array')
+          cb(error, size[0]*1024);
+        else
+          cb('Pas de fichiers', 0);
     }
   );
 } 
@@ -61,8 +63,8 @@ module.exports.fetchDatas = function(params) {
   var io = params.io;
 
   db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
-
-     countDatas(files.paths, function(count) {
+    if(files) {
+      countDatas(files.paths, function(count) {
        if(count !== 0) {
           io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
           cache.put('lastUpdate', new Date());
@@ -72,6 +74,7 @@ module.exports.fetchDatas = function(params) {
           });
         }
       });
+    }
   });
 
 }

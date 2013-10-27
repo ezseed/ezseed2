@@ -17,9 +17,7 @@ var express = require('express')
 ;
 
 var jf = require('jsonfile');
-
-//to be removed
-// global.rootPath = __dirname;
+var MongoStore = require('connect-mongo')(express);
 
 global.config = jf.readFileSync(__dirname + '/config.json');
 
@@ -38,8 +36,14 @@ app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
-app.use(express.cookieParser('secret'));
-app.use(express.session());
+app.use(express.cookieParser());
+app.use(express.session({
+  store: new MongoStore({
+    url: 'mongodb://127.0.0.1:27017/',
+    db : 'sessions'
+  }),
+  secret: '3xam9l3'
+}));
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req,res, next) {
@@ -66,11 +70,19 @@ app.use(function(req, res, next){
                                 });
 
   res.locals.location = req.originalUrl;
+  res.locals.host = req.host;
 
   if(req.session.user) {
     var u = req.session.user;
     delete u.hash;
     res.locals.user = u;
+
+    if(u.client == 'transmission') {
+      var transmissionConfig = jf.readFileSync(__dirname + '/scripts/transmission/config/settings.'+u.username+'.json');
+
+      u['rpc-port'] = transmissionConfig['rpc-port'];
+    }
+
     db.paths.byUser(u.id, function(err, paths) {
       users.usedSize(paths, function(size) {
         res.locals.usedSize = size;

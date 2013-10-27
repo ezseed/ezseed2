@@ -15,15 +15,24 @@ module.exports = {
 	paths : {
 		byUser : function (uid, cb) {
 			 Users.findById(uid).populate('paths').exec(function (err, docs) {
+        if (err) {
+          console.log(err);
+          cb(err, {});
+        } else {
 
-			 	var paths = [], p = docs.paths;
+          if(docs) {
+    			 	var paths = [], p = docs.paths;
 
-			 	for(var i in p)
-			 		if(p[i].path !== undefined && p[i].path !== 'paths')
-				 		paths.push(p[i].path);
-			
+    			 	for(var i in p)
+    			 		if(p[i].path !== undefined && p[i].path !== 'paths')
+    				 		paths.push(p[i].path);
+    			
 
-			    cb(err, {paths : paths, docs : docs.paths});
+    			    cb(err, {paths : paths, docs : docs.paths});
+          } else {
+            cb(err, {paths: [], docs : null});
+          }
+        }
 			});
 		},
     getAll : function(cb) {
@@ -73,7 +82,7 @@ module.exports = {
   },
   files : {
   		byUser : function (uid, lastUpdate, cb) {
-
+        
   			Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
   				Paths.populate(docs, 
 			  		[
@@ -83,7 +92,6 @@ module.exports = {
 			        ],
 			        function(err, docs) {
 			          cb(err, docs);
-			        
 			        }
   				)
   			});
@@ -258,7 +266,17 @@ module.exports = {
       Users.count(cb);
     },
     delete : function(username, cb) {
-      Users.findOneAndRemove({username: username}, cb);
+      Users.findOne({username : username}, function(err, doc) {
+        var nbPaths = doc.paths.length;
+        if(nbPaths) {
+          while(nbPaths--) {
+            Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
+
+            });
+          }
+        }
+        Users.findByIdAndRemove(doc._id, cb);
+      });
     },
     update : function(username, update, cb) {
       if(update.password !== undefined) {

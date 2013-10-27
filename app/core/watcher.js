@@ -6,6 +6,9 @@ var _ = require('underscore')
   , jf = require('jsonfile')
   , db = require('./database.js');
 
+if(!fs.existsSync(__dirname + '/../public/tmp'))
+	fs.mkdirSync(__dirname + '/../public/tmp', '0775');
+
 var Inotify = require('inotify').Inotify, EventEmitter = require('events').EventEmitter, util = require('util');
 
 //Watcher from https://npmjs.org/package/inotifywatch
@@ -149,7 +152,6 @@ var watcher = {
 	removedIds : [],
 	watchers : [],
 	initFetch : function() {
-
 		db.users.getAll(function(err, users) {
 			var paths = [];
 			_.each(users, function(u) {
@@ -161,8 +163,6 @@ var watcher = {
 					);
 				});
 			});
-
-			console.log(watcher.watchers);
 		});
 	},
 	updateFiles : function(uid, cb) {
@@ -173,7 +173,6 @@ var watcher = {
         });
 	},
 	writeRemovedFiles : function(watch) {
-
 		var path = pathInfo.join(__dirname, '/../public/tmp/', watch.uid+'.json');
 
 		if(!fs.existsSync(path))

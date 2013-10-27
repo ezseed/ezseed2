@@ -2,6 +2,7 @@ var db = require('../core/database.js')
   , _ = require('underscore')
   , fs = require('fs')
   , pretty = require('prettysize')
+  , pathInfo = require('path')
   , jf = require('jsonfile');
 
 var admin = {
@@ -11,7 +12,6 @@ var admin = {
 	index : function(req, res) {
 		db.users.getAll(function(err, users) {
 			// db.paths.getAll(function(err, paths) {
-		console.log(users);
 				res.render('admin', { title: 'Ezseed V2 - Administration', users:users }); //,paths: paths
 			// });
 		});
@@ -27,7 +27,7 @@ var admin = {
 	, createPath : function(req, res) {
 		if(req.body.path.length) {
 			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
-				db.paths.save(req.body.path, req.body.username, function(err, p) {
+				db.paths.save(pathInfo.join(global.config.path, req.body.path), req.body.username, function(err, p) {
 					req.session.success = "Chemin sauvegardé en base de données";
 					res.redirect('admin');
 				});
@@ -84,6 +84,24 @@ var admin = {
 		});
 	}
 
+	, editTransmissionConfiguration : function(req, res) {
+		var transmissionConfig = jf.readFileSync(__dirname + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
+
+		res.render('admin/transmission', {title: "Editer la configuration transmission", config : transmissionConfig});
+	}
+
+	, saveTransmissionConfiguration : function(req, res) {
+		var exec = require('child_process').exec;
+		var username = req.params.username;
+
+		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
+			jf.writeFileSync(__dirname + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
+			exec('/etc/init.d/transmission-daemon-'+username + ' start', function(err, stdout, sdterr) {
+				res.redirect('/admin');
+			});
+		});
+	}
+
 }
 
 module.exports = function(app) {
@@ -93,5 +111,8 @@ module.exports = function(app) {
 	app.post('/admin/path', admin.restrict, admin.createPath);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
+
+	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
+	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);
 }
 
