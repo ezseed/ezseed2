@@ -66,7 +66,7 @@ var findCoverInDirectory = function(dir) {
 		}
 	}
 	
-	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/' + pathInfos.basename(global.config.path));
+	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
 module.exports.getTags  = {
