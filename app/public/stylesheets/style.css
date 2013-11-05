@@ -186,7 +186,7 @@ nav#display {
 	-moz-border-radius-bottomleft: 5px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
-	background: #373634 url('/images/grey.png');
+	background: #373634 url('../images/grey.png');
 	padding-top: 10px;
 	-webkit-box-shadow: inset 0px 2px 7px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: inset 0px 2px 7px 0px rgba(0,0,0,0.75);
@@ -206,8 +206,10 @@ nav#display.fixed {
 		margin-left: 20px;
 	}
 
-	nav #displayOptions i {			color: #b2b2af;
-	cursor: pointer;}
+	nav #displayOptions i {
+		color: #b2b2af;
+		cursor: pointer;
+	}
 
 	nav #displayOptions i:before {
 		font-size: 25px;
@@ -225,9 +227,6 @@ nav#display.fixed {
 		list-style-type: none;
 		float:right;
 		height: 30px;
-	/*	-moz-border-radius: 3px;
-		-webkit-border-radius: 3px;
-		border-radius: 3px;*/
 		-webkit-box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
 		box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
 	}
@@ -292,9 +291,15 @@ section#desktop {
 	margin: 15px auto;
 }
 
+/*section#desktop .grid-sizer { width: 100%; }
+*/
+section#desktop .miniature {display: none;}
+section#desktop .table {display: none;}
+
 section#desktop .element.miniature {
 	position: relative;
 	overflow:hidden;
+	font-size: 0;
 }
 	section#desktop .element.miniature div.titre {
 		padding: 0;
@@ -305,8 +310,7 @@ section#desktop .element.miniature {
 		display: inline-block;
 		position: absolute;
 		background-color: rgba(0,0,0,0.5);
-		width: auto;
-		height: 2em;
+		width: 100%;
 	}
 
 	section#desktop .element.miniature div.titre h1 {
@@ -314,8 +318,12 @@ section#desktop .element.miniature {
 		text-align: center;
 		white-space:nowrap;
 		text-shadow: 0 -1px 0 #303030;
-		font-size: 1.3em;
+		font-size: 20px;
 		color:#b2b2af;
+	}
+
+	section#desktop .element.miniature a {
+		font-size: 0;
 	}
 	
 	section#desktop .element.miniature i {
@@ -326,15 +334,10 @@ section#desktop .element.miniature {
 		height: 100%;
 	}
 
-
-/*section#desktop .element.list > div:nth-child(n+1) {
-	max-width: 81.35%;
-}*/
-
 section#desktop .element.list {
 	position: relative;
+	width: 100%;
 	min-height: 160px;
-	width: 98%;
 	padding: 10px;
 	margin: 0 auto 20px auto;
 	border: 2px solid #e15d33;
@@ -350,10 +353,6 @@ section#desktop .element.list.login-box {
 	min-height: 0;
 }
 
-	section#desktop .element.list div.pullLeft:last-child {
-		/*margin-left: 15px;
-		width: 80%;*/
-	}
 
 	section#desktop .element.list h1 {
 		text-shadow: 0 -1px 0 #303030;
@@ -645,24 +644,6 @@ section#desktop .input-box {margin: 0;margin-right: 5px; display: inline-block;w
 	line-height: 30px;
 	vertical-align: top;
 }
-/*section button {
-	float: left;
-	margin-right: 5px;
-	cursor: pointer;
-	font-family: "Oswald";
-	color:#303030;
-	font-size: 1.1em;
-	display: inline-block;
-	padding: 0 6px;
-	line-height: 24px;
-	border: 1px solid rgba(48,48,48,.5);
-	background-color: #e56638;
-	background-image: -moz-linear-gradient(top, #e56638 0%, #df542e 100%);
-	background-image: -webkit-linear-gradient(top, #e56638 0%,#df542e 100%);
-	background-image: -o-linear-gradient(top, #e56638 0%,#df542e 100%);
-	background-image: -ms-linear-gradient(top, #e56638 0%,#df542e 100%);
-	background-image: linear-gradient(to bottom, #e56638 0%,#df542e 100%);
-}*/
 
 .login-button {
 	text-align: center;
@@ -691,109 +672,6 @@ section#desktop .input-box {margin: 0;margin-right: 5px; display: inline-block;w
      	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(236, 200, 82, 0.6);
         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(236, 200, 82, 0.6);
 	}
-
-/*
-.button {
-	display: block; 
-	font-size: 12px; 
-	text-decoration: none!important; 
-	font-family: Helvetica, Arial, sans serif;
-	padding: 8px 12px; 
-	border-radius: 3px; 
-	-moz-border-radius: 3px; 
-	box-shadow: inset 0px 0px 2px #fff;
-	-o-box-shadow: inset 0px 0px 2px #fff;
-	-webkit-box-shadow: inset 0px 0px 2px #fff;
-	-moz-box-shadow: inset 0px 0px 2px #fff;
-}
-.button:active {
-	box-shadow: inset 0px 0px 3px #999;
-	-o-box-shadow: inset 0px 0px 3px #999;
-	-webkit-box-shadow: inset 0px 0px 3px #999;
-	-moz-box-shadow: inset 0px 0px 3px #999;
-}
-
-.yellow{
-	color: #986a39;
-	border: 1px solid #e6b650;
-	background-image: -moz-linear-gradient(#ffd974, #febf4d);
-	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#febf4d), to(#ffd974));
-	background-image: -webkit-linear-gradient(#ffd974, #febf4d);
-	background-image: -o-linear-gradient(#ffd974, #febf4d);
-	text-shadow: 1px 1px 1px #fbe5ac;
-	background-color: #febf4d;
-}
-.yellow:hover {
-	border: 1px solid #c1913d;
-	background-image: -moz-linear-gradient(#febf4d, #ffd974);
-	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffd974), to(#febf4d));
-	background-image: -webkit-linear-gradient(#febf4d, #ffd974);
-	background-image: -o-linear-gradient(#febf4d, #ffd974);
-	background-color: #ffd974;
-}
-.yellow:active {border: 1px solid #936b26;}
-
-.button.left {
-	border-top-right-radius: 0px;
-	-moz-border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
-	-moz-border-bottom-right-radius: 0px;
-	border-right: 0px;
-}
-.button.left:hover {
-	border-right: 0px;
-}
-.button.middle {
-	border-radius: 0px;
-	-moz-radius: 0px;
-	border-right: 0px;
-}
-.button.middle:hover {
-	border-right: 0px;
-}
-.button.right {
-	border-top-left-radius: 0px;
-	-moz-border-top-left-radius: 0px;
-	border-bottom-left-radius: 0px;
-	-moz-border-bottom-left-radius: 0px;
-}*/
-/*
-section button .icon {
-	background-repeat: no-repeat;
-	display: inline-block;
-	width: 24px;
-	height: 24px;
-	line-height: 24px;
-	vertical-align: middle;
-	margin-top: 1px;
-}*/
-
-/*section button .separateur {
-	background-image : url('../images/separateur.png');
-	background-repeat: no-repeat;
-	display: inline-block;
-	height: 28px;
-	width: 1px;
-	vertical-align: middle;
-	margin-right: 6px;
-	margin-left: 6px;
-}
-
-section button.none, a.none {
-	float: left;
-	background: transparent;
-	color:#B2B2AF;
-	border:0;
-	padding: 0 5px;
-	line-height: inherit;
-	margin: 0;
-	margin-bottom: -1px;
-	cursor: pointer;
-	font-family: inherit;
-	font-size: inherit;
-	display: inline-block;
-}*/
-
 
 button.connexion {
 	cursor: pointer;
@@ -903,7 +781,7 @@ input:-moz-placeholder {
 	display: none;
 	bottom: 0;
 	right: 50px;
-	background: #282827 url('/images/header.png');
+	background: #282827 url('../images/header.png');
 	color: #b2b2af;
 	z-index: 9;
 	border:1px solid #e15d33;
@@ -1032,7 +910,7 @@ input:-moz-placeholder {
 #admin h2 + div {
   height: auto;
   color:#B2B2AF;
-  background: #373634 url('/images/grey.png');
+  background: #373634 url('../images/grey.png');
 }
 
 #admin h2.open + div {
@@ -1102,7 +980,7 @@ span.customSelect {
 	padding-left: 4px;
 	font-size: 1em;
 	width: 175px;
-	background:#c9532d url(/images/arrow-down.png) right center no-repeat;
+	background:#c9532d url(../images/arrow-down.png) right center no-repeat;
 }
 
 button:focus, input:focus, select:focus {
@@ -1115,7 +993,7 @@ button:focus, input:focus, select:focus {
 	top:50%;
 	height:48px;
 	width: 48px;
-	background: #282827 url('/images/header.png');
+	background: #282827 url('../images/header.png');
 	color: #b2b2af;
 	text-align: center;
 	vertical-align: top;
@@ -1174,69 +1052,5 @@ p {
 	display: none;
 }
 
-/* isotope */
-/* Start: Recommended Isotope styles */
 
-/**** Isotope Filtering ****/
-
-.isotope-item {
-  z-index: 2;
-}
-
-.isotope-hidden.isotope-item {
-  pointer-events: none;
-  z-index: 1;
-}
-
-/**** Isotope CSS3 transitions ****/
-
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.5s;
-     -moz-transition-duration: 0.5s;
-      -ms-transition-duration: 0.5s;
-       -o-transition-duration: 0.5s;
-          transition-duration: 0.5s;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-      -ms-transition-property: height, width;
-       -o-transition-property: height, width;
-          transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-     -moz-transition-property:    -moz-transform, opacity;
-      -ms-transition-property:     -ms-transform, opacity;
-       -o-transition-property:      -o-transform, opacity;
-          transition-property:         transform, opacity;
-}
-
-/**** disabling Isotope CSS3 transitions ****/
-
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-     -moz-transition-duration: 0s;
-      -ms-transition-duration: 0s;
-       -o-transition-duration: 0s;
-          transition-duration: 0s;
-}
-
-/* End: Recommended Isotope styles */
-
-
-
-/* disable CSS transitions for containers with infinite scrolling*/
-.isotope.infinite-scrolling {
-  -webkit-transition: none;
-     -moz-transition: none;
-      -ms-transition: none;
-       -o-transition: none;
-          transition: none;
-}
 
