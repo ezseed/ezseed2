@@ -60,7 +60,8 @@ require(['desktop', 'sockets', 'theme'], function(Desktop) {
         d = JSON.parse(d);
         console.log('Receiving files', d.paths);
 
-        Desktop.append(d.paths);
+        if(config.location == '/')
+            Desktop.append(d.paths);
 
         //Desktop.showNotification({title: 'Fichier ajouté',text: d.count + ' fichier(s) ajouté(s)'});
 
