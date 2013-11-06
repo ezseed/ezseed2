@@ -302,6 +302,11 @@ section#desktop .element.miniature {
 	overflow:hidden;
 	font-size: 0;
 }
+
+section#desktop .element.miniature img {
+	max-width: 100%;
+}
+
 	section#desktop .element.miniature div.titre {
 		padding: 0;
 		margin: 0;
