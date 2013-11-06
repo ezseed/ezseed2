@@ -297,15 +297,15 @@ section#desktop .miniature {display: none;}
 section#desktop .table {display: none;}
 
 section#desktop .element.miniature {
-	max-width: 50%;
+	max-width: 25%;
 	position: relative;
 	overflow:hidden;
 	font-size: 0;
 }
 
-section#desktop .element.miniature img {
-	max-width: 100%;
-}
+	section#desktop .element.miniature img {
+		max-width: 100%;
+	}
 
 	section#desktop .element.miniature div.titre {
 		padding: 0;
@@ -314,9 +314,26 @@ section#desktop .element.miniature img {
 		left:0;
 		z-index: 2;
 		display: inline-block;
+
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		filter: alpha(opacity=0);
+		opacity: 0;
+
 		position: absolute;
 		background-color: rgba(0,0,0,0.5);
 		width: 100%;
+
+		-webkit-transition: all 0.5s ease;
+		-moz-transition: all 0.5s ease;
+		-o-transition: all 0.5s ease;
+		-ms-transition: all 0.5s ease;
+		transition: all 0.5s ease;
+	}
+
+	section#desktop .element.miniature:hover div.titre {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+		filter: alpha(opacity=1);
+		opacity: 1;
 	}
 
 	section#desktop .element.miniature div.titre h1 {
@@ -336,8 +353,8 @@ section#desktop .element.miniature img {
 		font-size: 256px;
 		color:#B2B2AF;
 		background-color: #474747;
-		width: 100%;
-		height: 100%;
+		width: 250px;
+		height: 250px;
 	}
 
 section#desktop .element.list {
