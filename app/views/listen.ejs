@@ -52,9 +52,22 @@
 </section>
 
 <script type="text/javascript">
-//<![CDATA[
-$(document).ready(function(){
+require.config({
+    'baseUrl': '/javascripts',
+    'paths':
+    {
+        //helpers
+        jplayer: 'listen/jplayer.min',
+        playlist : 'liste/jplayer.playlist.min'
+    },
 
+    //SEE http://requirejs.org/docs/api.html#config-waitSeconds
+    waitSeconds: 25
+});
+
+require([
+    'jquery', 'jplayer', 'playlist'
+], function($){
 	new jPlayerPlaylist({
 		jPlayer: "#jquery_jplayer_1",
 		cssSelectorAncestor: "#jp_container_1"
@@ -71,13 +84,14 @@ $(document).ready(function(){
 	}
 	%>
 	], {
-		swfPath: "javascripts",
+		swfPath: "/javascripts/listen",
 		supplied: "oga, mp3",
 		wmode: "window",
 		smoothPlayBar: true,
 		keyEnabled: true
 	});
 });
-//]]>
+
+
 </script>
 <% include footer %>
