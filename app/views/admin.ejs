@@ -139,41 +139,7 @@ Date.prototype.getFrenchDateAsString = function() {
 </div>
 <div id="toTop"><i class="entypo-up-bold"></i></div>
 
+<script src="js/admin.js"></script>
+
 <% include footer %>
 
-<script>
-$(function() {
-
-	var loadCollapse = function() {
-		$("#admin").collapse({
-			open: function() {
-				this.slideDown(100);
-			},
-			close: function() {
-				this.slideUp(100);
-			},
-			accordion : true,
-			persist : true
-		});
-	}
-
-	var to;
-
-	$('select').customSelect({
-		loaded : function() {
-			if(to !== undefined)
-				clearTimeout(to);
-
-			to = setTimeout(function() {
-					loadCollapse();
-				}, 10);
-		}
-	});
-
-
-	$('a[href="#more"]').click(function() {
-		$(this).closest('li').find('.user-more').slideToggle();
-	});
-
-});
-</script>

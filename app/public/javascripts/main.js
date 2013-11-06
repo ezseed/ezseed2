@@ -26,8 +26,11 @@ require.config({
         imagesloaded : 'packery/imagesloaded/imagesloaded',
         packery : 'packery/packery/js',
         desktop : 'desktop',
+        sockets : '../socket.io/socket.io',
+
         theme : '../js/theme',
-        sockets : '../socket.io/socket.io'
+        admin : '../js/admin'
+
     },
 
     //Load non-modular/legacy code
@@ -43,7 +46,8 @@ require.config({
         'desktop' : ['sockets'],
         'theme' : {
             deps : ['desktop']
-        }
+        },
+
     },
 
     //SEE http://requirejs.org/docs/api.html#config-waitSeconds

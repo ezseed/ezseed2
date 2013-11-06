@@ -1,4 +1,4 @@
-require([
+define([
     'jquery', 'desktop'
 ], function($, Desktop){
 

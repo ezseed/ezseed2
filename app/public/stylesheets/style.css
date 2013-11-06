@@ -297,6 +297,7 @@ section#desktop .miniature {display: none;}
 section#desktop .table {display: none;}
 
 section#desktop .element.miniature {
+	max-width: 50%;
 	position: relative;
 	overflow:hidden;
 	font-size: 0;
