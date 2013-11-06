@@ -180,6 +180,8 @@ define([
                     $(this).css('display', 'block');
                 });
 
+                $(self.itemSelector + '.miniature h1').quickfit();
+
                 self.pckry.layout();
 
                 if(!self.firstLoad)
