@@ -609,7 +609,7 @@ program
 	})
 
 program
-	.command('dameon <rutorrent|transmission> <command> <username>')
+	.command('daemon <rutorrent|transmission> <command> <username>')
 	.description('start|stop|restart daemon-client for specified username')
 	.action(daemon);
 
