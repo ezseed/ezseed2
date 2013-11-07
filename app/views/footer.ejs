@@ -2,41 +2,10 @@
     <footer class="text-center">
         ...
     </footer>
-    <script type="text/javascript">
-        $('#alert .entypo-cross').on('click', function(e) {
-            $(this).parent().empty();
-        });
-    </script>
     <script>
-
     var appDir = '<%= appDir %>';
     var user = <%- JSON.stringify(user) %>;
     var config = <%- JSON.stringify(config) %>;
-
-    var columnWidth = $('section#desktop').width() / 12;
-
-    $.expr[":"].contains = $.expr.createPseudo(function(arg) {
-        return function( elem ) {
-            return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-        };
-    });
-
-    var $section = $('section#desktop');
-
-    $(document).ready(function() {
-
-        $('.select-on-click').on('click', function(e) { $(this).select(); });
-
-    });
     </script>
-    <% if(user && location == '/') { %>
-        <script src="/javascripts/isotope.js"></script>
-        <script src="/javascripts/isotope.packer.js"></script>
-        <script src="/javascripts/quickfit.js"></script>
-        <script src="/javascripts/desktop-notify.js"></script>
-        <script src="/javascripts/desktop.js"></script>
-    <% } %>
-
-
   </body>
 </html>

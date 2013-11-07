@@ -37,16 +37,16 @@ user=$2
 # group=`id -ng "$user"`
 
 # the full path to the filename where you store your rtorrent configuration
-config="`su -c 'echo $HOME' $user`/.rtorrent.rc"
+config="`su $user -c 'echo ~/' `.rtorrent.rc"
 
 # set of options to run with
 options=""
 
 # default directory for screen, needs to be an absolute path
-base="`su -c 'echo $HOME' $user`"
+base="`su $user -c 'echo ~/'`"
 
 # name of screen session
-srnname="rtorrent"
+srnname="rtorrent-$user "
 
 # file to log to (makes for easier debugging if something goes wrong)
 logfile="/var/log/rtorrentInit.log"
@@ -84,12 +84,13 @@ checkcnfg() {
 
 d_start() {
   [ -d "${base}" ] && cd "${base}"
-  stty stop undef && stty start undef
-  su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "screen -dm -S ${srnname} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
-  # this works for the screen command, but starting rtorrent below adopts screen session gid
-  # even if it is not the screen session we started (e.g. running under an undesirable gid
-  #su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "sg \"$group\" -c \"screen -fn -dm -S ${srnname} 2>&1 1>/dev/null\"" ${user} | tee -a "$logfile" >&2
-  su -c "screen -S "${srnname}" -X screen rtorrent ${options} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
+  #stty stop undef && stty start undef
+  su $user -c "screen -dmS ${srnname} rtorrent"
+  # su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "screen -dm -S ${srnname} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
+  # # this works for the screen command, but starting rtorrent below adopts screen session gid
+  # # even if it is not the screen session we started (e.g. running under an undesirable gid
+  # #su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "sg \"$group\" -c \"screen -fn -dm -S ${srnname} 2>&1 1>/dev/null\"" ${user} | tee -a "$logfile" >&2
+  # su -c "screen -S "${srnname}" -X screen rtorrent ${options} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
 }
 
 d_stop() {
@@ -97,8 +98,9 @@ d_stop() {
     if ! [ -s ${session}/rtorrent.lock ] ; then
         return
     fi
-    pid=`cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g"`
-    if ps -A | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
+    #awk -F: '{print($2)}' |
+    pid=`cat ${session}/rtorrent.lock | sed "s/[^0-9]//g"`
+    if ps -ef | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
         kill -s INT ${pid}
     fi
 }

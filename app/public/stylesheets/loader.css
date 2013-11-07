@@ -1,172 +1,62 @@
-#loader{
-opacity: 0.8;
-position: absolute;
-left:50%;
-margin-left: -64px;
-display: none;
-z-index: 9;
-width:128px;
-height:128px;
--moz-transform:scale(0.6);
--webkit-transform:scale(0.6);
--ms-transform:scale(0.6);
--o-transform:scale(0.6);
-transform:scale(0.6);
+@font-face {
+	font-family: 'icomoon';
+	src:url('http://s3.amazonaws.com/icomoonfonts/4/6/f.eot');
+	src:url('http://s3.amazonaws.com/icomoonfonts/4/6/f.eot?#iefix') format('embedded-opentype'),
+		url('http://s3.amazonaws.com/icomoonfonts/4/6/f.woff') format('woff'),
+		url('http://s3.amazonaws.com/icomoonfonts/4/6/f.ttf') format('truetype'),
+		url('http://s3.amazonaws.com/icomoonfonts/4/6/f.svg#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
-.f_circleG{
-position:absolute;
-background-color:#555555;
-height:23px;
-width:23px;
--moz-border-radius:12px;
--moz-animation-name:f_fadeG;
--moz-animation-duration:1.04s;
--moz-animation-iteration-count:infinite;
--moz-animation-direction:linear;
--webkit-border-radius:12px;
--webkit-animation-name:f_fadeG;
--webkit-animation-duration:1.04s;
--webkit-animation-iteration-count:infinite;
--webkit-animation-direction:linear;
--ms-border-radius:12px;
--ms-animation-name:f_fadeG;
--ms-animation-duration:1.04s;
--ms-animation-iteration-count:infinite;
--ms-animation-direction:linear;
--o-border-radius:12px;
--o-animation-name:f_fadeG;
--o-animation-duration:1.04s;
--o-animation-iteration-count:infinite;
--o-animation-direction:linear;
-border-radius:12px;
-animation-name:f_fadeG;
-animation-duration:1.04s;
-animation-iteration-count:infinite;
-animation-direction:linear;
+
+#loader {
+	display: inline-block;
+	float: left;
 }
 
-#frotateG_01{
-left:0;
-top:52px;
--moz-animation-delay:0.39s;
--webkit-animation-delay:0.39s;
--ms-animation-delay:0.39s;
--o-animation-delay:0.39s;
-animation-delay:0.39s;
+.icon-spinner:before {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
 }
 
-#frotateG_02{
-left:15px;
-top:15px;
--moz-animation-delay:0.52s;
--webkit-animation-delay:0.52s;
--ms-animation-delay:0.52s;
--o-animation-delay:0.52s;
-animation-delay:0.52s;
+.icon-spinner:before {
+	content: "\e001";
 }
 
-#frotateG_03{
-left:52px;
-top:0;
--moz-animation-delay:0.65s;
--webkit-animation-delay:0.65s;
--ms-animation-delay:0.65s;
--o-animation-delay:0.65s;
-animation-delay:0.65s;
+@keyframes anim-rotate{
+	0% {
+		transform: rotate(0);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@-webkit-keyframes anim-rotate {
+	0% {
+		-webkit-transform: rotate(0);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }
 
-#frotateG_04{
-right:15px;
-top:15px;
--moz-animation-delay:0.78s;
--webkit-animation-delay:0.78s;
--ms-animation-delay:0.78s;
--o-animation-delay:0.78s;
-animation-delay:0.78s;
-}
-
-#frotateG_05{
-right:0;
-top:52px;
--moz-animation-delay:0.91s;
--webkit-animation-delay:0.91s;
--ms-animation-delay:0.91s;
--o-animation-delay:0.91s;
-animation-delay:0.91s;
-}
-
-#frotateG_06{
-right:15px;
-bottom:15px;
--moz-animation-delay:1.04s;
--webkit-animation-delay:1.04s;
--ms-animation-delay:1.04s;
--o-animation-delay:1.04s;
-animation-delay:1.04s;
-}
-
-#frotateG_07{
-left:52px;
-bottom:0;
--moz-animation-delay:1.17s;
--webkit-animation-delay:1.17s;
--ms-animation-delay:1.17s;
--o-animation-delay:1.17s;
-animation-delay:1.17s;
-}
-
-#frotateG_08{
-left:15px;
-bottom:15px;
--moz-animation-delay:1.3s;
--webkit-animation-delay:1.3s;
--ms-animation-delay:1.3s;
--o-animation-delay:1.3s;
-animation-delay:1.3s;
-}
-
-@-moz-keyframes f_fadeG{
-0%{
-background-color:#282827}
-
-100%{
-background-color:#555555}
-
-}
-
-@-webkit-keyframes f_fadeG{
-0%{
-background-color:#282827}
-
-100%{
-background-color:#555555}
-
-}
-
-@-ms-keyframes f_fadeG{
-0%{
-background-color:#282827}
-
-100%{
-background-color:#555555}
-
-}
-
-@-o-keyframes f_fadeG{
-0%{
-background-color:#282827}
-
-100%{
-background-color:#555555}
-
-}
-
-@keyframes f_fadeG{
-0%{
-background-color:#282827}
-
-100%{
-background-color:#555555}
-
+.spinner{
+	display:inline-block;
+	font-size:2em;
+	height:1em;
+	line-height:1;
+	margin:.1em;
+	/*animation*/
+	-webkit-animation:anim-rotate 2s infinite linear;
+	   -moz-animation:anim-rotate 2s infinite linear;
+	    -ms-animation:anim-rotate 2s infinite linear;
+	     -o-animation:anim-rotate 2s infinite linear;
+	        animation:anim-rotate 2s infinite linear;
+	color:#b2b2af;
+	text-shadow:0 0 .25em rgba(255,255,255, .3);
 }

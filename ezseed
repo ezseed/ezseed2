@@ -352,7 +352,7 @@ var install = {
 
 			console.log("Création d'un lien symbolique sur app/public/downloads".info);
 
-			exec('ln -sf '+ path +' ' + __dirname + '/app/public/downloads',
+			exec('ln -sfn '+ path +' ' + __dirname + '/app/public/downloads',
 			  	function (error, stdout, stderr) {
 			  		cache.put('path', path);
 				    callback(null, {});
@@ -449,6 +449,32 @@ var password = {
 	}
 }
 
+
+var daemon = function(client, command, username) {
+	var shell_path = pathInfo.join(__dirname,'/app/scripts/', client,'/daemon.sh');
+	fs.chmodSync(shell_path, '775');
+
+	var running = spawn(shell_path, [command, username]);
+
+	running.stdout.on('data', function (data) {
+		var string = new Buffer(data).toString();
+		console.log(string.info);
+	});
+
+	running.stderr.on('data', function (data) {
+		var string = new Buffer(data).toString();
+
+		if(cache.get('force') === true)
+			console.log(string.error);
+		else
+			throw string.error;
+	});
+
+	running.on('exit', function (code) {
+		process.exit(code);
+	});
+}
+
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
@@ -496,7 +522,7 @@ program
 	.option('-f, --force', 'force')
 	.description('Installation du client torrent')
 	.action(function(client) {
-		if(options.force)
+		//if(options.force)
 			cache.put('force', true);
 
 		install.client_torrent(function(err, obj) {
@@ -517,7 +543,7 @@ program
 		if(options.path)
 			cache.put('path', options.path);
 
-		if(options.force)
+		//if(options.force)
 			cache.put('force', true);
 
 		var next = function(options) {
@@ -581,6 +607,12 @@ program
 			});
 		}
 	})
+
+program
+	.command('daemon <rutorrent|transmission> <command> <username>')
+	.option('-f, --force', 'force')
+	.description('start|stop|restart daemon-client for specified username')
+	.action(daemon);
 
 mongoose.connect('mongodb://localhost/ezseed');
 

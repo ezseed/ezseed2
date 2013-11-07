@@ -4,6 +4,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta charset="utf-8" />
     <title><%= title %></title>
+
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/stylesheets/fonts.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css">
@@ -12,25 +13,12 @@
     <link rel="icon" type="image/png" href="/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/loader.css" />
 
-    <script src="/javascripts/jquery.js"></script>
-    <script src="/javascripts/jquery.ejs.js"></script>
-    <script src="/javascripts/async.js"></script>
-    <script src="/javascripts/underscore.js"></script>
-    <script src="/javascripts/jquery.cookie.js"></script>
+    <script data-main="/javascripts/main" src="/javascripts/require-jquery.js"></script>
 
-    <% if(user) { %>
-    <script src="/socket.io/socket.io.js"></script>
-    <% } %>
     <% if(location.indexOf('/listen') === 0) { %>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/jplayer/jplayer.blue.monday.css">
-    <script src="/javascripts/jplayer.min.js"></script>
-    <script src="/javascripts/jplayer.playlist.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="/stylesheets/jplayer/jplayer.blue.monday.css">
     <% } %>
-    <% if (location.indexOf('/admin') === 0) {%>
-    <script src="/javascripts/jquery.collapse.js"></script>
-    <script src="/javascripts/jquery.collapse_storage.js"></script>
-    <script src="/javascripts/customselect.js"></script>
-    <% } %>
+
     <style>
       .error {
           color: red
@@ -110,6 +98,11 @@
         <div id="search" class="input-block">
           <i class="entypo-search"></i><input type="search" name="search" />
         </div>
+
+        <div id="loader">
+          <div class="spinner icon-spinner" aria-hidden="true"></div>
+        </div>
+
         <ul id="displayFilters">
           <li data-filter=".video" data-display=".list">Vidéos</li>
           <li data-filter=".audio" data-display=".list">Audio</li>
@@ -117,24 +110,7 @@
         </ul>
       </nav>
       <% } %>
-      <div id="loader">
-        <div class="f_circleG" id="frotateG_01">
-        </div>
-        <div class="f_circleG" id="frotateG_02">
-        </div>
-        <div class="f_circleG" id="frotateG_03">
-        </div>
-        <div class="f_circleG" id="frotateG_04">
-        </div>
-        <div class="f_circleG" id="frotateG_05">
-        </div>
-        <div class="f_circleG" id="frotateG_06">
-        </div>
-        <div class="f_circleG" id="frotateG_07">
-        </div>
-        <div class="f_circleG" id="frotateG_08">
-        </div>
-      </div>
+
 
     <section id="desktop">
       
