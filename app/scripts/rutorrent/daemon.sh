@@ -84,7 +84,7 @@ checkcnfg() {
 
 d_start() {
   [ -d "${base}" ] && cd "${base}"
-  stty stop undef && stty start undef
+  #stty stop undef && stty start undef
   su $user -c "screen -dmS ${srnname} rtorrent"
   # su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "screen -dm -S ${srnname} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
   # # this works for the screen command, but starting rtorrent below adopts screen session gid
