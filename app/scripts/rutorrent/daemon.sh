@@ -37,7 +37,7 @@ user=$2
 # group=`id -ng "$user"`
 
 # the full path to the filename where you store your rtorrent configuration
-config="`su -c 'echo $HOME' $user`/.rtorrent.rc"
+config="`su -c 'echo $HOME' $user`/rtorrent/session/.rtorrent.rc"
 
 # set of options to run with
 options=""
@@ -46,7 +46,7 @@ options=""
 base="`su -c 'echo $HOME' $user`"
 
 # name of screen session
-srnname="rtorrent"
+srnname="rtorrent-$user"
 
 # file to log to (makes for easier debugging if something goes wrong)
 logfile="/var/log/rtorrentInit.log"
@@ -54,7 +54,7 @@ logfile="/var/log/rtorrentInit.log"
 ###END CONFIGURATION###
 #######################
 PATH=/usr/bin:/usr/local/bin:/usr/local/sbin:/sbin:/bin:/usr/sbin
-DESC="rtorrent"
+DESC="rtorrent-$user"
 NAME=rtorrent
 DAEMON=$NAME
 SCRIPTNAME=/etc/init.d/$NAME

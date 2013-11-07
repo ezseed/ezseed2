@@ -496,7 +496,7 @@ program
 	.option('-f, --force', 'force')
 	.description('Installation du client torrent')
 	.action(function(client) {
-		if(options.force)
+		//if(options.force)
 			cache.put('force', true);
 
 		install.client_torrent(function(err, obj) {
@@ -517,7 +517,7 @@ program
 		if(options.path)
 			cache.put('path', options.path);
 
-		if(options.force)
+		//if(options.force)
 			cache.put('force', true);
 
 		var next = function(options) {
