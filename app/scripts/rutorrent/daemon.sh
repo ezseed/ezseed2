@@ -37,13 +37,16 @@ user=$2
 # group=`id -ng "$user"`
 
 # the full path to the filename where you store your rtorrent configuration
-config="`su $user -c 'echo $HOME' $user`/.rtorrent.rc"
+config="`su $user -c 'echo ~/' `/.rtorrent.rc"
 
 # set of options to run with
 options=""
 
 # default directory for screen, needs to be an absolute path
-base="`su $user -c 'echo $HOME' $user`"
+base="`su $user -c 'echo ~/'`"
+
+echo $base
+echo $config
 
 # name of screen session
 srnname="rtorrent-$user "
