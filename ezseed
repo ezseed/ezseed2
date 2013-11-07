@@ -464,10 +464,8 @@ var daemon = function(client, command, username) {
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
 
-		if(cache.get('force') === true)
-			console.log(string.error);
-		else
-			throw string.error;
+		console.log(string.error);
+	
 	});
 
 	running.on('exit', function (code) {
