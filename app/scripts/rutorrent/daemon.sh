@@ -37,7 +37,7 @@ user=$2
 # group=`id -ng "$user"`
 
 # the full path to the filename where you store your rtorrent configuration
-config="`su -c 'echo $HOME' $user`/rtorrent/session/.rtorrent.rc"
+config="`su -c 'echo $HOME' $user`/.rtorrent.rc"
 
 # set of options to run with
 options=""
