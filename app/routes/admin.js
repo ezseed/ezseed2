@@ -70,6 +70,23 @@ var admin = {
 	}
 
 	/**
+	 * Just a view for username + torrent + password
+	 */
+	, beginUserCreation : function(req, res) {
+		res.render('admin/user');
+	}
+
+	/**
+	 * Useradd
+	 * Adds an user
+	 */
+	, useradd : function(req, res) {
+
+
+
+	}
+
+	/**
 	 * Restrict on admin only based on the role
 	 */
 	, restrict : function (req, res, next) {
@@ -109,6 +126,8 @@ module.exports = function(app) {
 	app.post('/admin/config', admin.restrict, admin.config);
 	app.get('/admin/path/:username', admin.restrict, admin.path);
 	app.post('/admin/path', admin.restrict, admin.createPath);
+
+	app.get('/admon/user', admin.restrict, admin.beginUserCreation);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 
