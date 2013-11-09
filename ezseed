@@ -309,17 +309,18 @@ var useradd = {
 					exec('/etc/init.d/transmission-daemon-'+username + ' start',
 				    	function(err, stdout, sdterr) {
 				    		db.users.exists(username, function(exists) {
-							if(exists) {
-								console.log("L'utilisateur existe");
-								done(null, 'transmission');
-							} else {
-						    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
-						    		db.paths.save(userPath, username, function(err, p) {
-								 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-								 		done(null,'transmission');
-								 	});
-								});
-							}
+								if(exists) {
+									console.log("L'utilisateur existe");
+									done(null, 'transmission');
+								} else {
+							    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
+							    		db.paths.save(userPath, username, function(err, p) {
+									 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+									 		done(null,'transmission');
+									 	});
+									});
+								}
+							});
 						}
 					);
 
