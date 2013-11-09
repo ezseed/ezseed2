@@ -900,7 +900,7 @@ input:-moz-placeholder {
 #timeline > ul li:hover span.title { display:block; }
 
 
-#torrent {
+#torrents {
 	background-color: #474747;
 	-moz-box-shadow: 0 0 7px rgba(40,40,39,.60);
 	-webkit-box-shadow: 0 0 7px rgba(40,40,39,.60);
