@@ -262,6 +262,14 @@ module.exports = {
 
       });
     },
+    exists : function(username, cb) {
+      Users.count({username : username}, function(err, count) {
+        if(count)
+          cb(true);
+        else
+          cb(false);
+      });
+    },
     count : function(cb) {
       Users.count(cb);
     },

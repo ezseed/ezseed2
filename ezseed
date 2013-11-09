@@ -202,11 +202,16 @@ var userdel = {
 
 var useradd = {
 	aucun : function(username, password, done) {
-		db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
-    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-    		cache.put('user', {username : username, password : password});
-    		done(null,"aucun");
-    	});
+		db.users.exists(username, function(exists) {
+			if(exists)
+				done("L'utilisateur existe déjà !", "aucun");
+			else
+				db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
+		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
+		    		cache.put('user', {username : username, password : password});
+		    		done(null,"aucun");
+		    	});
+	    });
 	},
 	rutorrent : function(username, password, done) {
 		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
@@ -231,11 +236,18 @@ var useradd = {
 		});
 
 		running.on('exit', function (code) {
-			db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
-				db.paths.save(userPath, username, function(err, p) {
-			 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-			 		done(null, 'rutorrent');
-			 	});
+			db.users.exists(username, function(exists) {
+				if(exists) {
+					console.log("L'utilisateur existe");
+					done(null, 'rutorrent');
+				} else {
+					db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
+						db.paths.save(userPath, username, function(err, p) {
+					 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+					 		done(null, 'rutorrent');
+					 	});
+					});
+				}
 			});
 		});
 	},
@@ -296,12 +308,18 @@ var useradd = {
 
 					exec('/etc/init.d/transmission-daemon-'+username + ' start',
 				    	function(err, stdout, sdterr) {
-					    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
-					    		db.paths.save(userPath, username, function(err, p) {
-							 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-							 		done(null,'transmission');
-							 	});
-							});
+				    		db.users.exists(username, function(exists) {
+							if(exists) {
+								console.log("L'utilisateur existe");
+								done(null, 'transmission');
+							} else {
+						    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
+						    		db.paths.save(userPath, username, function(err, p) {
+								 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+								 		done(null,'transmission');
+								 	});
+								});
+							}
 						}
 					);
 
