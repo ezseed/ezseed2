@@ -87,7 +87,7 @@ var admin = {
 			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
 			fs.chmodSync(shell_path, '775');
 			
-			var running = spawn(shell_path, [req.body.client, req.body.username, '-p ' + req.body.password]);
+			var running = spawn(shell_path, ['useradd', req.body.client, req.body.username, '-p ' + req.body.password]);
 
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
