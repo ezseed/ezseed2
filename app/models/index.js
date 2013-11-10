@@ -1,3 +1,4 @@
+//TODO Move this along files
 var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
