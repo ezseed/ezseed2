@@ -78,7 +78,7 @@ define([
         toTop(true);
     });
 
-    $('body').on('click', '.showFiles', function() {
+      $('body').on('click', '.showFiles', function() {
         $button = $(this);
         
         if($button.data('text') === undefined)
@@ -87,21 +87,31 @@ define([
         $files = $(this).next('.files');
         $element = $(this).parent();
 
-        if($files.is(':hidden')) {
-            $button.html('<i class="entypo-attach"></i>Cacher');
+        var margin = $files.height() + 20;
 
-            var margin = $files.height() + 20;
-            $element.css({'margin-bottom':'+'+margin+'px'});
+        if($files.hasClass('open')) {
+            
+            $button.html('<i class="entypo-attach"></i>'+$button.data('text'));
+            
+            $element.css({'margin-bottom':'20px'});
 
-            $files.css({'top': $element.height() + 20 + 'px'}).delay(100).fadeIn();
+            $files.css({'visibility':'hidden', 'opacity':'0'});
+
             Desktop.layout();
 
         } else {
-            $button.html('<i class="entypo-attach"></i>'+$button.data('text'));
-            $files.hide();
-            $element.css({'margin-bottom':'20px'});
-            Desktop.layout();
+            $button.html('<i class="entypo-attach"></i>Cacher');
+    
+            $element.css({'margin-bottom':'+'+margin+'px'});
+
+            Desktop.layout(undefined, function() {
+                console.log('layou');
+                $files.css({'top': $element.height() + 20 + 'px', 'visibility': 'visible', 'opacity': 1});
+            });
+           
         }
+
+        $files.toggleClass('open');
     });
 
     $('body').on({

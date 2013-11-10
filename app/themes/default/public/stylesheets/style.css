@@ -292,12 +292,11 @@ section#desktop {
 }
 
 section#desktop .element {
-	-webkit-transition: all 0.75s ease;
-	-moz-transition: all 0.75s ease;
-	-o-transition: all 0.75s ease;
-	-ms-transition: all 0.75s ease;
-	transition: all 0.75s ease;
-
+	-webkit-transition: top,left,width,height 0.75s ease;
+	-moz-transition: top,left,width,height 0.75s ease;
+	-o-transition: top,left,width,height 0.75s ease;
+	-ms-transition: top,left,width,height 0.75s ease;
+	transition: top,left,width,height 0.75s ease;
 }
 
 /*section#desktop .grid-sizer { width: 100%; }
@@ -332,11 +331,11 @@ section#desktop .element.miniature {
 		background-color: rgba(0,0,0,0.5);
 		width: 100%;
 
-		-webkit-transition: all 0.5s ease;
-		-moz-transition: all 0.5s ease;
-		-o-transition: all 0.5s ease;
-		-ms-transition: all 0.5s ease;
-		transition: all 0.5s ease;
+		-webkit-transition: opacity 0.5s ease;
+		-moz-transition: opacity 0.5s ease;
+		-o-transition: opacity 0.5s ease;
+		-ms-transition: opacity 0.5s ease;
+		transition: opacity 0.5s ease;
 	}
 
 	section#desktop .element.miniature:hover div.titre {
@@ -524,8 +523,17 @@ section#desktop .element.list.login-box {
 	section#desktop .element.list .showFiles i{ margin-right: 5px;}
 
 	section#desktop .element.list .files {
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		filter: alpha(opacity=0);
+		opacity: 0;
+
+		-webkit-transition: opacity 0.5s ease;
+		-moz-transition: opacity 0.5s ease;
+		-o-transition: opacity 0.5s ease;
+		-ms-transition: opacity 0.5s ease;
+		transition: opacity 0.5s ease;
+		visibility: hidden;
 		color:#b2b2af !important;
-		display: none;
 		position: absolute;
 		left:2.5%;
 		top:180px;
@@ -534,6 +542,7 @@ section#desktop .element.list.login-box {
 		border-top: 0;
 		background-color: #474747;
 		padding: 0 1%;
+		height: auto;
 	}
 
 	section#desktop .element.list p {
@@ -869,18 +878,23 @@ input:-moz-placeholder {
 
 #timeline > ul li {
     cursor:pointer;
-    position:relative;
-    display:inline-block;
-    margin:0;padding:0;
-    margin-left:25px;
-    list-style-type:none;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 25px;
-    border-radius:50%/50%;
-    background:#b2b2af;
-    transition:all 0.2s ease;
+	position:relative;
+	display:inline-block;
+	margin:0;
+	padding:0;
+	margin-left:25px;
+	list-style-type:none;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	line-height: 25px;
+	border-radius:50%/50%;
+	background:#b2b2af;
+	-webkit-transition:all 0.2s ease;
+	-moz-transition:all 0.2s ease;
+	-o-transition:all 0.2s ease;
+	-ms-transition:all 0.2s ease;
+	transition:all 0.2s ease;
 }
 
 #timeline > ul a li {color:#282827; text-shadow : 0 -1px 0 rgba(255,255,255,0.3);}

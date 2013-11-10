@@ -92,12 +92,12 @@ var admin = {
 
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
-				console.log(string.info);
+				console.log(string);
 			});
 
 			running.stderr.on('data', function (data) {
 				var string = new Buffer(data).toString();
-				console.log(string.error);
+				console.error(string);
 			});
 
 			running.on('exit', function (code) {
@@ -109,6 +109,40 @@ var admin = {
 			req.session.error = "Le client torrent n'a pas été reconnu";
 			res.redirect('/admin/user');
 		}
+	}
+
+	/** Change user password **/
+
+	, userpass : function(req, res) {
+
+	}
+
+	/** 
+	 * Deletes user with client scripts
+	 * Must be run as root = bad.
+	 */
+	, userdel : function(req, res) {
+		var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+
+		db.user.byId(req.params.uid, function(err, user) {
+			var running = spawn(shell_path, ['userdel', user.client, user.username]);
+
+
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string);
+			});
+
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.error(string);
+			});
+
+			running.on('exit', function (code) {
+				req.session.success = "Utilisateur "+user.username+" supprimé avec succès"; 
+				res.redirect('/admin');
+			});
+		});
 	}
 
 	/**
@@ -153,6 +187,11 @@ module.exports = function(app) {
 	app.post('/admin/path', admin.restrict, admin.createPath);
 
 	app.get('/admin/user', admin.restrict, admin.beginUserCreation);
+	app.post('/admin/user', admin.restrict, admin.useradd);
+
+	app.get('/admin/user/:uid/delete', admin.restrict, admin.userdel);
+
+	app.get('/admin/user/:uid/:id/delete', admin.restrict, admin.deletePath);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 

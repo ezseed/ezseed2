@@ -80,7 +80,7 @@
             <span class="text">Espace Disque</span>
             <span class="size">
               <span class="used"><% if(usedSize !== undefined) { %> <%= usedSize.pretty %> <% } %></span>
-              <span class="left">/ <% if(config.availableSpace !== undefined) { %> <%= config.availableSpace %> <% } %></span>
+              <span class="left">/ <% if( spaceLeft !== undefined) { %> <%= spaceLeft %> <% } %></span>
             </span>
           </div>
         <% } else { %> 

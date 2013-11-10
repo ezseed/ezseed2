@@ -1,3 +1,6 @@
+//DEV TODO
+//Move this along more files per methods helpers ! Normalize method names byId, byThing etc.
+//Comment this shit
 //Requires all the modedl database
 var mongoose = require('mongoose')
 	, models = require('../models')
@@ -211,6 +214,20 @@ module.exports = {
   			}
   		}
  	},
+  //Methods by user
+  user : {
+    exists : function(username, cb) {
+      Users.count({username : username}, function(err, count) {
+        if(count)
+          cb(true);
+        else
+          cb(false);
+      });
+    },
+    byId : function(uid, done) {
+      Users.findById(uid, done);
+    }
+  },
   users : {
     getAll : function(cb) {
       Users.find().lean().populate('paths').exec(function(err, docs) {
@@ -260,14 +277,6 @@ module.exports = {
           });
         });
 
-      });
-    },
-    exists : function(username, cb) {
-      Users.count({username : username}, function(err, count) {
-        if(count)
-          cb(true);
-        else
-          cb(false);
       });
     },
     count : function(cb) {
