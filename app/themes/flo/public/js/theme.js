@@ -57,31 +57,34 @@ define([
     });
 
     $('body').on('click', '.showFiles', function() {
-        $button = $(this);
         
-        if($button.data('text') === undefined)
-            $button.data('text', $button.text());
+        var $files = $(this).closest('.panel').find('.panel-collapse');
+        var $element = $(this).closest('.element');
 
-        $files = $(this).next('.files');
-        $element = $(this).parent();
+        if($element.data('margin-bottom') === undefined)
+            $element.data('margin-bottom', $element.css('margin-bottom'));
 
-        if($files.is(':hidden')) {
-            $button.html('<i class="entypo-attach"></i>Cacher');
+        if($files.hasClass('in')) {
 
-            var margin = $files.height() + 20;
-            $element.css({'margin-bottom':'+'+margin+'px'});
-
-            $files.css({'top': $element.height() + 20 + 'px'}).delay(100).fadeIn();
+            //Playing with margins + layout before collapse
+            $element.css('margin-bottom', '-=' + $files.find('.panel-body').height());
             Desktop.layout();
+
+            //Because of collapse
+            setTimeout(function() {
+                $element.css('margin-bottom', $element.data('margin-bottom'))
+            }, 350);
 
         } else {
-            $button.html('<i class="entypo-attach"></i>'+$button.data('text'));
-            $files.hide();
-            $element.css({'margin-bottom':'20px'});
+            $element.css('margin-bottom', '+=' + $files.find('.panel-body').height());
             Desktop.layout();
+
+            setTimeout(function() {
+                $element.css('margin-bottom', $element.data('margin-bottom'))
+            }, 350);
         }
     });
-
+    
     $('body').on({
         mouseenter : function() {
             $(this).css('opacity', '1');
