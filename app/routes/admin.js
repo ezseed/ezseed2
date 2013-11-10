@@ -84,7 +84,7 @@ var admin = {
 
 		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
 
-			var shell_path = global.config.root + '/scripts/'+req.body.client+'/useradd.sh';
+			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
 			fs.chmodSync(shell_path, '775');
 			
 			var running = spawn(shell_path, [req.body.client, req.body.username, '-p ' + req.body.password]);
