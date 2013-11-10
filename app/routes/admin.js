@@ -88,7 +88,7 @@ var admin = {
 			fs.chmodSync(shell_path, '775');
 			
 			var running = spawn(shell_path, [req.body.client, req.body.username], {p : req.body.password });
-
+			console.log(running);
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
 				console.log(string);
