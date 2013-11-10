@@ -73,9 +73,7 @@ cat > /var/www/rutorrent/conf/users/$USER/config.php<< EOF
 EOF
 chmod -R 777 /var/www/rutorrent/
 
-srnname="rtorrent-$USER"
-
-su $USER -c "screen -dmS ${srnname} rtorrent"
+$DIR/daemon.sh start $USER
 
 #Fin du script
 ##########
