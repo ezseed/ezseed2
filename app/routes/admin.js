@@ -3,7 +3,8 @@ var db = require('../core/database.js')
   , fs = require('fs')
   , pretty = require('prettysize')
   , pathInfo = require('path')
-  , jf = require('jsonfile');
+  , jf = require('jsonfile')
+  , spawn = require('child_process').spawn;
 
 var admin = {
 	/*
@@ -73,7 +74,7 @@ var admin = {
 	 * Just a view for username + torrent + password
 	 */
 	, beginUserCreation : function(req, res) {
-		res.render('admin/user');
+		res.render('admin/user', {title: 'Ajouter un utilisateur'});
 	}
 
 	/**
@@ -82,8 +83,32 @@ var admin = {
 	 */
 	, useradd : function(req, res) {
 
+		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
 
+			var shell_path = global.config.root + '/scripts/'+req.body.client+'/useradd.sh';
+			fs.chmodSync(shell_path, '775');
+			
+			var running = spawn(shell_path, [req.body.username, req.body.password]);
 
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string.info);
+			});
+
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string.error);
+			});
+
+			running.on('exit', function (code) {
+				req.session.success = "Utilisateur créé"; 
+				res.redirect('/admin');
+			});
+
+		} else {
+			req.session.error = "Le client torrent n'a pas été reconnu";
+			res.redirect('/admin/user');
+		}
 	}
 
 	/**
@@ -127,7 +152,7 @@ module.exports = function(app) {
 	app.get('/admin/path/:username', admin.restrict, admin.path);
 	app.post('/admin/path', admin.restrict, admin.createPath);
 
-	app.get('/admon/user', admin.restrict, admin.beginUserCreation);
+	app.get('/admin/user', admin.restrict, admin.beginUserCreation);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 

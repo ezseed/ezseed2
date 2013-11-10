@@ -24,6 +24,7 @@ define([
         displaySelector : null,
         //Packery Instance
         pckry : null,
+        hasLayout : false,
         //Socket
         socket : null,
         loader : function() {
@@ -40,11 +41,12 @@ define([
         init : function() {
             var self = this;
 
-            if(self.pckry === null) {
+            if(self.pckry === null && isDesktop == true) {
                 self.pckry = new Packery( 
                     document.querySelector('section#desktop'),
                     {
-                        itemSelector: '.element'
+                        itemSelector: '.element',
+                        transitionDuration: "0"
                         // columnWidth: $('.grid-sizer').width(),
                     }
                 );
@@ -183,12 +185,13 @@ define([
                 $(self.itemSelector + '.miniature h1').quickfit();
 
                 self.pckry.layout();
-
+                
                 if(!self.firstLoad)
                     self.loader();
 
                 if(typeof cb == 'function')
                     cb();
+               
             });
         }
 

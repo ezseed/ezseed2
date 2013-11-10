@@ -291,6 +291,15 @@ section#desktop {
 	margin: 15px auto;
 }
 
+section#desktop .element {
+	-webkit-transition: all 0.75s ease;
+	-moz-transition: all 0.75s ease;
+	-o-transition: all 0.75s ease;
+	-ms-transition: all 0.75s ease;
+	transition: all 0.75s ease;
+
+}
+
 /*section#desktop .grid-sizer { width: 100%; }
 */
 section#desktop .miniature {display: none;}

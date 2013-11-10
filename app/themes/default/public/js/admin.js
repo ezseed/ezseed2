@@ -21,7 +21,7 @@ require([
 ], function($){
 
 	var loadCollapse = function() {
-		$("#admin").collapse({
+		$("#admin.collapse").collapse({
 			open: function() {
 				this.slideDown(100);
 			},

@@ -364,7 +364,8 @@ var install = {
 					"torrentLink": "link",
 					"diskSpace": "1048576",
 					"videoPlayer": "divx",
-					"availableSpace": "1 TB"
+					"availableSpace": "1 TB",
+					"theme": "default"
 				};
 
 			jf.writeFileSync(__dirname + '/app/config.json', config);

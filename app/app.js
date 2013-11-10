@@ -31,7 +31,7 @@ var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3001);
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -46,6 +46,7 @@ app.use(express.session({
 }));
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'public')));
 app.use(function(req,res, next) {
   req.user = req.session.user;
   next();
