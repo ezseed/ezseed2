@@ -234,11 +234,8 @@ var useradd = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
+			console.error(string.error);
 
-			if(cache.get('force') === true)
-				console.log(string.error);
-			else
-				throw string.error;
 		});
 
 		running.on('exit', function (code) {

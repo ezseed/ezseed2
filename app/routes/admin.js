@@ -100,6 +100,7 @@ var admin = {
 			});
 
 			running.on('exit', function (code) {
+				console.log(code);
 				req.session.success = "Utilisateur créé"; 
 				res.redirect('/admin');
 			});
