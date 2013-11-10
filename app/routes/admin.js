@@ -87,8 +87,8 @@ var admin = {
 			var shell_path = global.config.root + '/scripts/'+req.body.client+'/useradd.sh';
 			fs.chmodSync(shell_path, '775');
 			
-			var running = spawn(shell_path, [req.body.client, req.body.username], {p : req.body.password });
-			console.log(running);
+			var running = spawn(shell_path, [req.body.username, req.body.client], {p : req.body.password });
+			console.log(req.body.username, req.body.client, req.body.password);
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
 				console.log(string);
