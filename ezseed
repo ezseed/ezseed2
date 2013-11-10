@@ -572,7 +572,7 @@ program
 		//if(options.force)
 			cache.put('force', true);
 
-			console.log(client, username, options);
+			console.log(client, username, options.password);
 
 		var next = function(options) {
 
