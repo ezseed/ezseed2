@@ -162,9 +162,11 @@
                     <header class="page-header ">
         <div class="navbar">
                 <ul class="nav navbar-nav navbar-right pull-right">
+                    <% if(user && location == '/') { %>
                       <div id="search" class="navbar-form pull-left" role="search" style="height: 0px;">
                     <input class="col-sm-10 input-transparent" type="search" class="search-query" name="search" />
-                </div>  
+                </div>                      
+                    <% } %>
                     <% if(user.role == 'admin') {%>
                       <li class="hidden-xs dropdown">
                         <a href="/admin" title="Administration">
@@ -191,10 +193,9 @@
 			</div>           
 			</div>           
 			</div>           
-			</div>           
-
-                            </section>
-                <section id="desktop" class="content container">
+			</div>     
+    
+                <section id="desktop">
         <% } else { %> 
         <header>
 <div class="logo">
