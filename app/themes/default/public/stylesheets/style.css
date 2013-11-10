@@ -924,12 +924,6 @@ input:-moz-placeholder {
 
 
 #torrents {
-	background-color: #474747;
-	-moz-box-shadow: 0 0 7px rgba(40,40,39,.60);
-	-webkit-box-shadow: 0 0 7px rgba(40,40,39,.60);
-	box-shadow: 0 0 7px rgba(40,40,39,.60);
-	border:2px solid #e15d33;
-	color:#B2B2AF;
 }
 
 /**

@@ -4,14 +4,14 @@
 
 <% if(user.client == 'transmission') { %>
 
-	<section id="torrents" style="padding:10px">
-		<iframe src="http://<%= host %>:<%= user['rpc-port'] %>" width="100%" frameborder="0" height="700px" ></iframe>
+	<section id="torrents">
+		<iframe src="https://<%= host %>:<%= user['rpc-port'] %>" width="100%" frameborder="0" height="700px" ></iframe>
 	</section>
 
 <% } else { %>
 
-	<section id="torrents" style="padding:10px">
-		<iframe src="http://<%= host %>/rutorrent" width="100%" frameborder="0" height="700px" ></iframe>
+	<section id="torrents">
+		<iframe src="https://<%= host %>/rutorrent" width="100%" frameborder="0" height="700px" ></iframe>
 	</section>
 
 <% } %>
