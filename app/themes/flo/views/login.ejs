@@ -1,0 +1,38 @@
+<% include header %>
+<div class="single-widget-container">
+    <section class="widget login-widget">
+        
+        <div class="body">
+            <div class="box">
+                <div class="big-text">Connexion</div>
+            </div>
+            <form class="no-margin" action="/login" method="post">
+                    <div class="form-group no-margin">                    
+                        <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                            <input type="text" name="username" class="form-control input-lg input-transparent" placeholder="Utilisateur">
+                        </div>
+                    </div>
+                <hr>
+                    <div class="form-group">
+                        <div class="input-group input-group-lg">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            <input type="password" name="password" class="form-control input-lg input-transparent" placeholder="Mot de passe">
+                        </div>
+
+                    </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-block btn-lg btn-transparent">
+                        <span class="small-circle"><i class="fa fa-caret-right"></i></span>
+                        <small>Connexion</small>
+                    </button>
+                    <br>
+                </div>
+            </form>
+        </div>      
+    </section>
+</div>

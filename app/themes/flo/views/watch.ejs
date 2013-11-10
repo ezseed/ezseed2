@@ -1,0 +1,84 @@
+<% include header %>
+<section class="widget">
+   <header>
+                        <center><h4>
+                            <i class="fa fa-film"></i>
+                            <%- movie.title %><% if(movie.type == "tvseries") { %>
+                            <small>
+                                <span class="label label-success"><%- ' S' + movie.season + 'E' + movie.episode %><%}%></span>
+                            </small>
+                        </h4></center>
+                    </header> <br>
+    <div class="body no-margin">
+                        
+
+<!-- <div id='vlc1'>player 1</div>
+<br><br>
+
+<input id='uri' value='<%- fullUrl %>' size=70 type='text'><button onclick="play('vlc1', $('#uri').val())">play</button>
+ -->
+
+ 
+ <center> <object style="text-align:center" classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" width="700" height="350" codebase="http://go.divx.com/plugin/DivXBrowserPlugin.cab">
+    <param name="custommode" value="none" />
+    <param name="previewImage" value="<%- movie.poster %>" />
+    <param name="autoPlay" value="false" />
+    <param name="src" value="<%- fullUrl %>" />
+    <embed type="video/divx" src="<%- fullUrl %>" custommode="none" width="700" height="350" autoPlay="false" previewImage="<%- movie.poster %>" pluginspage="http://go.divx.com/plugin/download/">
+    </embed>
+  </object></center>
+<br>
+  <div class="box" style="text-align:left">
+                                <strong>Pas de vidéo ?</strong> <div class="btn-group"><a class="btn btn-default" href="http://download.divx.com/player/DivXWebPlayerInstaller.exe">Windows</a><a class="btn btn-default" href="http://download.divx.com/player/DivXWebPlayer.dmg">Mac</a></div>
+                            </div>
+ <div class="box" style="text-align:left">
+                                <strong>Pas de son ?</strong>  <a class="btn btn-default" target="_blank" href="http://perian.org">Installez Perian !</a>
+</div>
+   <div class="box">
+    <center> <div class="input-group">
+                                            <input type="text" name="url" value="<%- encodeURI(fullUrl) %>" class="form-control input-transparent select-on-click">
+                                            <span class="input-group-btn">
+                                                <a href="<%- encodeURI(fullUrl) %>" class="btn btn-default" type="button"><i class="fa fa-download"></i></a>
+                                            </span>
+                                        </div></center>
+   </div>
+
+   <% if(season !== null) { %>
+   <br>
+        <%
+      for(var i in movie.videos) {
+      %>     
+        <a <%if(movie.videos[i].episode == movie.episode) { %>class="btn btn-default" href="#" <% } else { %>class="btn btn-default" href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><i class="fa fa-circle pull-left text-success"></i><%- movie.title + ' <span class="label label-success">S' + movie.season + 'E' + movie.videos[i].episode %></span></a>
+      <% 
+      }
+      %>
+
+   <%
+   } 
+   %> 
+</section>
+
+<script src="/javascripts/jquery-vlc.js"></script>
+<script>
+    // function play(instance, uri) {
+    //     VLCobject.getInstance(instance).play(uri);
+    // }
+    
+    // function addvlc() {
+    //     var r = parseInt(Math.random()*1000);
+    //      var added = $('#vlc2').append('<div id="'+r+'">&nbsp;</div>');
+   
+         
+    //      var newp = VLCobject.embedPlayer(r, 400, 300, true);
+    //      newp.queue('http://www.revolunet.com/static/download/labo/VLCcontrols/bunny.mp4');
+    // }   
+    
+    //  var player = null;
+     
+    // $(document).ready(function() {
+        
+    //     player = VLCobject.embedPlayer('vlc1', 400, 300, true);
+
+    // });
+
+</script>

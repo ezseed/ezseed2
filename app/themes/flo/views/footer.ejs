@@ -1,0 +1,12 @@
+    </section>
+    <footer class="text-center">
+       Thanks to Soyuka.
+    </footer>
+    <script>
+    var appDir = '<%= appDir %>';
+    var user = <%- JSON.stringify(user) %>;
+    var config = <%- JSON.stringify(config) %>;
+    var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>
+    </script>
+  </body>
+</html>
