@@ -649,4 +649,4 @@ mongo.once('open', function callback () {
 	if (!program.args.length) program.help();
 });
 
-module.exports = {useradd : useradd};
+// module.exports = {useradd : useradd};
