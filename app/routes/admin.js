@@ -4,7 +4,8 @@ var db = require('../core/database.js')
   , pretty = require('prettysize')
   , pathInfo = require('path')
   , jf = require('jsonfile')
-  , spawn = require('child_process').spawn;
+  , exec = require('child_process').exec;
+
 
 var admin = {
 	/*
@@ -85,25 +86,40 @@ var admin = {
 		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
 
 			var shell_path = global.config.root + '/scripts/'+req.body.client+'/useradd.sh';
-			fs.chmodSync(shell_path, '775');
 			
-			var running = spawn(shell_path, [req.body.username, req.body.client, '-p '+req.body.password]);
+			//var running = spawn(shell_path, [req.body.username, req.body.client, '-p '+req.body.password]);
+			//
+			var command = [shell_path, req.body.client, req.body.username, '-p ' + req.body.password].join(' ');
 
-			running.stdout.on('data', function (data) {
-				var string = new Buffer(data).toString();
-				console.log(string);
+		    var child;
+
+			child = exec(command,
+			  function (error, stdout, stderr) {
+			    console.log('stdout: ' + stdout);
+			    console.log('stderr: ' + stderr);
+			    if (error !== null) {
+			      console.log('exec error: ' + error);
+			    }
+
+			    req.session.success = "Utilisateur créé"; 
+			 	res.redirect('/admin');
 			});
 
-			running.stderr.on('data', function (data) {
-				var string = new Buffer(data).toString();
-				console.error(string);
-			});
+			// running.stdout.on('data', function (data) {
+			// 	var string = new Buffer(data).toString();
+			// 	console.log(string);
+			// });
 
-			running.on('exit', function (code) {
-				console.log(code);
-				req.session.success = "Utilisateur créé"; 
-				res.redirect('/admin');
-			});
+			// running.stderr.on('data', function (data) {
+			// 	var string = new Buffer(data).toString();
+			// 	console.error(string);
+			// });
+
+			// running.on('exit', function (code) {
+			// 	console.log(code);
+			// 	req.session.success = "Utilisateur créé"; 
+			// 	res.redirect('/admin');
+			// });
 
 		} else {
 			req.session.error = "Le client torrent n'a pas été reconnu";
