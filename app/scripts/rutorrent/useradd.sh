@@ -73,7 +73,6 @@ cat > /var/www/rutorrent/conf/users/$USER/config.php<< EOF
 EOF
 chmod -R 777 /var/www/rutorrent/
 
-su $USER -c "$DIR/daemon.sh start $USER"
 
 #Fin du script
 ##########
