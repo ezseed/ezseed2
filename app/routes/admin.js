@@ -60,7 +60,6 @@ var admin = {
 
 		conf = _.extend(conf, {
 			torrentLink : req.body.torrent,
-			availableSpace : pretty(req.body.disk*1024*1024),
 			diskSpace : req.body.disk,
 			videoPlayer : req.body.videoPlayer
 		});

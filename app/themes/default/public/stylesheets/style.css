@@ -292,11 +292,11 @@ section#desktop {
 }
 
 section#desktop .element {
-	-webkit-transition: top,left,width,height 0.75s ease;
-	-moz-transition: top,left,width,height 0.75s ease;
-	-o-transition: top,left,width,height 0.75s ease;
-	-ms-transition: top,left,width,height 0.75s ease;
-	transition: top,left,width,height 0.75s ease;
+	-webkit-transition: all 0.75s ease;
+	-moz-transition: all 0.75s ease;
+	-o-transition: all 0.75s ease;
+	-ms-transition: all 0.75s ease;
+	transition: all 0.75s ease;
 }
 
 /*section#desktop .grid-sizer { width: 100%; }
@@ -1115,5 +1115,10 @@ p {
 	display: none;
 }
 
-
-
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}

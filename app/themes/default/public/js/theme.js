@@ -93,20 +93,22 @@ define([
             
             $button.html('<i class="entypo-attach"></i>'+$button.data('text'));
             
-            $element.css({'margin-bottom':'20px'});
+            $element.toggleClass('notransition').css({'margin-bottom':'20px'});
 
             $files.css({'visibility':'hidden', 'opacity':'0'});
 
-            Desktop.layout();
+            Desktop.layout(null, function() {
+               $element.toggleClass('notransition');
+            });
 
         } else {
             $button.html('<i class="entypo-attach"></i>Cacher');
     
-            $element.css({'margin-bottom':'+'+margin+'px'});
+            $element.toggleClass('notransition').css({'margin-bottom':'+'+margin+'px'});
 
-            Desktop.layout(undefined, function() {
-                console.log('layou');
+            Desktop.layout(null, function() {
                 $files.css({'top': $element.height() + 20 + 'px', 'visibility': 'visible', 'opacity': 1});
+                $element.toggleClass('notransition');
             });
            
         }

@@ -165,7 +165,7 @@ define([
         layout : function(selector, cb) {
             var self = this;
 
-            selector = selector !== undefined ? selector : self.displaySelector;
+            selector = selector ? selector : self.displaySelector;
 
             self.displaySelector = selector;
 

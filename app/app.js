@@ -70,21 +70,18 @@ app.use(function(req, res, next){
 //config middleware
 app.use(function(req, res, next){
 
-  // res.locals.appDir = __dirname; //tomove
-
   res.locals.config = _.extend(global.config, 
                                 { 
-                                  location : req.originalUrl, //request path dirname 
+                                  location : req.originalUrl, 
                                   host : req.host
                                 });
 
-  res.locals.location = req.originalUrl; //should move into config
-  res.locals.host = req.host; //should move into config
+  res.locals.location = req.originalUrl;
+  res.locals.host = req.host;
 
   next();
   
 });
-
 
 app.use(function(req,res, next) {
   req.user = req.session.user;

@@ -197,6 +197,12 @@ var userdel = {
 		 		done(null, 'transmission');
 		 	});
 		});
+	},
+	aucun: function(username, done) {
+		db.users.delete(username, function(err) {
+	 		console.log("Utilisateur "+ username + " supprimé".info);
+	 		done(null, 'aucun');
+	 	});
 	}
 };
 

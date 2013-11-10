@@ -287,6 +287,7 @@ module.exports = {
         var nbPaths = doc.paths.length;
         if(nbPaths) {
           while(nbPaths--) {
+            //Could be async but it isn't important
             Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
 
             });
