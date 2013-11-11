@@ -177,7 +177,7 @@ define([
                         if(self.toRemove) {
                             self.remove(self.toRemove);
                             self.toRemove = null;
-                            location.href = location.href.replace(location.hash,location.hash.substr(1));
+                            location.hash = '#';
                         }
 
                         self.loader();
