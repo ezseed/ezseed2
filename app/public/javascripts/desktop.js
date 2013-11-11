@@ -138,7 +138,7 @@ define([
 
             self.pckry.remove($el);
 
-        }
+        },
         append : function(datas) {
 
             var self = this;
