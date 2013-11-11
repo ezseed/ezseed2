@@ -73,7 +73,6 @@ var helper = {
         countDatas(files.paths, function(count) {
 
          if(count > 0) {
-          console.log(params.sid, io.sockets.socket(params.sid));
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
             helper.usedSize({paths : params.paths}, function(size) {
