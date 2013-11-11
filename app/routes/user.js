@@ -1,7 +1,6 @@
 var _ = require('underscore')
+	, db = require('../core/database')
 	, userHelper = require('../core/helpers/users.js');
-
- 
 
 var user = {
 	/*

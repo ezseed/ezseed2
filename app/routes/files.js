@@ -148,6 +148,9 @@ var files = {
 
 	delete : function(req, res) {
 
+		db.files.byId(req.params.id, function(err, file) {
+			console.log(file);
+		});
 		//only unlink folder recursive, watcher'll do the rest
 		//users.paths(req.session.user.id, function(err, paths) {
 			// removeFile({pathsKeys : paths.pathsKeys, f:new Buffer(req.params.id, 'hex').toString()}, function(err, key) {
