@@ -25,6 +25,7 @@ define([
         //Packery Instance
         pckry : null,
         hasLayout : false,
+        toRemove : null,
         //Socket
         socket : null,
         loader : function() {
@@ -58,10 +59,9 @@ define([
             self.socket.emit('update', user.id);
 
             //hash
-            var item = window.location.hash.substr(1);
+            self.toRemove = window.location.hash.substr(1);
 
-            if(item.length)
-                self.remove(item);
+            console.log(self.toRemove);
 
             return self;
         },
@@ -171,12 +171,19 @@ define([
 
                     if(self.firstLoad) {
                         self.firstLoad = false;
+
+                        if(self.toRemove) {
+                            self.remove(self.toRemove);
+                            self.toRemove = null;
+                        }
+
                         self.loader();
                     } else {
                         var count = 0;
 
                         _.each($items, function(e) {
-                            console.log(typeof $(e));
+                            console.log($(e));
+                            console.log(instanceof $(e), typeof $(e));
 
                             if($(e).hasClass(displayOption))
                                 count++;
@@ -192,7 +199,6 @@ define([
                         }
                     }
 
-                    console.log('Appended');
                     self.$container.removeClass('notransition').css('visibility', 'visible');
 
                 });
