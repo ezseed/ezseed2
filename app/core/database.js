@@ -245,7 +245,6 @@ var db = {
             albums: function(callback){
               async.each(albums, 
                 function(album, cb) {
-                  console.log(album);
                   db.files.albums.delete(album._id, cb);
                 }, 
                 function(err){
