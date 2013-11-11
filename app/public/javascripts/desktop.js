@@ -172,12 +172,14 @@ define([
                         var count = 1;
 
                         _.each($items, function(e) {
-                            console.log(e);
+                            console.log(e.nodeName);
                         });
+
                         console.log(count);
+
                         if(count == 1) {
-                            var titre = $items.find(self.itemSelector+'.list:first h1').text();
-                            self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
+                            //var titre = $items.find(self.itemSelector+'.list:first h1').text();
+                            self.showNotification({title: 'Fichier ajouté',text: "kaka" + ' ajouté !'});
                         } else {
                             self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
                         }

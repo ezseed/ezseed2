@@ -108,7 +108,7 @@ albums.forEach(function(album) {
 							<td><%- i %></td>
 							<td style="text-align:left"><%- file.name %></td>
 							<td><%- bytesToSize(file.size) %></td>
-							<td><a href="/download/<%- album._id %>-<%- file._id%>"><i class="entypo-download"></i></a></td>
+							<td><a href="/download/<%- album._id %>/<%- file._id%>"><i class="entypo-download"></i></a></td>
 						</tr>			
 						<% 
 							i++;
