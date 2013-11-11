@@ -198,7 +198,7 @@ define([
                         count = count / 3;
 
                         if(count == 1) {
-                            var titre = $els[0].find('h1').text();
+                            var titre = els[0].find('h1').text();
                             self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
                         } else {
                             self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
