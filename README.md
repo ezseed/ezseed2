@@ -8,7 +8,13 @@
 #Installation
 ```
 apt-get install git-core
+```
+
+Remplacez "user" par votre nom d'utilisateur sur Github !
+```
 git clone https://user@github.com/soyuka/ezseed2/
+```
+```
 cd ezseed2
 #passe sur la béta
 git checkout rc1-b
@@ -33,7 +39,11 @@ pm2 logs
 
 Les logs de l'application sont dans `/var/log/ezseed/`
 
-Pour update ezseed par exemple :
+#Mise à jour
 ```
 git pull && pm2 restart ezseed
 ```
+
+#Divers
+
+Attention, MongoDB n'arrive pas se lancer sur un noyau OVH, veuillez installer le noyau natif ou changer de noyau.
