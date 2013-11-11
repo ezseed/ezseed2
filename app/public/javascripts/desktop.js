@@ -183,7 +183,7 @@ define([
 
                         _.each($items, function(e) {
                             console.log($(e));
-                            console.log(instanceof $(e), typeof $(e));
+                            console.log(typeof e);
 
                             if($(e).hasClass(displayOption))
                                 count++;
