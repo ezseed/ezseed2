@@ -28,9 +28,24 @@ module.exports.listen = function(app) {
 
                     });
 
-                    users.usedSize(paths, function(size) {
 
-                        io.sockets.socket(socket.id).emit('size', size);
+                    db.users.count(function(err, num) {
+
+                        //Space left = disk / users
+                        var spaceLeft = global.config.diskSpace / num;
+
+                        users.usedSize(paths, function(size) {
+
+                            //(/helpers/users)
+                            var percent = size.size / 1024 / 1024;
+
+                            percent = percent / spaceLeft * 100 + '%';
+
+                            spaceLeft = pretty(spaceLeft * 1024 * 1024);
+
+                            io.sockets.socket(socket.id).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+
+                        });
 
                     });
 
