@@ -67,21 +67,20 @@ require(['desktop', 'sockets', 'theme'], function(Desktop) {
         if(config.location == '/')
             Desktop.append(d.paths);
 
-        //Desktop.showNotification({title: 'Fichier ajouté',text: d.count + ' fichier(s) ajouté(s)'});
+        Desktop.showNotification({title: 'Fichier ajouté',text: d.count + ' fichier(s) ajouté(s)'});
 
     });
     
 
     socket.on('remove', function(id) {
-        //TODO
-        // if($('.element.list[data-id='+id+']').length) {
-        //     var titre = $('.element.list[data-id='+id+']').find('h1').text();
-        //     showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
-        // }
 
-        // $section.isotope( 'remove', $('[data-id='+id+']'), function() {
+        if($('.element.list[data-id='+id+']').length) {
+            var titre = $('.element.list[data-id='+id+']').find('h1').text();
+            showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+        }
 
-        // });
+        Desktop.remove(id);
+       
     });
 
 

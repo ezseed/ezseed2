@@ -132,6 +132,13 @@ define([
                 });
             }
         },
+        remove: function(id) {
+            var self = this
+              , $el = $(self.itemSelector + '[data-id="' + id + '"]');
+
+            self.pckry.remove($el);
+
+        }
         append : function(datas) {
 
             var self = this;
