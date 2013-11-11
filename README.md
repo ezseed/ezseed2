@@ -37,3 +37,8 @@ Pour update ezseed par exemple :
 ```
 git pull && pm2 restart ezseed
 ```
+
+**Rutorrent**
+Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :
+
+![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
