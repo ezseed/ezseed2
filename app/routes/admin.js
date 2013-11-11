@@ -4,7 +4,8 @@ var db = require('../core/database.js')
   , pretty = require('prettysize')
   , pathInfo = require('path')
   , jf = require('jsonfile')
-  , spawn = require('child_process').spawn;
+  , spawn = require('child_process').spawn
+  , userHelper = require('../core/helpers/users');
 
 var admin = {
 	/*
@@ -150,8 +151,7 @@ var admin = {
 	 * Restrict on admin only based on the role
 	 */
 	, restrict : function (req, res, next) {
-
-		require('./user').restrict(req, res, function() {
+		userHelper.restrict(req, res, function() {
 			if (req.session.user && req.session.user.role == 'admin') {
 				next();
 			} else {
