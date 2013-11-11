@@ -456,8 +456,8 @@ section#desktop .element.list.login-box {
 			font-size: 128px;
 		}
 		section#desktop .element.list .cover img {
-			width: 128px;
-			height: 128px;
+			max-width: 100%;
+			min-height: 100%;
 		}
 
 		section#desktop .element.list .cover .downloading {
