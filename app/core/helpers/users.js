@@ -75,14 +75,13 @@ var helper = {
          if(count > 0) {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
-            
 
             db.users.count(function(err, num) {
 
               //Space left = disk / users
               var spaceLeft = global.config.diskSpace / num;
 
-              helper.usedSize(files.paths, function(size) {
+              helper.usedSize(params.paths, function(size) {
 
                   //(/helpers/users)
                   var percent = size.size / 1024 / 1024;
