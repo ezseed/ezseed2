@@ -128,7 +128,7 @@ albums.forEach(function(album) {
 		<% } %>
 	</div>
 	<div data-id="<%- album._id %>" class="element miniature audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
-		<div class="titre"><h1 class="league-gothic" title="<%- album.artist + ' - ' + album.album %>"><%- album.title %></h1></div>
+		<div class="titre"><h1 class="league-gothic" title="<%- album.title %>"><%- album.title %></h1></div>
 
 		<a href="/listen/<%- album._id %>" title="Écouter">
 			<% if(album.picture == undefined || album.picture === null) {%>
