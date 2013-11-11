@@ -52,15 +52,16 @@ module.exports.listen = function(app) {
 
                     var interval = cache.get('interval_' + uid);
 
-                    if(!interval) {
-                        cache.put(
-                            'interval_' + uid, 
-                            setInterval(function() {
-                                users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
-                                users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
-                            }, global.config.fetchTime)
-                        );
-                    }
+                    if(interval)
+                        clearInterval(interval);
+
+                    cache.put(
+                        'interval_' + uid, 
+                        setInterval(function() {
+                            users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
+                            users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
+                        }, global.config.fetchTime)
+                    );
 
                 });
             });
