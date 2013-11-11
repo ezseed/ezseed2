@@ -148,16 +148,18 @@ var files = {
 
 	delete : function(req, res) {
 
-		db.files.byId(req.params.id, function(err, file) {
-			console.log(file);
+		db.files[req.params.type].byId(req.params.id, function(err, doc) {
+
+			var files = doc.files || doc.videos || doc.songs;
+
+			//Only unlink files, watcher'll do the rest
+			_.each(files, function(e) {
+				fs.unlinkSync(e.path);
+			});
+
+			req.session.success = doc.name + " a été supprimé avec succès !";
+			res.redirect('/');
 		});
-		//only unlink folder recursive, watcher'll do the rest
-		//users.paths(req.session.user.id, function(err, paths) {
-			// removeFile({pathsKeys : paths.pathsKeys, f:new Buffer(req.params.id, 'hex').toString()}, function(err, key) {
-			// 	if(err) console.log(err);
-			// 	res.redirect('/');
-			// });
-		//});
 
 	}
 }
