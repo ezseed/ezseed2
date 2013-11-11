@@ -182,11 +182,15 @@ define([
 
                         self.loader();
                     } else {
-                        var count = 0;
+                        var count = 0, els = [];
 
                         _.each($items, function(e) {
-                            if(!e instanceof Text)
+                            if(e !instanceof Text) {
+                                if($(e).hasClass('list'))
+                                    els.push($(e));
+                                
                                 count++;
+                            }
                         });
 
                         count = count / 3;
