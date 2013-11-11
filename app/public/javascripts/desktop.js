@@ -156,8 +156,9 @@ define([
                     if(self.firstLoad) {
                         self.firstLoad = false;
                         self.loader();
-                        self.$container.css('visibility', 'visible');
                     }
+
+                    self.$container.css('visibility', 'visible');
 
                 });
             });
