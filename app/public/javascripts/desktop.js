@@ -157,7 +157,7 @@ define([
             self.render.files(datas, function(err, html) {
                 var $items = $.parseHTML(html);
 
-                self.$container.css('visibility', 'hidden').append($items);
+                self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
                 self.pckry.appended($items);   
 
@@ -171,6 +171,7 @@ define([
                     } else {
                         var count = $items.find(self.itemSelector+'.list').length();
 
+                        console.log(count);
                         if(count == 1) {
                             var titre = $items.find(self.itemSelector+'.list:first h1').text();
                             self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
@@ -179,7 +180,8 @@ define([
                         }
                     }
 
-                    self.$container.css('visibility', 'visible');
+                    console.log('Appended');
+                    self.$container.removeClass('notransition').css('visibility', 'visible');
 
                 });
             });
