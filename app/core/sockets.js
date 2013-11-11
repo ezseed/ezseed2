@@ -4,6 +4,7 @@ var socketio = require('socket.io')
   , cache = require('memory-cache')
   , users = require('../core/helpers/users.js')
   , db = require('../core/database.js')
+  , pretty = require('prettysize')
   , _ = require('underscore');
 
 
