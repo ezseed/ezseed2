@@ -71,6 +71,7 @@ var helper = {
     db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
       if(files) {
         countDatas(files.paths, function(count) {
+          console.log('Data fetch', count);
          if(count !== 0) {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
