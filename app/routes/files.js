@@ -152,6 +152,8 @@ var files = {
 
 			var files = doc.files || doc.videos || doc.songs;
 
+			console.log(db.files[req.params.type + 's']);
+			
 			//Only unlink files, watcher'll do the rest
 			_.each(files, function(e) {
 				fs.unlinkSync(e.path);
