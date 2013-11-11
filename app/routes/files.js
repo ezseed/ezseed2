@@ -147,8 +147,8 @@ var files = {
 	},
 
 	delete : function(req, res) {
-
-		db.files[req.params.type].byId(req.params.id, function(err, doc) {
+		//                       LOL
+		db.files[req.params.type + 's'].byId(req.params.id, function(err, doc) {
 
 			var files = doc.files || doc.videos || doc.songs;
 
