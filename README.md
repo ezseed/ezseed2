@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ```
                                 ___  ___  ___  ___  ___  ___     _  _  ___ 
                                (  _)(_  )/ __)(  _)(  _)(   \   ( )( )(__ \
@@ -43,6 +42,4 @@ git pull && pm2 restart ezseed
 Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :
 
 ![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
-=======
-*[La branche master n'est pas opérationnelle](https://github.com/soyuka/ezseed2/blob/rc1-b/README.md)*
->>>>>>> 62c8be2dbc6fffe2f4a8ee134f5584da61d789db
+
