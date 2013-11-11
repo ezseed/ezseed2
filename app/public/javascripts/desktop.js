@@ -142,7 +142,7 @@ define([
             var self = this
               , $el = $(self.itemSelector + '[data-id="' + id + '"]');
 
-            var titre = $el.find('h1').text();
+            var titre = $el.find('h1:first').text();
             self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
 
             self.pckry.remove($el);
