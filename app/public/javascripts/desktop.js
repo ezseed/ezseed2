@@ -136,7 +136,12 @@ define([
             var self = this
               , $el = $(self.itemSelector + '[data-id="' + id + '"]');
 
+            var titre = $el.find('h1').text();
+            self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+
             self.pckry.remove($el);
+
+            $el.remove();
 
         },
         append : function(datas) {
@@ -163,6 +168,15 @@ define([
                     if(self.firstLoad) {
                         self.firstLoad = false;
                         self.loader();
+                    } else {
+                        var count = $items.find(self.itemSelector+'.list').length();
+
+                        if(count == 1) {
+                            var titre = $items.find(self.itemSelector+'.list:first h1').text();
+                            self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
+                        } else {
+                            self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
+                        }
                     }
 
                     self.$container.css('visibility', 'visible');
