@@ -38,7 +38,7 @@ var user = {
 	*/
 
 	authenticate : function(req, res) {
-		authenticate(req.body.username, req.body.password, function(err, user){
+		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
 			if (user) {
 				// Regenerate session when logged
 				req.session.regenerate(function(){
