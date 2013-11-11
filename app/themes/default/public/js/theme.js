@@ -209,10 +209,9 @@ define([
 
     socket.on('size', function(size) {
         
-        var mb = size.size / 1024 / 1024;
-
-        $('#diskSpace #usedBar').css('width',  mb / config.diskSpace * 100 + '%');
+        $('#diskSpace #usedBar').css('width', size.percent);
         $('#diskSpace .used').text(size.pretty);
+        $('#diskSpace .left').text(' / ' + size.left)
     });
 
     var waitForDownloadTimeout;
