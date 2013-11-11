@@ -90,6 +90,8 @@ var Watch = function(params) {
 	self.uid = params.uid;
 	self.pid = params.pid;
 
+	self.removedIds = [];
+
 	return _.extend(self, {
 		eventHandler : function(event, data) {
 
@@ -114,7 +116,7 @@ var Watch = function(params) {
 			self.removeTimeout = setTimeout(function() {
 				console.log('removeFile');
 
-				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles}, function() {
+				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles, removedIds : self.removedIds}, function() {
 					self.removeTimeout = null;
 					watcher.writeRemovedFiles(self);
 				});
@@ -149,7 +151,6 @@ var Watch = function(params) {
 // util.inherits(Watch, Watcher);
 
 var watcher = {
-	removedIds : [],
 	watchers : [],
 	initFetch : function() {
 		db.users.getAll(function(err, users) {
@@ -179,11 +180,11 @@ var watcher = {
 		var path = pathInfo.join(__dirname, '/../public/tmp/', watch.uid+'.json');
 
 		if(!fs.existsSync(path))
-			jf.writeFileSync(path, watch.removedFiles);
+			jf.writeFileSync(path, watch.removedIds);
 		else
-			jf.writeFileSync(path, _.union(jf.readFileSync(path), watch.removedFiles));
+			jf.writeFileSync(path, _.union(jf.readFileSync(path), watch.removedIds));
 
-		watch.removedFiles = [];
+		watch.removedIds = [];
 	},
 	//add path ID to unset from array type
 	removeFiles : function(params, cb) {
@@ -237,7 +238,7 @@ var watcher = {
 					if( _.findWhere(elements, {path : removedFiles[k]}) !== undefined ) {
 
 						db.files[type].delete(e._id, function(err) {
-							watcher.removedIds.push(e._id);
+							params.removedIds.push(e._id);
 							done++;
 
 							if(done == removedFiles.length)
