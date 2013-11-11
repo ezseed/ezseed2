@@ -29,7 +29,6 @@ module.exports.listen = function(app) {
 
                     });
 
-
                     db.users.count(function(err, num) {
 
                         //Space left = disk / users

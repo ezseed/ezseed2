@@ -43,7 +43,7 @@ var middlewares = {
 
 		    if(u.client == 'transmission') {
 
-		      var transmissionConfig = jf.readFileSync(__dirname + '/scripts/transmission/config/settings.'+u.username+'.json');
+		      var transmissionConfig = jf.readFileSync(global.config.root + '/scripts/transmission/config/settings.'+u.username+'.json');
 
 		      //saving rpc-port
 		      u['rpc-port'] = transmissionConfig['rpc-port'];
