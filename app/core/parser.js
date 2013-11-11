@@ -63,7 +63,7 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { 
 					if(infos.artist === null && infos.album === null)
 						return false;
-					else if(album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
+					else if(album.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
 						return true;
 					else if(album.album.toLowerCase() == infos.album.toLowerCase())
 						return true;
