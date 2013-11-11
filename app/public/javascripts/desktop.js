@@ -169,8 +169,11 @@ define([
                         self.firstLoad = false;
                         self.loader();
                     } else {
-                        var count = $items.find(self.itemSelector+'.list').length();
+                        var count = 1;
 
+                        _.each($items, function(e) {
+                            console.log(e);
+                        });
                         console.log(count);
                         if(count == 1) {
                             var titre = $items.find(self.itemSelector+'.list:first h1').text();
