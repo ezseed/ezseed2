@@ -121,7 +121,6 @@ var helper = {
   */
   authenticate : function(name, pass, done) {
     db.user.byUsername(name, function (err, user) {
-      console.log(user,err);
       //No user
       if (err || _.isEmpty(user)) return done(new Error('cannot find user'));
       

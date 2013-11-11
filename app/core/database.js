@@ -225,7 +225,7 @@ var db = {
       });
     },
     byUsername : function(username, done) {
-      Users.findOne({uersname : username}, done);
+      Users.findOne({username : username}, done);
     },
     byId : function(uid, done) {
       Users.findById(uid, done);
