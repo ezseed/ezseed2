@@ -45,7 +45,7 @@ var countDatas = function(p, cb) {
   cb(count);
 }
 
-module.exports = {
+var helper = {
   usedSize : function(paths, cb) {
     var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
 
@@ -75,7 +75,7 @@ module.exports = {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
 
-            usedSize({paths : params.paths}, function(size) {
+            helper.usedSize({paths : params.paths}, function(size) {
                 io.sockets.socket(params.sid).emit('size', size);
             });
           }
@@ -130,3 +130,4 @@ module.exports = {
   }
 }
 
+module.exports = helper;
