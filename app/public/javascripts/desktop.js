@@ -189,8 +189,8 @@ define([
                                 count++;
                         });
 
-                        count = counts / 3;
-                        
+                        count = count / 3;
+
                         if(count == 1) {
                             //var titre = $items.find(self.itemSelector+'.list:first h1').text();
                             self.showNotification({title: 'Fichier ajouté',text: "kaka" + ' ajouté !'});

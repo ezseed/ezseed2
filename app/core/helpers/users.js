@@ -75,9 +75,28 @@ var helper = {
          if(count > 0) {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
-            helper.usedSize({paths : params.paths}, function(size) {
-                io.sockets.socket(params.sid).emit('size', size);
+            
+
+            db.users.count(function(err, num) {
+
+              //Space left = disk / users
+              var spaceLeft = global.config.diskSpace / num;
+
+              helper.usedSize(paths, function(size) {
+
+                  //(/helpers/users)
+                  var percent = size.size / 1024 / 1024;
+
+                  percent = percent / spaceLeft * 100 + '%';
+
+                  spaceLeft = pretty(spaceLeft * 1024 * 1024);
+
+                  io.sockets.socket(socket.id).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+
+              });
+
             });
+
           }
         });
       }
