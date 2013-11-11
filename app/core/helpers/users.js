@@ -81,7 +81,7 @@ var helper = {
               //Space left = disk / users
               var spaceLeft = global.config.diskSpace / num;
 
-              helper.usedSize(params.paths, function(size) {
+              helper.usedSize(params, function(size) {
 
                   //(/helpers/users)
                   var percent = size.size / 1024 / 1024;
