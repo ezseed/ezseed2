@@ -93,8 +93,6 @@ var helper = {
     var files = jf.readFileSync(path)
       , nb = files.length;
 
-      console.log(files);
-
       while(nb--)
         io.sockets.socket(params.sid).emit('remove', files[nb]);
       

@@ -57,6 +57,12 @@ define([
 
             self.socket.emit('update', user.id);
 
+            //hash
+            var item = window.location.hash.substr(1);
+
+            if(item.length)
+                self.remove(item);
+
             return self;
         },
         //Rendering methods

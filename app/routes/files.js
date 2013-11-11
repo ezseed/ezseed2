@@ -158,7 +158,7 @@ var files = {
 			});
 
 			req.session.success = doc.name + " a été supprimé avec succès !";
-			res.redirect('/');
+			res.redirect('/#'+doc._id);
 		});
 
 	}
