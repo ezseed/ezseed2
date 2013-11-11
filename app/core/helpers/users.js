@@ -71,12 +71,13 @@ var helper = {
     db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
       if(files) {
         countDatas(files.paths, function(count) {
-          console.log('Data fetch', count);
-         if(count !== 0) {
+          console.log('Data fetch', count, files);
+         if(count > 0) {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             cache.put('lastUpdate', new Date());
-
+            console.log('sended fetchDatas');
             helper.usedSize({paths : params.paths}, function(size) {
+                console.log(size);
                 io.sockets.socket(params.sid).emit('size', size);
             });
           }
