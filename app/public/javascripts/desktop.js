@@ -186,7 +186,7 @@ define([
 
                         _.each($items, function(e) {
                             console.log($(e));
-                            console.log(typeof e);
+                            console.log(e instanceof Text);
 
                             if($(e).hasClass(displayOption))
                                 count++;
