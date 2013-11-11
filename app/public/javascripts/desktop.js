@@ -185,10 +185,12 @@ define([
                         var count = 0, els = [];
 
                         _.each($items, function(e) {
-                            if(e !instanceof Text) {
+                            var isTxt = e instanceof Text;
+
+                            if(!isTxt) {
                                 if($(e).hasClass('list'))
                                     els.push($(e));
-                                
+
                                 count++;
                             }
                         });
