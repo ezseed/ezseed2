@@ -174,6 +174,7 @@ if ('development' == app.get('env')) {
   app.get('/login', user.login);
   app.get('/logout', user.logout);
   app.post('/login', user.authenticate);
+  app.get('/reset/(:uid)', user.reset);
 
   app.get('/archive/(:id)', user.restrict, files.archive);
   app.get('/download/archive/(:id)', files.downloadArchive);

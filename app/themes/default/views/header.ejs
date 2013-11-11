@@ -42,6 +42,8 @@
             <% if(user.role == 'admin') {%>
               <a href="/admin" title="Panel d'administration"><i class="entypo-tools pullRight" style="margin-left:5px"></i></a>
             <% } %>
+            <a href="/reset/<%= user.id%>"><i class="entypo-ccw pullRight" title="Réinitialiser la base de données" style="margin-left:5px"></i></a>
+
           </div>
 
           <nav id="menu" class="pullLeft clearfix">

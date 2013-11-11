@@ -14,7 +14,7 @@ var mongoose = require('mongoose')
 
 var _ = require('underscore');
 
-module.exports = {
+var db = {
 	paths : {
 		byUser : function (uid, cb) {
 			 Users.findById(uid).populate('paths').exec(function (err, docs) {
@@ -226,6 +226,57 @@ module.exports = {
     },
     byId : function(uid, done) {
       Users.findById(uid, done);
+    },
+    reset : function(uid, done) {
+      db.files.byUser(uid, 0, function(err, docs) {
+        
+        var albums = [], movies = [], others = [];
+
+        _.each(docs.paths, function(el){
+          _.each(el.albums, function(a) { albums.push(a); });
+          _.each(el.movies, function(a) { movies.push(a); });
+          _.each(el.others, function(a) { others.push(a); });
+        });
+
+        async.parallel({
+            albums: function(callback){
+              async.each(albums, 
+                function(album, cb) {
+                  console.log(album);
+                  db.files.albums.delete(album._id, cb);
+                }, 
+                function(err){
+                  callback(err);
+                }
+              );
+            },
+            movies: function(callback){
+              async.each(movies, 
+                function(movie, cb) {
+                  db.files.movies.delete(movie._id, cb);
+                }, 
+                function(err){
+                  callback(err);
+                }
+              );
+            },
+            others: function(callback) {
+              async.each(others, 
+                function(other, cb) {
+                  db.files.others.delete(other._id, cb);
+                }, 
+                function(err){
+                  callback(err);
+                }
+              );
+            }
+        },
+        function(err, results) {
+            done(err);
+            
+        });
+
+      });
     }
   },
   users : {
@@ -313,3 +364,4 @@ module.exports = {
   }
 };
 
+module.exports = db;

@@ -3,6 +3,7 @@ var _s = require('underscore.string')
   	, bcrypt = require('bcrypt-nodejs')
   	, mongoose = require('mongoose')
   	, models = require('../models')
+  	, db = require('../core/database')
   	, Users = mongoose.model('Users');
 
 /*
@@ -63,6 +64,12 @@ exports.logout = function(req, res) {
   req.session.destroy(function(){
     res.redirect('/login');
   });
+}
+
+exports.reset = function(req, res) {
+	db.user.reset(req.params.uid, function() {
+		res.redirect('/');
+	});
 }
 
 /*
