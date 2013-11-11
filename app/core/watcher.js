@@ -141,7 +141,8 @@ var Watch = function(params) {
 		},
 
 		unknown : function(filename) {
-			console.log('Unknow event', filename);
+			//Could be nice : add the file once + % downloaded ? possible ?
+			//console.log('Unknow event', filename);
 		}
 	}, new Watcher(self.path, function(event, data) {
 		self.eventHandler(event, data);
