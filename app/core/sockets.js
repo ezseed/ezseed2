@@ -72,7 +72,7 @@ module.exports.listen = function(app) {
                 io.sockets.socket(socket.id).emit('compressing', {'done': stats.size, 'id':id});
             });
 
-
+            watcher.close();
         });
 
    });
