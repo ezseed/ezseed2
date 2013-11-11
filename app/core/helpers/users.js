@@ -90,7 +90,7 @@ var helper = {
 
                   spaceLeft = pretty(spaceLeft * 1024 * 1024);
 
-                  io.sockets.socket(socket.id).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+                  io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
               });
 
