@@ -141,9 +141,6 @@ define([
 
             self.pckry.remove($el);
 
-            console.log('removed');
-           // $el.remove();
-
         },
         append : function(datas) {
 
@@ -173,11 +170,11 @@ define([
                         var count = 0;
 
                         _.each($items, function(e) {
-                            console.log($(e));
-                            count++;
-                        });
+                            console.log(typeof $(e));
 
-                        count = count / 3;
+                            if($(e).hasClass(displayOption))
+                                count++;
+                        });
 
                         console.log(count);
 
