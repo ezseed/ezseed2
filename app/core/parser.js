@@ -56,10 +56,9 @@ module.exports.processAlbums = function(params, callback) {
 			if(indexMatch !== null) {
 				infos = release.getTags.audio(e.path);
 
-				if(albums[indexMatch].artist != infos.artist && albums[indexMatch].artist !== 'VA') {
+				if(albums[indexMatch].artist != infos.artist && albums[indexMatch].artist !== 'VA' && albums[indexMatch].album !== null) 
 					albums[indexMatch].artist = 'VA';
-					console.log(albums[indexMatch]);
-				}
+				
 
 				albums[indexMatch].songs.push(e);
 			} else {
