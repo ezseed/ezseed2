@@ -150,6 +150,8 @@ module.exports.getTags  = {
 			movie.name = dummyName(name, movie);
 		}
 
+		console.log(movie);
+		
 		return movie;
 	}, 
 	audio: function(filePath, picture) {
