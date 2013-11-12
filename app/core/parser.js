@@ -61,8 +61,11 @@ module.exports.processAlbums = function(params, callback) {
 					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
 					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
 					
-					if(a.indexOf(b) === -1)
+					if(a.indexOf(b) === -1) {
+						console.log(a, b);
 						albums[indexMatch].artist = 'VA';
+
+					}
 				}
 
 				albums[indexMatch].songs.push(e);
