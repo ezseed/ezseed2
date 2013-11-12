@@ -27,10 +27,10 @@ define([
             break;
         }
 
-    });
-
-    $('body, html').on('scroll', function() {
-        if ( $('body').scrollTop() > $('header').height() + 7 )
+    }).on('scroll', function() {
+        var scrollTop = $('body').scrollTop() || $('html').scrollTop();
+        console.log(scrollTop);
+        if ( scrollTop > $('header').height() + 7 )
             onTopScroll();
         else
             onTopScroll(false);
@@ -56,8 +56,9 @@ define([
 
     var toTop = function(veryTop) {
         var veryTop = veryTop === undefined ? false : veryTop;
+        var scrollTop = $('body').scrollTop() || $('html').scrollTop();
 
-        if ( $('body').scrollTop() > $('header').height() + 7) {
+        if ( scrollTop > $('header').height() + 7) {
 
             if(veryTop !== true)
                 $('body, html').animate({'scrollTop':$('header').height() + 10});
