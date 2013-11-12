@@ -163,8 +163,6 @@ define([
 
                 self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
-                console.log($items);
-
                 self.pckry.appended($items);
 
                 self.displaySelector = displayOption;

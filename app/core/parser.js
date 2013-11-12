@@ -3,6 +3,7 @@ var pathInfos = require('path')
   , explorer = require('explorer')
   , async = require('async')
   , _ = require('underscore')
+  , _s = require('underscore.string')
   , release = require('./release.js')
   , fs = require('fs')
   ;
@@ -56,7 +57,7 @@ module.exports.processAlbums = function(params, callback) {
 			if(indexMatch !== null) {
 				infos = release.getTags.audio(e.path);
 
-				if(albums[indexMatch].artist != infos.artist && albums[indexMatch].artist !== 'VA' && albums[indexMatch].album !== null) 
+				if(infos.artist !== null && albums[indexMatch].album !== null && _s.trim(albums[indexMatch].artist).toLowerCase() != _s.trim(infos.artist).toLowerCase() && albums[indexMatch].artist !== 'VA') 
 					albums[indexMatch].artist = 'VA';
 				
 
