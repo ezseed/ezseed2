@@ -19,7 +19,16 @@ movies.forEach(function(movie) {
     <header>
         <h4><i class="fa fa-film"></i> <%- movie.title %><% if(movie.season != undefined) { %> 
             <span class="badge badge-success">S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %>
-            </span>
+            </span>                 <% if(movie.quality != undefined) { %>
+            <span class="badge badge-primary"><i class="entypo-monitor"></i> <%- movie.quality %></span>
+            <% } %>
+            <% if(movie.language != undefined) { %>
+            <span class="badge badge-warning"><i class="entypo-sound"></i> <%- movie.language %></span>
+            <% } %>
+            <% if(movie.subtitles != undefined) { %>
+            <span class="badge badge-danger"><i class="entypo-text-doc"></i> <%- movie.subtitles %></span>
+            <% } %>
+            
             <div class="pull-right">
                 <div class="btn-group btn-group-xs">
                     <% if(movie.videos.length > 1 ) { %>
@@ -56,24 +65,11 @@ movies.forEach(function(movie) {
             </div>
             <br>
             <div class="col-md-10">	<div class="box">
-                
-                
-                
-                <hr />
                 <p class="infos">
                     <%- movie.synopsis %><br>
                     
                 </p>
                 
-                <% if(movie.quality != undefined) { %>
-                <p class="info"><i class="entypo-monitor"></i><%- movie.quality %></p>
-                <% } %>
-                <% if(movie.language != undefined) { %>
-                <p class="info"><i class="entypo-sound"></i><%- movie.language %></p>
-                <% } %>
-                <% if(movie.subtitles != undefined) { %>
-                <p class="info"><i class="entypo-text-doc"></i><%- movie.subtitles %></p>
-                <% } %>
                 <% if(movie.videos.length > 1) { %>
                 <div class="panel-group" id="<%-movie._id%>">
                     <div class="panel">
@@ -150,7 +146,15 @@ movies.forEach(function(movie) {
     </div>
     
     <li data-id="<%- movie._id %>" class="dd-item element table video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
-        <div class="dd-handle"><i class="fa fa-film"></i> <%- movie.title %> <% if(movie.season != undefined) { %><span class="label label-success">S<%- movie.season%><% if(movie.episode != undefined) { %>E<%- movie.episode%><% } %></span><% } %></div>
+        <div class="dd-handle col-md-11"><i class="fa fa-film"></i> <%- movie.title %> <% if(movie.season != undefined) { %><span class="badge badge-success">S<%- movie.season%><% if(movie.episode != undefined) { %>E<%- movie.episode%><% } %></span><% } %> <% if(movie.quality != undefined) { %>
+            <span class="badge badge-primary"><i class="entypo-monitor"></i> <%- movie.quality %></span>
+            <% } %>
+            <% if(movie.language != undefined) { %>
+            <span class="badge badge-warning"><i class="entypo-sound"></i> <%- movie.language %></span>
+            <% } %>
+            <% if(movie.subtitles != undefined) { %>
+            <span class="badge badge-danger"><i class="entypo-text-doc"></i> <%- movie.subtitles %></span>
+            <% } %></div>
     </li>
     <%
                                                                                                                                                                                                          });
