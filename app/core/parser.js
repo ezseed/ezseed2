@@ -57,6 +57,7 @@ module.exports.processAlbums = function(params, callback) {
 				albums[indexMatch].songs.push(e);
 				infos = release.getTags.audio(e.path, true);
 
+				console.log('Match1', infos);
 				if(albums[indexMatch].artist !== infos.artist)
 					albums[indexMatch].artist = 'VA';
 
@@ -233,15 +234,20 @@ var checkIsOther = function (files, i) {
 	if( i < files.length ) {
 		//no hidden files
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
+
+			var stats = fs.statSync(files[i]);
 			
-			var t = mime.lookup(files[i]).split('/')[0];
+			if(stats.isDirectory()) {
+				checkIsOther(fs.readdirSync(files[i]));
+			} else {
+				var t = mime.lookup(files[i]).split('/')[0];
 
-			if( (t == 'audio' || t == 'video'))
-			{
-				return false;
-			} else
-				return checkIsOther(files, i + 1);
-
+				if( (t == 'audio' || t == 'video'))
+				{
+					return false;
+				} else
+					return checkIsOther(files, i + 1);
+			}
 		} else
 			return checkIsOther(files, i + 1);
 	} else 
@@ -261,14 +267,12 @@ module.exports.processOthers = function(params, callback) {
 	_.each(othersFiles, function(e, i) {
 
 		if(e.prevDir != pathToWatch) {
-			if(checkIsOther(fs.readdirSync(e.prevDir))) {
-				e.prevDir = pathInfos.join(
-					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
-				
-				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
-				name = pathInfos.basename(e.prevDir);
-			}
+			e.prevDir = pathInfos.join(
+				pathToWatch, 
+				e.prevDir.replace(pathToWatch, '').split('/')[1]);
+			
+			indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
+			name = pathInfos.basename(e.prevDir);
 		} else {
 			single = true;
 			name = e.name;
