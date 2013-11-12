@@ -212,6 +212,8 @@ var getMovieInformations = function(movie, cb) {
       		if(infos !== undefined) {
 
       			_.each(infos, function(e) {
+      				console.log(movie.name.indexOf(e.title));
+      				console.log(movie.name, e.title);
       				if(movie.name.indexOf(e.title) !== -1)
       					movie.code = e.code;
       			});
@@ -233,9 +235,8 @@ var getMovieInformations = function(movie, cb) {
           	} else {
           		var words = _s.words(movie.name);
 
-          		if(words.length > 2 && words[0].length > 3) {
+          		if(words.length >= 2 && words[0].length > 3) {
           			movie.name = words.splice(1, words.length).join(' ');
-          			console.log("New name", movie.name);
           			getMovieInformations(movie , cb);
           		} else {
         			 //No movie founded
