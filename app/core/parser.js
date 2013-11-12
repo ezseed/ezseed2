@@ -282,7 +282,7 @@ var checkIsOther = function (files, i) {
 **/
 module.exports.processOthers = function(params, callback) {
 	
-	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single = false;
+	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
 
 	_.each(othersFiles, function(e, i) {
 
@@ -295,6 +295,7 @@ module.exports.processOthers = function(params, callback) {
 			
 			indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 			name = pathInfos.basename(e.prevDir);
+			single = false;
 		} else {
 			single = true;
 			name = e.name;
