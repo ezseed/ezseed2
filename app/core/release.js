@@ -76,6 +76,8 @@ module.exports.getTags  = {
 
 		var basename = pathInfos.basename(path), prevDir = path.replace('/' + basename, '').split('/');
 
+		console.log(prevDir, path);
+		
 		prevDir = prevDir[prevDir.length - 1];
 
 		// if(prevDir.length > basename.length)
@@ -203,7 +205,6 @@ module.exports.getTags  = {
 };
 
 module.exports.getMovieInformations = function(movie, cb) {
-	console.log('Infos', movie.name);
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
   		if(err) return cb(err, movie);
