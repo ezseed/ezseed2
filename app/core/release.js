@@ -201,7 +201,7 @@ module.exports.getTags  = {
 };
 
 module.exports.getMovieInformations = function(movie, cb) {
-	console.log(movie.name);
+	console.log(movie);
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
   		if(err) return cb(err, movie);
@@ -225,7 +225,8 @@ module.exports.getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
-          		console.log('No movies', movie);
+          		//No movie founded
+          		movie.title = movie.name;
           		return cb(err, movie);
           	}
       	} else {
