@@ -76,18 +76,16 @@ module.exports.getTags  = {
 
 		var basename = pathInfos.basename(path), prevDir = path.replace('/' + basename, '').split('/');
 
-		//console.log(prevDir, path);
-
 		prevDir = prevDir[prevDir.length - 1];
 
 		if(prevDir.length > basename.length)
 			basename = prevDir;
 
-		//console.log(basename, prevDir);
+		console.log(basename);
 
 		var err = null
 
-		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ')
+		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ').replace(/\(\)/g, '');
 
 		  , array = _s.words(name)
 
