@@ -72,7 +72,15 @@ var findCoverInDirectory = function(dir) {
 module.exports.getTags  = {
 	//Searches the video type
 	//Algorithm from : https://github.com/muttsnutts/mp4autotag/issues/2
-	video: function(basename) {
+	video: function(path) {
+
+		var basename = pathInfos.basename(path), prevDir = path.replace('/' + basename, '').split('/');
+
+		prevDir = prevDir[prevDir.length - 1];
+
+		if(prevDir.length > basename.length)
+			basename = prevDir;
+
 		var err = null
 
 		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ')

@@ -148,7 +148,7 @@ module.exports.processMovies = function(params, callback) {
 		}
 
 		//Do the test again with video name
-		var m = release.getTags.video(pathInfos.basename(e.path));
+		var m = release.getTags.video(e.path);
 		if(m.movieType == 'tvseries') {
 			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; });
 			for(var k in existingFile) {
