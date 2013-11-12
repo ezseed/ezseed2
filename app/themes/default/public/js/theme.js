@@ -65,7 +65,7 @@ define([
     });
 
     $('body').on('click', '.reset-db', function(e) {
-        if(!confirm("Cette fonction réinitialise la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?"))
+        if(!confirm("Cette fonction réindexe la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?"))
             return false;
     });
 

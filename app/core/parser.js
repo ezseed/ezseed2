@@ -282,9 +282,11 @@ var checkIsOther = function (files, i) {
 **/
 module.exports.processOthers = function(params, callback) {
 	
-	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single = false;
+	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
 
 	_.each(othersFiles, function(e, i) {
+
+		console.log(e.name, e.prevDir, pathToWatch);
 
 		if(e.prevDir != pathToWatch) {
 			e.prevDir = pathInfos.join(
@@ -293,6 +295,7 @@ module.exports.processOthers = function(params, callback) {
 			
 			indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 			name = pathInfos.basename(e.prevDir);
+			single = false;
 		} else {
 			single = true;
 			name = e.name;
@@ -310,6 +313,8 @@ module.exports.processOthers = function(params, callback) {
 		}
 
 		if(!exists) {
+			// console.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
+
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
 			else {

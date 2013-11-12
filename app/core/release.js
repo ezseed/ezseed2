@@ -156,44 +156,50 @@ module.exports.getTags  = {
 
 		picture = picture === undefined ? false : picture;
 
-		var id3 = new ID3(fs.readFileSync(filePath));
-		id3.parse();
+		var stats = fs.statSync(filePath);
 
-		var tags = {
-				"title" : id3.get("title"),
-				"artist" :id3.get("artist"),
-				"album"  :id3.get("album"),
-				"year"   :id3.get("year"),
-				"genre"  :id3.get("genre")
-			};
+		//Node buffer > file size => bug + should be streaming file (id3 module)
+		if(stats.size < 1073741824) {
+			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
+			id3.parse();
 
-		if(picture) {
-			var datas = id3.get('picture'), pictureFounded = false;
+			var tags = {
+					"title" : id3.get("title"),
+					"artist" :id3.get("artist"),
+					"album"  :id3.get("album"),
+					"year"   :id3.get("year"),
+					"genre"  :id3.get("genre")
+				};
 
-			if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
+			if(picture) {
+				var datas = id3.get('picture'), pictureFounded = false;
 
-				var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
+				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
-				  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+					var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-				  , type = datas.format.split('/');
+					  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
 
-				if(type[0] == 'image') {
-					pictureFounded = true;
+					  , type = datas.format.split('/');
 
-					file = file + '.' + type[1];
+					if(type[0] == 'image') {
+						pictureFounded = true;
 
-					fs.writeFileSync(file, datas.data);
-					
-					tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+						file = file + '.' + type[1];
+
+						fs.writeFileSync(file, datas.data);
+						
+						tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+					}
+
 				}
-
+				
+				if(!pictureFounded)
+					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+				
 			}
-			
-			if(!pictureFounded)
-				_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
-			
-			
+		} else {
+			var tags = {artist:null,album:null,year:null,genre:null};
 		}
 
 		return tags;
