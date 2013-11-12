@@ -29,7 +29,6 @@ define([
 
     }).on('scroll', function() {
         var scrollTop = $('body').scrollTop() || $('html').scrollTop();
-        console.log(scrollTop);
         if ( scrollTop > $('header').height() + 7 )
             onTopScroll();
         else
@@ -76,13 +75,13 @@ define([
             if(!$('nav#display').hasClass('fixed')) {
                 $('nav#display').addClass('fixed').css('opacity', '0.7');
                 $section.css('marginTop', '80px');
-                $('#toTop').animate({'opacity':'0.8'});
+                $('#toTop').stop().animate({'opacity':'0.8'});
             }
         } else 
         {
             $('nav#display').removeClass('fixed').css('opacity', '1');   
             $section.css('marginTop', '20px');
-            $('#toTop').animate({'opacity':'0'});
+            $('#toTop').stop().animate({'opacity':'0'});
         }
 
     }
