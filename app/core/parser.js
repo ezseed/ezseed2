@@ -171,7 +171,7 @@ module.exports.processMovies = function(params, callback) {
 				i++;
 				return parseMovies(arr, cb, i, movies);
 			} else {
-				e = _.extend(e, release.getTags.video(e.name));
+				e = _.extend(e, release.getTags.video(e.path));
 
 				//Movies types are the same, we look after the same name | same season
 				indexMatch = findIndex(movies, function(movie) { 
