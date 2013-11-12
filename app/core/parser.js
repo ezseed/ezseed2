@@ -57,8 +57,16 @@ module.exports.processAlbums = function(params, callback) {
 			if(indexMatch !== null) {
 				infos = release.getTags.audio(e.path);
 
-				if(infos.artist !== null && albums[indexMatch].album !== null && _s.trim(albums[indexMatch].artist).toLowerCase().indexOf(_s.trim(infos.artist).toLowerCase()) !== -1 && albums[indexMatch].artist !== 'VA') { 
-					albums[indexMatch].artist = 'VA';
+				if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
+					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
+					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+					
+					console.log(a.indexOf(b));
+
+					if(a.indexOf(b) !== -1) {
+						console.log(albums[indexMatch], infos);
+						albums[indexMatch].artist = 'VA';
+					}
 				}
 
 				albums[indexMatch].songs.push(e);
