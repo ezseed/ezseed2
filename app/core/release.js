@@ -212,8 +212,11 @@ var getMovieInformations = function(movie, cb) {
       		if(infos !== undefined) {
 
       			_.each(infos, function(e) {
-      				console.log(movie.name, e.title, e.originalTitle);
-      				if(movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 || movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
+      				if(
+      					( e.title !== undefined && movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 ) 
+      					||
+      					( e.originalTitle !== undefined && movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
+      				  )
       					movie.code = e.code;
       			});
 
