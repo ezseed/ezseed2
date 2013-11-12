@@ -83,7 +83,7 @@ var files = {
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
-				res.download(global.config.root + '/public/tmp/' + req.params.id +'.zip', name);
+				res.download(global.config.root + '/public/tmp/' + req.params.id +'.zip', name + '.zip');
 			}
 		});
 					
