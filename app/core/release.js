@@ -212,7 +212,7 @@ var getMovieInformations = function(movie, cb) {
       		if(infos !== undefined) {
 
       			_.each(infos, function(e) {
-      				if(movie.name.indexOf(e.title))
+      				if(movie.name.indexOf(e.title) !== -1)
       					movie.code = e.code;
       			});
 
@@ -223,7 +223,7 @@ var getMovieInformations = function(movie, cb) {
           			infos = Object.byString(result, movie.movieType);
 
           			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-          			movie.synopsis = infos.synopsis.replace(/<\/?p>/ig, '');
+          			movie.synopsis = infos.synopsis ? infos.synopsis.replace(/<\/?p>/ig, '') : '';
           			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
           			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
 
@@ -235,6 +235,7 @@ var getMovieInformations = function(movie, cb) {
 
           		if(words.length > 2 && words[0].length > 3) {
           			movie.name = words.splice(1, words.length).join(' ');
+          			console.log("New name", movie.name);
           			getMovieInformations(movie , cb);
           		} else {
         			 //No movie founded
