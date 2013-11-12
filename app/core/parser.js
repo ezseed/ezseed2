@@ -298,8 +298,6 @@ module.exports.processOthers = function(params, callback) {
 			name = e.name;
 		}
 
-		console.log(name);
-
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {
@@ -311,9 +309,9 @@ module.exports.processOthers = function(params, callback) {
 			}
 		}
 
-		console.log('Exists ? ', exists);
-
 		if(!exists) {
+			console.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
+
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
 			else {
