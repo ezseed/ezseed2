@@ -58,7 +58,7 @@
     </div>
               <% if(user) { %>
       <div class="logo">
-<h4><a href="/">Boxe de <strong><%= user.username %></strong></a></h4>
+<h4><a href="/">Bureau de <strong><%= user.username %></strong></a></h4>
 </div>
               <% if(user && location == '/') { %>
       <nav id="sidebar" class="sidebar nav-collapse collapse">
@@ -197,9 +197,14 @@
                 </div>                      
                     <% } %>
                     <% if(user.role == 'admin') {%>
-                      <li class="hidden-xs dropdown">
+                      <li class="hidden-xs">
                         <a href="/admin" title="Administration">
                             <i class="fa fa-dashboard"></i>
+                        </a>
+                    </li>
+                      <li class="hidden-xs">
+                        <a href="/reset/<%= user.id%>" class="reset-db" title="Reset-Db">
+                            <i class="entypo-ccw"></i>
                         </a>
                     </li>
                                 <% } %> 
@@ -215,7 +220,7 @@
           <div class="widget" id="diskSpace">
                     <div class="carousel-inner text-align-center">
                         <div class="item active">
-                            <h4 class="no-margin big-text"><em class="size"><span class="label label-success used"></span><span class="left"></span></em><% if(user && location == '/') { %><div class="pull-left"><div id="loader">
+                            <h4 class="no-margin big-text"><em class="size"><span class="badge badge-success"><span class="used"></span><span class="left"></span></span></em><% if(user && location == '/') { %><div class="pull-left"><div id="loader">
           <div class="fa fa-spinner fa-spin" aria-hidden="true"></div>
         </div></div><% } %></h4><hr>
       
