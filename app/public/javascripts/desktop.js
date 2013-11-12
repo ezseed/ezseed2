@@ -14,6 +14,20 @@ define([
         };
     });
 
+    //Expression to search for first letter
+    $.expr[':'].startsWith = $.expr.createPseudo(function(arg) {
+        return function( elem ) {
+            return $(elem).text().replace(/\s+/g, '').charAt(0).toUpperCase() == arg.toUpperCase();
+        };
+    });
+
+    $.expr[':'].match = $.expr.createPseudo(function(arg) {
+        return function( elem ) {
+            var c = $(elem).text().replace(/\s+/g, '').charAt(0);
+            return c.match( new RegExp( arg ) );
+        };
+    });
+
     /* Render function */
     var View = $.Ejs({path : 'views/'});
 

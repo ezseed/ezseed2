@@ -217,6 +217,50 @@ define([
         return false;
     });
 
+    //See search
+    $('#alpha-nav li a').on('click', function(e) {
+        e.preventDefault();
+
+        toTop();
+
+        var $letter = $(this)
+          , letter = $(this).parent().hasClass('active') ? '' : $letter.attr('href').substr(1);
+        
+        $section.find('.startsWith').toggleClass('startsWith');
+
+        $(this).closest('ul').find('li.active').removeClass('active');
+
+        var filter = '', display = $('#displayFilters li:first-child').attr('data-display');
+
+        if($('#displayFilters li.active').length)
+            filter = $('#displayFilters li.active').attr('data-filter');
+
+        if(letter.length || letter === '#') {
+
+            var matches;
+
+            if(letter === '#')
+                matches = $section.find(Desktop.itemSelector + ':match("/\\d/g")');
+            else
+                matches = $section.find(Desktop.itemSelector + ':startsWith("'+letter+'")');
+
+
+            matches.each(function(i, e) {
+                if(!$(e).hasClass('startsWith')) {
+                    var id = $(e).attr('data-id');
+
+                    $section.find(Desktop.itemSelector + '[data-id="'+id+'"]').addClass('startsWith');
+                }
+            });
+
+            Desktop.layout(display+filter+'.startsWith', function() {
+                $letter.parent().addClass('active');
+            });
+        } else {
+            Desktop.layout(display+filter);
+        }
+    });
+
     var socket = Desktop.socket;
 
     socket.on('size', function(size) {

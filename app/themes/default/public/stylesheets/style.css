@@ -563,6 +563,41 @@ section#desktop .element.table {
 	color:#B2B2AF;
 }
 
+#alpha-nav {
+	position: fixed;
+	left: 0;
+	width: 3em;
+	list-style: none;
+	text-align: center;
+}
+#alpha-nav li{
+	padding: 2px;
+	font-size: .9em;
+}
+
+#alpha-nav li a {
+	width: 100%;
+	display: block;
+	color:#282727;
+	text-decoration: none;
+	-webkit-transition: font-size 0.2s ease;
+	-moz-transition: font-size 0.2s ease;
+	-o-transition: font-size 0.2s ease;
+	-ms-transition: font-size 0.2s ease;
+	transition: font-size 0.2s ease;
+}
+
+#alpha-nav li.active a {
+	font-size: 1.275em;
+	color:#e15d33;
+}
+
+#alpha-nav li:hover a {
+	color:#e15d33!important;
+	font-size: 1.275em;
+}
+
+
 table {
 	margin:10px auto;
 	width: 95%;
