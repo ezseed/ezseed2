@@ -217,7 +217,7 @@ module.exports.getMovieInformations = function(movie, cb) {
 
           			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
           			movie.synopsis = infos.synopsis.replace(/<\/?p>/ig, '');
-          			movie.picture = infos.poster !== undefined ? infos.poster.href : '/images/cover/video.png';
+          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
           			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
 
           			return cb(err, movie);
