@@ -81,6 +81,8 @@ module.exports.getTags  = {
 		if(prevDir.length > basename.length)
 			basename = prevDir;
 
+		console.log(basename, prevDir);
+
 		var err = null
 
 		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ')
