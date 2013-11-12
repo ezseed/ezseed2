@@ -35,7 +35,7 @@ albums.forEach(function(album) {
 						<i class="entypo-play"></i>
 					</div>
 					<% if(album.picture == undefined || album.picture === null) {%>
-						<i class="entypo-cd"></i>
+						<img src="/images/cover/audio.png" />
 					<% } else { %>
 						<img src="<%- album.picture %>" />
 					<% } %>

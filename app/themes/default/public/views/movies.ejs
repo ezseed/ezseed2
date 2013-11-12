@@ -23,7 +23,7 @@ movies.forEach(function(movie) {
 						<i class="entypo-play"></i>
 					</div>
 					<% if(movie.picture == undefined) {%>
-						<i class="entypo-video"></i>
+						<img src="/images/cover/video.png" />
 					<% } else { %>
 						<img src="<%- movie.picture %>" />
 					<% } %>
@@ -125,7 +125,7 @@ movies.forEach(function(movie) {
 	
 		<a href="/watch/<%- movie._id %>">
  			<% if(movie.picture == undefined) {%>
-				<i class="entypo-video"></i>
+				<img src="/images/cover/video.png" />
 			<% } else { %>
 				<img src="<%- movie.picture %>" />
 			<% } %>
