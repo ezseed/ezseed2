@@ -201,9 +201,9 @@ module.exports.getTags  = {
 };
 
 module.exports.getMovieInformations = function(movie, cb) {
-	console.log(movie);
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
+	var search = movie.year ? movie.name + ' ' + movie.year : movie.name;
+  	allocine.api('search', { q: search, filter: movie.movieType, count: '1'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
