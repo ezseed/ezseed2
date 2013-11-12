@@ -1,8 +1,31 @@
 define([
-    'jquery', 'desktop'
+    'jquery', 'desktop', 'underscore'
 ], function($, Desktop){
 
     $section = Desktop.$container;
+
+    Desktop = _.extend(Desktop, {
+        hasLayout : function() {
+            var maxPercent = 150, minPercent = 100, min = 0, max = 0;
+
+            _.each(Desktop.alphabet, function(e) {
+                max = (e > max ? e : max);
+                min = (min > e ? e : min);
+            });
+
+            var multiplier = (maxPercent-minPercent)/(max-min);
+
+            $('#alpha-nav li a').each(function(i, e) {
+                var letter = $(this).attr('href').substr(1), nb = Desktop.alphabet[letter];
+
+                if(parseInt(nb) !== NaN) {
+                    var size = minPercent + ((max-(max-(nb-min)))*multiplier) + '%';
+
+                    $(this).css('font-size',size);
+                }
+            });
+        }
+    });
 
     //Some middlewares
     $('.select-on-click').on('click', function(e) { $(this).select(); });
@@ -136,6 +159,8 @@ define([
             $(this).css('opacity', '0.7');
         }
     },'nav#display.fixed');
+
+   
 
     /** Search **/
 
