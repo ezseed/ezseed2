@@ -294,7 +294,8 @@ module.exports.processOthers = function(params, callback) {
 				others[indexMatch].files.push(e);
 			else {
 				if(!single) {
-					if(checkIsOther(fs.readdirSync(e.prevDir))) {
+					var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+					if(checkIsOther(arr)) {
 						others.push({
 							name : name,
 							files : [e],
