@@ -27,7 +27,9 @@ define([
             break;
         }
 
-    }).on('scroll', function() {
+    });
+
+    $('body, html').on('scroll', function() {
         if ( $('body').scrollTop() > $('header').height() + 7 )
             onTopScroll();
         else
