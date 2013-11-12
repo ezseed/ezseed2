@@ -1060,6 +1060,8 @@ button:focus, input:focus, select:focus {
 	-moz-border-radius-bottomleft: 3px;
 	border-top-left-radius: 3px;
 	border-bottom-left-radius: 3px;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
 	opacity: 0;
 	text-shadow: 0px 1px 0px #000; 
 	cursor: pointer;
