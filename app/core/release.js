@@ -81,11 +81,9 @@ module.exports.getTags  = {
 		if(prevDir.length > basename.length)
 			basename = prevDir;
 
-		console.log(basename);
-
 		var err = null
 
-		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_|\(|\)/g, ' ')
+		  , name = basename.replace(pathInfos.extname(basename), '').replace(/^\-[\w\d]+$/i, '').replace(/\.|\-|_|\(|\)/g, ' ')
 
 		  , array = _s.words(name)
 
