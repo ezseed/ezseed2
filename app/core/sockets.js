@@ -27,6 +27,8 @@ module.exports.listen = function(app) {
 
                         io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
 
+                        cache.put('lastUpdate_'+uid, new Date);
+
                     });
 
                     db.users.count(function(err, num) {
@@ -51,14 +53,15 @@ module.exports.listen = function(app) {
 
                     var interval = cache.get('interval_' + uid);
 
-                    if(interval)
+                    if(interval) {
                         clearInterval(interval);
+                    }
 
                     cache.put(
                         'interval_' + uid, 
                         setInterval(function() {
-                            users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
-                            users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
+                            users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
+                            users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
                         }, global.config.fetchTime)
                     );
 

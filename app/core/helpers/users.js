@@ -61,20 +61,21 @@ var helper = {
   },
   fetchDatas : function(params) {
 
-    var lastUpdate = cache.get('lastUpdate');
+    var lastUpdate = cache.get('lastUpdate_'+params.uid);
 
     if(lastUpdate === null)
-     cache.put('lastUpdate', params.lastUpdate);
+     cache.put('lastUpdate_'+params.uid, params.lastUpdate);
     
     var io = params.io;
 
-    db.files.byUser(params.uid, cache.get('lastUpdate'), function(err, files) {
+    db.files.byUser(params.uid, cache.get('lastUpdate_'+params.uid), function(err, files) {
       if(files) {
         countDatas(files.paths, function(count) {
 
          if(count > 0) {
             io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
-            cache.put('lastUpdate', new Date());
+            
+            cache.put('lastUpdate_'+params.uid, new Date());
 
             db.users.count(function(err, num) {
 
