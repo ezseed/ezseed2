@@ -14,6 +14,20 @@ define([
         };
     });
 
+    //Expression to search for first letter
+    $.expr[':'].startsWith = $.expr.createPseudo(function(arg) {
+        return function( elem ) {
+            return $(elem).text().replace(/\s+/g, '').charAt(0).toUpperCase() == arg.toUpperCase();
+        };
+    });
+
+    $.expr[':'].match = $.expr.createPseudo(function(arg) {
+        return function( elem ) {
+            var c = $(elem).text().replace(/\s+/g, '').charAt(0);
+            return c.match( new RegExp( arg ) );
+        };
+    });
+
     /* Render function */
     var View = $.Ejs({path : 'views/'});
 
@@ -24,8 +38,12 @@ define([
         displaySelector : null,
         //Packery Instance
         pckry : null,
+        hasLayout : false,
+        toRemove : null,
         //Socket
         socket : null,
+        hasLayout : function() {},
+        alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
         loader : function() {
             var $loader = $('#loader');
             
@@ -40,11 +58,12 @@ define([
         init : function() {
             var self = this;
 
-            if(self.pckry === null) {
+            if(self.pckry === null && isDesktop == true) {
                 self.pckry = new Packery( 
                     document.querySelector('section#desktop'),
                     {
-                        itemSelector: '.element'
+                        itemSelector: '.element',
+                        transitionDuration: "0"
                         // columnWidth: $('.grid-sizer').width(),
                     }
                 );
@@ -54,6 +73,9 @@ define([
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
             self.socket.emit('update', user.id);
+
+            //hash
+            self.toRemove = window.location.hash.substr(1);
 
             return self;
         },
@@ -130,6 +152,18 @@ define([
                 });
             }
         },
+        remove: function(id) {
+            var self = this
+              , $el = $(self.itemSelector + '[data-id="' + id + '"]');
+
+            var titre = $el.find('h1:first').text();
+            self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+
+            self.pckry.remove($el);
+
+            self.layout();
+
+        },
         append : function(datas) {
 
             var self = this;
@@ -143,9 +177,9 @@ define([
             self.render.files(datas, function(err, html) {
                 var $items = $.parseHTML(html);
 
-                self.$container.css('visibility', 'hidden').append($items);
+                self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
-                self.pckry.appended($items);   
+                self.pckry.appended($items);
 
                 self.displaySelector = displayOption;
 
@@ -153,17 +187,60 @@ define([
 
                     if(self.firstLoad) {
                         self.firstLoad = false;
+
+                        if(self.toRemove) {
+                            self.remove(self.toRemove);
+                            self.toRemove = null;
+                            location.hash = '#';
+                        }
+
                         self.loader();
-                        self.$container.css('visibility', 'visible');
+                    } else {
+                        var count = 0, els = [];
+
+                        _.each($items, function(e) {
+                            var isTxt = e instanceof Text;
+
+                            if(!isTxt) {
+                                if($(e).hasClass('list'))
+                                    els.push($(e));
+
+                                count++;
+                            }
+                        });
+
+                        count = count / 3;
+
+                        if(count == 1) {
+                            var titre = els[0].find('h1').text();
+                            self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
+                        } else {
+                            self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
+                        }
                     }
+
+                    self.$container.removeClass('notransition').css('visibility', 'visible');
 
                 });
             });
         },
+        countElementsByLetter : function() {
+            var self = this, $els = self.$container.find(self.itemSelector + '.list');
+
+            $els.each(function(i, e) {
+                var firstLetter = $(this).find('h1').text().charAt(0).toUpperCase();
+
+                if(firstLetter.match(/\d/g))
+                    firstLetter = '#';
+
+                self.alphabet[firstLetter]++;
+            });
+
+        },
         layout : function(selector, cb) {
             var self = this;
 
-            selector = selector !== undefined ? selector : self.displaySelector;
+            selector = selector ? selector : self.displaySelector;
 
             self.displaySelector = selector;
 
@@ -183,12 +260,16 @@ define([
                 $(self.itemSelector + '.miniature h1').quickfit();
 
                 self.pckry.layout();
-
+                
                 if(!self.firstLoad)
-                    self.loader();
+                    self.loader();                
 
+                self.countElementsByLetter();
+
+                self.hasLayout();
                 if(typeof cb == 'function')
                     cb();
+               
             });
         }
 

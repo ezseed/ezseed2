@@ -72,10 +72,18 @@ var findCoverInDirectory = function(dir) {
 module.exports.getTags  = {
 	//Searches the video type
 	//Algorithm from : https://github.com/muttsnutts/mp4autotag/issues/2
-	video: function(basename) {
+	video: function(path) {
+
+		var basename = pathInfos.basename(path), prevDir = path.replace('/' + basename, '').split('/');
+
+		prevDir = prevDir[prevDir.length - 1];
+
+		if(prevDir.length > basename.length)
+			basename = prevDir;
+
 		var err = null
 
-		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ')
+		  , name = basename.replace(pathInfos.extname(basename), '').replace(/^\-[\w\d]+$/i, '').replace(/\.|\-|_|\(|\)/g, ' ')
 
 		  , array = _s.words(name)
 
@@ -192,35 +200,58 @@ module.exports.getTags  = {
 	}
 };
 
-module.exports.getMovieInformations = function(movie, cb) {
+var getMovieInformations = function(movie, cb) {
+
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
+  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
 
       		if(infos !== undefined) {
-          		movie.code = infos[0].code;
+
+      			_.each(infos, function(e) {
+      				if(
+      					( e.title !== undefined && movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 ) 
+      					||
+      					( e.originalTitle !== undefined && movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
+      				  )
+      					movie.code = e.code;
+      			});
+
+          		movie.code = movie.code === undefined ? infos[0].code : movie.code;
 
           		//Searching for a specific code
           		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
           			infos = Object.byString(result, movie.movieType);
 
           			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-          			movie.synopsis = infos.synopsis.replace(/<\/?p>/ig, '');
-          			movie.picture = infos.poster !== undefined ? infos.poster.href : '/images/cover/video.png';
+          			movie.synopsis = infos.synopsis ? _s.trim(infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
+          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
           			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
 
           			return cb(err, movie);
 
           		});
           	} else {
-          		return cb(err, movie);
+          		var words = _s.words(movie.name);
+
+          		if(words.length >= 2 && words[0].length > 3) {
+          			movie.name = words.splice(1, words.length).join(' ');
+          			getMovieInformations(movie , cb);
+          		} else {
+        			 //No movie founded
+	          		movie.title = movie.name;
+	          		return cb(err, movie);  			
+          		}
+
           	}
       	} else {
       		return cb(err, movie);
       	}
   	});
 }
+
+module.exports.getMovieInformations = getMovieInformations;
 

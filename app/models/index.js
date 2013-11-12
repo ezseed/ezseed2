@@ -1,3 +1,4 @@
+//TODO Move this along files
 var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
@@ -35,6 +36,11 @@ var albums = new Schema(
 );
 
 var movies = new Schema({
+	quality : String,
+	subtitles : String,
+	language : String,
+	audio : String,
+	format : String,
 	movieType : String,
 	name : String,
 	season : String,

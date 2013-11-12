@@ -197,16 +197,27 @@ var userdel = {
 		 		done(null, 'transmission');
 		 	});
 		});
+	},
+	aucun: function(username, done) {
+		db.users.delete(username, function(err) {
+	 		console.log("Utilisateur "+ username + " supprimé".info);
+	 		done(null, 'aucun');
+	 	});
 	}
 };
 
 var useradd = {
 	aucun : function(username, password, done) {
-		db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
-    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-    		cache.put('user', {username : username, password : password});
-    		done(null,"aucun");
-    	});
+		db.user.exists(username, function(exists) {
+			if(exists)
+				done("L'utilisateur existe déjà !", "aucun");
+			else
+				db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
+		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
+		    		cache.put('user', {username : username, password : password});
+		    		done(null,"aucun");
+		    	});
+	    });
 	},
 	rutorrent : function(username, password, done) {
 		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
@@ -223,19 +234,23 @@ var useradd = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
+			console.error(string.error);
 
-			if(cache.get('force') === true)
-				console.log(string.error);
-			else
-				throw string.error;
 		});
 
 		running.on('exit', function (code) {
-			db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
-				db.paths.save(userPath, username, function(err, p) {
-			 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-			 		done(null, 'rutorrent');
-			 	});
+			db.user.exists(username, function(exists) {
+				if(exists) {
+					console.log("L'utilisateur existe");
+					done(null, 'rutorrent');
+				} else {
+					db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
+						db.paths.save(userPath, username, function(err, p) {
+					 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+					 		done(null, 'rutorrent');
+					 	});
+					});
+				}
 			});
 		});
 	},
@@ -286,7 +301,7 @@ var useradd = {
 
 				db.users.count(function (err, count) {
 
-					d['rpc-port'] = d['rpc-port'] + count;
+					d['rpc-port'] = d['rpc-port'] + count + 1; //+1 because of transmission default, could be started on reboot by default
 
 					fs.writeFileSync(settings, JSON.stringify(d));
 
@@ -296,11 +311,18 @@ var useradd = {
 
 					exec('/etc/init.d/transmission-daemon-'+username + ' start',
 				    	function(err, stdout, sdterr) {
-					    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
-					    		db.paths.save(userPath, username, function(err, p) {
-							 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-							 		done(null,'transmission');
-							 	});
+				    		db.user.exists(username, function(exists) {
+								if(exists) {
+									console.log("L'utilisateur existe");
+									done(null, 'transmission');
+								} else {
+							    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
+							    		db.paths.save(userPath, username, function(err, p) {
+									 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+									 		done(null,'transmission');
+									 	});
+									});
+								}
 							});
 						}
 					);
@@ -345,7 +367,8 @@ var install = {
 					"torrentLink": "link",
 					"diskSpace": "1048576",
 					"videoPlayer": "divx",
-					"availableSpace": "1 TB"
+					"availableSpace": "1 TB",
+					"theme": "default"
 				};
 
 			jf.writeFileSync(__dirname + '/app/config.json', config);
@@ -624,4 +647,4 @@ mongo.once('open', function callback () {
 	if (!program.args.length) program.help();
 });
 
-
+// module.exports = {useradd : useradd};

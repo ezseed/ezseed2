@@ -14,10 +14,9 @@ var express = require('express')
   , _ = require('underscore')
   , path = require('path')
   , cache = require('memory-cache')
+  , jf = require('jsonfile')
+  , MongoStore = require('connect-mongo')(express)
 ;
-
-var jf = require('jsonfile');
-var MongoStore = require('connect-mongo')(express);
 
 global.config = jf.readFileSync(__dirname + '/config.json');
 
@@ -31,12 +30,17 @@ var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3001);
-app.set('views', __dirname + '/views');
+
+//More views engines ? See ghost each theme = git submodule !
+app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 app.set('view engine', 'ejs');
+
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
+
+//Mongodb sessions
 app.use(express.session({
   store: new MongoStore({
     url: 'mongodb://127.0.0.1:27017/',
@@ -44,61 +48,17 @@ app.use(express.session({
   }),
   secret: '3xam9l3'
 }));
+
+//Crap (googleit)
 app.use(express.methodOverride());
+
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(function(req,res, next) {
-  req.user = req.session.user;
-  next();
-});
-//app.use(express.static('/home/myName/allMyMedia/'));
 
-//Middleware session
-app.use(function(req, res, next){
-  var err = req.session.error
-    , msg = req.session.success;
-  delete req.session.error;
-  delete req.session.success;
-  res.locals.message = '';
-  if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
-  if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+//Only theme
+app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'public')));
 
-  res.locals.appDir = __dirname; //tomove
-
-  res.locals.config = _.extend(global.config, 
-                                { 
-                                  location : req.originalUrl //request path dirname 
-                                });
-
-  res.locals.location = req.originalUrl;
-  res.locals.host = req.host;
-
-  if(req.session.user) {
-    var u = req.session.user;
-    delete u.hash;
-    res.locals.user = u;
-
-    if(u.client == 'transmission') {
-      var transmissionConfig = jf.readFileSync(__dirname + '/scripts/transmission/config/settings.'+u.username+'.json');
-
-      u['rpc-port'] = transmissionConfig['rpc-port'];
-    }
-
-    db.paths.byUser(u.id, function(err, paths) {
-      users.usedSize(paths, function(size) {
-        var percent = size.size / 1024 / 1024;
-
-        percent = percent / config.diskSpace * 100 + '%'
-
-        res.locals.usedSize = _.extend(size, {percent : percent});
-        next();
-      });
-    });
-
-  } else {
-    res.locals.user = null;
-    next();
-  }
-});
+//Middlewares
+require('./core/helpers/middlewares')(app);
 
 //Needs to be the last one called (http://stackoverflow.com/questions/12550067/expressjs-3-0-how-to-pass-res-locals-to-a-jade-view)
 app.use(app.router);
@@ -122,46 +82,18 @@ if ('development' == app.get('env')) {
 }
 
 /*
-* App starts here 
+* Routes
 */
-
-  //TO BE REMOVED
-  var routes = require('./routes')
-  , user = require('./routes/user')
-  , admin = require('./routes/admin')
-  , streaming = require('./routes/streaming')
-  , files = require('./routes/files');
-
-app.get('/', user.restrict, routes.index);
-app.get('/login', user.login);
-app.get('/logout', user.logout);
-app.post('/login', user.authenticate);
-
-app.get('/archive/(:id)', user.restrict, files.archive);
-app.get('/download/archive/(:id)', files.downloadArchive);
-app.get('/download/(:id)', files.download);
-app.get('/download/(:id)/(:fid)', files.download);
-app.get('/delete/(:type)/(:id)', user.restrict, files.delete);
-
-app.get('/watch/(:id)', streaming.watch);
-app.get('/watch/(:id)/(:fid)', streaming.watch);
-
-// app.get('/stream/(:id)', streaming.stream);
-app.get('/listen/(:id)', streaming.listen);
-
-app.get('/torrents', user.restrict, function(req, res) {
-  var link = global.config.torrentLink;
-  if(link == 'embed')
-    res.render('torrents', {title : 'Torrents'});
-  else
-    res.redirect('/'+req.session.user.client);
-});
-
+  
+require('./routes/user')(app);
+require('./routes/files')(app);
+require('./routes/streaming')(app);
 require('./routes/admin.js')(app);
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
 var io = require('./core/sockets').listen(server);
 
 

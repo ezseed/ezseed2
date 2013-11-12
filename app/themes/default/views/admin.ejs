@@ -1,0 +1,139 @@
+<% include header %>
+<%
+Date.prototype.getFrenchDay = function()
+{
+    var days = [
+        'lundi',
+        'mardi',
+        'mercredi',
+        'jeudi',
+        'vendredi',
+        'samedi',
+        'dimanche',
+    ];
+    
+    return days[this.getDay()];
+}
+
+Date.prototype.getFrenchMonth = function()
+{
+    var months = [
+        'janvier',
+        'février',
+        'mars',
+        'avril',
+        'mai',
+        'juin',
+        'juillet',
+        'aout',
+        'septembre',
+        'octobre',
+        'novembre',
+        'décembre',
+    ];
+    
+    return months[this.getMonth()];
+}
+
+Date.prototype.getFrenchDateAsString = function() {
+	return this.getFrenchDay() + ' ' + this.getDate() + ' ' + this.getFrenchMonth() + ' à ' + this.getHours() + ':' + this.getMinutes();
+}
+%>
+<h1>Panel d'administration</h1>
+
+<div id="admin" class="collapse">
+	<h2><i class="entypo-users"></i> Utilisateurs</h2>
+	<div>
+		<div class="content">
+			<a href="/admin/user" class="pullRight" style="text-decoration:none;"><i class="entypo-user-add"></i> Ajouter un utilisateur</a><br>
+
+			<ol>
+			<% 
+				var nbUsers = users.length;
+
+				while(nbUsers--) {
+
+				var e = users[nbUsers];
+			%>
+				<li>
+					<%= e.username %> 
+					<% if(e.role == 'admin') { %>
+						<i class="entypo-star"></i>
+					<% } %>
+					<div class="pullRight">
+						<a title="Supprimer l'utilisateur" href="/admin/user/<%= e._id %>/delete"><i class="entypo-erase"></i></a>
+						<a title="Modifier le mot de passe" href="/admin/user/<%= e._id %>/password"><i class="entypo-key"></i></a>
+
+						<a title="Détails" href="#more"><i class="entypo-plus-circled"></i></a>
+					</div>
+					<div class="user-more">
+						<a href="/admin/path/<%= e.username%>" class="pullRight" style="text-decoration:none;"><i class="entypo-install"></i> Ajouter un répertoire</a>
+						<h4>Dossiers surveillés</h4>
+						<ul>
+						<% 
+							if(e.paths) {
+								var nbUserPaths = e.paths.length;
+								while(nbUserPaths--) {
+									var p = e.paths[nbUserPaths];
+								%>
+									<li><%= p.path %> <a href="/admin/path/<%= e._id%>/<%= p._id %>/delete" title="les données seront conservées">Enlever</a><br><small><i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
+								<% } 
+							}
+						%>
+						</ul><br>
+						Utilise <%= e.client %>
+						<% if(e.client == 'transmission') { %>
+						 - <a href="/admin/user/transmission/<%= e.username %>">modifier la configuration.</a>
+						<% } %>
+					</div>
+				</li>
+			<% } %>
+			</ol>
+		</div>
+	</div>
+	<h2 class="open"><i class="entypo-cog"></i> Configurations</h2>
+	<div>
+		<div class="content">
+			<form method="POST" action="/admin/config" id="configuration">
+				
+				<div class="form-block">
+					<label for="affichage-torrent">Affichage du client torrent</label>
+					<select id="affichage-torrent" name="torrent">
+						<option value="window" <% if(config.torrentLink == 'window') { %>selected<%}%>>Nouvelle fenêtre</option>
+						<option value="link" <% if(config.torrentLink == 'link') { %>selected<%}%>>Lien</option>
+						<option value="embed" <% if(config.torrentLink == 'embed') { %>selected<%}%>>Intégré</option>
+					</select>
+				</div>
+
+				<div class="form-block">
+					<label for="disk">Espace disque</label>
+					<span class="input-helper">Mo</span>
+					<input type="number" id="disk" name="disk" value="<% if(config.diskSpace !== undefined) { %><%= parseInt(config.diskSpace.replace(/[^0-9]/ig, '')) %><% } else { %>1024<% } %>">
+				</div>
+
+				<!-- 
+				<div class="form-block">
+					<label for="player-video">Player Vidéo</label>
+					<select id="player-video" name="videoPlayer">
+						<option value="divx" <% if(config.videoPlayer == 'divx') { %>selected<%}%>>DivX Player</option>
+						<option value="vlc" <% if(config.videoPlayer == 'vlc') { %>selected<%}%>>VLC</option>
+					</select>
+				</div>
+				-->
+				<div class="text-center">
+					<input type="submit" value="Sauvegarder">
+				</div>
+			</form>
+		</div>
+	</div>
+	<h2 class="last"><i class="entypo-palette"></i> Plugins</h2>
+	<div>
+		<div class="content">
+		 (à venir)
+		</div>
+	</div>
+</div>
+<div id="toTop"><i class="entypo-up-bold"></i></div>
+
+<% include footer %>
+

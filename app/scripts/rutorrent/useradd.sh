@@ -26,7 +26,7 @@ python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
 mkdir /home/$USER
 useradd --home-dir /home/$USER --groups users --password broken $USER
 chown -R $USER /home/$USER/
-su $USER -c 'mkdir -p ~/downloads ~/uploads ~/rtorrent ~/rtorrent/session'
+su $USER -c 'mkdir -p ~/downloads ~/uploads ~/incomplete ~/rtorrent ~/rtorrent/session'
 usermod -p $(mkpasswd -H md5 "$PW") $USER
 #Fin
 ##########
@@ -42,7 +42,7 @@ encoding_list = UTF-8
 system.umask.set = 022
 port_random = yes
 check_hash = no
-directory = /home/$USER/downloads
+directory = /home/$USER/incomplete
 session = /home/$USER/rtorrent/session
 encryption = allow_incoming, try_outgoing, enable_retry
 trackers.enable = 1

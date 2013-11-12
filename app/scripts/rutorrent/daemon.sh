@@ -46,7 +46,7 @@ options=""
 base="`su $user -c 'echo ~/'`"
 
 # name of screen session
-srnname="rtorrent-$user "
+srnname="rtorrent-$user"
 
 # file to log to (makes for easier debugging if something goes wrong)
 logfile="/var/log/rtorrentInit.log"

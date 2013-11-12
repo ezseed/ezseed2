@@ -3,7 +3,9 @@ var db = require('../core/database.js')
   , fs = require('fs')
   , pretty = require('prettysize')
   , pathInfo = require('path')
-  , jf = require('jsonfile');
+  , jf = require('jsonfile')
+  , spawn = require('child_process').spawn
+  , userHelper = require('../core/helpers/users');
 
 var admin = {
 	/*
@@ -59,7 +61,6 @@ var admin = {
 
 		conf = _.extend(conf, {
 			torrentLink : req.body.torrent,
-			availableSpace : pretty(req.body.disk*1024*1024),
 			diskSpace : req.body.disk,
 			videoPlayer : req.body.videoPlayer
 		});
@@ -70,11 +71,87 @@ var admin = {
 	}
 
 	/**
+	 * Just a view for username + torrent + password
+	 */
+	, beginUserCreation : function(req, res) {
+		res.render('admin/user', {title: 'Ajouter un utilisateur'});
+	}
+
+	/**
+	 * Useradd
+	 * Adds an user
+	 */
+	, useradd : function(req, res) {
+
+		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
+
+			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+			
+			var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
+
+			var running = spawn(shell_path, options);
+
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string);
+			});
+
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.error(string);
+			});
+
+			running.on('exit', function (code) {
+				console.log(code);
+				req.session.success = "Utilisateur créé"; 
+				res.redirect('/admin');
+			});
+
+		} else {
+			req.session.error = "Le client torrent n'a pas été reconnu";
+			res.redirect('/admin/user');
+		}
+	}
+
+	/** Change user password **/
+
+	, userpass : function(req, res) {
+
+	}
+
+	/** 
+	 * Deletes user with client scripts
+	 * Must be run as root = bad.
+	 */
+	, userdel : function(req, res) {
+		var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+
+		db.user.byId(req.params.uid, function(err, user) {
+			var running = spawn(shell_path, ['userdel', user.client, user.username]);
+
+
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string);
+			});
+
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.error(string);
+			});
+
+			running.on('exit', function (code) {
+				req.session.success = "Utilisateur "+user.username+" supprimé avec succès"; 
+				res.redirect('/admin');
+			});
+		});
+	}
+
+	/**
 	 * Restrict on admin only based on the role
 	 */
 	, restrict : function (req, res, next) {
-
-		require('./user').restrict(req, res, function() {
+		userHelper.restrict(req, res, function() {
 			if (req.session.user && req.session.user.role == 'admin') {
 				next();
 			} else {
@@ -109,6 +186,13 @@ module.exports = function(app) {
 	app.post('/admin/config', admin.restrict, admin.config);
 	app.get('/admin/path/:username', admin.restrict, admin.path);
 	app.post('/admin/path', admin.restrict, admin.createPath);
+
+	app.get('/admin/user', admin.restrict, admin.beginUserCreation);
+	app.post('/admin/user', admin.restrict, admin.useradd);
+
+	app.get('/admin/user/:uid/delete', admin.restrict, admin.userdel);
+
+	app.get('/admin/user/:uid/:id/delete', admin.restrict, admin.deletePath);
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 

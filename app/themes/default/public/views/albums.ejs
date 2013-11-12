@@ -1,0 +1,147 @@
+<%
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    if (i == 0) return bytes + ' ' + sizes[i]; 
+    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+};
+
+
+albums.forEach(function(album) {
+	album.title = '';
+	album.title += (album.artist !== undefined && album.artist !== null) ? album.artist : '';
+	album.title += (album.album !== undefined && album.album !== null) ? ' - ' + album.album : '';
+	if(album.title.length == 0) {
+		var t = album.prevDir.split('/');
+		t = t[t.length-1];
+
+		album.title += t;
+	}
+	if(album.songs.length > 1) {
+		var tailleDossier = 0;
+
+		for(var i = 0; i < album.songs.length; i++) {
+			tailleDossier += parseInt(album.songs[i].size);
+		}
+
+	}
+	%>
+	<div data-id="<%- album._id %>" class="element list audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+		<div class="pullLeft">
+			<a href="/listen/<%- album._id %>" title="Écouter">
+				<div class="cover">
+					<div class="cover-hover">
+						<i class="entypo-play"></i>
+					</div>
+					<% if(album.picture == undefined || album.picture === null) {%>
+						<img src="/images/cover/audio.png" />
+					<% } else { %>
+						<img src="<%- album.picture %>" />
+					<% } %>
+				</div>
+			</a>
+		</div>
+		<div class="list-infos">
+			<h1 class="league-gothic"><%- album.title %></h1>
+
+			<div class="button-group">
+				<a href="/listen/<%- album._id %>" title="Écouter">
+					<i class="entypo-note-beamed"></i>
+				</a>
+				<% if(album.songs.length > 1) {%>
+				<a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+				<% } else {%>
+				<a href="/download/<%- album._id %>" title="Télécharger">
+				<% } %>
+					<i class="entypo-download"></i>
+				</a>
+				<a href="/delete/album/<%- album._id %>" class="delete-item" title="Supprimer">
+					<i class="entypo-trash"></i>
+				</a>
+			</div>
+
+			<hr />
+			<p class="infos">
+				<% if(!_.isEmpty(album.artist)) { %>
+					Artiste : <%- album.artist %><br />
+				<% } %>
+				<% if(!_.isEmpty(album.album)) { %>
+					Album : <%- album.album %><br />
+				<% } %>
+
+				<% if(!_.isEmpty(album.genre)) { %>
+					Genre : <%- album.genre %><br />
+				<% } %>
+
+				<% if(!_.isEmpty(album.year)) { %>
+					Année : <%- album.year %><br />
+				<% } %>
+			</p>
+
+		</div>
+
+		<% if(album.songs.length) { %>
+			<div class="showFiles">
+				<i class="entypo-attach"></i>Fichiers
+			</div>
+			<div class="files">
+				<table>
+					<thead>
+						<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
+					</thead>
+					<tbody>
+						<%	var i = 1, tailleDossier = 0;
+						album.songs.sort(function (a, b) {
+						    if (a.name == b.name) {
+						        return 0;
+						    } else if (a.name > b.name) {
+						        return 1;
+						    }
+						    return -1;
+						});
+
+						album.songs.forEach(function(file) {
+							tailleDossier += parseInt(file.size);
+						%>
+						<tr>
+							<td><%- i %></td>
+							<td style="text-align:left"><%- file.name %></td>
+							<td><%- bytesToSize(file.size) %></td>
+							<td><a href="/download/<%- album._id %>/<%- file._id%>"><i class="entypo-download"></i></a></td>
+						</tr>			
+						<% 
+							i++;
+						}); 
+						%>
+					</tbody>
+					<tfoot>
+						<tr>
+						<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+						<td>
+							<a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+						</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		<% } %>
+	</div>
+	<div data-id="<%- album._id %>" class="element miniature audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+		<div class="titre"><h1 class="league-gothic" title="<%- album.title %>"><%- album.title %></h1></div>
+
+		<a href="/listen/<%- album._id %>" title="Écouter">
+			<% if(album.picture == undefined || album.picture === null) {%>
+				<img src="/images/cover/audio.png" />
+			<% } else { %>
+				<img src="<%- album.picture %>" />
+			<% } %>
+		</a>
+	</div>
+	<div data-id="<%- album._id %>" class="element table audio" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+		<i class="entypo-music"></i>
+		<%- album.title %>
+	</div>
+<%
+});
+%>

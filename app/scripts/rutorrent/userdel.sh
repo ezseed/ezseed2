@@ -34,6 +34,9 @@ killall -9 -u $USER
 ###
 #On supprime tout de l'user
 rm -rf /home/$USER
+rm -rf /var/www/rutorrent/conf/users/$USER
+rm -rf /var/www/rutorrent/share/users/$USER
+rm -rf /var/run/screen/S-$USER #WTF
 userdel $USER
 ###
 

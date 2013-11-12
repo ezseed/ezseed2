@@ -4,6 +4,7 @@ var socketio = require('socket.io')
   , cache = require('memory-cache')
   , users = require('../core/helpers/users.js')
   , db = require('../core/database.js')
+  , pretty = require('prettysize')
   , _ = require('underscore');
 
 
@@ -26,25 +27,43 @@ module.exports.listen = function(app) {
 
                         io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
 
+                        cache.put('lastUpdate_'+uid, new Date);
+
                     });
 
-                    users.usedSize(paths, function(size) {
+                    db.users.count(function(err, num) {
 
-                        io.sockets.socket(socket.id).emit('size', size);
+                        //Space left = disk / users
+                        var spaceLeft = global.config.diskSpace / num;
+
+                        users.usedSize(paths, function(size) {
+
+                            //(/helpers/users)
+                            var percent = size.size / 1024 / 1024;
+
+                            percent = percent / spaceLeft * 100 + '%';
+
+                            spaceLeft = pretty(spaceLeft * 1024 * 1024);
+
+                            io.sockets.socket(socket.id).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+
+                        });
 
                     });
 
                     var interval = cache.get('interval_' + uid);
 
-                    if(!interval) {
-                        cache.put(
-                            'interval_' + uid, 
-                            setInterval(function() {
-                                users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
-                                users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io, lastUpdate : new Date}));
-                            }, global.config.fetchTime)
-                        );
+                    if(interval) {
+                        clearInterval(interval);
                     }
+
+                    cache.put(
+                        'interval_' + uid, 
+                        setInterval(function() {
+                            users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
+                            users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
+                        }, global.config.fetchTime)
+                    );
 
                 });
             });
@@ -72,7 +91,7 @@ module.exports.listen = function(app) {
                 io.sockets.socket(socket.id).emit('compressing', {'done': stats.size, 'id':id});
             });
 
-
+            watcher.close();
         });
 
    });

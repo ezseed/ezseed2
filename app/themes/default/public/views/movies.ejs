@@ -1,0 +1,143 @@
+<%
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    if (i == 0) return bytes + ' ' + sizes[i]; 
+    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+};
+
+movies.forEach(function(movie) {
+	var tailleDossier = 0;
+
+	if(movie.videos.length > 1)
+		for(var i = 0; i < movie.videos.length; i++)
+			tailleDossier += parseFloat(movie.videos[i].size);
+
+%>
+	<div data-id="<%- movie._id %>" class="element list video clearfix" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+		<div class="pullLeft">
+			<a href="/watch/<%- movie._id %>" title="Visionner">
+				<div class="cover">
+					<div class="cover-hover">
+						<i class="entypo-play"></i>
+					</div>
+					<% if(movie.picture == undefined) {%>
+						<img src="/images/cover/video.png" />
+					<% } else { %>
+						<img src="<%- movie.picture %>" />
+					<% } %>
+				</div>
+			</a>
+		</div>
+		<div class="list-infos">
+			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %></h1>
+
+			<div class="button-group">
+				<a href="/watch/<%- movie._id %>" title="Visionner">
+					<i class="entypo-eye"></i>
+				</a>
+
+				<% if(movie.videos.length > 1 ) { %>
+				<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+				<% } else {%>
+				<a href="/download/<%- movie._id %>" title="Télécharger">
+				<% } %>
+					<i class="entypo-download"></i>
+				</a>
+
+				<a href="/delete/movie/<%- movie._id %>" class="delete-item" title="Supprimer">
+					<i class="entypo-trash"></i>
+				</a>
+			</div>
+
+			<hr />
+			<p class="infos">
+				<%- movie.synopsis %><br>
+				<% if(movie.trailer != undefined) { %>
+					<a href="<%- movie.trailer%>" target="_blank">Voir le trailer</a>
+				<% } %>
+			</p>
+
+			<% if(movie.quality != undefined) { %>
+				<p class="info"><i class="entypo-monitor"></i><%- movie.quality %></p>
+			<% } %>
+			<% if(movie.language != undefined) { %>
+				<p class="info"><i class="entypo-sound"></i><%- movie.language %></p>
+			<% } %>
+			<% if(movie.subtitles != undefined) { %>
+				<p class="info"><i class="entypo-text-doc"></i><%- movie.subtitles %></p>
+			<% } %>
+
+		</div>
+		<% if(movie.videos.length > 1) { %>
+			<div class="showFiles">
+				<i class="entypo-attach"></i><% if(movie.type == 'tvseries') { %>Episodes<%} else {%>Fichiers<%}%>
+			</div>
+			<div class="files">
+				<table>
+					<thead>
+						<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
+					</thead>
+					<tbody>
+						<%	var i = 1, tailleDossier = 0;
+						movie.videos.sort(function (a, b) {
+						    if (a.name == b.name) {
+						        return 0;
+						    } else if (a.name > b.name) {
+						        return 1;
+						    }
+						    return -1;
+						});
+
+						movie.videos.forEach(function(file) {
+						%>
+						<tr data-id="<%if(file.episode !== undefined){%><%-file._id%><%} %>">
+							<td><%- i %></td>
+							<td style="text-align:left"><%- file.name %> <%if(file.episode !== undefined) {%> - E<%-file.episode%><%}%></td>
+							<td><%- bytesToSize(file.size) %></td>
+							<td>
+								<a href="/download/<%-movie._id%>/<%-file._id%>"><i class="entypo-download"></i></a>
+								<a href="/watch/<%-movie._id%>/<%-file._id%>"><i class="entypo-eye"></i></a>
+							</td>
+						</tr>			
+						<% 
+							i++;
+						}); 
+						%>
+					</tbody>
+					<tfoot>
+						<tr>
+							<% if(movie.videos[0].episode === null ) { %> 
+								<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+								<td>
+									<a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+								</td>
+							<% } %>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		<% } %>
+	</div>
+	<div data-id="<%- movie._id %>" class="element miniature video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+		<div class="titre"><h1 class="league-gothic" title="<%- movie.title %>"><%- movie.title %></h1></div>
+	
+		<a href="/watch/<%- movie._id %>">
+ 			<% if(movie.picture == undefined) {%>
+				<img src="/images/cover/video.png" />
+			<% } else { %>
+				<img src="<%- movie.picture %>" />
+			<% } %>
+		</a>
+	</div>
+	<div data-id="<%- movie._id %>" class="element table video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+		<i class="entypo-video"></i>
+		<%- movie.title %>
+		<% if(movie.season != undefined) { %>
+			- S<%- movie.season%>E<%- movie.episode%>
+		<% } %>
+	</div>
+<%
+});
+%>

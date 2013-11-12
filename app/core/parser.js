@@ -3,6 +3,7 @@ var pathInfos = require('path')
   , explorer = require('explorer')
   , async = require('async')
   , _ = require('underscore')
+  , _s = require('underscore.string')
   , release = require('./release.js')
   , fs = require('fs')
   ;
@@ -53,9 +54,19 @@ module.exports.processAlbums = function(params, callback) {
 			if(e.prevDir != pathToWatch)
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
 			
-			if(indexMatch !== null)
+			if(indexMatch !== null) {
+				infos = release.getTags.audio(e.path);
+
+				if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
+					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
+					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+					
+					if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
+						albums[indexMatch].artist = 'VA';
+				}
+
 				albums[indexMatch].songs.push(e);
-			else {
+			} else {
 
 				infos = release.getTags.audio(e.path, true);
 
@@ -63,17 +74,17 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { 
 					if(infos.artist === null && infos.album === null)
 						return false;
-					else if(album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
+					else if(album.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
 						return true;
-					else if(album.album.toLowerCase() == infos.album.toLowerCase())
+					else if(album.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
 						return true;
 					else
 						return false;
 				});
 				
-				if(indexMatch !== null)
+				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
-				else {
+				} else {
 					albums.push({
 						artist : infos.artist,
 						album : infos.album,
@@ -137,7 +148,7 @@ module.exports.processMovies = function(params, callback) {
 		}
 
 		//Do the test again with video name
-		var m = release.getTags.video(pathInfos.basename(e.path));
+		var m = release.getTags.video(e.path);
 		if(m.movieType == 'tvseries') {
 			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; });
 			for(var k in existingFile) {
@@ -160,7 +171,7 @@ module.exports.processMovies = function(params, callback) {
 				i++;
 				return parseMovies(arr, cb, i, movies);
 			} else {
-				e = _.extend(e, release.getTags.video(e.name));
+				e = _.extend(e, release.getTags.video(e.path));
 
 				//Movies types are the same, we look after the same name | same season
 				indexMatch = findIndex(movies, function(movie) { 
@@ -192,6 +203,13 @@ module.exports.processMovies = function(params, callback) {
 							synopsis : infos.synopsis,
 							trailer : infos.trailer,
 							picture : infos.picture,
+
+							quality : infos.quality,
+							subtitles : infos.subtitles,
+							language : infos.language,
+							audio : infos.audio,
+							format : infos.format,
+
 							videos : [e],
 							prevDir : e.prevDir,
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
@@ -224,21 +242,34 @@ module.exports.processMovies = function(params, callback) {
 **/
 var checkIsOther = function (files, i) {
 	var i = i == undefined ? 0 : i;
-	
+		
 	if( i < files.length ) {
 		//no hidden files
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
-			
-			var t = mime.lookup(files[i]).split('/')[0];
 
-			if( (t == 'audio' || t == 'video'))
-			{
-				return false;
-			} else
+			if(fs.existsSync(files[i])) {
+				var stats = fs.statSync(files[i]);
+				
+				if(stats.isDirectory()) {
+					var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+					if(!checkIsOther(arr))
+						return false;
+					else
+						return checkIsOther(files, i + 1);
+				} else {
+					var t = mime.lookup(files[i]).split('/')[0];
+
+					if( (t == 'audio' || t == 'video'))
+					{
+						return false;
+					} else
+						return checkIsOther(files, i + 1);
+				}
+			} else {
 				return checkIsOther(files, i + 1);
-
+			}
 		} else
-			return checkIsOther(files,i + 1);
+			return checkIsOther(files, i + 1);
 	} else 
 		return true;
 }
@@ -283,7 +314,8 @@ module.exports.processOthers = function(params, callback) {
 				others[indexMatch].files.push(e);
 			else {
 				if(!single) {
-					if(checkIsOther(fs.readdirSync(e.prevDir))) {
+					var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+					if(checkIsOther(arr)) {
 						others.push({
 							name : name,
 							files : [e],
