@@ -286,8 +286,6 @@ module.exports.processOthers = function(params, callback) {
 
 	_.each(othersFiles, function(e, i) {
 
-		console.log(e.name, e.prevDir, pathToWatch);
-
 		if(e.prevDir != pathToWatch) {
 			e.prevDir = pathInfos.join(
 				pathToWatch, 
