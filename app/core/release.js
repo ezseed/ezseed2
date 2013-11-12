@@ -197,9 +197,9 @@ module.exports.getTags  = {
 				if(!pictureFounded)
 					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 				
-			} else {
-				var tags = {artist:null,album:null,year:null,genre:null};
 			}
+		} else {
+			var tags = {artist:null,album:null,year:null,genre:null};
 		}
 
 		return tags;
