@@ -38,11 +38,10 @@
           <div id="user" class="pullRight">
             <%= user.username %>
             <a href="/logout" title="Se déconnecter" class="tip"><i class="entypo-logout pullRight" style="margin-left:5px"></i></a>
-            <a href="/documentation" title="Aide" class="tip"><i class="entypo-help pullRight" style="margin-left:5px"></i></a>
             <% if(user.role == 'admin') {%>
               <a href="/admin" title="Panel d'administration"><i class="entypo-tools pullRight" style="margin-left:5px"></i></a>
             <% } %>
-            <a href="/reset/<%= user.id%>"><i class="entypo-ccw pullRight" title="Réinitialiser la base de données" style="margin-left:5px"></i></a>
+            <a href="/reset/<%= user.id%>" class="reset-db"><i class="entypo-ccw pullRight" title="Réinitialiser la base de données" style="margin-left:5px"></i></a>
 
           </div>
 

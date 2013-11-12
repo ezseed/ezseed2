@@ -35,6 +35,16 @@ define([
         
     });
 
+    $('body').on('click', '.delete-item', function(e) {
+        if(!confirm("Attention cette fonction ne supprime pas le torrent, il est conseillé de supprimer torrent et données depuis votre client ! Êtes-vous sûr de vouloir effectuer cette action ?"))
+           return false; 
+    });
+
+    $('body').on('click', '.reset-db', function(e) {
+        if(!confirm("Cette fonction réinitialise la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?"))
+            return false;
+    });
+
     $('body').on('click', '.allow-notify', function() {
         notify.requestPermission(function() {
             $('#alert').empty();
