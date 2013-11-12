@@ -63,6 +63,7 @@ module.exports.processAlbums = function(params, callback) {
 					
 					if(a.indexOf(b) === -1) {
 						console.log(a, b);
+						console.log(a.indexOf(b));
 						albums[indexMatch].artist = 'VA';
 
 					}
