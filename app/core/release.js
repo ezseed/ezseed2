@@ -150,6 +150,8 @@ module.exports.getTags  = {
 			movie.name = dummyName(name, movie);
 		}
 
+		console.log(movie);
+
 		return movie;
 	}, 
 	audio: function(filePath, picture) {
@@ -227,7 +229,7 @@ var getMovieInformations = function(movie, cb) {
           			infos = Object.byString(result, movie.movieType);
 
           			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-          			movie.synopsis = infos.synopsis ? infos.synopsis.replace(/(<([^>]+)>)|\s/ig, '') : '';
+          			movie.synopsis = infos.synopsis ? _s.trim(infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
           			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
           			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
 
