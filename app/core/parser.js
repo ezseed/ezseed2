@@ -56,7 +56,10 @@ module.exports.processAlbums = function(params, callback) {
 			if(indexMatch !== null) {
 				infos = release.getTags.audio(e.path);
 
-				console.log('Match1', infos);
+				if(albums[indexMatch].artist != infos.artist && albums[indexMatch].artist !== 'VA') {
+					albums[indexMatch].artist = 'VA';
+					console.log(albums[indexMatch]);
+				}
 
 				albums[indexMatch].songs.push(e);
 			} else {
@@ -77,10 +80,6 @@ module.exports.processAlbums = function(params, callback) {
 				
 				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
-
-					console.log('Match2', infos);
-					if(albums[indexMatch].artist !== infos.artist)
-						albums[indexMatch].artist = 'VA';
 				} else {
 					albums.push({
 						artist : infos.artist,

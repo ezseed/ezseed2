@@ -61,8 +61,6 @@ define([
             //hash
             self.toRemove = window.location.hash.substr(1);
 
-            console.log(self.toRemove);
-
             return self;
         },
         //Rendering methods
@@ -165,7 +163,9 @@ define([
 
                 self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
-                self.pckry.appended($items);   
+                console.log($items);
+
+                self.pckry.appended($items);
 
                 self.displaySelector = displayOption;
 
