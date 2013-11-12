@@ -230,7 +230,9 @@ module.exports.processMovies = function(params, callback) {
 **/
 var checkIsOther = function (files, i) {
 	var i = i == undefined ? 0 : i;
-	
+		
+	console.log(files);
+
 	if( i < files.length ) {
 		//no hidden files
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
