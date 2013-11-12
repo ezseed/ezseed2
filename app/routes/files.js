@@ -160,7 +160,7 @@ var files = {
 					});
 
 					//remove prevDir (safe?)
-					if(paths.paths.indexOf(files.prevDir) === -1)
+					if(typeof files.prevDir == "string" && paths.paths.indexOf(files.prevDir) === -1)
 						fs.rmdirSync(files.prevDir);
 
 					//remove tmp
