@@ -58,7 +58,7 @@ var user = {
 
 	index : function(req, res){
 		//Let the socket do the job, we can render safely
-	  	res.render('desktop', { title: 'Ezseed V2 - Bureau' });
+	  	res.render('desktop', { title: 'Ezseed V2 - Bureau de ' + req.session.user.username });
 	},
 
 	torrent : function(req, res) {
