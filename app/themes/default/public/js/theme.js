@@ -259,18 +259,21 @@ define([
 
         $.get($(this).attr('href'), function(res) {
             if(res.error == null) {
-                window.location.href = '/download/archive/'+id;
-            }
-
-            $archiving.find('.percent').text('Téléchargement en cours...');
-            $archiving.find('.progress').css('width', '100%');
-
-            //todo show err
-            setTimeout(function() {
                 $(window).unbind('beforeunload');
-                $archiving.fadeOut('800');
-                $archiving.find('.percent').delay('800').text('0%');
-            }, 3000);
+                window.location.href = '/download/archive/'+id;
+                $archiving.find('.percent').text('Téléchargement en cours...');
+                $archiving.find('.progress').css('width', '100%');
+
+                //todo show err
+                setTimeout(function() {
+                    $archiving.fadeOut('800');
+                    $archiving.find('.percent').delay('800').text('0%');
+                }, 3000);
+            } else {
+                $archiving.find('.percent').text(res.error);
+                $archiving.find('.progress').css('width', '100%');
+                console.log(res.error);
+            }
 
         }, 'json');
     });
