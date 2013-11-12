@@ -566,9 +566,11 @@ section#desktop .element.table {
 #alpha-nav {
 	position: fixed;
 	left: 0;
-	width: 3em;
+	width: 10%;
 	list-style: none;
 	text-align: center;
+	margin: 0;
+	padding: 0;
 }
 #alpha-nav li{
 	padding: 2px;
@@ -587,12 +589,9 @@ section#desktop .element.table {
 	transition: font-size 0.2s ease;
 }
 
-#alpha-nav li.active a {
-	font-size: 1.275em;
-	color:#e15d33;
-}
-
+#alpha-nav li.active a,
 #alpha-nav li:hover a {
+	font-weight: bold;
 	color:#e15d33!important;
 	font-size: 1.275em;
 }
