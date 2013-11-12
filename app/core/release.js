@@ -213,7 +213,7 @@ var getMovieInformations = function(movie, cb) {
 
       			_.each(infos, function(e) {
       				console.log(movie.name, e.title, e.originalTitle);
-      				if(movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 || movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 || )
+      				if(movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 || movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
       					movie.code = e.code;
       			});
 
