@@ -54,6 +54,10 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
 			
 			if(indexMatch !== null) {
+				infos = release.getTags.audio(e.path);
+
+				console.log('Match1', infos);
+
 				albums[indexMatch].songs.push(e);
 			} else {
 
@@ -235,19 +239,27 @@ var checkIsOther = function (files, i) {
 		//no hidden files
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
-			// var stats = fs.statSync(files[i]);
-			
-			// if(stats.isDirectory()) {
-			// 	checkIsOther(fs.readdirSync(files[i]));
-			// } else {
-				var t = mime.lookup(files[i]).split('/')[0];
+			if(fs.existsSync(files[i])) {
+				var stats = fs.statSync(files[i]);
+				
+				if(stats.isDirectory()) {
+					var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+					if(!checkIsOther(arr))
+						return false;
+					else
+						return checkIsOther(files, i + 1);
+				} else {
+					var t = mime.lookup(files[i]).split('/')[0];
 
-				if( (t == 'audio' || t == 'video'))
-				{
-					return false;
-				} else
-					return checkIsOther(files, i + 1);
-			//}
+					if( (t == 'audio' || t == 'video'))
+					{
+						return false;
+					} else
+						return checkIsOther(files, i + 1);
+				}
+			} else {
+				return checkIsOther(files, i + 1);
+			}
 		} else
 			return checkIsOther(files, i + 1);
 	} else 
