@@ -78,8 +78,8 @@ module.exports.getTags  = {
 
 		prevDir = prevDir[prevDir.length - 1];
 
-		if(prevDir.length > basename.length)
-			basename = prevDir;
+		// if(prevDir.length > basename.length)
+		// 	basename = prevDir;
 
 		console.log(basename, prevDir);
 
@@ -203,6 +203,7 @@ module.exports.getTags  = {
 };
 
 module.exports.getMovieInformations = function(movie, cb) {
+	console.log('Infos', movie.name);
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
   		if(err) return cb(err, movie);
