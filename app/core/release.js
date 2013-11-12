@@ -225,6 +225,7 @@ module.exports.getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
+          		console.log('No movies', movie);
           		return cb(err, movie);
           	}
       	} else {
