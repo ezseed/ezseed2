@@ -200,16 +200,23 @@ module.exports.getTags  = {
 	}
 };
 
-module.exports.getMovieInformations = function(movie, cb) {
+var getMovieInformations = function(movie, cb) {
+
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '1'}, function(err, res) {
+  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
 
       		if(infos !== undefined) {
-          		movie.code = infos[0].code;
+
+      			_.each(infos, function(e) {
+      				if(movie.name.indexOf(e.title))
+      					movie.code = e.code;
+      			});
+
+          		movie.code = movie.code === undefined ? infos[0].code : movie.code;
 
           		//Searching for a specific code
           		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
@@ -224,13 +231,23 @@ module.exports.getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
-          		//No movie founded
-          		movie.title = movie.name;
-          		return cb(err, movie);
+          		var words = _s.words(movie.name);
+
+          		if(words.length > 2 && words[0].length > 3) {
+          			movie.name = words.splice(1, words.length).join(' ');
+          			getMovieInformations(movie , cb);
+          		} else {
+        			 //No movie founded
+	          		movie.title = movie.name;
+	          		return cb(err, movie);  			
+          		}
+
           	}
       	} else {
       		return cb(err, movie);
       	}
   	});
 }
+
+module.exports.getMovieInformations = getMovieInformations;
 

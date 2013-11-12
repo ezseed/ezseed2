@@ -301,7 +301,7 @@ var useradd = {
 
 				db.users.count(function (err, count) {
 
-					d['rpc-port'] = d['rpc-port'] + count;
+					d['rpc-port'] = d['rpc-port'] + count + 1; //+1 because of transmission default, could be started on reboot by default
 
 					fs.writeFileSync(settings, JSON.stringify(d));
 
@@ -568,8 +568,6 @@ program
 
 		//if(options.force)
 			cache.put('force', true);
-
-			console.log(client, username, options.password);
 
 		var next = function(options) {
 
