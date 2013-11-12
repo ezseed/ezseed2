@@ -2,10 +2,7 @@
 
 <% if(user.client == 'transmission') { %>
 
-<section class="widget">
-    <header>
-        <h4><i class="fa fa-magnet"></i> Torrents</h4>
-    </header>
+<section class="widget col-md-11">
     <div class="body no-margin">
         <iframe src="http://<%= host %>:<%= user['rpc-port'] %>" width="100%" frameborder="0" height="500px" ></iframe> 
     </div>
@@ -13,10 +10,7 @@
 
 <% } else { %>
 
-<section class="widget">
-    <header>
-        <h4><i class="fa fa-magnet"></i> Torrents</h4>
-    </header>
+<section class="widget col-md-11">
     <div class="body no-margin">
         <iframe src="http://<%= host %>/rutorrent" width="100%" frameborder="0" height="700px" ></iframe>
     </div>
