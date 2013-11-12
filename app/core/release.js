@@ -158,6 +158,7 @@ module.exports.getTags  = {
 
 		var stats = fs.statSync(filePath);
 
+		//Node buffer > file size => bug + should be streaming file (id3 module)
 		if(stats.size < 1073741824) {
 			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
 			id3.parse();
@@ -197,7 +198,7 @@ module.exports.getTags  = {
 					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 				
 			} else {
-				var tags = {};
+				var tags = {artist:null,album:null,year:null,genre:null};
 			}
 		}
 
