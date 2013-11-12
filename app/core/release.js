@@ -156,7 +156,11 @@ module.exports.getTags  = {
 
 		picture = picture === undefined ? false : picture;
 
-		var id3 = new ID3(fs.readFileSync(filePath));
+		var stats = fs.statSync(filePath);
+
+		console.log(stats);
+		// if(stats.size < )
+		var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
 		id3.parse();
 
 		var tags = {
