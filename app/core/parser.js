@@ -315,7 +315,9 @@ module.exports.processOthers = function(params, callback) {
 			else {
 				if(!single) {
 					var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+					console.log(arr);
 					if(checkIsOther(arr)) {
+						console.log('not single isOthers', e);
 						others.push({
 							name : name,
 							files : [e],
