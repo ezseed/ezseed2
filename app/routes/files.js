@@ -147,21 +147,31 @@ var files = {
 	},
 
 	delete : function(req, res) {
+		db.paths.byUser(req.session.user._id, function(err, paths) {
+			db.files.byId(req.params.id, function(err, doc) {
 
-		db.files.byId(req.params.id, function(err, doc) {
+				var files = doc.files || doc.videos || doc.songs;
 
-			var files = doc.files || doc.videos || doc.songs;
+				db.files[req.params.type + 's'].delete(doc._id, function() {
 
-			db.files[req.params.type + 's'].delete(doc._id, function() {
+					//Only unlink files, watcher'll do the rest
+					_.each(files, function(e) {
+						fs.unlinkSync(e.path);
+					});
 
-				//Only unlink files, watcher'll do the rest
-				_.each(files, function(e) {
-					fs.unlinkSync(e.path);
+					//remove prevDir (safe?)
+					if(paths.paths.indexOf(files.prevDir) === -1)
+						fs.rmdirSync(files.prevDir);
+
+					//remove tmp
+					if(files.picture)
+						fs.unlinkSync(files.picture);
+
+					req.session.success = doc.name + " a été supprimé avec succès !";
+					res.redirect('/#'+doc._id);
 				});
-			});
 
-			req.session.success = doc.name + " a été supprimé avec succès !";
-			res.redirect('/#'+doc._id);
+			});
 		});
 
 	}
