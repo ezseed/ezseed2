@@ -285,7 +285,7 @@ module.exports.processOthers = function(params, callback) {
 	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single = false;
 
 	_.each(othersFiles, function(e, i) {
-		console.log(othersFiles);
+
 		if(e.prevDir != pathToWatch) {
 			e.prevDir = pathInfos.join(
 				pathToWatch, 
@@ -298,6 +298,8 @@ module.exports.processOthers = function(params, callback) {
 			name = e.name;
 		}
 
+		console.log(name);
+
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {
@@ -308,6 +310,8 @@ module.exports.processOthers = function(params, callback) {
 				}
 			}
 		}
+
+		console.log('Exists ? ', exists);
 
 		if(!exists) {
 			if(indexMatch !== null)
