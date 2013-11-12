@@ -158,46 +158,47 @@ module.exports.getTags  = {
 
 		var stats = fs.statSync(filePath);
 
-		console.log(stats);
-		// if(stats.size < )
-		var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
-		id3.parse();
+		if(stats.size < 1073741824) {
+			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
+			id3.parse();
 
-		var tags = {
-				"title" : id3.get("title"),
-				"artist" :id3.get("artist"),
-				"album"  :id3.get("album"),
-				"year"   :id3.get("year"),
-				"genre"  :id3.get("genre")
-			};
+			var tags = {
+					"title" : id3.get("title"),
+					"artist" :id3.get("artist"),
+					"album"  :id3.get("album"),
+					"year"   :id3.get("year"),
+					"genre"  :id3.get("genre")
+				};
 
-		if(picture) {
-			var datas = id3.get('picture'), pictureFounded = false;
+			if(picture) {
+				var datas = id3.get('picture'), pictureFounded = false;
 
-			if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
+				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
-				var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
+					var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-				  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+					  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
 
-				  , type = datas.format.split('/');
+					  , type = datas.format.split('/');
 
-				if(type[0] == 'image') {
-					pictureFounded = true;
+					if(type[0] == 'image') {
+						pictureFounded = true;
 
-					file = file + '.' + type[1];
+						file = file + '.' + type[1];
 
-					fs.writeFileSync(file, datas.data);
-					
-					tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+						fs.writeFileSync(file, datas.data);
+						
+						tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+					}
+
 				}
-
+				
+				if(!pictureFounded)
+					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+				
+			} else {
+				var tags = {};
 			}
-			
-			if(!pictureFounded)
-				_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
-			
-			
 		}
 
 		return tags;
