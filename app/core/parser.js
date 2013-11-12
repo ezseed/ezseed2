@@ -55,12 +55,6 @@ module.exports.processAlbums = function(params, callback) {
 			
 			if(indexMatch !== null) {
 				albums[indexMatch].songs.push(e);
-				infos = release.getTags.audio(e.path, true);
-
-				console.log('Match1', infos);
-				if(albums[indexMatch].artist !== infos.artist)
-					albums[indexMatch].artist = 'VA';
-
 			} else {
 
 				infos = release.getTags.audio(e.path, true);
@@ -77,9 +71,13 @@ module.exports.processAlbums = function(params, callback) {
 						return false;
 				});
 				
-				if(indexMatch !== null)
+				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
-				else {
+
+					console.log('Match2', infos);
+					if(albums[indexMatch].artist !== infos.artist)
+						albums[indexMatch].artist = 'VA';
+				} else {
 					albums.push({
 						artist : infos.artist,
 						album : infos.album,
@@ -237,11 +235,11 @@ var checkIsOther = function (files, i) {
 		//no hidden files
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
-			var stats = fs.statSync(files[i]);
+			// var stats = fs.statSync(files[i]);
 			
-			if(stats.isDirectory()) {
-				checkIsOther(fs.readdirSync(files[i]));
-			} else {
+			// if(stats.isDirectory()) {
+			// 	checkIsOther(fs.readdirSync(files[i]));
+			// } else {
 				var t = mime.lookup(files[i]).split('/')[0];
 
 				if( (t == 'audio' || t == 'video'))
@@ -249,7 +247,7 @@ var checkIsOther = function (files, i) {
 					return false;
 				} else
 					return checkIsOther(files, i + 1);
-			}
+			//}
 		} else
 			return checkIsOther(files, i + 1);
 	} else 
