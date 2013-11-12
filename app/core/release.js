@@ -85,7 +85,7 @@ module.exports.getTags  = {
 
 		var err = null
 
-		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_/g, ' ').replace(/\(\)/g, '')
+		  , name = basename.replace(pathInfos.extname(basename), '').replace(/\-[\w\d]+$/i, '').replace(/\.|\-|_|\(|\)/g, ' ')
 
 		  , array = _s.words(name)
 
