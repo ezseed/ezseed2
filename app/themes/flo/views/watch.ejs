@@ -48,7 +48,7 @@
         <%
       for(var i in movie.videos) {
       %>     
-        <a <%if(movie.videos[i].episode == movie.episode) { %>class="btn btn-default" href="#" <% } else { %>class="btn btn-default" href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><i class="fa fa-circle pull-left text-success"></i><%- movie.title + ' <span class="label label-success">S' + movie.season + 'E' + movie.videos[i].episode %></span></a>
+        <a <%if(movie.videos[i].episode == movie.episode) { %>class="btn btn-default" href="#" <% } else { %>class="btn btn-default" href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><i class="fa fa-circle text-success"></i> <%- movie.title + ' <span class="label label-success">S' + movie.season + 'E' + movie.videos[i].episode %></span></a>
       <% 
       }
       %>
@@ -82,3 +82,5 @@
     // });
 
 </script>
+
+<% include footer %>

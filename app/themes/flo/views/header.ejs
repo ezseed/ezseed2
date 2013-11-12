@@ -154,9 +154,38 @@
               <% } %>
             <% } else { %>
 
+                <% } %></a></ul></nav>
+
+                    <% } else { %>
+                    <nav id="sidebar" class="sidebar nav-collapse collapse">
+    <ul id="side-nav" class="side-nav">   
+        <li>
+            <a href="/"><i class="fa fa-desktop"></i> <span class="name">Bureau</span></a>
+        </li>        
+        <li>
+           <% if(user.client == 'transmission') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" target="_blank" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } %>
+            <% } else if(user.client == 'rutorrent') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="/rutorrent" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="/rutorrent" target="_blank" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents"><i class="fa fa-magnet"></i> <span class="name">Torrents</span>
+              <% } %>
+            <% } else { %>
+
                 <% } %></a>
-        </li>  </ul></nav>
-        <% } %>        
+</ul>
+                    </nav>
+                    
+                    <% } %>        
                     <br>
 <div class="wrap">
                     <header class="page-header ">
@@ -185,17 +214,17 @@
           <div class="widget">
                     <div class="carousel-inner text-align-center">
                         <div class="item active">
-                            <h4 class="no-margin big-text"><em><span class="label label-success"><% if(usedSize !== undefined) { %> <%= usedSize.pretty %> <% } %>/<% if(config.availableSpace !== undefined) { %> <%= config.availableSpace %> <% } %></span></em><% if(user && location == '/') { %><div class="pull-left"><div id="loader">
+                            <h4 class="no-margin big-text"><em class="size"><span class="label label-success used"></span><span class="left"></span></em><% if(user && location == '/') { %><div class="pull-left"><div id="loader">
           <div class="fa fa-spinner fa-spin" aria-hidden="true"></div>
         </div></div><% } %></h4><hr>
-<div class="progress progress-striped active" title="<%= usedSize.percent %>">
-			<div class="progress-bar progress-bar-success tip" title="<%= usedSize.percent %>" role="progressbar" style="width:<%= usedSize.percent %>%"></div>
+<div class="progress progress-striped active">
+			<div class="progress-bar progress-bar-success tip"role="progressbar" id="usedBar" style=""></div>
 			</div>           
 			</div>           
 			</div>           
 			</div>     
     
-                <section id="desktop">
+                <section id="desktop" class="col-md-10 col-md-offset-1">
         <% } else { %> 
         <header>
 <div class="logo">

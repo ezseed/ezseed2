@@ -1,13 +1,13 @@
-    </section>
-    </section>
-    <footer class="text-center">
-       Thanks to Soyuka.
-    </footer>
-    <script>
-    var appDir = '<%= appDir %>';
+</section>
+</section>
+<footer class="text-center">
+    <span class="btn btn-default"><strong>EzSeed V2</strong> Made by <strong><a href="http://soyuka.me" class="text-success" target="_blank">soyuka</a></strong> - Creative Commons.</span>
+    <span class="btn btn-default"><strong>MalEz</strong> Theme by <strong><a href="https://github.com/ArrowNightmare" class="text-success" target="_blank">ArrowNightmare</a></strong> (<strong>Made with all the love in the world</strong> <i class="fa fa-heart text-danger"></i> ) </span>
+</footer>
+<script>
     var user = <%- JSON.stringify(user) %>;
     var config = <%- JSON.stringify(config) %>;
     var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>
-    </script>
-  </body>
+</script>
+</body>
 </html>

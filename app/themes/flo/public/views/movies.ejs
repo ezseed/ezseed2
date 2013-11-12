@@ -15,10 +15,10 @@ movies.forEach(function(movie) {
             tailleDossier += parseFloat(movie.videos[i].size);
     
     %> 
-<div data-id="<%- movie._id %>" class="widget element list video clearfix col-md-10 col-md-offset-1" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+<div data-id="<%- movie._id %>" class="widget element list video clearfix col-md-11" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
     <header>
-        <h4><%- movie.title %><% if(movie.season != undefined) { %> 
-            <span class="label label-success">S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %>
+        <h4><i class="fa fa-film"></i> <%- movie.title %><% if(movie.season != undefined) { %> 
+            <span class="badge badge-success">S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %>
             </span>
             <div class="pull-right">
                 <div class="btn-group btn-group-xs">
@@ -43,7 +43,9 @@ movies.forEach(function(movie) {
                     <% if(movie.picture == undefined) {%>
                     
                     <% } else { %>
-                    <img href="/watch/<%- movie._id %>" class="btn btn-transparent" title="Visionner" src="<%- movie.picture %>" />
+                    <a href="/watch/<%- movie._id %>">
+                        <img title="Visionner" class="btn btn-transparent"src="<%- movie.picture %>" />
+                    </a>
                     <% } %>
                     
                 </div>
@@ -112,15 +114,15 @@ movies.forEach(function(movie) {
                                         </tr>			
                                         <% 
                                                                                               i++;
-                                                                                                                          }); 
-                                                                                          %>
+                                                                                                                                                                                                                    }); 
+                                                                                                                           %>
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <% if(movie.videos[0].episode === null ) { %> 
-                                            <td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
-                                            <td>
-                                                <a href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
+                                            <td colspan="3" style="text-align:left">Taille totale : <span class="badge badge-success"><%- bytesToSize(tailleDossier) %></span></td>
+                                            <td style="text-align:left">
+                                                <a class="btn btn-transparent btn-xs" href="/archive/<%- movie._id %>" data-full-size="<%- tailleDossier %>" class="archive"><i class="fa fa-lock"></i></a>
                                             </td>
                                             <% } %>
                                         </tr>
@@ -137,25 +139,19 @@ movies.forEach(function(movie) {
             </div>
         </div>
     </div>
-    
-    <div data-id="<%- movie._id %>" class="element miniature video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
-        <div class="titre"><h1 class="league-gothic" title="<%- movie.title %>"><%- movie.title %></h1></div>
-        
+    <div data-id="<%- movie._id %>" class="element miniature video btn btn-transparent" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">   
         <a href="/watch/<%- movie._id %>">
             <% if(movie.picture == undefined) {%>
             <i class="entypo-video"></i>
             <% } else { %>
-            <img src="<%- movie.picture %>" />
+            <img style="max-height:500px" src="<%- movie.picture %>" title="<%- movie.title %>" />
             <% } %>
         </a>
     </div>
-    <div class="dd" id="nestable1">
-        <ol class="dd-list">
-            <li data-id="<%- movie._id %>" class="dd-item element table video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
-                <div class="dd-handle"><i class="fa fa-film"></i> <%- movie.title %> <% if(movie.season != undefined) { %><span class="label label-success">S<%- movie.season%><% if(movie.episode != undefined) { %>E<%- movie.episode%><% } %></span><% } %></div>
-            </li>
-        </ol>
-    </div>
+    
+    <li data-id="<%- movie._id %>" class="dd-item element table video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+        <div class="dd-handle"><i class="fa fa-film"></i> <%- movie.title %> <% if(movie.season != undefined) { %><span class="label label-success">S<%- movie.season%><% if(movie.episode != undefined) { %>E<%- movie.episode%><% } %></span><% } %></div>
+    </li>
     <%
-                                                                                                                                                                                                                 });
-                                                                                                                                                                                                                  %>
+                                                                                                                                                                                                         });
+                                                                                                                                                                                                          %>
