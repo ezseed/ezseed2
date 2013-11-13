@@ -14,7 +14,7 @@ others.forEach(function(other) {
 		var tailleDossier = 0;
 
 		for(var i = 0; i < other.files.length; i++) {
-			tailleDossier += parseInt(other.files[i].size);
+			tailleDossier += parseFloat(other.files[i].size);
 		}
 
 	}
@@ -69,7 +69,7 @@ others.forEach(function(other) {
 						<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
 					</thead>
 					<tbody>
-						<%	var i = 1, tailleDossier = 0;
+						<%	var i = 1;
 						other.files.sort(function (a, b) {
 						    if (a.name == b.name) {
 						        return 0;

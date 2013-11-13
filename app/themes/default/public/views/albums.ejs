@@ -22,7 +22,7 @@ albums.forEach(function(album) {
 		var tailleDossier = 0;
 
 		for(var i = 0; i < album.songs.length; i++) {
-			tailleDossier += parseInt(album.songs[i].size);
+			tailleDossier += parseFloat(album.songs[i].size);
 		}
 
 	}
@@ -91,7 +91,7 @@ albums.forEach(function(album) {
 						<tr><th>#</th><th>Nom</th><th>Poids</th></tr>
 					</thead>
 					<tbody>
-						<%	var i = 1, tailleDossier = 0;
+						<%	var i = 1;
 						album.songs.sort(function (a, b) {
 						    if (a.name == b.name) {
 						        return 0;
@@ -102,7 +102,6 @@ albums.forEach(function(album) {
 						});
 
 						album.songs.forEach(function(file) {
-							tailleDossier += parseInt(file.size);
 						%>
 						<tr>
 							<td><%- i %></td>
@@ -116,7 +115,7 @@ albums.forEach(function(album) {
 					</tbody>
 					<tfoot>
 						<tr>
-						<td colspan="3" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
+						<td colspan="2" style="text-align:left">Taille totale : <%- bytesToSize(tailleDossier) %></td>
 						<td>
 							<a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive">Télécharger le dossier</a>
 						</td>
