@@ -1,45 +1,46 @@
-```
-                                ___  ___  ___  ___  ___  ___     _  _  ___ 
-                               (  _)(_  )/ __)(  _)(  _)(   \   ( )( )(__ \
-                                ) _) / / \__ \ ) _) ) _) ) ) )   \\// / __/
-                               (___)(___)(___/(___)(___)(___/    (__) \___)
-```
-
-#Installation
+## Installation
 ```
 apt-get install git-core
 git clone https://user@github.com/soyuka/ezseed2/
 cd ezseed2
-#passe sur la béta
-git checkout rc1-b
 ```
 
-Ensuite exécutez autoInstall, le script se chargera de bouger le site dans /var/www/ezseed2
+Ensuite exécutez autoInstall, le script se chargera de bouger le site dans /var/www/ezseed2.
 
 ```
-#installation de node.js et mongodb
 chmod +x ./autoInstall.sh && ./autoInstall.sh
+# puis configurez le tout :
 cd /var/www/ezseed2
-./ezseed install -f
-#l'option -f fais en sorte qu'il ne s'arrête pas sur une erreur
+./ezseed install
 ```
+Sur les kimsufi, si vous avez une erreur du genre `Unable to connect to localhost:27127`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Kimsufi-Mongodb-erreur).
 
-Pour les options de pm2 voir sur le repo : https://github.com/Unitech/pm2
+## Lancement
 ```
 pm2 start ezseed.json
-pm2 list
-pm2 logs
 ```
 
 Les logs de l'application sont dans `/var/log/ezseed/`
 
-Pour update ezseed par exemple :
+## Mise à jour
 ```
-git pull && pm2 restart ezseed
+git pull && pm2 restart all
 ```
 
-**Rutorrent**
+## Détails
+
+### Licence
+
+### EzSeed (shell)
+![Ezseed shell](http://www.zupmage.eu/i/bYfDM1Ur0y.png)
+
+Ce shell vous permet d'installer rutorrent, transmission ou encore d'ajouter, de supprimer un utilisateur. Pour connaître la syntaxe il suffit de taper `./ezseed -h` pour avoir liste des commandes et ses options.
+
+### Rutorrent
 Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :
 
 ![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
 
+## Liens
+[Wiki](https://github.com/soyuka/ezseed2/wiki)
+[Bugs](https://github.com/soyuka/ezseed2/issues)
