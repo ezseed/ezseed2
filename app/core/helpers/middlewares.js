@@ -44,6 +44,7 @@ var middlewares = {
 
 		    var confPath = global.config.root + '/scripts/transmission/config/settings.'+u.username+'.json';
 
+		    console.log(u);
 		    if(u.client == 'transmission') {
 
 		    	if(fs.existsSync(confPath)) {

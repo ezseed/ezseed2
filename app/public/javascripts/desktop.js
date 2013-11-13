@@ -72,7 +72,8 @@ define([
             if(self.socket === null)
                 self.socket = io.connect('wss://'+document.domain);
 
-            self.socket.emit('update', user.id);
+            if(user)
+                self.socket.emit('update', user.id);
 
             //hash
             self.toRemove = window.location.hash.substr(1);
