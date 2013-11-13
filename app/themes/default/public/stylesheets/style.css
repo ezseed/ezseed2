@@ -582,18 +582,18 @@ section#desktop .element.table {
 	display: block;
 	color:#282727;
 	text-decoration: none;
-	-webkit-transition: font-size 0.2s ease;
-	-moz-transition: font-size 0.2s ease;
-	-o-transition: font-size 0.2s ease;
-	-ms-transition: font-size 0.2s ease;
-	transition: font-size 0.2s ease;
+	-webkit-transition: font-size 0.2s ease!important;
+	-moz-transition: font-size 0.2s ease!important;
+	-o-transition: font-size 0.2s ease!important;
+	-ms-transition: font-size 0.2s ease!important;
+	transition: font-size 0.2s ease!important;
 }
 
 #alpha-nav li.active a,
 #alpha-nav li:hover a {
-	font-weight: bold;
+	font-weight: bold!important;
 	color:#e15d33!important;
-	font-size: 1.275em;
+	font-size: 2em!important;
 }
 
 
