@@ -23,9 +23,11 @@ define([
 
     $.expr[':'].match = $.expr.createPseudo(function(arg) {
         return function( elem ) {
-            var c = $(elem).text().replace(/\s+/g, '').charAt(0);
-            console.log(arg, c, c.match(new RegExp( arg )));
-            return c.match( new RegExp( arg ) );
+            var c = $(elem).text().replace(/\s+/g, '').charAt(0)
+              , match = arg.match(new RegExp('^/(.*?)/(g?i?m?y?)$')); //http://stackoverflow.com/a/874742/1145578
+
+            console.log(new RegExp( match[0], match[1] ), c, c.match(new RegExp( match[0], match[1] )));
+            return c.match( new RegExp( match[0], match[1] ) );
         };
     });
 
