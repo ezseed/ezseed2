@@ -35,17 +35,23 @@ colors.setTheme({
 program
 	.version('0.1.0');
 
-var ASCII = new Buffer("\
-	   ___  ___  ___  ___  ___  ___     _  _  ___    \n\
-	  (  _)(_  )/ __)(  _)(  _)(   \\   ( )( )(__ \\   \n\
-	   ) _) / / \\__ \\ ) _) ) _) ) ) )   \\\\// / __/   \n\
-	  (___)(___)(___/(___)(___)(___/    (__) \\___)   \n\
-	  									   \n\
-").toString();
 
-console.log(ASCII.yellow.bold);
-console.log("Made with love by ".magenta + "soyuka".bold.magenta);
-console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
+program.on('--help', function(){
+
+	var ASCII = new Buffer("\
+		   ___  ___  ___  ___  ___  ___     _  _  ___    \n\
+		  (  _)(_  )/ __)(  _)(  _)(   \\   ( )( )(__ \\   \n\
+		   ) _) / / \\__ \\ ) _) ) _) ) ) )   \\\\// / __/   \n\
+		  (___)(___)(___/(___)(___)(___/    (__) \\___)   \n\
+		  									   \n\
+	").toString();
+
+	console.log(ASCII.yellow.bold);
+	console.log("Made with love by ".magenta + "soyuka".bold.magenta);
+	console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
+
+	console.log(" ");
+});
 
 /**
  * Prompt validators
