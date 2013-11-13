@@ -271,12 +271,9 @@ define([
             var matches;
 
             if(letter == '#')
-                matches = $section.find(Desktop.itemSelector + ':match("/\\d/g")');
+                matches = $section.find(Desktop.itemSelector + ':match("/\\d+/g")');
             else
                 matches = $section.find(Desktop.itemSelector + ':startsWith("'+letter+'")');
-
-            if(letter == '#')
-                console.log(matches);
 
 
             matches.each(function(i, e) {
