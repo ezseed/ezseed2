@@ -32,6 +32,7 @@ git pull && pm2 restart all
 ### Licence
 Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 3.0 non transposé
 Creative Commons - No commercial use - share with the same 3.0 conditions
+[![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr)
 
 ### EzSeed (shell)
 ![Ezseed shell](http://www.zupmage.eu/i/bYfDM1Ur0y.png)
