@@ -338,15 +338,17 @@ var db = {
     },
     delete : function(username, cb) {
       Users.findOne({username : username}, function(err, doc) {
-        var nbPaths = doc.paths.length;
-        if(nbPaths) {
-          while(nbPaths--) {
-            //Could be async but it isn't important
-            Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
+        //Hmm should be improved, only delete paths that aren't linked to another user !
+        //commented atm need a fix !
+        // var nbPaths = doc.paths.length;
+        // if(nbPaths) {
+        //   while(nbPaths--) {
+        //     //Could be async but it isn't important
+        //     Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
 
-            });
-          }
-        }
+        //     });
+        //   }
+        // }
         Users.findByIdAndRemove(doc._id, cb);
       });
     },

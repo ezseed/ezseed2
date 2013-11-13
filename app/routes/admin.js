@@ -5,6 +5,7 @@ var db = require('../core/database.js')
   , pathInfo = require('path')
   , jf = require('jsonfile')
   , spawn = require('child_process').spawn
+  , exec = require('child_process').exit
   , userHelper = require('../core/helpers/users');
 
 var admin = {
@@ -31,7 +32,9 @@ var admin = {
 			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
 				db.paths.save(pathInfo.join(global.config.path, req.body.path), req.body.username, function(err, p) {
 					req.session.success = "Chemin sauvegardé en base de données";
-					res.redirect('admin');
+					exec('pm2', ['restart', 'watcher'], function() {
+						res.redirect('admin');
+					});
 				});
 			} else {
 				req.session.error = "Le dossier n'existe pas";
@@ -172,7 +175,6 @@ var admin = {
 	}
 
 	, saveTransmissionConfiguration : function(req, res) {
-		var exec = require('child_process').exec;
 		var username = req.params.username;
 
 		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
