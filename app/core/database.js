@@ -13,6 +13,7 @@ var mongoose = require('mongoose')
 	, async = require('async');
 
 var _ = require('underscore');
+var bcrypt = require('bcrypt-nodejs');
 
 var db = {
 	paths : {
@@ -230,6 +231,7 @@ var db = {
     byId : function(uid, done) {
       Users.findById(uid, done);
     },
+    //Reset user database
     reset : function(uid, done) {
       db.files.byUser(uid, 0, function(err, docs) {
         
@@ -287,11 +289,10 @@ var db = {
         cb(err, docs);
       });
     },
+    //Should be moved to user.create
     //username, password, client, role
     create : function(u, done) {
       var password = u.password, username = u.username;
-
-      var bcrypt = require('bcrypt-nodejs');
 
       //Generates the hash
       bcrypt.hash(password, null, null, function(err, hash) {
@@ -337,22 +338,22 @@ var db = {
     },
     delete : function(username, cb) {
       Users.findOne({username : username}, function(err, doc) {
-        var nbPaths = doc.paths.length;
-        if(nbPaths) {
-          while(nbPaths--) {
-            //Could be async but it isn't important
-            Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
+        //Hmm should be improved, only delete paths that aren't linked to another user !
+        //commented atm need a fix !
+        // var nbPaths = doc.paths.length;
+        // if(nbPaths) {
+        //   while(nbPaths--) {
+        //     //Could be async but it isn't important
+        //     Paths.findByIdAndRemove(doc.paths[nbPaths], function(err) {
 
-            });
-          }
-        }
+        //     });
+        //   }
+        // }
         Users.findByIdAndRemove(doc._id, cb);
       });
     },
     update : function(username, update, cb) {
       if(update.password !== undefined) {
-         var bcrypt = require('bcrypt-nodejs');
-
         //Generates the hash
         bcrypt.hash(password, null, null, function(err, hash) {
           update = _.extend(update, {hash : hash});

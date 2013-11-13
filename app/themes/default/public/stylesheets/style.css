@@ -554,13 +554,23 @@ section#desktop .element.table {
 	width: 100%;
 	padding: 0 7px;
 	margin: 0 auto;
-	background-color: #474747;
+	background: #373634 url('../images/grey.png');
 	border: 2px solid #e15d33;
 	border-bottom: 1px solid #b2b2af;
 	border-top: 0;
 	line-height: 25px;
 	vertical-align: top;
 	color:#B2B2AF;
+}
+
+.element.table a.table-link {
+	color:#b2b2af;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.element.table a.table-link:hover {
+	color:#768591;
 }
 
 #alpha-nav {
@@ -582,18 +592,18 @@ section#desktop .element.table {
 	display: block;
 	color:#282727;
 	text-decoration: none;
-	-webkit-transition: font-size 0.2s ease;
-	-moz-transition: font-size 0.2s ease;
-	-o-transition: font-size 0.2s ease;
-	-ms-transition: font-size 0.2s ease;
-	transition: font-size 0.2s ease;
+	-webkit-transition: font-size 0.2s ease!important;
+	-moz-transition: font-size 0.2s ease!important;
+	-o-transition: font-size 0.2s ease!important;
+	-ms-transition: font-size 0.2s ease!important;
+	transition: font-size 0.2s ease!important;
 }
 
 #alpha-nav li.active a,
 #alpha-nav li:hover a {
-	font-weight: bold;
+	font-weight: bold!important;
 	color:#e15d33!important;
-	font-size: 1.275em;
+	font-size: 1.895em!important;
 }
 
 
@@ -604,9 +614,9 @@ table {
 
 table th {
 	font-weight: bold;
-	font-size: 1.2em;
+	font-size: 1em;
 	background: rgba(225,93,51,0.5);
-	padding-bottom: 5px;
+	padding-bottom: 2px;
 	color:#b2b2af !important;
 }
 
@@ -706,6 +716,10 @@ section#desktop .input-box {margin: 0;margin-right: 5px; display: inline-block;w
 .button-group {
 	float: right;
 	margin-top: -35px;
+}
+
+.table .button-group {
+	margin-top: 0;
 }
 
 .button-group a {

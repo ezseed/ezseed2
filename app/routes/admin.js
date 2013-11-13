@@ -5,6 +5,7 @@ var db = require('../core/database.js')
   , pathInfo = require('path')
   , jf = require('jsonfile')
   , spawn = require('child_process').spawn
+  , exec = require('child_process').exit
   , userHelper = require('../core/helpers/users');
 
 var admin = {
@@ -31,7 +32,9 @@ var admin = {
 			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
 				db.paths.save(pathInfo.join(global.config.path, req.body.path), req.body.username, function(err, p) {
 					req.session.success = "Chemin sauvegardé en base de données";
-					res.redirect('admin');
+					exec('pm2', ['restart', 'watcher'], function() {
+						res.redirect('admin');
+					});
 				});
 			} else {
 				req.session.error = "Le dossier n'existe pas";
@@ -85,38 +88,38 @@ var admin = {
 
 		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
 
-			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
-			
-			var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
+			if(global.config[req.body.client] == true) {
 
-			var running = spawn(shell_path, options);
+				var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+				
+				var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
 
-			running.stdout.on('data', function (data) {
-				var string = new Buffer(data).toString();
-				console.log(string);
-			});
+				var running = spawn(shell_path, options);
 
-			running.stderr.on('data', function (data) {
-				var string = new Buffer(data).toString();
-				console.error(string);
-			});
+				running.stdout.on('data', function (data) {
+					var string = new Buffer(data).toString();
+					console.log(string);
+				});
 
-			running.on('exit', function (code) {
-				console.log(code);
-				req.session.success = "Utilisateur créé"; 
-				res.redirect('/admin');
-			});
+				running.stderr.on('data', function (data) {
+					var string = new Buffer(data).toString();
+					console.error(string);
+				});
+
+				running.on('exit', function (code) {
+					console.log(code);
+					req.session.success = "Utilisateur créé"; 
+					res.redirect('/admin');
+				});
+			} else {
+				req.session.error = "Le client " + req.body.client + " n'est pas installé";
+				res.redirect('/admin/user');
+			}
 
 		} else {
 			req.session.error = "Le client torrent n'a pas été reconnu";
 			res.redirect('/admin/user');
 		}
-	}
-
-	/** Change user password **/
-
-	, userpass : function(req, res) {
-
 	}
 
 	/** 
@@ -147,6 +150,10 @@ var admin = {
 		});
 	}
 
+	, userPassword : function(req, res) {
+		res.render('admin/password');
+	}
+
 	/**
 	 * Restrict on admin only based on the role
 	 */
@@ -168,7 +175,6 @@ var admin = {
 	}
 
 	, saveTransmissionConfiguration : function(req, res) {
-		var exec = require('child_process').exec;
 		var username = req.params.username;
 
 		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
@@ -196,7 +202,10 @@ module.exports = function(app) {
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 
+	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
+
 	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
 	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);
+
 }
 

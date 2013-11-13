@@ -163,7 +163,7 @@ var watcher = {
 							{path : p.path, uid:u._id, pid:p._id}
 						)
 					);
-					console.log(watcher.watchers);
+					// console.log(watcher.watchers);
 				});
 			});
 		});

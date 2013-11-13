@@ -56,8 +56,7 @@ else
 	chmod 775 /var/www/ezseed2/app/public/tmp
 	cd /var/www/ezseed2/ &&	npm install --save
 
-	echo "You might delete this rep : 'cd .. && rm -R ezseed\n"
-	echo "Then please exec 'cd /var/www/ezseed' and start installation : ./ezseed install -h"
+	echo "Please exec 'cd /var/www/ezseed2' and start installation : ./ezseed install -h"
 fi
 
 

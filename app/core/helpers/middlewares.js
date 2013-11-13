@@ -1,4 +1,5 @@
 var _ = require('underscore')
+  , fs = require('fs')
   , jf = require('jsonfile')
 ;
 
@@ -41,23 +42,38 @@ var middlewares = {
 		    var u = req.session.user;
 		    delete u.hash; //Deleting password from user local variable
 
+		    var confPath = global.config.root + '/scripts/transmission/config/settings.'+u.username+'.json';
+
 		    if(u.client == 'transmission') {
 
-		      var transmissionConfig = jf.readFileSync(global.config.root + '/scripts/transmission/config/settings.'+u.username+'.json');
+		    	if(fs.existsSync(confPath)) {
 
-		      //saving rpc-port
-		      u['rpc-port'] = transmissionConfig['rpc-port'];
-		    }
+					var transmissionConfig = jf.readFileSync(confPath);
 
-		    res.locals.user = u;
+					//saving rpc-port
+					u['rpc-port'] = transmissionConfig['rpc-port'];
 
+				    res.locals.user = u;
+
+					next();
+
+			    } else {
+			    	req.session.destroy(function(){
+			    		req.session.error = "Une erreur de client torrent est survenue, merci de vous connecter à nouveau";
+					    res.redirect('/login');
+					});
+			    }
+
+			} else {
+				//rutorrent
+				res.locals.user = u;
+				next();
+			}
+		} else {
+			req.user = null;
+			res.locals.user = null;
 			next();
-
-	  } else {
-		req.user = null;
-		res.locals.user = null;
-		next();
-	  }
+		}
 	}
 
 };

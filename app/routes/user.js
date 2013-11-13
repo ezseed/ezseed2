@@ -26,6 +26,7 @@ var user = {
 	  });
 	},
 
+	//It should be added some function to reset a specific element
 	reset : function(req, res) {
 		db.user.reset(req.params.uid, function() {
 			res.redirect('/');
@@ -67,6 +68,10 @@ var user = {
 			res.render('torrents', {title : 'Torrents'});
 		else
 			res.redirect('/'+req.session.user.client);
+	},
+
+	password : function(req, res) {
+		
 	}
 
 };
@@ -78,4 +83,5 @@ module.exports = function(app) {
 	app.post('/login', user.authenticate);
 	app.get('/reset/(:uid)', user.reset);
 	app.get('/torrents', userHelper.restrict, user.torrent);
+	app.get('/password', userHelper.restrict, user.password);
 }
