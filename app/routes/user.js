@@ -26,6 +26,7 @@ var user = {
 	  });
 	},
 
+	//It should be added some function to reset a specific element
 	reset : function(req, res) {
 		db.user.reset(req.params.uid, function() {
 			res.redirect('/');

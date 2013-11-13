@@ -88,7 +88,7 @@ albums.forEach(function(album) {
 			<div class="files">
 				<table>
 					<thead>
-						<tr><th>#</th><th>Nom</th><th>Poids</th><th>Options</th></tr>
+						<tr><th>#</th><th>Nom</th><th>Poids</th></tr>
 					</thead>
 					<tbody>
 						<%	var i = 1, tailleDossier = 0;
@@ -106,9 +106,8 @@ albums.forEach(function(album) {
 						%>
 						<tr>
 							<td><%- i %></td>
-							<td style="text-align:left"><%- file.name %></td>
+							<td style="text-align:left"><a href="/download/<%- album._id %>/<%- file._id%>"><%- file.name %></a></td>
 							<td><%- bytesToSize(file.size) %></td>
-							<td><a href="/download/<%- album._id %>/<%- file._id%>"><i class="entypo-download"></i></a></td>
 						</tr>			
 						<% 
 							i++;
@@ -140,7 +139,24 @@ albums.forEach(function(album) {
 	</div>
 	<div data-id="<%- album._id %>" class="element table audio" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
 		<i class="entypo-music"></i>
-		<%- album.title %>
+		<a href="/listen/<%- album._id %>" class="table-link" title="Écouter">
+			<%- album.title %>
+		</a>
+		<div class="button-group">
+			<a href="/listen/<%- album._id %>" title="Écouter">
+				<i class="entypo-note-beamed"></i>
+			</a>
+			<% if(album.songs.length > 1) {%>
+			<a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+			<% } else {%>
+			<a href="/download/<%- album._id %>" title="Télécharger">
+			<% } %>
+				<i class="entypo-download"></i>
+			</a>
+			<a href="/delete/album/<%- album._id %>" class="delete-item" title="Supprimer">
+				<i class="entypo-trash"></i>
+			</a>
+		</div>
 	</div>
 <%
 });

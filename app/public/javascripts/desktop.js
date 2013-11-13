@@ -24,8 +24,6 @@ define([
     $.expr[':'].match = $.expr.createPseudo(function(arg) {
         return function( elem ) {
             var c = $(elem).text().replace(/\s+/g, '').charAt(0);
-
-            console.log(new RegExp( arg, 'ig' ), arg, c);
             return c.match( new RegExp( arg, 'ig' ) ); 
         };
     });

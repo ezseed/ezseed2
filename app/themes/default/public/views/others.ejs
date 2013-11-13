@@ -115,7 +115,23 @@ others.forEach(function(other) {
 		</a>
 	</div>
 	<div data-id="<%- other._id %>" class="element table other" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
-		<i class="entypo-box"></i> <%- other.name %>
+		<i class="entypo-box"></i> 
+		<a href="/download/<%- other._id %>" class="table-link" title="Télécharger">
+			<%- other.name %>
+		</a>
+		<div class="button-group">
+			<% if(other.files.length > 1) {%>
+			<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
+			<% } else {%>
+			<a href="/download/<%- other._id %>" title="Télécharger">
+			<% } %>
+				<i class="entypo-download"></i>
+			</a>
+
+			<a href="/delete/other/<%- other._id %>" class="delete-item" title="Supprimer">
+				<i class="entypo-trash"></i>
+			</a>
+		</div>
 	</div>
 	<%
 	});
