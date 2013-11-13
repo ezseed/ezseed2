@@ -24,6 +24,7 @@ define([
     $.expr[':'].match = $.expr.createPseudo(function(arg) {
         return function( elem ) {
             var c = $(elem).text().replace(/\s+/g, '').charAt(0);
+            console.log(arg, c);
             return c.match( new RegExp( arg ) );
         };
     });
@@ -200,22 +201,20 @@ define([
                         var count = 0, els = [];
 
                         _.each($items, function(e) {
-                            var isTxt = e instanceof Text;
+                            var isTxt = e instanceof Text; //parseHTML causes element duplicated
 
                             if(!isTxt) {
                                 if($(e).hasClass('list'))
                                     els.push($(e));
-
-                                count++;
                             }
                         });
 
-                        count = count / 3;
+                        count = els.length;
 
                         if(count == 1) {
                             var titre = els[0].find('h1').text();
                             self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
-                        } else {
+                        } else if(count != 0) {
                             self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
                         }
                     }
