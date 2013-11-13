@@ -30,37 +30,63 @@
 
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<pre><code>apt-get install git-core
+git clone https://user@github.com/soyuka/ezseed2/
+cd ezseed2
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>Ensuite exécutez autoInstall, le script se chargera de bouger le site dans /var/www/ezseed2.</p>
+
+<pre><code>chmod +x ./autoInstall.sh &amp;&amp; ./autoInstall.sh
+# puis configurez le tout :
+cd /var/www/ezseed2
+./ezseed install
+</code></pre>
+
+<p>Sur les kimsufi, si vous avez une erreur du genre <code>Unable to connect to localhost:27127</code>, <a href="https://github.com/soyuka/ezseed2/wiki/Kimsufi-Mongodb-erreur">voyez ici</a>.</p>
+
+<h2>
+<a name="lancement" class="anchor" href="#lancement"><span class="octicon octicon-link"></span></a>Lancement</h2>
+
+<pre><code>pm2 start ezseed.json
+</code></pre>
+
+<p>Les logs de l'application sont dans <code>/var/log/ezseed/</code></p>
+
+<h2>
+<a name="mise-%C3%A0-jour" class="anchor" href="#mise-%C3%A0-jour"><span class="octicon octicon-link"></span></a>Mise à jour</h2>
+
+<pre><code>git pull &amp;&amp; pm2 restart all
+</code></pre>
+
+<h2>
+<a name="d%C3%A9tails" class="anchor" href="#d%C3%A9tails"><span class="octicon octicon-link"></span></a>Détails</h2>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<a name="licence" class="anchor" href="#licence"><span class="octicon octicon-link"></span></a>Licence</h3>
 
 <h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<a name="ezseed-shell" class="anchor" href="#ezseed-shell"><span class="octicon octicon-link"></span></a>EzSeed (shell)</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p><img src="http://www.zupmage.eu/i/bYfDM1Ur0y.png" alt="Ezseed shell"></p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Ce shell vous permet d'installer rutorrent, transmission ou encore d'ajouter, de supprimer un utilisateur. Pour connaître la syntaxe il suffit de taper <code>./ezseed -h</code> pour avoir liste des commandes et ses options.</p>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="rutorrent" class="anchor" href="#rutorrent"><span class="octicon octicon-link"></span></a>Rutorrent</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :</p>
+
+<p><img src="http://www.zupmage.eu/i/hpRER83cvG.png" alt="Autotools configuration"></p>
+
+<h2>
+<a name="liens" class="anchor" href="#liens"><span class="octicon octicon-link"></span></a>Liens</h2>
+
+<p><a href="https://github.com/soyuka/ezseed2/wiki">Wiki</a>
+<a href="https://github.com/soyuka/ezseed2/issues">Bugs</a></p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
