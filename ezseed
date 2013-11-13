@@ -8,6 +8,7 @@ var program = require('commander')
   , colors = require('colors')
   , promptly = require('promptly')
   , exec = require('child_process').exec
+  , execFile = require('child_process').execFile
   , spawn = require('child_process').spawn
   , _ = require('underscore')
   , fs = require('fs')
@@ -97,6 +98,10 @@ var validators = {
 	}
 };
 
+/**
+ * Torrent installer
+ * @type {Object}
+ */
 var torrent = {
 	rutorrent : function(done) {
 		var shell_path = __dirname + '/app/scripts/rutorrent/install.sh';
@@ -119,6 +124,12 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de rutorrent terminée'.info);
+			var config = jf.readFileSync(__dirname + '/app/config.json');
+			
+			config.rutorrent = true;
+
+			jf.writeFileSync(__dirname+'/app/config.json', config);
+
 			done(null, 'rutorrent');
 		});
 	},
@@ -143,6 +154,13 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de transmission terminée'.info);
+
+			var config = jf.readFileSync(__dirname + '/app/config.json');
+			
+			config.transmission = true;
+
+			jf.writeFileSync(__dirname+'/app/config.json', config);
+
 			done(null, 'transmission');
 		});
 	},
@@ -341,23 +359,29 @@ var useradd = {
 		   
 };
 
+
+
 /**
  * Main install wrapper
  * @type {Object}
  */
 var install = {
 	admin_creation: function(callback){
-		console.log("Entrez les informations de l'admin".info);
+		if(cache.get('skipuser'))
+			callback(null, {});
+		else {
+			console.log("Entrez les informations de l'admin".info);
 
-		promptly.prompt('Username : ', { validator: validators.user}, function (err, username) {
-		    promptly.password('Password : ', function(err, password) {
-		    	db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
-		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-		    		cache.put('user', {username : username, password : password});
-		    		callback(null,{});
-		    	});
-		    });
-		});
+			promptly.prompt('Username : ', { validator: validators.user}, function (err, username) {
+			    promptly.password('Password : ', function(err, password) {
+			    	db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
+			    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
+			    		cache.put('user', {username : username, password : password});
+			    		callback(null,{});
+			    	});
+			    });
+			});
+		}
 	},
 	save_path: function(callback){
 		
@@ -370,10 +394,11 @@ var install = {
 					"fetchTime": 5000,
 					"root": "",
 					"location": "",
-					"torrentLink": "link",
+					"torrentLink": "embed",
 					"diskSpace": "1048576",
-					"videoPlayer": "divx",
 					"availableSpace": "1 TB",
+					"transmission":false,
+  					"rutorrent":false,
 					"theme": "default"
 				};
 
@@ -470,12 +495,44 @@ var install = {
 };
 
 var password = {
-	rutorrent : function() {
+	rutorrent : function(username, password, done) {
+		var shell_path = pathInfo.join(__dirname,'/app/scripts/rutorrent/password.sh');
+
+		execFile(shell_path, [username, password], function(err, stdout, stderr) {
+			db.users.update(username, {password : password}, done);
+		});
 
 	},
-	transmission : function() {
+	transmission : function(username, password, done) {
+		var shell_path = pathInfo.join(__dirname,'/app/scripts/transmission/password.sh');
 
+		execFile(shell_path, [username, password], function(err, stdout, stderr) {
+
+			var settings = __dirname + '/app/scripts/transmission/config/settings.'+username+'.json';
+
+			var d = jf.readFileSync(settings);
+
+			d.password = password;
+
+			jf.writeFileSync(setting, d);
+
+			//restarting daemon
+			exec(pathInfo.join(__dirname,'/app/scripts/transmission/daemon.sh', ['start', username]), function() {
+				db.users.update(username, {password : password}, done);
+
+			});
+
+		});
+	},
+	aucun : function(username, password, done) {
+		db.users.update(username, {password : password}, done);
 	}
+}
+
+var resetWatcher = function(cb) {
+	exec('pm2', ['restart', 'watcher'], function() {
+		return typeof cb == 'function' ? cb() : true;
+	});
 }
 
 
@@ -507,6 +564,7 @@ var daemon = function(client, command, username) {
 program
 	.command('install')
 	.option('-f, --force', 'force install (will not throw errors)')
+	.option('-u, --skipuser', 'Skip admin creation')
 	.option('-n, --notorrent', 'Skip torrent client installation')
 	.option('-s, --skipnginx', 'Skip nginx configuration')
 	.action(function(options) {
@@ -518,6 +576,9 @@ program
 
 		if(options.skipnginx)
 			cache.put('skipnginx', true);
+
+		if(options.skipuser)
+			cache.put('skipuser', true);
 
 		async.series(install,
 		function(err, results) {
@@ -569,39 +630,57 @@ program
 	.option('-f, --force', 'force')
 	.description("Ajout d'un utilisateur au client spécifié")
 	.action(function(client, username, options) {
-		if(options.path)
-			cache.put('path', options.path);
 
-		//if(options.force)
-			cache.put('force', true);
+		if(fs.existsSync('./app/config.json')) {
+			var config = jf.readFileSync('./app/config.json');
 
-		var next = function(options) {
+			if(config[client] == true) {
 
-			if(options.password === undefined) {
-				promptly.password('Mot de passe :', function(err, pw) {
-					useradd[client](username, pw, function() {
-						cache.clear();
-						process.exit(1);
+				if(options.path)
+					cache.put('path', options.path);
+
+				//if(options.force)
+					cache.put('force', true);
+
+				var next = function(options) {
+
+					if(options.password === undefined) {
+						promptly.password('Mot de passe :', function(err, pw) {
+							useradd[client](username, pw, function() {
+								resetWatcher(function() {
+									cache.clear();
+									process.exit(1);
+								});
+							});
+						});
+					} else 
+						useradd[client](username, options.password, function() {
+							resetWatcher(function() {
+								cache.clear();
+								process.exit(1);
+							});
+						});
+				};
+
+				if(options.role) {
+
+					promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
+						cache.put('role', role);
+						next(options);
 					});
-				});
-			} else 
-				useradd[client](username, options.password, function() {
-					cache.clear();
-					process.exit(1);
-				});
-		};
+				} else
+					next(options);
 
-		if(options.role) {
+				
+			} else {
+				console.log("Le client " + client + " n'est pas installé !".error);
+				process.exit(0);
+			}
+		} else {
+			console.log("Le fichier de configuration n'existe pas, lancez ./ezseed install".error);
+			process.exit(0);
+		}
 
-			promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
-				cache.put('role', role);
-				next(options);
-			});
-		} else
-			next(options);
-		
-
-		
 	});
 
 program
