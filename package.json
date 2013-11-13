@@ -1,7 +1,19 @@
 {
   "name": "ezseed2",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
+  "keywords" : ["seedbox", "torrent"],
+  "licence" : {"type" : "Creative Commons", "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE.html"},
+  "repository" : {"type": "git", "url":"https://github.com/soyuka/ezseed2"},
+  "bin" : { "ezseed" : "./ezseed.js" }, 
+  "scripts": {"start": "pm2 start ./ezseed.json"},
+  "homepage": "https://github.com/soyuka/ezseed2",
+  "description" : "Easy seedbox to be shared with friends or family",
+  "author": {
+    "name": "Soyuka",
+    "email": "soyuka@gmail.com",
+    "url": "http://ezseed.io"
+  },
   "dependencies": {
     "express": "3.2.5",
     "ejs": "~0.8.4",
