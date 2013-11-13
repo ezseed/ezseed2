@@ -70,7 +70,7 @@ define([
             }
 
             if(self.socket === null)
-                self.socket = io.connect('ws://'+document.domain);
+                self.socket = io.connect('wss://'+document.domain+':3001');
 
             if(user)
                 self.socket.emit('update', user.id);
