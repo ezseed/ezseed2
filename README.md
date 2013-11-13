@@ -31,6 +31,8 @@ git pull && pm2 restart all
 
 ### Licence
 
+[![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr)
+
 ### EzSeed (shell)
 ![Ezseed shell](http://www.zupmage.eu/i/bYfDM1Ur0y.png)
 
@@ -42,5 +44,6 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 ![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
 
 ## Liens
-[Wiki](https://github.com/soyuka/ezseed2/wiki)
-[Bugs](https://github.com/soyuka/ezseed2/issues)
+
+* [Wiki](https://github.com/soyuka/ezseed2/wiki)
+* [Bugs](https://github.com/soyuka/ezseed2/issues)
