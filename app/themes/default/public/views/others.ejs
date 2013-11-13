@@ -85,7 +85,7 @@ others.forEach(function(other) {
 							<td><%- i %></td>
 							<td style="text-align:left"><%- file.name %></td>
 							<td><%- bytesToSize(file.size) %></td>
-							<td>-</td>
+							<td><a href="/download/<%-other._id%>/<%-file._id%>"><i class="entypo-download"></i></a></td>
 						</tr>			
 						<% 
 							i++;
