@@ -65,8 +65,11 @@ var middlewares = {
 					});
 			    }
 
-			} else 
+			} else {
+				//rutorrent
+				res.locals.user = u;
 				next();
+			}
 		} else {
 			req.user = null;
 			res.locals.user = null;
