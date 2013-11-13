@@ -119,12 +119,6 @@ var admin = {
 		}
 	}
 
-	/** Change user password **/
-
-	, userpass : function(req, res) {
-
-	}
-
 	/** 
 	 * Deletes user with client scripts
 	 * Must be run as root = bad.
@@ -151,6 +145,10 @@ var admin = {
 				res.redirect('/admin');
 			});
 		});
+	}
+
+	, userPassword : function(req, res) {
+		res.render('admin/password');
 	}
 
 	/**
@@ -202,7 +200,10 @@ module.exports = function(app) {
 
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 
+	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
+
 	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
 	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);
+
 }
 
