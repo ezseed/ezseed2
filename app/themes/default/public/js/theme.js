@@ -271,7 +271,7 @@ define([
             var matches;
 
             if(letter == '#')
-                matches = $section.find(Desktop.itemSelector + ':match("/\\d+/g")');
+                matches = $section.find(Desktop.itemSelector + ':match("\\d+")');
             else
                 matches = $section.find(Desktop.itemSelector + ':startsWith("'+letter+'")');
 
