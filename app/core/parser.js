@@ -41,8 +41,6 @@ module.exports.processAlbums = function(params, callback) {
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
-		console.log(i);
-
 		if(i == arr.length)
 			return cb(albums);
 
@@ -77,6 +75,8 @@ module.exports.processAlbums = function(params, callback) {
 					}
 
 					albums[indexMatch].songs.push(e);
+
+					i++;
 					return parseAlbums(arr, cb, i, albums);
 				});
 
@@ -98,6 +98,8 @@ module.exports.processAlbums = function(params, callback) {
 					
 					if(indexMatch !== null) {
 						albums[indexMatch].songs.push(e);
+						
+						i++;
 						return parseAlbums(arr, cb, i, albums);
 					} else {
 						albums.push({
@@ -111,6 +113,7 @@ module.exports.processAlbums = function(params, callback) {
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
 						});
 
+						i++;
 						return parseAlbums(arr, cb, i, albums);
 
 					}
