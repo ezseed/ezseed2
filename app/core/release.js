@@ -31,11 +31,11 @@ Object.byString = function(o, s) {
 }
 
 //Tags (to be improved)
-var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr', 'tvrip', 'hdtvrip', 'hdtv']
+var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr', 'tvrip', 'hdtvrip', 'hdtv', 'brrip']
 
   , subtitles = ['fastsub', 'proper', 'subforced', 'fansub']
 
-  , languages = ['vf', 'vo', 'vostfr', 'multi', 'french']
+  , languages = ['vf', 'vo', 'vostfr', 'multi', 'french', 'truefrench']
 
   , audios = ['ac3', 'dts']
 
@@ -100,8 +100,6 @@ module.exports.getTags  = {
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
 
-
-		  console.log(name, prevDir);
 
 		//Found a tv show
 		if(r.test(name)) {
@@ -211,12 +209,16 @@ module.exports.getTags  = {
 
 var getMovieInformations = function(movie, cb) {
 
+	console.log('Gathering infos on', movie.name);
+
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
+
+      		console.log('founded', infos);
 
       		if(infos !== undefined) {
 
@@ -244,6 +246,8 @@ var getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
+          		console.log('Nothing founded');
+
           		var words = _s.words(movie.name);
 
           		if(words.length >= 2 && words[0].length > 3) {
