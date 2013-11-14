@@ -175,6 +175,7 @@ module.exports.getTags  = {
 
 			if(picture) {
 				var datas = id3.get('picture'), pictureFounded = false;
+				delete id3;
 
 				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
@@ -214,6 +215,8 @@ module.exports.getTags  = {
 					// 	});
 					// }
 				
+			} else {
+				delete id3;
 			}
 		} else {
 			var tags = {artist:null,album:null,year:null,genre:null};

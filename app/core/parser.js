@@ -33,23 +33,29 @@ var findIndex = function(arr, iterator) {
 * @return callback
 **/
 module.exports.processAlbums = function(params, callback) {
-	var albums = [], indexMatch = null, infos
-	  , audios = params.audios, pathToWatch = params.pathToWatch;
+	var audios = params.audios, pathToWatch = params.pathToWatch;
 
-	_.each(audios, function(e, i) {
+	// _.each(audios, function(e, i) {
 
-		
+	var parseAudios = function(arr, cb, i, albums) {
 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+		i = i === undefined ? 0 : i;
+		albums = albums === undefined ? [] : albums;
 
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].songs, {path : e.path})) {
+		if(i == arr.length)
+			return cb(albums);
+
+
+		var e = arr[i]
+		  , existingFile = _.where(params.existing, {prevDir : e.prevDir})
+		  , nbExisting = existingFile.length
+		  , exists = false, indexMatch = null;
+
+		if(nbExisting)
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].songs, {path : e.path}))
 					exists = true;
-					break;
-				}
-			}
-		}
+		
 
 		if(!exists) {
 
@@ -68,6 +74,9 @@ module.exports.processAlbums = function(params, callback) {
 				}
 
 				albums[indexMatch].songs.push(e);
+				i++;
+				return parseAudios(arr, cb, i, albums);
+
 			} else {
 
 				infos = release.getTags.audio(e.path, true);
@@ -86,6 +95,8 @@ module.exports.processAlbums = function(params, callback) {
 				
 				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
+					i++;
+					return parseAudios(arr, cb, i, albums);
 				} else {
 					albums.push({
 						artist : infos.artist,
@@ -97,13 +108,21 @@ module.exports.processAlbums = function(params, callback) {
 						prevDir : e.prevDir,
 						prevDirRelative : e.prevDir.replace(global.rootPath, '')
 					});
+					i++;
+					return parseAudios(arr, cb, i, albums);
 				}
 
 			}
+		} else {
+			i++;
+			return parseAudios(arr, cb, i, albums);
 		}
+	}
+
+	parseAudios(audios, function(albums) {
+		callback(null, albums);
 	});
 
-	callback(null, albums);
 }
 
 /**
