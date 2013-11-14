@@ -41,6 +41,8 @@ module.exports.processAlbums = function(params, callback) {
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
+		console.log(i);
+
 		if(i == arr.length)
 			return cb(albums);
 
@@ -65,7 +67,7 @@ module.exports.processAlbums = function(params, callback) {
 			if(indexMatch !== null) {
 				//don't search for cover because album already exists (faster)
 				release.getTags.audio(e.path, false, function(infos) {
-
+					console.log('Founded infos 1');
 					if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
 						var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
 						var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
@@ -81,7 +83,7 @@ module.exports.processAlbums = function(params, callback) {
 			} else {
 
 				release.getTags.audio(e.path, true, function(infos) {
-
+					console.log('Founded infos 2');
 					//Index match artist + album or only album
 					indexMatch = findIndex(albums, function(album) { 
 						if(infos.artist === null && infos.album === null)
