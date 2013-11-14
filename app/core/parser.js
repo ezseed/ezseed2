@@ -49,10 +49,13 @@ module.exports.processAlbums = function(params, callback) {
 		var e = arr[i];
 
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+		
+		console.log(e);
 
 		if(existingFile.length) {
 			for(var k in existingFile) {
 				if(_.findWhere(existingFile[k].songs, {path : e.path})) {
+					console.log(e, exists);
 					exists = true;
 					break;
 				}
