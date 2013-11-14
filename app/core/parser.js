@@ -79,6 +79,8 @@ module.exports.processAlbums = function(params, callback) {
 					i++;
 					return parseAudios(arr, cb, i, albums);
 				});
+				
+				return false;
 
 			} else {
 
@@ -115,6 +117,8 @@ module.exports.processAlbums = function(params, callback) {
 						return parseAudios(arr, cb, i, albums);
 					}
 				});
+
+				return false;
 			}
 		} else {
 			i++;

@@ -182,6 +182,8 @@ module.exports.getTags  = {
 
 			delete id3;
 
+			console.log(id3);
+
 			if(picture) {
 				var pictureFounded = false;
 
@@ -208,9 +210,9 @@ module.exports.getTags  = {
 					pictureFounded = findCoverInDirectory(pathInfos.dirname(filePath));
 
 				if(!pictureFounded) {
-					cb(tags);
+					return cb(tags);
 				} else {
-					cb(_.extend(tags, {picture: pictureFounded}));
+					return cb(_.extend(tags, {picture: pictureFounded}));
 				}
 
 				// 	var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
@@ -230,8 +232,10 @@ module.exports.getTags  = {
 				
 			} else 
 				return cb(tags);
-		} else 
+		} else {
+			delete stats;
 			return cb({artist:null,album:null,year:null,genre:null});
+		}
 
 	}
 };
