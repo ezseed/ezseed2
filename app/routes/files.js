@@ -194,5 +194,5 @@ module.exports = function(app) {
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);
   app.get('/delete/(:type)/(:id)', userHelper.restrict, files.delete);
-  app.get('/reset/(:type)/(:id)', userHelper.restrict, files.delete);
+  app.get('/reset/(:type)/(:id)', userHelper.restrict, files.reset);
 }

@@ -53,12 +53,9 @@ define([
     });
 
     $('body').on('click', '.reset-item', function(e) {
-        var $el = $(this).closest('.element'), id = $el.attr('data-id'), type = $el.attr('class').split(' ');
+        var $el = $(this).closest('.element'), id = $el.attr('data-id'), type = $(this).attr('data-type');
 
-        type = _.filter(type, function(t){ return t == 'audio' || t == 'video' || t == 'other'; })[0];
-
-        $.get('/reset/'+type+'/'+id , function( err ) {
-            console.log(err);
+        $.get('/reset/'+type+'/'+id , function( ) {
             Desktop.remove(id, false);
         }, 'json');
     });
