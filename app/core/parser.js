@@ -121,6 +121,9 @@ module.exports.processAlbums = function(params, callback) {
 					}
 				});
 			}
+		} else {
+			i++;
+			return parseAlbums(arr, cb, i, albums);
 		}
 	};
 
