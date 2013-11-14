@@ -5,7 +5,7 @@ var _ = require('underscore')
   , pathInfos = require('path')
   , mime = require('mime')
   , itunes = require('./helpers/iTunes')
-  , ID3 = require('./helpers/id3');
+  , ID3 = require('./helpers/id3/lib/index.js');
 
 
 /*
