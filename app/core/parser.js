@@ -114,7 +114,6 @@ module.exports.processAlbums = function(params, callback) {
 
 					if(a.picture === null) {
 						release.getAlbumInformations(a, function(err, results) {
-							console.log(err, results);
 							albums.push( _.extend(a, {picture: results.artworkUrl100} ));
 							i++;
 							return parseAudios(arr, cb, i, albums);

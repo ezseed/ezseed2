@@ -42,7 +42,6 @@ var itunes = {
       };
 
       itunes.search('search', options, function(response) {
-         console.log(response);
          if(response.resultCount) {
             callback(null, response.results[0]);
          } else {
@@ -54,61 +53,3 @@ var itunes = {
 }
 
 module.exports = itunes;
-
-
-/*
-  
-      _.extend(options, {
-        num : response.resultCount, 
-        results : response.results
-      });
-      
-        var results = cache.get(id_cache);
-
-        if(results === null) {
-
-          itunes.search('search', options, function(response) {
-          
-            _.extend(renderOptions, {
-              num : response.resultCount, 
-              results : response.results
-            });
-            
-            cache.put(id_cache, renderOptions, global.timeCache); 
-
-            res.render('results', renderOptions);
-
-          });
-        } else
-          res.render('results', results);
-
-
-
-if(cachedResults.results[index].songs === undefined) {
-            //Searches for the song list
-            itunes.search( 'lookup', {'id' : cachedResults.results[index].collectionId, entity: "song" }, function(response) {
-              
-              var songs = [],
-                tracks = response.results;
-
-              for(var k in tracks)
-                if(tracks[k].trackName != undefined)
-                  songs.push(tracks[k].trackName);
-              
-              cachedResults.results[index].songs = songs;
-
-              cache.put(code, cachedResults);
-
-              cachedResults = cachedResults.results[index];
-
-
-              res.render('sheet', {
-                type:type, 
-                typeForm : typeForm, 
-                uploadForm : uploadForm,
-                infos : cachedResults
-              });
-
-            });
-
- */
