@@ -33,9 +33,11 @@ var findIndex = function(arr, iterator) {
 * @return callback
 **/
 module.exports.processAlbums = function(params, callback) {
-	var indexMatch = null, audios = params.audios, pathToWatch = params.pathToWatch;
+	var audios = params.audios, pathToWatch = params.pathToWatch;
 
 	var parseAlbums = function(arr, cb, i, albums) {
+
+		var indexMatch = null;
 
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
@@ -49,7 +51,6 @@ module.exports.processAlbums = function(params, callback) {
 		console.log(e);
 
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
-		
 
 		if(existingFile.length) {
 			for(var k in existingFile) {
