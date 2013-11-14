@@ -37,9 +37,6 @@ app.set('port', 3001); //don't touch (sockets desktop.js are listening to this p
 app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 app.set('view engine', 'ejs');
 
-
-app.use(express.favicon("public/images/favicon.ico")); 
-
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
@@ -60,6 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Only theme
 app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'public')));
+app.use(express.favicon(path.join(__dirname, 'themes', global.config.theme, 'public', 'images', 'favicon.png')); 
 
 //Middlewares
 require('./core/helpers/middlewares')(app);
