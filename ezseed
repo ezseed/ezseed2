@@ -701,6 +701,8 @@ program
 	.option('-p, --password [password]', 'specify password')
 	.description('Change username password')
 	.action(function(client, username, options) {
+					console.log(client, username, options.password);
+
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
 				password[client](username, pw, function() {
@@ -709,7 +711,6 @@ program
 				});
 			});
 		} else {
-			console.log(client, username, options.password);
 			password[client](username, options.password, function() {
 				cache.clear();
 				process.exit(1);
