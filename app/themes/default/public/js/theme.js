@@ -62,9 +62,16 @@ define([
     });
 
     $('body').on('click', '.reset-db', function(e) {
+        e.preventDefault();
+
+        var href =  $(this).attr('href');
+
         alertify.confirm("Cette fonction réindexe la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?", function (e) {
-            if (!e)
+            if (e)
+                window.location = href;
+            else {
                 return false;
+            }
         });
     });
 
