@@ -5,7 +5,7 @@ var _ = require('underscore')
   , pathInfos = require('path')
   , mime = require('mime')
   , itunes = require('./helpers/iTunes')
-  , ID3 = require('./helpers/id3/lib/index.js');
+  , ID3 = require('id3');
 
 
 /*
@@ -66,9 +66,7 @@ var findCoverInDirectory = function(dir) {
 			break;
 		}
 	}
-
-	delete files;
-
+	
 	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
@@ -156,7 +154,7 @@ module.exports.getTags  = {
 
 		return movie;
 	}, 
-	audio: function(filePath, picture, cb) {
+	audio: function(filePath, picture) {
 
 		picture = picture === undefined ? false : picture;
 
@@ -164,9 +162,6 @@ module.exports.getTags  = {
 
 		//Node buffer > file size => bug + should be streaming file (id3 module)
 		if(stats.size < 1073741824) {
-
-			delete stats;
-
 			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
 			id3.parse();
 
@@ -180,9 +175,7 @@ module.exports.getTags  = {
 
 			var datas = id3.get('picture');
 
-			id3.kill();
-
-			console.log(id3);
+			delete id3;
 
 			if(picture) {
 				var pictureFounded = false;
@@ -196,49 +189,40 @@ module.exports.getTags  = {
 					  , type = datas.format.split('/');
 
 					if(type[0] == 'image') {
+						pictureFounded = true;
 
 						file = file + '.' + type[1];
 
 						fs.writeFileSync(file, datas.data);
 						
-						pictureFounded = file.replace(global.config.root + '/public', '');
+						tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
 					}
 
 				}
 				
 				if(!pictureFounded)
-					pictureFounded = findCoverInDirectory(pathInfos.dirname(filePath));
-
-				if(!pictureFounded) {
-					return cb(tags);
-				} else {
-					return cb(_.extend(tags, {picture: pictureFounded}));
-				}
-
-				// 	var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
-				//search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
-
-					// if(search) {
-					// 	itunes.lucky(search, function(err, results) {
-					// 		if(!err) {
-					// 			tags.picture = results.artworkUrl100;
-					// 		}
-
-					// 		console.log(tags);
-
-					// 		callback(tags);
-					// 	});
-					// }
+					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 				
-			} else 
-				return cb(tags);
+			}
 		} else {
-			delete stats;
-			return cb({artist:null,album:null,year:null,genre:null});
+			var tags = {artist:null,album:null,year:null,genre:null};
 		}
 
+		return tags;
 	}
 };
+
+var getAlbumInformations = function(album, cb) {
+	var search = album.album !== null && album.artist !== null ? album.artist + ' ' + album.album : null;
+	search = search === null ? album.artist !== null ? album.artist : album.album !== null ? album.album : null : null;
+
+	if(search) {
+		itunes.lucky(search, function(err, results) {
+			cb(err, results);
+		});
+	} else 
+		cb("Nothing to search", {});
+}
 
 var getMovieInformations = function(movie, cb) {
 
