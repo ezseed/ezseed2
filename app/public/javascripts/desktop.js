@@ -178,9 +178,29 @@ define([
             self.render.files(datas, function(err, html) {
                 var $items = $.parseHTML(html);
 
-                self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
+                var els = [];
 
-                self.pckry.appended($items);
+                _.each($items, function(e) {
+                    var isTxt = e instanceof Text; //parseHTML causes element duplicated
+
+                    if(!isTxt)
+                        els.push($(e));
+                    
+                });
+
+                //sorting
+                els.sort(function (a, b) {
+                    if (a.data('date-added') == b.data('date-added')) {
+                        return 0;
+                    } else if (a.data('date-added') < b.data('date-added')) {
+                        return 1;
+                    }
+                    return -1;
+                });
+
+                self.$container.addClass('notransition').css('visibility', 'hidden').append(els);
+
+                self.pckry.appended(els);
 
                 self.displaySelector = displayOption;
 
@@ -197,18 +217,12 @@ define([
 
                         self.loader();
                     } else {
-                        var count = 0, els = [];
+                        var count = 0;
 
-                        _.each($items, function(e) {
-                            var isTxt = e instanceof Text; //parseHTML causes element duplicated
-
-                            if(!isTxt) {
-                                if($(e).hasClass('list'))
-                                    els.push($(e));
-                            }
+                        _.each(els, function(e) {
+                            if(e.hasClass('list'))
+                                count++;
                         });
-
-                        count = els.length;
 
                         if(count == 1) {
                             var titre = els[0].find('h1').text();
