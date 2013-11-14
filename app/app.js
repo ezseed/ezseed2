@@ -57,7 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Only theme
 app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'public')));
-app.use(express.favicon(path.join(__dirname, 'themes', global.config.theme, 'public', 'images', 'favicon.png') )); 
+
 
 //Middlewares
 require('./core/helpers/middlewares')(app);
