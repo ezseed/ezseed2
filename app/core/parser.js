@@ -210,6 +210,8 @@ module.exports.processMovies = function(params, callback) {
 							audio : infos.audio,
 							format : infos.format,
 
+							allocine : infos.code,
+
 							videos : [e],
 							prevDir : e.prevDir,
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')

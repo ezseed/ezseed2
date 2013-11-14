@@ -4,6 +4,7 @@ var _ = require('underscore')
   , fs = require('fs')
   , pathInfos = require('path')
   , mime = require('mime')
+  , itunes = require('./helpers/iTunes')
   , ID3 = require('id3');
 
 
@@ -196,7 +197,19 @@ module.exports.getTags  = {
 				}
 				
 				if(!pictureFounded)
-					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+
+				if(tags.picture == null) {
+					var search = tags.album !== null ? tags.album : tags.artist !== null ? tags.artist : null;
+
+					if(search) {
+						itunes.lucky(tags.album, function(err, results) {
+							if(!err) {
+								console.log(results);
+							}
+						})
+					}
+				}
 				
 			}
 		} else {
@@ -209,7 +222,7 @@ module.exports.getTags  = {
 
 var getMovieInformations = function(movie, cb) {
 
-	console.log('Gathering infos on', movie.name);
+	//console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
@@ -217,8 +230,6 @@ var getMovieInformations = function(movie, cb) {
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
-
-      		console.log('founded', infos);
 
       		if(infos !== undefined) {
 
@@ -246,7 +257,6 @@ var getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
-          		console.log('Nothing founded');
 
           		var words = _s.words(movie.name);
 
