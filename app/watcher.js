@@ -17,11 +17,10 @@ var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/ezseed');
 
-var db = mongoose.connection, t = 0;
+var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-	t++;
-  console.log('DB opened successfuly !', t);
+  console.log('DB opened successfuly !');
   require('./core/watcher.js').initFetch();
 });

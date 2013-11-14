@@ -211,9 +211,10 @@ module.exports.getTags  = {
 
 							callback(tags);
 						})
-					} else 
-						callback(tags);
+					}
 				}
+
+				callback(tags);
 				
 			} else {
 				callback(tags);
