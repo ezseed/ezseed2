@@ -5,7 +5,7 @@ var _ = require('underscore')
   , pathInfos = require('path')
   , mime = require('mime')
   , itunes = require('./helpers/iTunes')
-  , ID3 = require('id3');
+  , ID3 = require('./helpers/id3');
 
 
 /*
@@ -180,7 +180,7 @@ module.exports.getTags  = {
 
 			var datas = id3.get('picture');
 
-			delete id3;
+			id3.kill();
 
 			console.log(id3);
 
