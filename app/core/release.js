@@ -224,6 +224,8 @@ var getAlbumInformations = function(album, cb) {
 		cb("Nothing to search", {});
 }
 
+module.exports.getAlbumInformations = getAlbumInformations;
+
 var getMovieInformations = function(movie, cb) {
 
 	//console.log('Gathering infos on', movie.name);
