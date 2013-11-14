@@ -12,15 +12,15 @@ var pathInfos = require('path')
 * Similar to _.find but return the first index of the array matching the iterator
 **/
 var findIndex = function(arr, iterator) {
-	var i = arr.length - 1, index = null;
+	var j = arr.length - 1, index = null;
 
-	if(i >= 0){
+	if(j >= 0){
 		do {
-			if(iterator(arr[i])) {
-				index = i;
+			if(iterator(arr[j])) {
+				index = j;
 				break;
 			}
-		} while(i--)
+		} while(j--)
 	}
 
 	return index;

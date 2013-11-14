@@ -203,17 +203,18 @@ module.exports.getTags  = {
 					var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
 					    search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
 
-					if(search) {
-						itunes.lucky(search, function(err, results) {
-							if(!err) {
-								tags.picture = results.artworkUrl100;
-							}
+					// if(search) {
+					// 	itunes.lucky(search, function(err, results) {
+					// 		if(!err) {
+					// 			tags.picture = results.artworkUrl100;
+					// 		}
 
-							console.log(tags);
+					// 		console.log(tags);
 
-							callback(tags);
-						});
-					}
+					// 		callback(tags);
+					// 	});
+					// }
+					callback(tags);
 				}
 
 				callback(tags);
