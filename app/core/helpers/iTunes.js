@@ -36,14 +36,13 @@ var itunes = {
 
       var options = {
           media: "music"
-        , limit: 2
+        , limit: 1
         , entity: "album"
         , term: search
       };
 
       itunes.search('search', options, function(response) {
          if(response.resultCount) {
-            console.log(response);
             callback(null, response.results[0]);
          } else {
             callback("Aucun résultat", {});

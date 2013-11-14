@@ -154,7 +154,7 @@ module.exports.getTags  = {
 
 		return movie;
 	}, 
-	audio: function(filePath, picture) {
+	audio: function(filePath, picture, callback) {
 
 		picture = picture === undefined ? false : picture;
 
@@ -200,23 +200,26 @@ module.exports.getTags  = {
 					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 
 				if(tags.picture == null) {
-					var search = tags.album !== null ? tags.album : tags.artist !== null ? tags.artist : null;
+					var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
+					    search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
 
 					if(search) {
-						itunes.lucky(tags.album, function(err, results) {
+						itunes.lucky(search, function(err, results) {
 							if(!err) {
-								console.log(results);
+								tags.picture = results.artworkUrl100;
 							}
+
+							callback(tags);
 						})
 					}
 				}
 				
+			} else {
+				callback(tags);
 			}
 		} else {
-			var tags = {artist:null,album:null,year:null,genre:null};
+			callback({artist:null,album:null,year:null,genre:null})
 		}
-
-		return tags;
 	}
 };
 
