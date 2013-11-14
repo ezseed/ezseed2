@@ -66,7 +66,9 @@ var findCoverInDirectory = function(dir) {
 			break;
 		}
 	}
-	
+
+	delete files;
+
 	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
@@ -154,7 +156,7 @@ module.exports.getTags  = {
 
 		return movie;
 	}, 
-	audio: function(filePath, picture) {
+	audio: function(filePath, picture, cb) {
 
 		picture = picture === undefined ? false : picture;
 
@@ -162,6 +164,9 @@ module.exports.getTags  = {
 
 		//Node buffer > file size => bug + should be streaming file (id3 module)
 		if(stats.size < 1073741824) {
+
+			delete stats;
+
 			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
 			id3.parse();
 
@@ -189,19 +194,24 @@ module.exports.getTags  = {
 					  , type = datas.format.split('/');
 
 					if(type[0] == 'image') {
-						pictureFounded = true;
 
 						file = file + '.' + type[1];
 
 						fs.writeFileSync(file, datas.data);
 						
-						tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+						pictureFounded = file.replace(global.config.root + '/public', '');
 					}
 
 				}
 				
 				if(!pictureFounded)
-					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+					pictureFounded = findCoverInDirectory(pathInfos.dirname(filePath));
+
+				if(!pictureFounded) {
+					cb(tags);
+				} else {
+					cb(_.extend(tags, {picture: pictureFounded}));
+				}
 
 				// 	var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
 				//search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
@@ -218,12 +228,11 @@ module.exports.getTags  = {
 					// 	});
 					// }
 				
-			}
-		} else {
-			var tags = {artist:null,album:null,year:null,genre:null};
-		}
+			} else 
+				return cb(tags);
+		} else 
+			return cb({artist:null,album:null,year:null,genre:null});
 
-		return tags;
 	}
 };
 

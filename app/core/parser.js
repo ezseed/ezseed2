@@ -65,55 +65,56 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
 			
 			if(indexMatch !== null) {
-				infos = release.getTags.audio(e.path);
+				release.getTags.audio(e.path, false, function(infos) {
 
-				if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
-					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
-					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
-					
-					if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
-						albums[indexMatch].artist = 'VA';
-				}
+					if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
+						var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
+						var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+						
+						if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
+							albums[indexMatch].artist = 'VA';
+					}
 
-				albums[indexMatch].songs.push(e);
-				i++;
-				return parseAudios(arr, cb, i, albums);
-
-			} else {
-
-				infos = release.getTags.audio(e.path, true);
-
-				//Index match artist + album or only album
-				indexMatch = findIndex(albums, function(album) { 
-					if(infos.artist === null && infos.album === null)
-						return false;
-					else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
-						return true;
-					else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
-						return true;
-					else
-						return false;
-				});
-				
-				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
 					i++;
 					return parseAudios(arr, cb, i, albums);
-				} else {
-					albums.push({
-						artist : infos.artist,
-						album : infos.album,
-						year : infos.year,
-						genre : infos.genre,
-						songs : [e],
-						picture : infos.picture,
-						prevDir : e.prevDir,
-						prevDirRelative : e.prevDir.replace(global.rootPath, '')
-					});
-					i++;
-					return parseAudios(arr, cb, i, albums);
-				}
+				});
 
+			} else {
+
+				release.getTags.audio(e.path, true, function(infos) {
+
+					//Index match artist + album or only album
+					indexMatch = findIndex(albums, function(album) { 
+						if(infos.artist === null && infos.album === null)
+							return false;
+						else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
+							return true;
+						else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
+							return true;
+						else
+							return false;
+					});
+					
+					if(indexMatch !== null) {
+						albums[indexMatch].songs.push(e);
+						i++;
+						return parseAudios(arr, cb, i, albums);
+					} else {
+						albums.push({
+							artist : infos.artist,
+							album : infos.album,
+							year : infos.year,
+							genre : infos.genre,
+							songs : [e],
+							picture : infos.picture,
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						});
+						i++;
+						return parseAudios(arr, cb, i, albums);
+					}
+				});
 			}
 		} else {
 			i++;
@@ -123,7 +124,7 @@ module.exports.processAlbums = function(params, callback) {
 
 	parseAudios(audios, function(albums) {
 		delete audios;
-		callback(null, albums);
+		return callback(null, albums);
 	});
 
 }
@@ -159,28 +160,23 @@ module.exports.processMovies = function(params, callback) {
 
 		var indexMatch = null, e = arr[i];
 
-		//ICI séries 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = existingFile.length;
 
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].videos, {path : e.path})) {
+		if(nbExisting)
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
-					break;
-				}
-			}
-		}
 
 		//Do the test again with video name
 		var m = release.getTags.video(e.path);
+
 		if(m.movieType == 'tvseries') {
-			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; });
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].videos, {path : e.path})) {
+			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; }), nbExisting = existingFile.length;
+			
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
-					break;
-				}
-			}
+				
 		}
 
 		if(!exists) {
@@ -256,6 +252,7 @@ module.exports.processMovies = function(params, callback) {
 
 
 	parseMovies(videos, function(movies) {
+		delete videos;
 		callback(null, movies);
 	});
 }
