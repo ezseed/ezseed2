@@ -42,6 +42,7 @@ var itunes = {
       };
 
       itunes.search('search', options, function(response) {
+         console.log(response);
          if(response.resultCount) {
             callback(null, response.results[0]);
          } else {
