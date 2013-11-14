@@ -116,10 +116,8 @@ var torrent = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			if(cache.get('force') === true)
-				console.log(string.error);
-			else
-				throw string.error;
+			console.log(string.error);
+			
 		});
 
 		running.on('exit', function (code) {
@@ -146,10 +144,7 @@ var torrent = {
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			if(cache.get('force') === true)
-				console.log(string.error);
-			else
-				throw string.error;
+			console.log(string.error);
 		});
 
 		running.on('exit', function (code) {
@@ -614,11 +609,8 @@ program
 
 program
 	.command('torrent [client]')
-	.option('-f, --force', 'force')
 	.description('Installation du client torrent')
 	.action(function(client) {
-		//if(options.force)
-			cache.put('force', true);
 
 		install.client_torrent(function(err, obj) {
 			cache.clear();
