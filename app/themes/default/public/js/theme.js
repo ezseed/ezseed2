@@ -52,6 +52,17 @@ define([
         });
     });
 
+    $('body').on('click', '.reset-item', function(e) {
+        var $el = $(this).closest('.element'), id = $el.attr('data-id'), type = $el.attr('class').split(' ');
+
+        type = _.filter(type, function(t){ return t == 'audio' || t == 'video' || t == 'other'; })[0];
+
+        $.get('/reset/'+type+'/'+id , function( err ) {
+            console.log(err);
+            Desktop.remove(id, false);
+        }, 'json');
+    });
+
 
     var toTop = function(veryTop) {
         var veryTop = veryTop === undefined ? false : veryTop;

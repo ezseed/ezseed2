@@ -153,12 +153,15 @@ define([
                 });
             }
         },
-        remove: function(id) {
+        remove: function(id, notify) {
             var self = this
-              , $el = $(self.itemSelector + '[data-id="' + id + '"]');
+              , $el = $(self.itemSelector + '[data-id="' + id + '"]')
+              , notify = notify === undefined ? true : notify;
 
             var titre = $el.find('h1:first').text();
-            self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+
+            if(notify)
+                self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
 
             self.pckry.remove($el);
 
@@ -166,75 +169,6 @@ define([
 
         },
         append : function(datas) {
-
-/**
- *  var $items = $.parseHTML(html);
-
-                var $els = [];
-
-                _.each($items, function(e) {
-                    var isTxt = e instanceof Text; //parseHTML causes element duplicated
-
-                    if(!isTxt)
-                        $els.push($(e));
-                    
-                });
-
-                console.log($items);
-
-                //sorting
-                $els.sort(function (a, b) {
-                    if (a.data('date-added') == b.data('date-added')) {
-                        return 0;
-                    } else if (a.data('date-added') < b.data('date-added')) {
-                        return 1;
-                    }
-                    return -1;
-                });
-
-
-                self.$container.addClass('notransition').css('visibility', 'hidden').append($els);
-
-                //self.$container.packery('appended', $els);
-
-                self.pckry.appended($els);
-
-                self.displaySelector = displayOption;
-
-                self.layout(displayOption, function() { 
-
-                    if(self.firstLoad) {
-                        self.firstLoad = false;
-
-                        if(self.toRemove) {
-                            self.remove(self.toRemove);
-                            self.toRemove = null;
-                            location.hash = '#';
-                        }
-
-                        self.loader();
-                    } else {
-                        var count = 0;
-
-                        _.each($els, function(e) {
-                            if(e.hasClass('list'))
-                                count++;
-                        });
-
-                        if(count == 1) {
-                            var titre = $els[0].find('h1').text();
-                            self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
-                        } else if(count != 0) {
-                            self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
-                        }
-                    }
-
-                    self.$container.removeClass('notransition').css('visibility', 'visible');
-
-                });
-            });
- */
-
 
             var self = this;
 

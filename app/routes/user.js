@@ -81,7 +81,8 @@ module.exports = function(app) {
 	app.get('/login', user.login);
 	app.get('/logout', user.logout);
 	app.post('/login', user.authenticate);
-	app.get('/reset/(:uid)', user.reset);
 	app.get('/torrents', userHelper.restrict, user.torrent);
-	app.get('/password', userHelper.restrict, user.password);
+
+	app.get('/user/password', userHelper.restrict, user.password);
+	app.get('/user/reset/(:uid)', user.reset); //to be moved ?
 }
