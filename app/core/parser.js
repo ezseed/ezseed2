@@ -100,7 +100,7 @@ module.exports.processAlbums = function(params, callback) {
 					i++;
 					return parseAudios(arr, cb, i, albums);
 				} else {
-
+					//New album detected
 					var a = {
 							artist : infos.artist,
 							album : infos.album,
@@ -111,8 +111,9 @@ module.exports.processAlbums = function(params, callback) {
 							prevDir : e.prevDir,
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
 						};
-						
-						console.log(a.picture);
+
+					console.log(a.picture);
+
 					if(!a.picture) {
 						release.getAlbumInformations(a, function(err, results) {
 							albums.push( _.extend(a, {picture: results.artworkUrl100} ));
