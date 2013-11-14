@@ -211,7 +211,8 @@ module.exports.getTags  = {
 
 							callback(tags);
 						})
-					}
+					} else 
+						callback(tags);
 				}
 				
 			} else {
