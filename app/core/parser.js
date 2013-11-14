@@ -12,15 +12,15 @@ var pathInfos = require('path')
 * Similar to _.find but return the first index of the array matching the iterator
 **/
 var findIndex = function(arr, iterator) {
-	var j = arr.length - 1, index = null;
+	var i = arr.length - 1, index = null;
 
-	if(j >= 0){
+	if(i >= 0){
 		do {
-			if(iterator(arr[j])) {
-				index = j;
+			if(iterator(arr[i])) {
+				index = i;
 				break;
 			}
-		} while(j--)
+		} while(i--)
 	}
 
 	return index;
@@ -33,36 +33,23 @@ var findIndex = function(arr, iterator) {
 * @return callback
 **/
 module.exports.processAlbums = function(params, callback) {
-	var audios = params.audios, pathToWatch = params.pathToWatch;
+	var albums = [], indexMatch = null, infos
+	  , audios = params.audios, pathToWatch = params.pathToWatch;
 
-	var parseAlbums = function(arr, cb, i, albums) {
+	_.each(audios, function(e, i) {
 
-		var indexMatch = null;
-
-		i = i === undefined ? 0 : i;
-		albums = albums === undefined ? [] : albums;
-
-		console.log(i, arr.length);
-
-		if(i == arr.length)
-			return cb(albums);
-
-		var e = arr[i];
-		console.log(e);
+		
 
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {
 			for(var k in existingFile) {
 				if(_.findWhere(existingFile[k].songs, {path : e.path})) {
-					console.log(e, exists);
 					exists = true;
 					break;
 				}
 			}
 		}
-
-		console.log(e, exists);
 
 		if(!exists) {
 
@@ -70,73 +57,53 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
 			
 			if(indexMatch !== null) {
-				//don't search for cover because album already exists (faster)
-				release.getTags.audio(e.path, false, function(infos) {
-					console.log('Founded infos 1');
-					if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
-						var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
-						var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
-						
-						if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
-							albums[indexMatch].artist = 'VA';
-					}
+				infos = release.getTags.audio(e.path);
 
-					albums[indexMatch].songs.push(e);
+				if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
+					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
+					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+					
+					if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
+						albums[indexMatch].artist = 'VA';
+				}
 
-					i++;
-					return parseAlbums(arr, cb, i, albums);
-				});
-
+				albums[indexMatch].songs.push(e);
 			} else {
 
-				release.getTags.audio(e.path, true, function(infos) {
-					console.log('Founded infos 2');
-					//Index match artist + album or only album
-					indexMatch = findIndex(albums, function(album) { 
-						if(infos.artist === null && infos.album === null)
-							return false;
-						else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
-							return true;
-						else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
-							return true;
-						else
-							return false;
-					});
-					
-					if(indexMatch !== null) {
-						albums[indexMatch].songs.push(e);
+				infos = release.getTags.audio(e.path, true);
 
-						i++;
-						return parseAlbums(arr, cb, i, albums);
-					} else {
-						albums.push({
-							artist : infos.artist,
-							album : infos.album,
-							year : infos.year,
-							genre : infos.genre,
-							songs : [e],
-							picture : infos.picture,
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-
-						i++;
-						return parseAlbums(arr, cb, i, albums);
-
-					}
+				//Index match artist + album or only album
+				indexMatch = findIndex(albums, function(album) { 
+					if(infos.artist === null && infos.album === null)
+						return false;
+					else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
+						return true;
+					else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
+						return true;
+					else
+						return false;
 				});
-			}
-		} else {
-			console.log('last');
-			i++;
-			return parseAlbums(arr, cb, i, albums);
-		}
-	};
+				
+				if(indexMatch !== null) {
+					albums[indexMatch].songs.push(e);
+				} else {
+					albums.push({
+						artist : infos.artist,
+						album : infos.album,
+						year : infos.year,
+						genre : infos.genre,
+						songs : [e],
+						picture : infos.picture,
+						prevDir : e.prevDir,
+						prevDirRelative : e.prevDir.replace(global.rootPath, '')
+					});
+				}
 
-	parseAlbums(audios, function(albums) {
-		console.log('Albums', albums);
-		callback(null, albums);
+			}
+		}
 	});
+
+	callback(null, albums);
 }
 
 /**

@@ -154,10 +154,10 @@ module.exports.getTags  = {
 
 		return movie;
 	}, 
-	audio: function(filePath, picture, callback) {
+	audio: function(filePath, picture) {
 
 		picture = picture === undefined ? false : picture;
-		console.log('getaudio');
+
 		var stats = fs.statSync(filePath);
 
 		//Node buffer > file size => bug + should be streaming file (id3 module)
@@ -199,9 +199,8 @@ module.exports.getTags  = {
 				if(!pictureFounded)
 					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 
-				if(tags.picture == null) {
-					var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
-					    search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
+				// 	var search = tags.album !== null && tags.artist !== null ? tags.artist + ' ' + tags.album : null;
+				//search = search === null ? tags.artist !== null ? tags.artist : tags.album !== null ? tags.album : null : null;
 
 					// if(search) {
 					// 	itunes.lucky(search, function(err, results) {
@@ -214,17 +213,13 @@ module.exports.getTags  = {
 					// 		callback(tags);
 					// 	});
 					// }
-					callback(tags);
-				}
-
-				callback(tags);
 				
-			} else {
-				callback(tags);
 			}
 		} else {
-			callback({artist:null,album:null,year:null,genre:null})
+			var tags = {artist:null,album:null,year:null,genre:null};
 		}
+
+		return tags;
 	}
 };
 
