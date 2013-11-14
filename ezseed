@@ -700,7 +700,7 @@ program
 	.command('password <rutorrent|transmission> <username> ')
 	.option('-p, --password [password]', 'specify password')
 	.description('Change username password')
-	.action(function(clients, username, options) {
+	.action(function(client, username, options) {
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
 				password[client](username, pw, function() {
