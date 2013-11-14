@@ -157,7 +157,7 @@ module.exports.getTags  = {
 	audio: function(filePath, picture, callback) {
 
 		picture = picture === undefined ? false : picture;
-
+		console.log('getaudio');
 		var stats = fs.statSync(filePath);
 
 		//Node buffer > file size => bug + should be streaming file (id3 module)
@@ -209,8 +209,10 @@ module.exports.getTags  = {
 								tags.picture = results.artworkUrl100;
 							}
 
+							console.log(tags);
+
 							callback(tags);
-						})
+						});
 					}
 				}
 
