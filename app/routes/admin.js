@@ -5,7 +5,7 @@ var db = require('../core/database.js')
   , pathInfo = require('path')
   , jf = require('jsonfile')
   , spawn = require('child_process').spawn
-  , exec = require('child_process').exit
+  , exec = require('child_process').exec
   , userHelper = require('../core/helpers/users');
 
 var admin = {
