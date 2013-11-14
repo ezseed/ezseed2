@@ -514,7 +514,7 @@ var password = {
 
 			d.password = password;
 
-			jf.writeFileSync(setting, d);
+			jf.writeFileSync(settings, d);
 
 			//restarting daemon
 			exec(pathInfo.join(__dirname,'/app/scripts/transmission/daemon.sh'), ['start', username], function() {
