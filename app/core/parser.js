@@ -41,6 +41,8 @@ module.exports.processAlbums = function(params, callback) {
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
+		console.log(i);
+
 		if(i == arr.length)
 			return cb(albums);
 
@@ -98,7 +100,7 @@ module.exports.processAlbums = function(params, callback) {
 					
 					if(indexMatch !== null) {
 						albums[indexMatch].songs.push(e);
-						
+
 						i++;
 						return parseAlbums(arr, cb, i, albums);
 					} else {
