@@ -33,7 +33,7 @@ var findIndex = function(arr, iterator) {
 * @return callback
 **/
 module.exports.processAlbums = function(params, callback) {
-	var albums = [], indexMatch = null, infos
+	var albums = [], indexMatch = null
 	  , audios = params.audios, pathToWatch = params.pathToWatch;
 
 	var parseAlbums = function(arr, cb, i, albums) {
@@ -41,7 +41,7 @@ module.exports.processAlbums = function(params, callback) {
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
-		console.log(i);
+		console.log(i, arr.length);
 
 		if(i == arr.length)
 			return cb(albums);
@@ -58,6 +58,8 @@ module.exports.processAlbums = function(params, callback) {
 				}
 			}
 		}
+
+		console.log(e, exists);
 
 		if(!exists) {
 
@@ -122,6 +124,7 @@ module.exports.processAlbums = function(params, callback) {
 				});
 			}
 		} else {
+			console.log('last');
 			i++;
 			return parseAlbums(arr, cb, i, albums);
 		}
