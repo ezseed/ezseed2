@@ -169,7 +169,8 @@ var files = {
 						fs.unlinkSync(files.picture);
 
 					req.session.success = doc.name + " a été supprimé avec succès !";
-					res.redirect('/#'+doc._id);
+					//res.redirect('/#'+doc._id);
+					res.json({id : doc._id});
 				});
 
 			});
