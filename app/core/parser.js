@@ -114,7 +114,8 @@ module.exports.processAlbums = function(params, callback) {
 
 					if(a.picture === null) {
 						release.getAlbumInformations(a, function(err, results) {
-							if(!err && results.length)
+							console.log(err, results);
+							if(!err)
 								albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
 							else
 								albums.push(a);
