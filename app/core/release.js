@@ -218,6 +218,7 @@ var getAlbumInformations = function(album, cb) {
 
 	if(search) {
 		itunes.lucky(search, function(err, results) {
+			console.log(search, results);
 			cb(err, results);
 		});
 	} else 
