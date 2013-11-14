@@ -38,6 +38,8 @@ module.exports.processAlbums = function(params, callback) {
 
 	var parseAlbums = function(arr, cb, i, albums) {
 
+		console.log(albums, i, arr);
+
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
