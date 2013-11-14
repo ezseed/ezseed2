@@ -517,7 +517,7 @@ var password = {
 			jf.writeFileSync(setting, d);
 
 			//restarting daemon
-			exec(pathInfo.join(__dirname,'/app/scripts/transmission/daemon.sh', ['start', username]), function() {
+			exec(pathInfo.join(__dirname,'/app/scripts/transmission/daemon.sh'), ['start', username], function() {
 				db.users.update(username, {password : password}, done);
 
 			});
@@ -709,6 +709,7 @@ program
 				});
 			});
 		} else {
+			console.log(client, username, options.password);
 			password[client](username, options.password, function() {
 				cache.clear();
 				process.exit(1);
