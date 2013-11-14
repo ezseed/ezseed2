@@ -209,7 +209,7 @@ define([
             if($('#displayFilters li.active').length)
                 display = $('#displayFilters li.active').attr('data-filter');
 
-            Desktop.layout(selector);
+            Desktop.layout(selector + display);
 
             $('#displayFilters li').each(function() {
                 $(this).attr('data-display', selector);
