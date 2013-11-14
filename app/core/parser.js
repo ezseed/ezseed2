@@ -112,9 +112,8 @@ module.exports.processAlbums = function(params, callback) {
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
 						};
 
-					console.log(a.picture);
-
-					if(!a.picture) {
+					if(a.picture === null) {
+						console.log(a);
 						release.getAlbumInformations(a, function(err, results) {
 							albums.push( _.extend(a, {picture: results.artworkUrl100} ));
 							i++;

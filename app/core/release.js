@@ -216,6 +216,8 @@ var getAlbumInformations = function(album, cb) {
 	var search = album.album !== null && album.artist !== null ? album.artist + ' ' + album.album : null;
 	search = search === null ? album.artist !== null ? album.artist : album.album !== null ? album.album : null : null;
 
+	console.log(search);
+	
 	if(search) {
 		itunes.lucky(search, function(err, results) {
 			console.log(search, results);
