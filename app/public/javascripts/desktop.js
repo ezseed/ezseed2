@@ -199,7 +199,7 @@ define([
                 });
 
                 console.log(els);
-                self.$container.addClass('notransition').css('visibility', 'hidden').append($(els));
+                self.$container.addClass('notransition').css('visibility', 'hidden').append(els);
 
                 self.pckry.appended(els);
 
