@@ -4,6 +4,7 @@ var _ = require('underscore')
   , fs = require('fs')
   , pathInfos = require('path')
   , mime = require('mime')
+  , itunes = require('./helpers/iTunes')
   , ID3 = require('id3');
 
 
@@ -31,11 +32,11 @@ Object.byString = function(o, s) {
 }
 
 //Tags (to be improved)
-var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr', 'tvrip', 'hdtvrip', 'hdtv']
+var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr', 'tvrip', 'hdtvrip', 'hdtv', 'brrip']
 
   , subtitles = ['fastsub', 'proper', 'subforced', 'fansub']
 
-  , languages = ['vf', 'vo', 'vostfr', 'multi', 'french']
+  , languages = ['vf', 'vo', 'vostfr', 'multi', 'french', 'truefrench']
 
   , audios = ['ac3', 'dts']
 
@@ -99,6 +100,7 @@ module.exports.getTags  = {
 		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
+
 
 		//Found a tv show
 		if(r.test(name)) {
@@ -171,8 +173,12 @@ module.exports.getTags  = {
 					"genre"  :id3.get("genre")
 				};
 
+			var datas = id3.get('picture');
+
+			delete id3;
+
 			if(picture) {
-				var datas = id3.get('picture'), pictureFounded = false;
+				var pictureFounded = false;
 
 				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
@@ -195,7 +201,7 @@ module.exports.getTags  = {
 				}
 				
 				if(!pictureFounded)
-					_.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
 				
 			}
 		} else {
@@ -206,7 +212,29 @@ module.exports.getTags  = {
 	}
 };
 
+var getAlbumInformations = function(album, cb) {
+	var search = album.album !== null && album.artist !== null ? album.artist + ' ' + album.album : null;
+
+	if(search === null) {
+		if(album.album !== null)
+			search = album.album;
+		else if(album.artist !== null)
+			search = album.artist;
+	}
+
+	if(search) {
+		itunes.lucky(search, function(err, results) {
+			cb(err, results);
+		});
+	} else 
+		cb("Nothing to search", {});
+}
+
+module.exports.getAlbumInformations = getAlbumInformations;
+
 var getMovieInformations = function(movie, cb) {
+
+	//console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
@@ -241,6 +269,7 @@ var getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
+
           		var words = _s.words(movie.name);
 
           		if(words.length >= 2 && words[0].length > 3) {

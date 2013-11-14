@@ -19,6 +19,7 @@ appdir="$(cd $DIR && cd ../../ && pwd)"
 echo "Adding user"
 mkdir /home/$username
 useradd --home-dir /home/$username --groups users,debian-transmission --password broken $username
+#could root it, see chroot
 chown -R $username /home/$username/
 su $username -c "mkdir -p ~/downloads ~/uploads ~/incomplete"
 usermod -p $(mkpasswd -H md5 "$password") $username

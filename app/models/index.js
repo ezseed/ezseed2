@@ -48,6 +48,7 @@ var movies = new Schema({
 	synopsis : String,
 	trailer : String,
 	picture : String,
+	allocine : String,
 	videos : [file],
 	prevDir : String,
 	prevDirRelative : String,

@@ -33,21 +33,31 @@ var findIndex = function(arr, iterator) {
 * @return callback
 **/
 module.exports.processAlbums = function(params, callback) {
-	var albums = [], indexMatch = null, infos
-	  , audios = params.audios, pathToWatch = params.pathToWatch;
+	var audios = params.audios, pathToWatch = params.pathToWatch;
 
-	_.each(audios, function(e, i) {
+	// _.each(audios, function(e, i) {
 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+	var parseAudios = function(arr, cb, i, albums) {
 
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].songs, {path : e.path})) {
-					exists = true;
-					break;
-				}
-			}
+		i = i === undefined ? 0 : i;
+		albums = albums === undefined ? [] : albums;
+
+		if(i == arr.length) {
+			delete arr;
+			return cb(albums);
 		}
+
+
+		var e = arr[i]
+		  , existingFile = _.where(params.existing, {prevDir : e.prevDir})
+		  , nbExisting = existingFile.length
+		  , exists = false, indexMatch = null;
+
+		if(nbExisting)
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].songs, {path : e.path}))
+					exists = true;
+		
 
 		if(!exists) {
 
@@ -66,6 +76,9 @@ module.exports.processAlbums = function(params, callback) {
 				}
 
 				albums[indexMatch].songs.push(e);
+				i++;
+				return parseAudios(arr, cb, i, albums);
+
 			} else {
 
 				infos = release.getTags.audio(e.path, true);
@@ -84,24 +97,50 @@ module.exports.processAlbums = function(params, callback) {
 				
 				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
+					i++;
+					return parseAudios(arr, cb, i, albums);
 				} else {
-					albums.push({
-						artist : infos.artist,
-						album : infos.album,
-						year : infos.year,
-						genre : infos.genre,
-						songs : [e],
-						picture : infos.picture,
-						prevDir : e.prevDir,
-						prevDirRelative : e.prevDir.replace(global.rootPath, '')
-					});
+					//New album detected
+					var a = {
+							artist : infos.artist,
+							album : infos.album,
+							year : infos.year,
+							genre : infos.genre,
+							songs : [e],
+							picture : infos.picture,
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						};
+
+					if(a.picture === null) {
+						release.getAlbumInformations(a, function(err, results) {
+							if(!err)
+								albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
+							else
+								albums.push(a);
+
+							i++;
+							return parseAudios(arr, cb, i, albums);
+						})
+					} else {
+						albums.push(a);
+						i++;
+						return parseAudios(arr, cb, i, albums);
+					}
 				}
 
 			}
+		} else {
+			i++;
+			return parseAudios(arr, cb, i, albums);
 		}
+	}
+
+	parseAudios(audios, function(albums) {
+		delete audios;
+		return callback(null, albums);
 	});
 
-	callback(null, albums);
 }
 
 /**
@@ -135,28 +174,23 @@ module.exports.processMovies = function(params, callback) {
 
 		var indexMatch = null, e = arr[i];
 
-		//ICI séries 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = existingFile.length;
 
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].videos, {path : e.path})) {
+		if(nbExisting)
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
-					break;
-				}
-			}
-		}
 
 		//Do the test again with video name
 		var m = release.getTags.video(e.path);
+
 		if(m.movieType == 'tvseries') {
-			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; });
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].videos, {path : e.path})) {
+			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; }), nbExisting = existingFile.length;
+			
+			while(nbExisting-- && !exists)
+				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
-					break;
-				}
-			}
+				
 		}
 
 		if(!exists) {
@@ -210,6 +244,8 @@ module.exports.processMovies = function(params, callback) {
 							audio : infos.audio,
 							format : infos.format,
 
+							allocine : infos.code,
+
 							videos : [e],
 							prevDir : e.prevDir,
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
@@ -230,6 +266,7 @@ module.exports.processMovies = function(params, callback) {
 
 
 	parseMovies(videos, function(movies) {
+		delete videos;
 		callback(null, movies);
 	});
 }

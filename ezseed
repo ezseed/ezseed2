@@ -504,24 +504,26 @@ var password = {
 
 	},
 	transmission : function(username, password, done) {
-		var shell_path = pathInfo.join(__dirname,'/app/scripts/transmission/password.sh');
+		//stopping daemon
+		daemon('transmission', 'stop', username, function() {
+			var shell_path = pathInfo.join(__dirname,'/app/scripts/transmission/password.sh');
 
-		execFile(shell_path, [username, password], function(err, stdout, stderr) {
+			execFile(shell_path, [username, password], function(err, stdout, stderr) {
 
-			var settings = __dirname + '/app/scripts/transmission/config/settings.'+username+'.json';
+				var settings = __dirname + '/app/scripts/transmission/config/settings.'+username+'.json';
 
-			var d = jf.readFileSync(settings);
+				var d = jf.readFileSync(settings);
 
-			d.password = password;
+				d['rpc-password'] = password;
 
-			jf.writeFileSync(setting, d);
+				jf.writeFileSync(settings, d);
 
-			//restarting daemon
-			exec(pathInfo.join(__dirname,'/app/scripts/transmission/daemon.sh', ['start', username]), function() {
-				db.users.update(username, {password : password}, done);
+				//restarting daemon
+				daemon('transmission', 'start', username, function() {
+					db.users.update(username, {password : password}, done);
+				});
 
 			});
-
 		});
 	},
 	aucun : function(username, password, done) {
@@ -536,7 +538,7 @@ var resetWatcher = function(cb) {
 }
 
 
-var daemon = function(client, command, username) {
+var daemon = function(client, command, username, done) {
 	var shell_path = pathInfo.join(__dirname,'/app/scripts/', client,'/daemon.sh');
 	fs.chmodSync(shell_path, '775');
 
@@ -557,7 +559,10 @@ var daemon = function(client, command, username) {
 	});
 
 	running.on('exit', function (code) {
-		process.exit(code);
+		if(typeof done == 'function')
+			done();
+		else
+			process.exit(code);
 	});
 }
 
@@ -700,7 +705,8 @@ program
 	.command('password <rutorrent|transmission> <username> ')
 	.option('-p, --password [password]', 'specify password')
 	.description('Change username password')
-	.action(function(clients, username, options) {
+	.action(function(client, username, options) {
+
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
 				password[client](username, pw, function() {

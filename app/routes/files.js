@@ -146,6 +146,7 @@ var files = {
 
 	},
 
+	//a lot more to do here !
 	delete : function(req, res) {
 		db.paths.byUser(req.session.user._id, function(err, paths) {
 			db.files.byId(req.params.id, function(err, doc) {
@@ -174,6 +175,14 @@ var files = {
 			});
 		});
 
+	},
+	/**
+	 * Remove item from database
+	 */
+	reset : function(req, res) {
+		db.files[req.params.type + 's'].delete(req.params.id, function(err) {
+			res.json({err : err});
+		});
 	}
 }
 
@@ -185,4 +194,5 @@ module.exports = function(app) {
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);
   app.get('/delete/(:type)/(:id)', userHelper.restrict, files.delete);
+  app.get('/reset/(:type)/(:id)', userHelper.restrict, files.delete);
 }

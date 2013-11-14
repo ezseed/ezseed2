@@ -5,7 +5,7 @@ var db = require('../core/database.js')
   , pathInfo = require('path')
   , jf = require('jsonfile')
   , spawn = require('child_process').spawn
-  , exec = require('child_process').exit
+  , exec = require('child_process').exec
   , userHelper = require('../core/helpers/users');
 
 var admin = {
@@ -151,7 +151,24 @@ var admin = {
 	}
 
 	, userPassword : function(req, res) {
-		res.render('admin/password');
+		res.render('admin/password', {title: 'Modifier le mot de passe'});
+	}
+
+	, updatePassword : function(req, res) {
+		db.user.byId(req.params.uid, function(err, user) {
+			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+				
+			var options = ['password', user.client, user.username, ,'-p', req.body.password];
+
+			exec(shell_path, options, function(err, stderr, stdout) {
+				if(err)
+					console.log(err, stderr, stdout);
+
+				req.session.success = "Mot de passe changé";
+
+				res.redirect('/admin');
+			});
+		});
 	}
 
 	/**
@@ -203,6 +220,7 @@ module.exports = function(app) {
 	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
 
 	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
+	app.post('/admin/user/:uid/password', admin.restrict, admin.updatePassword);
 
 	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
 	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);

@@ -22,8 +22,5 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   console.log('DB opened successfuly !');
+  require('./core/watcher.js').initFetch();
 });
-
-
-
-require('./core/watcher.js').initFetch();

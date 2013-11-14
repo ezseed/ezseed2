@@ -2,12 +2,23 @@
   "name": "ezseed2",
   "version": "2.0.0",
   "private": true,
-  "keywords" : ["seedbox", "torrent"],
-  "licence" : {"type" : "Creative Commons BY-NC-SA", "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE.html"},
-  "repository" : {"type": "git", "url":"https://github.com/soyuka/ezseed2"},
-  "scripts": {"start": "pm2 start ./ezseed.json"},
+  "keywords": [
+    "seedbox",
+    "torrent"
+  ],
+  "licence": {
+    "type": "Creative Commons BY-NC-SA",
+    "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soyuka/ezseed2"
+  },
+  "scripts": {
+    "start": "pm2 start ./ezseed.json"
+  },
   "homepage": "http://soyuka.github.io/ezseed2",
-  "description" : "Easy seedbox to be shared with friends or family",
+  "description": "Easy seedbox to be shared with friends or family",
   "author": {
     "name": "Soyuka",
     "email": "soyuka@gmail.com",
@@ -36,6 +47,7 @@
     "commander": "~2.0.0",
     "promptly": "~0.2.0",
     "colors": "~0.6.2",
-    "connect-mongo": "~0.3.3"
+    "connect-mongo": "~0.3.3",
+    "request": "~2.27.0"
   }
 }

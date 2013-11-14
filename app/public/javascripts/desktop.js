@@ -153,12 +153,15 @@ define([
                 });
             }
         },
-        remove: function(id) {
+        remove: function(id, notify) {
             var self = this
-              , $el = $(self.itemSelector + '[data-id="' + id + '"]');
+              , $el = $(self.itemSelector + '[data-id="' + id + '"]')
+              , notify = notify === undefined ? true : notify;
 
             var titre = $el.find('h1:first').text();
-            self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+
+            if(notify)
+                self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
 
             self.pckry.remove($el);
 
@@ -176,7 +179,28 @@ define([
             });
             
             self.render.files(datas, function(err, html) {
-                var $items = $.parseHTML(html);
+                var $items = $.parseHTML(html), $els = [];
+
+                _.each($items, function(e) {
+                    var isTxt = e instanceof Text; //parseHTML causes element duplicated
+
+                    if(!isTxt)
+                        $els.push(e);
+                    
+                });
+
+                $items = $els;
+                delete $els;
+
+                $items.sort(function (a, b) {
+                    a = $(a), b = $(b); //jquerying -"-
+                    if (a.data('date-added') == b.data('date-added')) {
+                        return 0;
+                    } else if (a.data('date-added') < b.data('date-added')) {
+                        return 1;
+                    }
+                    return -1;
+                });
 
                 self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
@@ -200,12 +224,8 @@ define([
                         var count = 0, els = [];
 
                         _.each($items, function(e) {
-                            var isTxt = e instanceof Text; //parseHTML causes element duplicated
-
-                            if(!isTxt) {
                                 if($(e).hasClass('list'))
                                     els.push($(e));
-                            }
                         });
 
                         count = els.length;
