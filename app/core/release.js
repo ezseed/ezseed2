@@ -100,6 +100,9 @@ module.exports.getTags  = {
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
 
+
+		  console.log(name, prevDir);
+
 		//Found a tv show
 		if(r.test(name)) {
 
