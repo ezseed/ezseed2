@@ -305,7 +305,7 @@ section#desktop .miniature {display: none;}
 section#desktop .table {display: none;}
 
 section#desktop .element.miniature {
-	max-width: 25%;
+	max-width: 18%;
 	position: relative;
 	overflow:hidden;
 	font-size: 0;
@@ -328,7 +328,7 @@ section#desktop .element.miniature {
 		opacity: 0;
 
 		position: absolute;
-		background-color: rgba(0,0,0,0.5);
+		background-color: rgba(0,0,0,0.8);
 		width: 100%;
 
 		-webkit-transition: opacity 0.5s ease;
