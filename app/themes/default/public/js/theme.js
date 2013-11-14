@@ -1,6 +1,6 @@
 define([
-    'jquery', 'desktop', 'underscore'
-], function($, Desktop){
+    'jquery', 'desktop', 'alertify', 'underscore'
+], function($, Desktop, alertify){
 
     $section = Desktop.$container;
 
@@ -26,6 +26,16 @@ define([
 
             break;
         }
+        var $msg = $('#alert').find('.msg');
+
+        if($msg.length) {
+            if($msg.hasClass('error'))
+                alertify.error($msg.text());
+            else if($msg.hasClass('success'))
+                alertify.success($msg.text());
+            else
+                alertify.log($msg.text());
+        }
 
     }).on('scroll', function() {
         var scrollTop = $('body').scrollTop() || $('html').scrollTop();
@@ -37,13 +47,25 @@ define([
     });
 
     $('body').on('click', '.delete-item', function(e) {
-        if(!confirm("Attention cette fonction ne supprime pas le torrent, il est conseillé de supprimer torrent et données depuis votre client ! Êtes-vous sûr de vouloir effectuer cette action ?"))
-           return false; 
+        e.preventDefault();
+
+        alertify.confirm("Attention cette fonction ne supprime pas le torrent, il est conseillé de supprimer torrent et données depuis votre client ! Êtes-vous sûr de vouloir effectuer cette action ?", function (e) {
+            if (e) {
+                $.get($(this).attr('href'), function(id) {
+                    Desktop.remove($(this).closest('.element').attr('id'), false);
+                }, 'json');
+            } else {
+                return false;
+            }
+        });
+
     });
 
     $('body').on('click', '.reset-db', function(e) {
-        if(!confirm("Cette fonction réindexe la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?"))
-            return false;
+        alertify.confirm("Cette fonction réindexe la base de données des fichiers ! L'opération peut-être longue ! Êtes-vous sûr de vouloir effectuer cette action ?", function (e) {
+            if (!e)
+                return false;
+        });
     });
 
     $('body').on('click', '.allow-notify', function() {
@@ -53,12 +75,9 @@ define([
     });
 
     $('body').on('click', '.reset-item', function(e) {
-        var $el = $(this).closest('.element'), id = $el.attr('data-id'), type = $el.attr('class').split(' ');
+        var $el = $(this).closest('.element'), id = $el.attr('data-id'), type = $(this).attr('data-type');
 
-        type = _.filter(type, function(t){ return t == 'audio' || t == 'video' || t == 'other'; })[0];
-
-        $.get('/reset/'+type+'/'+id , function( err ) {
-            console.log(err);
+        $.get('/reset/'+type+'/'+id , function( ) {
             Desktop.remove(id, false);
         }, 'json');
     });

@@ -41,7 +41,7 @@ var admin = {
 				res.redirect('admin/path/'+req.body.username);
 			}
 		} else {
-			req.session.error = "Veuillez entrer un chemin";
+			req.session.error = "Veuillez entrer un chemin valide";
 			res.redirect('admin/path/'+req.body.username);
 		}
 	}

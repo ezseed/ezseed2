@@ -27,7 +27,7 @@ require.config({
         packery : 'packery/packery/js',
         desktop : 'desktop',
         sockets : '../socket.io/socket.io',
-
+        alertify : 'alertify',
         theme : '../js/theme',
         admin : '../js/admin'
 

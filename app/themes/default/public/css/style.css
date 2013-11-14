@@ -852,12 +852,8 @@ input:-moz-placeholder {
 	height: 100%;
 }
 
-#alert {
-	line-height: 30px;
-	vertical-align: top;
-	padding: 0;
-}
-
+#alert {display: none;}
+/*
 #alert p {
 	padding: 0;
 	margin: 0;
@@ -871,7 +867,7 @@ input:-moz-placeholder {
 }
 
 #alert i {cursor: pointer;}
-
+*/
 /** Archive **/
 
 #archiving {
