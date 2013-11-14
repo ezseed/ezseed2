@@ -173,9 +173,12 @@ module.exports.getTags  = {
 					"genre"  :id3.get("genre")
 				};
 
+			var datas = id3.get('picture');
+
+			delete id3;
+
 			if(picture) {
-				var datas = id3.get('picture'), pictureFounded = false;
-				delete id3;
+				var pictureFounded = false;
 
 				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
@@ -215,8 +218,6 @@ module.exports.getTags  = {
 					// 	});
 					// }
 				
-			} else {
-				delete id3;
 			}
 		} else {
 			var tags = {artist:null,album:null,year:null,genre:null};

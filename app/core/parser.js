@@ -42,8 +42,10 @@ module.exports.processAlbums = function(params, callback) {
 		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
-		if(i == arr.length)
+		if(i == arr.length) {
+			delete arr;
 			return cb(albums);
+		}
 
 
 		var e = arr[i]
@@ -120,6 +122,7 @@ module.exports.processAlbums = function(params, callback) {
 	}
 
 	parseAudios(audios, function(albums) {
+		delete audios;
 		callback(null, albums);
 	});
 
