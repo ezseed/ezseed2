@@ -191,8 +191,6 @@ module.exports.getTags  = {
 
 					id3 = null;
 
-					console.log(id3);
-
 					if(picture) {
 						var pictureFounded = false;
 
@@ -210,6 +208,8 @@ module.exports.getTags  = {
 								file = file + '.' + type[1];
 
 								fs.writeFileSync(file, datas.data);
+
+								delete datas;
 								
 								tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
 							}
