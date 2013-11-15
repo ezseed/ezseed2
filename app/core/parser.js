@@ -47,7 +47,6 @@ module.exports.processAlbums = function(params, callback) {
 			return cb(albums);
 		}
 
-
 		var e = arr[i]
 		  , existingFile = _.where(params.existing, {prevDir : e.prevDir})
 		  , nbExisting = existingFile.length
@@ -65,70 +64,72 @@ module.exports.processAlbums = function(params, callback) {
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
 			
 			if(indexMatch !== null) {
-				infos = release.getTags.audio(e.path);
+				release.getTags.audio(e.path, false, function(err, infos) {
 
-				if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
-					var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
-					var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
-					
-					if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
-						albums[indexMatch].artist = 'VA';
-				}
+					if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
+						var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
+						var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+						
+						if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
+							albums[indexMatch].artist = 'VA';
+					}
 
-				albums[indexMatch].songs.push(e);
-				i++;
-				return parseAudios(arr, cb, i, albums);
-
-			} else {
-
-				infos = release.getTags.audio(e.path, true);
-
-				//Index match artist + album or only album
-				indexMatch = findIndex(albums, function(album) { 
-					if(infos.artist === null && infos.album === null)
-						return false;
-					else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
-						return true;
-					else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
-						return true;
-					else
-						return false;
-				});
-				
-				if(indexMatch !== null) {
 					albums[indexMatch].songs.push(e);
 					i++;
 					return parseAudios(arr, cb, i, albums);
-				} else {
-					//New album detected
-					var a = {
-							artist : infos.artist,
-							album : infos.album,
-							year : infos.year,
-							genre : infos.genre,
-							songs : [e],
-							picture : infos.picture,
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						};
 
-					if(a.picture === null) {
-						release.getAlbumInformations(a, function(err, results) {
-							if(!err)
-								albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
-							else
-								albums.push(a);
+				});
+			} else {
 
-							i++;
-							return parseAudios(arr, cb, i, albums);
-						})
-					} else {
-						albums.push(a);
+			    release.getTags.audio(e.path, true, function(err, infos) {
+
+					//Index match artist + album or only album
+					indexMatch = findIndex(albums, function(album) { 
+						if(infos.artist === null && infos.album === null)
+							return false;
+						else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
+							return true;
+						else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
+							return true;
+						else
+							return false;
+					});
+					
+					if(indexMatch !== null) {
+						albums[indexMatch].songs.push(e);
 						i++;
 						return parseAudios(arr, cb, i, albums);
-					}
-				}
+					} else {
+						//New album detected
+						var a = {
+								artist : infos.artist,
+								album : infos.album,
+								year : infos.year,
+								genre : infos.genre,
+								songs : [e],
+								picture : infos.picture,
+								prevDir : e.prevDir,
+								prevDirRelative : e.prevDir.replace(global.rootPath, '')
+							};
 
+						if(a.picture === null) {
+							//Call itunes
+							release.getAlbumInformations(a, function(err, results) {
+								if(!err)
+									albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
+								else
+									albums.push(a);
+
+								i++;
+								return parseAudios(arr, cb, i, albums);
+							})
+						} else {
+							albums.push(a);
+							i++;
+							return parseAudios(arr, cb, i, albums);
+						}
+					}
+				});
 			}
 		} else {
 			i++;
