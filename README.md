@@ -1,11 +1,11 @@
 ## Installation
 ```
 apt-get install git-core
-git clone https://user@github.com/soyuka/ezseed2/
+git clone https://github.com/soyuka/ezseed2/
 cd ezseed2
 ```
 
-Ensuite exécutez autoInstall, le script se chargera de bouger le site dans /var/www/ezseed2.
+Ensuite exécutez autoInstall (installation de Nodejs et mongodb Debian Wheezy uniquement !), le script se chargera de bouger le site dans /var/www/ezseed2.
 
 ```
 chmod +x ./autoInstall.sh && ./autoInstall.sh

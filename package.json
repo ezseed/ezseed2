@@ -1,14 +1,13 @@
 {
   "name": "ezseed2",
-  "version": "2.0.0",
-  "private": true,
+  "version": "2.1.0",
   "keywords": [
     "seedbox",
     "torrent"
   ],
   "licence": {
     "type": "Creative Commons BY-NC-SA",
-    "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE.html"
+    "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE"
   },
   "repository": {
     "type": "git",
@@ -48,8 +47,6 @@
     "promptly": "~0.2.0",
     "colors": "~0.6.2",
     "connect-mongo": "~0.3.3",
-    "request": "~2.27.0",
-    "strtok": "~0.1.1",
-    "iconv-lite": "~0.2.11"
+    "request": "~2.27.0"
   }
 }
