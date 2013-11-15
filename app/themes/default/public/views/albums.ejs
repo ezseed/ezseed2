@@ -9,6 +9,7 @@ function bytesToSize(bytes) {
 
 
 albums.forEach(function(album) {
+
 	album.title = '';
 	album.title += (album.artist !== undefined && album.artist !== null) ? album.artist : '';
 	album.title += (album.album !== undefined && album.album !== null) ? ' - ' + album.album : '';
@@ -94,25 +95,49 @@ albums.forEach(function(album) {
 						<tr><th>#</th><th>Nom</th><th>Poids</th></tr>
 					</thead>
 					<tbody>
-						<%	var i = 1;
-						album.songs.sort(function (a, b) {
-						    if (a.name == b.name) {
-						        return 0;
-						    } else if (a.name > b.name) {
-						        return 1;
-						    }
-						    return -1;
+						<%	
+						var i = 1, songs, hasDiscs = false;
+
+						if(album.songs[0].disc !== undefined) {
+							songs = _.groupBy(album.songs, function(e) { return e.disc; });
+							hasDiscs = true;
+						} else
+							songs = [album.songs];
+
+
+						_.each(songs, function(disk, i) {
+							songs[i] = disk.sort(function(a, b) {
+								if (a.name == b.name)
+							        return 0;
+							    else if (a.name > b.name)
+							        return 1;
+							   	else
+								    return -1;
+							});
 						});
 
-						album.songs.forEach(function(file) {
+
+						_.each(songs, function(disc, noDisc) {
+							if(hasDiscs) {
+								%>
+								<tr>
+									<td colspan="3" style="text-align:center">Disque n°<%= noDisc %></td>
+								</tr>
+								<%
+							}
+
+							_.each(disc, function(file) {
 						%>
-						<tr>
-							<td><%- i %></td>
-							<td style="text-align:left"><a href="/download/<%- album._id %>/<%- file._id%>"><%- file.name %></a></td>
-							<td><%- bytesToSize(file.size) %></td>
-						</tr>			
+							<tr>
+								<td><%- i %></td>
+								<td style="text-align:left"><a href="/download/<%- album._id %>/<%- file._id%>"><%- file.name %></a></td>
+								<td><%- bytesToSize(file.size) %></td>
+							</tr>			
 						<% 
-							i++;
+								i++;
+							});
+							i = 1;
+							
 						}); 
 						%>
 					</tbody>

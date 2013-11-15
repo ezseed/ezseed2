@@ -7,13 +7,13 @@ require.config({
         underscore : 'helpers/underscore',
         //jquery modules
         notify : 'modules/desktop-notify',
-        ejs : 'modules/jquery.ejs',
         cookie : 'modules/jquery.cookie',
         quickfit : 'modules/quickfit',
         //admin modules
         collapse : 'modules/jquery.collapse',
         collapse_storage : 'modules/jquery.collapse_storage',
         customselect: 'modules/customselect',
+        text : 'vendor/text',
         //Packery deps
         classie: 'packery/classie',
         eventie: 'packery/eventie',
@@ -37,7 +37,6 @@ require.config({
     //SEE https://github.com/jrburke/requirejs/wiki/Upgrading-to-RequireJS-2.0#wiki-shim
     shim: {
         'notify': ['jquery'],
-        'ejs': ['jquery'],
         'cookie' : ['jquery'],
         'quickfit' : ['jquery'],
         'collapse' : ['jquery'],

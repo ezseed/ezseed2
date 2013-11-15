@@ -16,6 +16,7 @@ var file = new Schema(
 		prevDirRelative : String,
 		type : String,
 		size : Number,
+		disc : Number,
 		episode : {type : String, default : null}
 	}
 );

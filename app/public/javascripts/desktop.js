@@ -1,11 +1,20 @@
 define([
+    //templates
+    'text!/views/albums.ejs',
+    'text!/views/movies.ejs',
+    'text!/views/others.ejs',
+
+    //Modules
     'packery/packery',
     'imagesloaded',
     'async',
     'jquery',
-    'underscore', 'notify', 'ejs', 'cookie', 'quickfit',
 
-], function(Packery, imagesLoaded, async, $){
+    //Helpers
+    'underscore', 'notify', 'cookie', 'quickfit',
+
+
+], function(Albums, Movies, Others, Packery, imagesLoaded, async, $){
 
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
@@ -27,9 +36,6 @@ define([
             return c.match( new RegExp( arg, 'ig' ) ); 
         };
     });
-
-    /* Render function */
-    var View = $.Ejs({path : 'views/'});
 
     var Desktop = {
         firstLoad : true,
@@ -105,18 +111,14 @@ define([
                     movies : function(callback) 
                     {
                         if(path.movies.length) {
-                            render.movies(path.movies,function(err, html) {
-                                callback(err, html);
-                            });
+                            callback(null, _.template(Movies, {movies : path.movies}));
                         } else
                             callback(null, '');
                     },
                     albums : function(callback) 
                     {
                         if(path.albums.length) {
-                            render.albums(path.albums,function(err, html) {
-                                callback(err, html);
-                            });
+                            callback(null, _.template(Albums, {albums : path.albums}));
                         } else
                             callback(null, '');
 
@@ -124,9 +126,7 @@ define([
                     others : function(callback) 
                     {
                         if(path.others.length) {
-                            render.others(path.others,function(err, html) {
-                                callback(err, html);
-                            });
+                            callback(null, _.template(Others, {others : path.others}));
                         } else 
                             callback(null, '');
 
@@ -135,21 +135,6 @@ define([
                 //Callback Paths
                 function(err, results){
                     cb(err, results);
-                });
-            },
-            movies : function(movies, cb) {
-                View.render('movies', { movies : movies }, function(err, html) {
-                    cb(err, html);
-                });
-            },
-            albums : function(albums, cb) {
-                View.render('albums', { albums : albums }, function(err, html) {
-                    cb(err, html);
-                });
-            },
-            others : function(others, cb) {
-                View.render('others', { others : others }, function(err, html) {
-                    cb(err, html);
                 });
             }
         },
@@ -179,6 +164,9 @@ define([
             });
             
             self.render.files(datas, function(err, html) {
+                if(err)
+                    console.log(err);
+
                 var $items = $.parseHTML(html), $els = [];
 
                 _.each($items, function(e) {

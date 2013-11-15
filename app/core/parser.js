@@ -47,8 +47,21 @@ module.exports.processAlbums = function(params, callback) {
 			return cb(albums);
 		}
 
-		var e = arr[i]
-		  , existingFile = _.where(params.existing, {prevDir : e.prevDir})
+		var e = arr[i];
+
+		//Redifine prevDir
+		var lastDir = e.prevDir.split('/'), dirsNb = lastDir.length - 1;
+			lastDir = lastDir[dirsNb];
+
+		var matches = /^(CD|DISC)\s?(\d+)$/ig.exec(lastDir);
+
+		//catch CD/DISC
+		if(matches) {
+			e.disc = parseInt(matches[2]);
+			e.prevDir = e.prevDir.split('/').splice(0, dirsNb).join('/');
+		}
+
+		var existingFile = _.where(params.existing, {prevDir : e.prevDir})
 		  , nbExisting = existingFile.length
 		  , exists = false, indexMatch = null;
 
@@ -67,8 +80,8 @@ module.exports.processAlbums = function(params, callback) {
 				release.getTags.audio(e.path, false, function(err, infos) {
 
 					if(infos.artist !== null && albums[indexMatch].album !== null && albums[indexMatch].artist !== 'VA') { 
-						var a = _s.slugify(_s.trim(albums[indexMatch].artist).toLowerCase());
-						var b = _s.slugify(_s.trim(infos.artist).toLowerCase());
+						var a = _s.slugify(albums[indexMatch].artist);
+						var b = _s.slugify(infos.artist);
 						
 						if(a.indexOf(b) === -1 && b.indexOf(a) === -1)
 							albums[indexMatch].artist = 'VA';
@@ -83,13 +96,15 @@ module.exports.processAlbums = function(params, callback) {
 
 			    release.getTags.audio(e.path, true, function(err, infos) {
 
-					//Index match artist + album or only album
+			    	var e_album = _s.slugify(infos.album);
+
+					//Index match album
 					indexMatch = findIndex(albums, function(album) { 
-						if(infos.artist === null && infos.album === null)
+						var a_album = _s.slugify(album.album);
+
+						if(e_album == null && infos.artist == null)
 							return false;
-						else if(album.artist !== null && infos.artist !== null && album.artist.toLowerCase() == infos.artist.toLowerCase() && album.album.toLowerCase() == infos.album.toLowerCase())
-							return true;
-						else if(album.album !== null && infos.album !== null && album.album.toLowerCase() == infos.album.toLowerCase())
+						else if(a_album !== null && a_album == e_album)
 							return true;
 						else
 							return false;
