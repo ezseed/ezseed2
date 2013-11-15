@@ -49,10 +49,13 @@ define([
     $('body').on('click', '.delete-item', function(e) {
         e.preventDefault();
 
+        var href =  $(this).attr('href'), id = $(this).closest('.element').attr('id');
+
         alertify.confirm("Attention cette fonction ne supprime pas le torrent, il est conseillé de supprimer torrent et données depuis votre client ! Êtes-vous sûr de vouloir effectuer cette action ?", function (e) {
             if (e) {
-                $.get($(this).attr('href'), function(id) {
-                    Desktop.remove($(this).closest('.element').attr('id'), false);
+                $.get(href, function(d) {
+                    console.log(d);
+                    Desktop.remove(id, false);
                 }, 'json');
             } else {
                 return false;
