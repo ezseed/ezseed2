@@ -14,9 +14,9 @@ var admin = {
 	 */
 	index : function(req, res) {
 		db.users.getAll(function(err, users) {
-			// db.paths.getAll(function(err, paths) {
-				res.render('admin', { title: 'Ezseed V2 - Administration', users:users }); //,paths: paths
-			// });
+			db.paths.getAll(function(err, paths) {
+				res.render('admin', { title: 'Ezseed V2 - Administration', users:users, paths: paths }); //,paths: paths
+			});
 		});
 	}
 
@@ -215,9 +215,8 @@ module.exports = function(app) {
 
 	app.get('/admin/user/:uid/delete', admin.restrict, admin.userdel);
 
-	app.get('/admin/user/:uid/:id/delete', admin.restrict, admin.deletePath);
-
-	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath);
+	app.get('/admin/user/:uid/:id/delete', admin.restrict, admin.deletePath); //?
+	app.get('/admin/path/:uid/:id/delete', admin.restrict, admin.deletePath); //?
 
 	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
 	app.post('/admin/user/:uid/password', admin.restrict, admin.updatePassword);
