@@ -85,7 +85,11 @@ module.exports.getTags  = {
 
 		var err = null
 
-		  , name = basename.replace(pathInfos.extname(basename), '').replace(/^\-[\w\d]+$/i, '').replace(/\.|\-|_|\(|\)/g, ' ')
+		  , name = basename.replace(pathInfos.extname(basename), '')
+		  		.replace(/^\-[\w\d]+$/i, '') //team name
+		  		.replace(/\-|_|\(|\)/g, ' ') //special chars
+		  		.replace(/([\w\d]{2})\./ig, "$1 ") //Replacing dot with min 2 chars before
+		  		.replace(/\.([\w\d]{2})/ig, " $1") //same with 2 chars after
 
 		  , array = _s.words(name)
 
@@ -101,7 +105,6 @@ module.exports.getTags  = {
 		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
-
 
 		//Found a tv show
 		if(r.test(name)) {
@@ -261,25 +264,37 @@ var getMovieInformations = function(movie, cb) {
 
       		if(infos !== undefined) {
 
-      			_.each(infos, function(e) {
+      			var index = 0;
+
+      			_.each(infos, function(e, i) {
       				if(
       					( e.title !== undefined && movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 ) 
       					||
       					( e.originalTitle !== undefined && movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
-      				  )
-      					movie.code = e.code;
+      				  ) {
+      						index = i;
+      						return;
+      					}
       			});
 
-          		movie.code = movie.code === undefined ? infos[0].code : movie.code;
+          		movie.code = infos[index].code;
 
           		//Searching for a specific code
           		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
-          			infos = Object.byString(result, movie.movieType);
+          			var specific_infos = Object.byString(result, movie.movieType);
 
-          			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-          			movie.synopsis = infos.synopsis ? _s.trim(infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
-          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
-          			movie.trailer = _.isEmpty(infos.trailer) ? null : infos.trailer.href;
+          			if(specific_infos) {
+	          			movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.originalTitle;
+	          			movie.synopsis = specific_infos.synopsis ? _s.trim(specific_infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
+	          			movie.picture = specific_infos.poster !== undefined ? specific_infos.poster.href : null;
+	          			movie.trailer = _.isEmpty(specific_infos.trailer) ? null : specific_infos.trailer.href;
+	          		} else {
+	          			infos = infos[index];
+
+	          			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
+	          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
+	          			movie.synopsis = infos.link !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
+	          		}
 
           			return cb(err, movie);
 

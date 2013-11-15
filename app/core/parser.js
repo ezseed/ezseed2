@@ -211,7 +211,7 @@ module.exports.processMovies = function(params, callback) {
 				//Movies types are the same, we look after the same name | same season
 				indexMatch = findIndex(movies, function(movie) { 
 					if(movie.movieType == e.movieType) {
-						if(movie.name.toLowerCase() == e.name.toLowerCase()) {
+						if(movie.name.toLowerCase().indexOf(e.name.toLowerCase()) !== -1 ) {
 							if(movie.movieType == 'tvseries') {
 								if(movie.season == e.season)
 									return true;
