@@ -89,7 +89,7 @@ module.exports.getTags  = {
 		  		.replace(/^\-[\w\d]+$/i, '') //team name
 		  		.replace(/\-|_|\(|\)/g, ' ') //special chars
 		  		.replace(/([\w\d]{2})\./ig, "$1 ") //Replacing dot with min 2 chars before
-		  		.replace(/\.([\w\d]{2})/ig, " $1") //same with 2 chars after
+		  		.replace(/\.\.?([\w\d]{2})/ig, " $1") //same with 2 chars after
 
 		  , array = _s.words(name)
 

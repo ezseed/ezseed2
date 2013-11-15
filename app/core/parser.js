@@ -186,7 +186,11 @@ module.exports.processMovies = function(params, callback) {
 		var m = release.getTags.video(e.path);
 
 		if(m.movieType == 'tvseries') {
-			existingFile = _.filter(params.existing, function(ex){ return ex.name.toLowerCase() == m.name.toLowerCase() && ex.season == m.season; }), nbExisting = existingFile.length;
+			existingFile = _.filter(params.existing, function(ex){ 
+				var m_name = _s.slugify(m.name), m_title = _s.slugify(m.title),	ex_name = _s.slugify(ex.name);
+
+				return (ex_name == m_name || ex == m_title) && ex.season == m.season; 
+			}), nbExisting = existingFile.length;
 			
 			while(nbExisting-- && !exists)
 				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
@@ -211,7 +215,10 @@ module.exports.processMovies = function(params, callback) {
 				//Movies types are the same, we look after the same name | same season
 				indexMatch = findIndex(movies, function(movie) { 
 					if(movie.movieType == e.movieType) {
-						if(movie.name.toLowerCase().indexOf(e.name.toLowerCase()) !== -1 ) {
+						var m_name = _s.slugify(movie.name), m_title = _s.slugify(movie.title);
+						var e_name = _s.slugify(e.name);
+
+						if(e_name == m_name || e_name == m_title) {
 							if(movie.movieType == 'tvseries') {
 								if(movie.season == e.season)
 									return true;
