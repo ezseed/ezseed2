@@ -176,7 +176,7 @@ module.exports.getTags  = {
 
 					delete buffer;
 					fs.closeSync(fd);
-					
+
 					id3.parse();
 
 					var tags = {
@@ -189,8 +189,9 @@ module.exports.getTags  = {
 
 					var datas = id3.get('picture');
 
-					delete id3;
+					id3 = null;
 
+					console.log(id3);
 
 					if(picture) {
 						var pictureFounded = false;
