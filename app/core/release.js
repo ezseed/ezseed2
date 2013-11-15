@@ -256,7 +256,7 @@ var getMovieInformations = function(movie, cb) {
 	//console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '2'}, function(err, res) {
+  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '5'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
@@ -266,11 +266,15 @@ var getMovieInformations = function(movie, cb) {
 
       			var index = 0;
 
+      			var m_name = _s.slugify(movie.name);
+
       			_.each(infos, function(e, i) {
+      				var e_title = _s.slugify(e.title), e_original = _s.slugify(e.originalTitle);
+
       				if(
-      					( e.title !== undefined && movie.name.toLowerCase().indexOf(e.title.toLowerCase()) !== -1 ) 
+      					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
       					||
-      					( e.originalTitle !== undefined && movie.name.toLowerCase().indexOf(e.originalTitle.toLowerCase()) !== -1 )
+      					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
       				  ) {
       						index = i;
       						return;
