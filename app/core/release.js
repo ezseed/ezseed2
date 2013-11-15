@@ -160,61 +160,64 @@ module.exports.getTags  = {
 		picture = picture === undefined ? false : picture;
 
 		//Picture should be < than 16 Mb = 1677721 bytes
-		var bufferSize = picture ? 1677721 + 32768 : 32768;
+		var bufferSize = picture ? 1677721 + 32768 : 32768; //http://getid3.sourceforge.net/source/write.id3v2.phps fread_buffer_size
 
 		fs.open(filePath, 'r', function(status, fd) {
-			var buffer = new Buffer(bufferSize); //http://getid3.sourceforge.net/source/write.id3v2.phps fread_buffer_size
+			var buffer = new Buffer(bufferSize); 
 
-			if(status)
+			if(status) {
+				console.error(status);
 				cb(status, {});
+			} else {
 
-			fs.read(fd, buffer, 0, bufferSize, 0, function(err, bytesRead, buffer) {		
+				fs.read(fd, buffer, 0, bufferSize, 0, function(err, bytesRead, buffer) {		
 
-				var id3 = new ID3(buffer); //memory issue large file
-				id3.parse();
+					var id3 = new ID3(buffer); //memory issue large file
+					id3.parse();
 
-				var tags = {
-						"title" : id3.get("title"),
-						"artist" :id3.get("artist"),
-						"album"  :id3.get("album"),
-						"year"   :id3.get("year"),
-						"genre"  :id3.get("genre")
-					};
+					var tags = {
+							"title" : id3.get("title"),
+							"artist" :id3.get("artist"),
+							"album"  :id3.get("album"),
+							"year"   :id3.get("year"),
+							"genre"  :id3.get("genre")
+						};
 
-				var datas = id3.get('picture');
+					var datas = id3.get('picture');
 
-				delete id3;
+					delete id3;
 
-				if(picture) {
-					var pictureFounded = false;
+					if(picture) {
+						var pictureFounded = false;
 
-					if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
+						if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
-						var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
+							var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-						  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+							  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
 
-						  , type = datas.format.split('/');
+							  , type = datas.format.split('/');
 
-						if(type[0] == 'image') {
-							pictureFounded = true;
+							if(type[0] == 'image') {
+								pictureFounded = true;
 
-							file = file + '.' + type[1];
+								file = file + '.' + type[1];
 
-							fs.writeFileSync(file, datas.data);
-							
-							tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+								fs.writeFileSync(file, datas.data);
+								
+								tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+							}
+
 						}
-
+						
+						if(!pictureFounded)
+							tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+						
 					}
-					
-					if(!pictureFounded)
-						tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
-					
-				}
 
-				cb(err, tags);
-			});
+					cb(err, tags);
+				});
+			}
 		});
 	}
 };
