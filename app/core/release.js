@@ -173,6 +173,10 @@ module.exports.getTags  = {
 				fs.read(fd, buffer, 0, bufferSize, 0, function(err, bytesRead, buffer) {		
 
 					var id3 = new ID3(buffer); //memory issue large file
+
+					delete buffer;
+					fs.closeSync(fd);
+					
 					id3.parse();
 
 					var tags = {
@@ -186,6 +190,7 @@ module.exports.getTags  = {
 					var datas = id3.get('picture');
 
 					delete id3;
+
 
 					if(picture) {
 						var pictureFounded = false;
