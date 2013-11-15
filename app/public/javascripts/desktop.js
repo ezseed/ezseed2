@@ -190,9 +190,15 @@ define([
                     return -1;
                 });
 
-                self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
+                if(self.firstLoad) {
+                    self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
 
-                self.pckry.appended($items);
+                    self.pckry.appended($items);
+                } else {
+                    self.$container.addClass('notransition').css('visibility', 'hidden').prepend($items);
+
+                    self.pckry.prepended($items);
+                }
 
                 self.displaySelector = displayOption;
 
