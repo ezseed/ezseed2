@@ -1,4 +1,5 @@
-var _ = require('underscore')
+var Buffer = require('buffer').Buffer
+  , _ = require('underscore')
   , _s = require('underscore.string')
   , allocine = require('allocine-api')
   , fs = require('fs')
@@ -154,61 +155,76 @@ module.exports.getTags  = {
 
 		return movie;
 	}, 
-	audio: function(filePath, picture) {
+	audio: function(filePath, picture, cb) {
 
 		picture = picture === undefined ? false : picture;
 
-		var stats = fs.statSync(filePath);
+		//Picture should be < than 16 Mb = 1677721 bytes
+		var bufferSize = picture ? 1677721 + 32768 : 32768; //http://getid3.sourceforge.net/source/write.id3v2.phps fread_buffer_size
 
-		//Node buffer > file size => bug + should be streaming file (id3 module)
-		if(stats.size < 1073741824) {
-			var id3 = new ID3(fs.readFileSync(filePath)); //memory issue large file
-			id3.parse();
+		fs.open(filePath, 'r', function(status, fd) {
+			var buffer = new Buffer(bufferSize); 
 
-			var tags = {
-					"title" : id3.get("title"),
-					"artist" :id3.get("artist"),
-					"album"  :id3.get("album"),
-					"year"   :id3.get("year"),
-					"genre"  :id3.get("genre")
-				};
+			if(status) {
+				console.error(status);
+				cb(status, {});
+			} else {
 
-			var datas = id3.get('picture');
+				fs.read(fd, buffer, 0, bufferSize, 0, function(err, bytesRead, buffer) {		
 
-			delete id3;
+					var id3 = new ID3(buffer); //memory issue large file
 
-			if(picture) {
-				var pictureFounded = false;
+					delete buffer;
+					fs.closeSync(fd);
 
-				if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
+					id3.parse();
 
-					var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
+					var tags = {
+							"title" : id3.get("title"),
+							"artist" :id3.get("artist"),
+							"album"  :id3.get("album"),
+							"year"   :id3.get("year"),
+							"genre"  :id3.get("genre")
+						};
 
-					  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+					var datas = id3.get('picture');
 
-					  , type = datas.format.split('/');
+					id3 = null;
 
-					if(type[0] == 'image') {
-						pictureFounded = true;
+					if(picture) {
+						var pictureFounded = false;
 
-						file = file + '.' + type[1];
+						if(datas !== null && (datas.data !== undefined && datas.format !== undefined) ) {
 
-						fs.writeFileSync(file, datas.data);
+							var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
+
+							  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+
+							  , type = datas.format.split('/');
+
+							if(type[0] == 'image') {
+								pictureFounded = true;
+
+								file = file + '.' + type[1];
+
+								fs.writeFileSync(file, datas.data);
+
+								delete datas;
+								
+								tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+							}
+
+						}
 						
-						tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+						if(!pictureFounded)
+							tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
+						
 					}
 
-				}
-				
-				if(!pictureFounded)
-					tags = _.extend(tags, {picture: findCoverInDirectory(pathInfos.dirname(filePath)) });
-				
+					cb(err, tags);
+				});
 			}
-		} else {
-			var tags = {artist:null,album:null,year:null,genre:null};
-		}
-
-		return tags;
+		});
 	}
 };
 
