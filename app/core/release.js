@@ -297,7 +297,7 @@ var getMovieInformations = function(movie, cb) {
 
 	          			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
 	          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
-	          			movie.synopsis = infos.link !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
+	          			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
 	          		}
 
           			return cb(err, movie);
