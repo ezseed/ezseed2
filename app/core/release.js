@@ -264,11 +264,16 @@ var getMovieInformations = function(movie, cb) {
 
       		if(infos !== undefined) {
 
-      			var index = 0;
+      			//Index allocine info
+      			var index = false;
 
       			var m_name = _s.slugify(movie.name);
 
-      			_.each(infos, function(e, i) {
+      			//Parse each infos founded, if title matchs, break
+      			var nb_resultats = infos.length;
+
+      			while(nb_resultats-- && index === false)
+      				var e = infos[nb_resultats];
       				var e_title = _s.slugify(e.title), e_original = _s.slugify(e.originalTitle);
 
       				if(
@@ -276,10 +281,13 @@ var getMovieInformations = function(movie, cb) {
       					||
       					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
       				  ) {
-      						index = i;
-      						return;
+      						index = nb_resultats;
+      						
       					}
       			});
+
+  				if(index === false)
+  					index = 0;
 
           		movie.code = infos[index].code;
 
