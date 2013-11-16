@@ -1,4 +1,4 @@
-# Still BETA !
+# Still BETA ! Still a lot [TODO](https://github.com/soyuka/ezseed2/wiki/TODO-LIST)
 
 ## Installation
 ```
