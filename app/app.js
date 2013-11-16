@@ -73,7 +73,7 @@ app.use(app.router);
 require('./routes/user')(app);
 require('./routes/files')(app);
 require('./routes/streaming')(app);
-require('./routes/admin.js')(app);
+require('./routes/admin')(app);
 
 
 /* 
