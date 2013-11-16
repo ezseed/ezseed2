@@ -272,7 +272,7 @@ var getMovieInformations = function(movie, cb) {
       			//Parse each infos founded, if title matchs, break
       			var nb_resultats = infos.length;
 
-      			while(nb_resultats-- && index === false)
+      			while(nb_resultats-- && index === false) {
       				var e = infos[nb_resultats];
       				var e_title = _s.slugify(e.title), e_original = _s.slugify(e.originalTitle);
 
@@ -284,7 +284,7 @@ var getMovieInformations = function(movie, cb) {
       						index = nb_resultats;
       						
       					}
-      			});
+      			}
 
   				if(index === false)
   					index = 0;
