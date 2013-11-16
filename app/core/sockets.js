@@ -8,9 +8,9 @@ var socketio = require('socket.io')
   , _ = require('underscore');
 
 
-module.exports.listen = function(app) {
+module.exports.listen = function(server) {
 
-    io = socketio.listen(app, {secure: true});
+    io = socketio.listen(server, {secure: true});
     io.set('log level', 1); //less log
 
     io.sockets.on('connection', function (socket) {

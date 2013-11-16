@@ -61,6 +61,7 @@ app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'publ
 
 //Middlewares
 require('./core/helpers/middlewares')(app);
+require('./plugins')(app);
 
 //Needs to be the last one called (http://stackoverflow.com/questions/12550067/expressjs-3-0-how-to-pass-res-locals-to-a-jade-view)
 app.use(app.router);
@@ -73,7 +74,7 @@ app.use(app.router);
 require('./routes/user')(app);
 require('./routes/files')(app);
 require('./routes/streaming')(app);
-require('./routes/admin.js')(app);
+require('./routes/admin')(app);
 
 
 /* 
@@ -95,6 +96,7 @@ mongo.once('open', function callback () {
   });
 
   var io = require('./core/sockets').listen(server);
+
 });
 
 
