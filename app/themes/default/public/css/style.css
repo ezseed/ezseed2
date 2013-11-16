@@ -305,7 +305,7 @@ section#desktop .miniature {display: none;}
 section#desktop .table {display: none;}
 
 section#desktop .element.miniature {
-	max-width: 18%;
+	max-width: 16.666666666666666667%;
 	position: relative;
 	overflow:hidden;
 	font-size: 0;
