@@ -1,4 +1,4 @@
-var db = require('../core/database.js')
+var db = require('../core/database')
   , _ = require('underscore')
   , fs = require('fs')
   , pretty = require('prettysize')
