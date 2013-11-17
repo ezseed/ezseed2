@@ -80,9 +80,9 @@ module.exports.listen = function(server) {
             //(see https://github.com/paulmillr/chokidar/issues/47) 
             var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/downloads/.tmp'),
                 { 
-                    ignored: function(p) {
-                        return /^\./.test(pathInfo.basename(p));
-                    },
+                    // ignored: function(p) {
+                    //     return /^\./.test(pathInfo.basename(p));
+                    // },
                     persistent:false
 
                 }
