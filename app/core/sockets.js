@@ -78,7 +78,7 @@ module.exports.listen = function(server) {
 
             //Starts watching by omitting invisible files 
             //(see https://github.com/paulmillr/chokidar/issues/47) 
-            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/tmp'),
+            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/downloads/.tmp'),
                 { 
                     ignored: function(p) {
                         return /^\./.test(pathInfo.basename(p));
