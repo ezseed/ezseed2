@@ -83,7 +83,7 @@ var files = {
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
-				res.download(global.config.root + '/public/tmp/' + req.params.id +'.zip', name + '.zip');
+				res.download(global.config.root + '/public/downlodas/.tmp/' + req.params.id +'.zip', name + '.zip');
 			}
 		});
 					
@@ -93,6 +93,8 @@ var files = {
 	archive : function(req, res) {
 		var archive = {};
 
+		if(!fs.existsSync(global.config.root, 'public/downloads/.tmp'))
+			fs.mkdirSync(global.config.root, 'public/downloads/.tmp');
 
 		db.files.byId(req.params.id, function(err, doc) {
 
@@ -103,7 +105,7 @@ var files = {
 				res.json({'error':'Aucun fichier trouvé'});
 			} else {
 				
-				archive.zip = pathInfo.join(global.config.root, 'public/tmp/', req.params.id +'.zip');
+				archive.zip = pathInfo.join(global.config.root, 'public/downlodas/.tmp/', req.params.id +'.zip');
 
 				fs.exists(archive.zip, function (exists) {
 					if(exists) {
