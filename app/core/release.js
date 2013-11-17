@@ -254,7 +254,7 @@ module.exports.getAlbumInformations = getAlbumInformations;
 
 var getMovieInformations = function(movie, cb) {
 
-	//console.log('Gathering infos on', movie.name);
+	console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '5'}, function(err, res) {
@@ -271,20 +271,27 @@ var getMovieInformations = function(movie, cb) {
       			var m_name = _s.slugify(movie.name);
 
       			//Parse each infos founded, if title matchs, break
-      			var nb_resultats = infos.length;
+      			var nb_resultats = infos.length, i = 0;
 
-      			while(nb_resultats-- && index === false) {
-      				var e = infos[nb_resultats];
-      				var e_title = _s.slugify(e.title), e_original = _s.slugify(e.originalTitle);
+      			//loop beginning with best match !
+      			while(i < nb_resultats - 1 && index === false) {
+      				
+      				var e = infos[i],
+      					//slugifying names - matches are better
+      					e_title = _s.slugify(e.title), 
+      					e_original = _s.slugify(e.originalTitle);
 
       				if(
+
       					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
       					||
       					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
-      				  ) {
-      						index = nb_resultats;
-      						
+
+      				)	{
+      						index = i;
       					}
+
+      				i++;
       			}
 
   				if(index === false)
