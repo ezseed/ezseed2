@@ -1,6 +1,8 @@
 #chat {
 	position:fixed;
-	width: 220px;
+	height: 350px;
+	width: 275px;
+	height: auto;
 	right: 20px;
 	bottom:0;
 	background-color: rgba(71,71,71,0.95);
@@ -44,11 +46,13 @@
 	height: 60px;
 	overflow-y:auto;
 	box-sizing:border-box;
--moz-box-sizing:border-box; /* Firefox */
+	-moz-box-sizing:border-box; /* Firefox */
 	padding: 5px;
 }
 
 #chat #textarea:focus {outline: 0}
+
+#chat .top {padding: 1px 5px 1px 5px}
 
 /*
 #admin h2.open, #admin h2:hover {

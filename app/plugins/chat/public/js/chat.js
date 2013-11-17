@@ -1,6 +1,12 @@
+require.config({
+    'baseUrl': '/javascripts',
+    //SEE http://requirejs.org/docs/api.html#config-waitSeconds
+    waitSeconds: 25
+});
+
 require([
-    'jquery', 'desktop'
-], function($, Desktop){
+    'jquery', 'desktop', 'text!/views/message.ejs'
+], function($, Desktop, Chat){
 
 	var socket = Desktop.socket;
 	var $msgs = $('#chat .messages');
@@ -13,18 +19,31 @@ require([
 		}
 	});
 
+	$('.entypo-minus-squared').on('click', function() {
+		var $chat = $('#chat');
+
+		if($chat.hasClass('closed'))
+			$chat.animate({height: '350px'}).toggleClass('closed');
+		else
+			$chat.animate({height: '20px'}).toggleClass('closed');
+
+		$(this).toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+	});
+
 	socket.on('connect', function () {
 		socket.emit('chat:join',  user.username );
 	});
 
 	/*Receive messages for the first time*/
 	socket.on('chat:init', function(messages) {
-		var n = messages.length;
 
-		while(n--) {
-			m = messages[n];
-			$msgs.append('<li><span class="pseudo" data-user="'+m.user+'">'+m.user + '</span>' + m.message +'</li>');
-		}
+		console.log(_.template(Chat, {messages : messages}));
+		
+		$msgs.prepend(
+			_.template(Chat, {messages : messages})
+		);
+
+
 		$msgs.scrollTop($msgs[0].scrollHeight);
 
 	});
@@ -41,8 +60,13 @@ require([
 
 	})
 
-	socket.on('chat:joined', function(user) {
-		$msgs.append('<li><i>' + user + ' s\'est connecté</i></li>');
+	socket.on('chat:joined', function(users) {
+		var nb = users.length, users = users.join(', ');
+
+		if(nb < 4)
+			$('#chat .users').text(users);
+		else
+			$('#chat .users').html('<span title="'+users+'">'+ nb + ' utilisateurs');
 	});
 
 })

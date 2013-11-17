@@ -23,13 +23,15 @@ var chat = {
 
 var sockets = function(socket, sockets) {
 	socket.on('chat:join', function(u) {
-		// console.log(u, 'chat:joined', chat.messages);
+		
+		console.log(u, 'chat:joined', chat.messages);
+
 		u = _s.slugify(u);
 
-		if(chat.users.indexOf(u) === -1) {
+		if(chat.users.indexOf(u) === -1)
 			chat.users.push(u);
-			socket.broadcast.emit('joined', u);
-		}
+		
+		sockets.emit('chat:joined', chat.users);
 
 		socket.emit('chat:init', chat.messages);
 		

@@ -13,7 +13,7 @@ require.config({
         collapse : 'modules/jquery.collapse',
         collapse_storage : 'modules/jquery.collapse_storage',
         customselect: 'modules/customselect',
-        text : 'vendor/text',
+        text : 'text',
         //Packery deps
         classie: 'packery/classie',
         eventie: 'packery/eventie',
