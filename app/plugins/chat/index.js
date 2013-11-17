@@ -12,48 +12,52 @@ var chat = {
 	stylesheets : ['/css/chat.css'],
 	users : [],
 	messages : [],
-	sockets : function(socket) {
-		if(chat.user) {
-			socket.on('join', function(u) {
-				u = _s.slugify(u);
-				if(users.indexOf(u) === -1) {
-					users.push(u);
-					socket.emit('init', messages);
-					socket.broadcast.emit('joined', u);
-				}
-			});
-
-			socket.on('message', function(m) {
-				m = md(m, true);
-				messages.push(m);
-
-				socket.broadcast.emit('message', m);
-			});
-		}
-	},
 	views : [
 		{
 			name : "global",
 			path : path.join(__dirname, 'public', 'views', 'chat.ejs'),
-			datas : {messages : this.messages, users : this.users }
+			datas : {port : 3001 }
 		},
 	]
 };
 
+var sockets = function(socket, sockets) {
+	socket.on('chat:join', function(u) {
+		// console.log(u, 'chat:joined', chat.messages);
+		u = _s.slugify(u);
+
+		if(chat.users.indexOf(u) === -1) {
+			chat.users.push(u);
+			socket.broadcast.emit('joined', u);
+		}
+
+		socket.emit('chat:init', chat.messages);
+		
+	});
+
+	socket.on('chat:message', function(u, m) {
+		m = md(m, true);
+		chat.messages.push({user : u, message : m});
+		sockets.emit('chat:message', {user : u, message : m});
+	});
+};
+
+module.exports.sockets = sockets;
+
 
 var plugin = _.extend(chat, require('../plugins')(chat));
 
-module.exports = function(app) {
+module.exports.plugin = function(app) {
     app.use(plugin.middleware);
 	
 	app.use(express.static(path.join(__dirname, 'public')));
 
-	var app_chat = express();
+	// var app_chat = express();
 
-  	var server = http.createServer(app_chat).listen('3002', function(){
-		var io = socketio.listen(server, {secure: true});
-	    io.set('log level', 1); //less log
-	    io.sockets.on('connection', plugin.sockets );
-  	});
+  // 	var server = http.createServer(app_chat).listen(chat.views[0].datas.port, function(){
+		// var io = socketio.listen(server, {secure: true});
+	 //    io.set('log level', 1); //less log
+	 //    io.sockets.on('connection', plugin.sockets );
+  // 	});
 
 }

@@ -29,7 +29,8 @@ require.config({
         sockets : '../socket.io/socket.io',
         alertify : 'alertify',
         theme : '../js/theme',
-        admin : '../js/admin'
+        admin : '../js/admin',
+        chat : '../js/chat'
 
     },
 
@@ -46,6 +47,7 @@ require.config({
         'theme' : {
             deps : ['desktop']
         },
+        'chat' : ['jquery', 'desktop']
 
     },
 

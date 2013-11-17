@@ -201,7 +201,7 @@ module.exports.getTags  = {
 
 							var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-							  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+							  , file = pathInfos.join(global.config.root, '/public/tmp/', coverName)
 
 							  , type = datas.format.split('/');
 
@@ -210,7 +210,8 @@ module.exports.getTags  = {
 
 								file = file + '.' + type[1];
 
-								fs.writeFileSync(file, datas.data);
+								if(!fs.existsSync(file))
+									fs.writeFileSync(file, datas.data);
 
 								delete datas;
 								

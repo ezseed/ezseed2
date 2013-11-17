@@ -15,6 +15,8 @@ module.exports.listen = function(server) {
 
     io.sockets.on('connection', function (socket) {
         
+        require('../plugins/chat').sockets(socket, io.sockets);
+
         socket.on('update', function(uid) {
             console.log('Socket is ready : ' + socket.id);
 

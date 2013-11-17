@@ -1,13 +1,10 @@
 <div id="chat">
 	<ul class="messages">
-		<% for (var i in messages) {%>
-			<%= messages[i] %>
-		<% } %>
+
 	</ul>
-	<textarea></textarea>
+	<div id="textarea" contenteditable="true"></div>
 </div>
 <script type="text/javascript">
-(function($){
-
-})
+var port = "<%= port %>";
 </script>
+<script type="text/javascript" src="/js/chat.js"></script>
