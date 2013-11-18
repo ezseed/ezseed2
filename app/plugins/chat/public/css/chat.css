@@ -1,8 +1,7 @@
 #chat {
 	position:fixed;
-	height: 350px;
+	height: 20px;
 	width: 275px;
-	height: auto;
 	right: 20px;
 	bottom:0;
 	background-color: rgba(71,71,71,0.95);

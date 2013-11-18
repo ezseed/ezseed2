@@ -20,9 +20,9 @@ require([
 	});
 
 	$(document).ready(function() { 
-		if($.cookie('chatclosed')) {
-			$("#chat").css({height: '20px'}).toggleClass('closed');
-			$('#chat .entypo-minus-squared').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+		if(!$.cookie('chatclosed')) {
+			$("#chat").css({height: '350px'}).toggleClass('closed');
+			$('#chat i[class*="entypo"]').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
 		}
 	})
 
