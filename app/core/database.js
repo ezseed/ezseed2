@@ -55,8 +55,8 @@ var db = {
       Paths.findOne({path : path}, function(e, p) {
         if(p) {
           if(typeof username !== 'function') {
-            Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
-              cb(err, obj);
+            Users.findOneAndUpdate({username: username}, { $addToSet: {paths: p._id} }, function(err) { 
+              cb(err, p);
             });
           } else {
             cb(err, p);

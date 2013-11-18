@@ -10,7 +10,7 @@ var plugins = function(plugin) {
 
 			for(var i in plugin.views) {
 				var template = new Buffer(fs.readFileSync(plugin.views[i].path)).toString();
-				html[plugin.views[i].name] = _.template(template, plugin.views[i].datas);
+				html[plugin.views[i].name] = _.template(template, _.extend(plugin.views[i].datas, {user : req.user}));
 			}
 
 			res.locals.plugins[plugin.name] = {

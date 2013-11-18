@@ -1,6 +1,7 @@
-<div id="chat">
+<% if(user) { %>
+<div id="chat" class="closed">
 	<div class="clearfix top">
-		<i class="entypo-minus-squared pullLeft"></i>
+		<i class="entypo-plus-squared pullLeft"></i>
 		<span class="users pullRight">
 
 		</span>
@@ -10,3 +11,4 @@
 	</ul>
 	<div id="textarea" contenteditable="true"></div>
 </div>
+<% } %>
