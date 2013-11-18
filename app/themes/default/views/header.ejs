@@ -15,9 +15,11 @@
 
 
     <% for(var i in plugins) {
-      for(var j in plugins[i].css) { %>
-        <link rel="stylesheet" type="text/css" href="<%- plugins[i].css[j] %>" />
-      <% }
+      if(plugins[i].enabled) {
+        for(var j in plugins[i].css) { %>
+          <link rel="stylesheet" type="text/css" href="<%- plugins[i].css[j] %>" />
+        <% }
+      }
     } %>
 
 

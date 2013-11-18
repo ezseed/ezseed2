@@ -52,21 +52,33 @@ var db = {
     save : function(path, username, cb) {
       cb = typeof username === 'function' ? user : cb;
 
-      var p = new Paths({
-       'path' : path
-      });
-
-      p.save(function(err) {
-       if(err) console.log(err);
-      });
-
-      p.on('save', function(obj) {
-        if(typeof username !== 'function') {
-          Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
-            cb(err, obj);
+      Paths.findOne({path : path}, function(e, p) {
+        if(p) {
+          if(typeof username !== 'function') {
+            Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
+              cb(err, obj);
+            });
+          } else {
+            cb(err, p);
+          }
+        } else {
+          var p = new Paths({
+           'path' : path
           });
-        } else
-          cb(null, obj);
+
+          p.save(function(err) {
+           if(err) console.log(err);
+          });
+
+          p.on('save', function(obj) {
+            if(typeof username !== 'function') {
+              Users.findOneAndUpdate({username: username}, { $addToSet: {paths: obj._id} }, function(err) { 
+                cb(err, obj);
+              });
+            } else
+              cb(null, obj);
+          });
+        }
       });
     },
     remove : function(id, uid, cb) {

@@ -1,22 +1,36 @@
-var socketio = require('socket.io')
-	, http = require('http')
+var fs = require('fs')
     , _ = require('underscore')
-    , _s = require('underscore.string');
-
-var express = require('express'), path = require('path');
-
-var md = require("node-markdown").Markdown;
+    , _s = require('underscore.string')
+    , express = require('express')
+    , path = require('path')
+    , md = require("node-markdown").Markdown;
 
 var chat = {
 	name : "chat",
+	enabled : true,
 	stylesheets : ['/css/chat.css'],
+	javascripts : ['/js/chat.js'],
+	admin : function() {
+		var self = this;
+		return _.template(new Buffer(fs.readFileSync(__dirname + '/public/views/admin.ejs')).toString(), {enabled : self.enabled})
+	},
+	routes : {
+		disable : function(req, res) {
+			chat.enabled = false;
+			res.redirect('back');
+		},
+		enable : function(req, res) {
+			chat.enabled = true;
+			res.redirect('back');
+		}
+	},
 	users : [],
 	messages : [],
 	views : [
 		{
 			name : "global",
 			path : path.join(__dirname, 'public', 'views', 'chat.ejs'),
-			datas : {port : 3001 }
+			datas : {}
 		},
 	]
 };
@@ -24,7 +38,7 @@ var chat = {
 var sockets = function(socket, sockets) {
 	socket.on('chat:join', function(u) {
 		
-		console.log(u, 'chat:joined', chat.messages);
+		// console.log(u, 'chat:joined', chat.messages);
 
 		u = _s.slugify(u);
 
@@ -54,12 +68,7 @@ module.exports.plugin = function(app) {
 	
 	app.use(express.static(path.join(__dirname, 'public')));
 
-	// var app_chat = express();
-
-  // 	var server = http.createServer(app_chat).listen(chat.views[0].datas.port, function(){
-		// var io = socketio.listen(server, {secure: true});
-	 //    io.set('log level', 1); //less log
-	 //    io.sockets.on('connection', plugin.sockets );
-  // 	});
+	app.get('/plugins/chat/disable', chat.routes.disable);
+	app.get('/plugins/chat/enable', chat.routes.enable);
 
 }

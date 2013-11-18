@@ -13,7 +13,13 @@ var plugins = function(plugin) {
 				html[plugin.views[i].name] = _.template(template, plugin.views[i].datas);
 			}
 
-			res.locals.plugins[plugin.name] = {html : html, css : plugin.stylesheets};
+			res.locals.plugins[plugin.name] = {
+				html : html, 
+				css : plugin.stylesheets, 
+				javascripts : plugin.javascripts, 
+				admin : plugin.admin(),
+				enabled : plugin.enabled,
+			};
 
 			next();
 		}

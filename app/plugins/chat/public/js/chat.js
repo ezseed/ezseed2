@@ -19,13 +19,23 @@ require([
 		}
 	});
 
-	$('.entypo-minus-squared').on('click', function() {
+	$(document).ready(function() { 
+		if($.cookie('chatclosed')) {
+			$("#chat").css({height: '20px'}).toggleClass('closed');
+			$('#chat .entypo-minus-squared').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+		}
+	})
+
+	$('#chat i[class*="entypo"]').on('click', function() {
 		var $chat = $('#chat');
 
-		if($chat.hasClass('closed'))
+		if($chat.hasClass('closed')) {
 			$chat.animate({height: '350px'}).toggleClass('closed');
-		else
+			$.cookie('chatclosed', false);
+		} else {
 			$chat.animate({height: '20px'}).toggleClass('closed');
+			$.cookie('chatclosed', true);
+		}
 
 		$(this).toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
 	});
@@ -37,7 +47,7 @@ require([
 	/*Receive messages for the first time*/
 	socket.on('chat:init', function(messages) {
 
-		console.log(_.template(Chat, {messages : messages}));
+		//console.log(_.template(Chat, {messages : messages}));
 		
 		$msgs.prepend(
 			_.template(Chat, {messages : messages})
