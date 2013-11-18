@@ -129,7 +129,11 @@ Date.prototype.getFrenchDateAsString = function() {
 	<h2 class="last"><i class="entypo-palette"></i> Plugins</h2>
 	<div>
 		<div class="content">
-		 (à venir)
+			<ul><%
+				for(var p in plugins) { %>
+					<li><%= p %> <span class="pullRight"><%- plugins[p].admin %></span></li>
+				<%}
+			%></ul>
 		</div>
 	</div>
 </div>

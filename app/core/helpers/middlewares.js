@@ -31,6 +31,8 @@ var middlewares = {
 
 		res.locals.location = req.originalUrl;
 		res.locals.host = req.host;
+		
+		res.locals.plugins = [];
 
 		next();
 	},
@@ -75,7 +77,6 @@ var middlewares = {
 			next();
 		}
 	}
-
 };
 
 

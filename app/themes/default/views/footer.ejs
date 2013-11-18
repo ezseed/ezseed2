@@ -1,14 +1,40 @@
-    <% if(location.match(/^\/admin/ig)) {%>
-    <script src="/js/admin.js"></script>
-    <% } %>
+
     </section>
+
+    <% for(var i in plugins) {
+     if(plugins[i].enabled) {
+    %>
+       <%- plugins[i].html['global'] %>
+    <% }
+        } %>
+
+
     <footer class="text-center">
         Made by <a href="http://soyuka.me">soyuka</a> - Creative Commons.
     </footer>
+
+    <% if(location.match(/^\/admin/ig)) {%>
+        <script src="/js/admin.js"></script>
+    <% } %>
+
     <script>
     var user = <%- JSON.stringify(user) %>;
     var config = <%- JSON.stringify(config) %>;
     var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>
     </script>
+
+    <% 
+    for(var i in plugins) {
+     if(plugins[i].enabled) {
+            for(var j in plugins[i].javascripts) {
+    %>
+       <script src="<%- plugins[i].javascripts[j] %>"></script>
+    <% 
+            }
+        }
+    }
+    %>
+
+
   </body>
 </html>

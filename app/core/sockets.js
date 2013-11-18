@@ -8,13 +8,15 @@ var socketio = require('socket.io')
   , _ = require('underscore');
 
 
-module.exports.listen = function(app) {
+module.exports.listen = function(server) {
 
-    io = socketio.listen(app, {secure: true});
+    io = socketio.listen(server, {secure: true});
     io.set('log level', 1); //less log
 
     io.sockets.on('connection', function (socket) {
         
+        require('../plugins/chat').sockets(socket, io.sockets);
+
         socket.on('update', function(uid) {
             console.log('Socket is ready : ' + socket.id);
 
@@ -76,11 +78,11 @@ module.exports.listen = function(app) {
 
             //Starts watching by omitting invisible files 
             //(see https://github.com/paulmillr/chokidar/issues/47) 
-            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/tmp'),
+            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/downloads/.tmp'),
                 { 
-                    ignored: function(p) {
-                        return /^\./.test(pathInfo.basename(p));
-                    },
+                    // ignored: function(p) {
+                    //     return /^\./.test(pathInfo.basename(p));
+                    // },
                     persistent:false
 
                 }

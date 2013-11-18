@@ -242,6 +242,8 @@ var useradd = {
 		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
 		fs.chmodSync(shell_path, '775');
 
+		var isInstall = cache.get('isinstall');
+
 		var running = spawn(shell_path, [username, password])
 		  , path = cache.get('path') ? cache.get('path') : '/home'
 		  , userPath = pathInfo.join(path, username, 'downloads');
@@ -260,8 +262,16 @@ var useradd = {
 		running.on('exit', function (code) {
 			db.user.exists(username, function(exists) {
 				if(exists) {
-					console.log("L'utilisateur existe");
-					done(null, 'rutorrent');
+					if(isInstall === true) {
+						var u = cache.get('user');
+						db.paths.save(userPath, u.username, function(err, p) {
+							console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+					 		done(null, 'rutorrent');
+						});
+					} else {
+						console.log("L'utilisateur existe");
+						done(null, 'rutorrent');
+					}
 				} else {
 					db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
 						db.paths.save(userPath, username, function(err, p) {
@@ -276,6 +286,8 @@ var useradd = {
 	transmission : function(username, password, done) {
 		var shell_path = __dirname + '/app/scripts/transmission/useradd.sh';
 		fs.chmodSync(shell_path, '775');
+
+		var isInstall = cache.get('isinstall');
 
 		var running = spawn(shell_path, [username, password])
 		  , path = cache.get('path') ? cache.get('path') : '/home'
@@ -332,11 +344,22 @@ var useradd = {
 				    	function(err, stdout, sdterr) {
 				    		db.user.exists(username, function(exists) {
 								if(exists) {
-									console.log("L'utilisateur existe");
-									done(null, 'transmission');
+									if(isInstall === true) {
+										var u = cache.get('user');
+										db.paths.save(userPath, u.username, function(err, p) {
+											console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
+									 		done(null, 'transmission');
+										});
+									} else {
+										console.log("L'utilisateur existe");
+										done(null, 'transmission');
+									}
 								} else {
 							    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
 							    		db.paths.save(userPath, username, function(err, p) {
+							    			if(err)
+							    				console.log(err.error);
+
 									 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
 									 		done(null,'transmission');
 									 	});
@@ -367,7 +390,7 @@ var install = {
 		else {
 			console.log("Entrez les informations de l'admin".info);
 
-			promptly.prompt('Username : ', { validator: validators.user}, function (err, username) {
+			promptly.prompt('Username : ', {validator: validators.user}, function (err, username) {
 			    promptly.password('Password : ', function(err, password) {
 			    	db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
 			    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
@@ -579,6 +602,8 @@ program
 
 		if(options.skipuser)
 			cache.put('skipuser', true);
+
+		cache.put('isinstall', true);
 
 		async.series(install,
 		function(err, results) {

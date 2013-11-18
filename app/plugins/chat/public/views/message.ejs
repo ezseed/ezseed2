@@ -1,0 +1,27 @@
+<%
+var l = messages.length;
+
+for(var i = 0; i < l - 1; i++) {
+	var m = messages[i], prev = i >= 1 ? messages[i-1] : null;
+
+	if(prev !== null && m.user == prev.user) {
+
+		print(m.message);
+
+	} else {
+%>
+	<%= prev === null ? '<li>' : '</li><li>' %>
+		<span class="pseudo" data-user="<%= m.user %>"><%= m.user %></span><%= m.message %>
+<%
+	}
+%>
+
+
+<%= i == l - 2 ? '</li>': '' %>
+
+
+<% 
+
+} //end loop
+
+%>

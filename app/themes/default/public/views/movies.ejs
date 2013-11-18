@@ -31,7 +31,7 @@ movies.forEach(function(movie) {
 			</a>
 		</div>
 		<div class="list-infos">
-			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %></h1>
+			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1>
 
 			<div class="button-group">
 				<a href="/watch/<%- movie._id %>" title="Visionner">
@@ -125,7 +125,7 @@ movies.forEach(function(movie) {
 		<% } %>
 	</div>
 	<div data-id="<%- movie._id %>" class="element miniature video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
-		<div class="titre"><h1 class="league-gothic" title="<%- movie.title %>"><%- movie.title %></h1></div>
+		<div class="titre"><h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1></div>
 	
 		<a href="/watch/<%- movie._id %>">
  			<% if(movie.picture == undefined) {%>
@@ -139,7 +139,7 @@ movies.forEach(function(movie) {
 		<i class="entypo-video"></i>
 
 		<a href="/watch/<%- movie._id %>" class="table-link">
-			<%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.episode != undefined && movie.videos.length < 2) { %>E<%- movie.episode%><% } } %>
+			<%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %>
 		</a>
 
 		<div class="button-group">

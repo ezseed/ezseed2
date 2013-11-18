@@ -201,7 +201,7 @@ module.exports.getTags  = {
 
 							var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-							  , file = pathInfos.join(global.config.root, '/public/tmp/') + _.uniqueId('cover' + coverName)
+							  , file = pathInfos.join(global.config.root, '/public/tmp/', coverName)
 
 							  , type = datas.format.split('/');
 
@@ -210,7 +210,8 @@ module.exports.getTags  = {
 
 								file = file + '.' + type[1];
 
-								fs.writeFileSync(file, datas.data);
+								if(!fs.existsSync(file))
+									fs.writeFileSync(file, datas.data);
 
 								delete datas;
 								
@@ -253,7 +254,7 @@ module.exports.getAlbumInformations = getAlbumInformations;
 
 var getMovieInformations = function(movie, cb) {
 
-	//console.log('Gathering infos on', movie.name);
+	console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '5'}, function(err, res) {
@@ -264,22 +265,37 @@ var getMovieInformations = function(movie, cb) {
 
       		if(infos !== undefined) {
 
-      			var index = 0;
+      			//Index allocine info
+      			var index = false;
 
       			var m_name = _s.slugify(movie.name);
 
-      			_.each(infos, function(e, i) {
-      				var e_title = _s.slugify(e.title), e_original = _s.slugify(e.originalTitle);
+      			//Parse each infos founded, if title matchs, break
+      			var nb_resultats = infos.length, i = 0;
+
+      			//loop beginning with best match !
+      			while(i < nb_resultats - 1 && index === false) {
+      				
+      				var e = infos[i],
+      					//slugifying names - matches are better
+      					e_title = _s.slugify(e.title), 
+      					e_original = _s.slugify(e.originalTitle);
 
       				if(
+
       					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
       					||
       					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
-      				  ) {
+
+      				)	{
       						index = i;
-      						return;
       					}
-      			});
+
+      				i++;
+      			}
+
+  				if(index === false)
+  					index = 0;
 
           		movie.code = infos[index].code;
 
