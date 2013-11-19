@@ -1,10 +1,4 @@
-require.config({
-    'baseUrl': '/javascripts',
-    //SEE http://requirejs.org/docs/api.html#config-waitSeconds
-    waitSeconds: 25
-});
-
-require([
+define([
     'jquery', 'desktop', 'text!/views/message.ejs'
 ], function($, Desktop, Chat){
 
@@ -26,7 +20,7 @@ require([
 		}
 	})
 
-	$('#chat i[class*="entypo"]').on('click', function() {
+	$('#chat .top').on('click', function() {
 		var $chat = $('#chat');
 
 		if($chat.hasClass('closed')) {
@@ -37,7 +31,7 @@ require([
 			$.cookie('chatclosed', true);
 		}
 
-		$(this).toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+		$(this).find('i[class*="entypo"]').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
 	});
 
 	socket.on('connect', function () {

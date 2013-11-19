@@ -25,6 +25,7 @@ var chat = {
 		}
 	},
 	users : [],
+	usersBySID : [], //Store socket.id by users
 	messages : [],
 	views : [
 		{
@@ -42,8 +43,10 @@ var sockets = function(socket, sockets) {
 
 		u = _s.slugify(u);
 
-		if(chat.users.indexOf(u) === -1)
+		if(chat.users.indexOf(u) === -1) {
 			chat.users.push(u);
+			chat.usersBySID.push({u : u, sid : socket.id});
+		}
 		
 		sockets.emit('chat:joined', chat.users);
 
@@ -55,6 +58,24 @@ var sockets = function(socket, sockets) {
 		m = md(m, true);
 		chat.messages.push({user : u, message : m});
 		sockets.emit('chat:message', {user : u, message : m});
+	});
+
+	socket.on('disconnect', function() {
+
+		var u = _.findWhere(chat.usersBySID, {sid : socket.id});
+
+
+		if(u) {
+			u = u.u;
+
+			var i = chat.users.indexOf(u);
+
+			if (i > -1) {
+	    		chat.users.splice(i, 1);
+				sockets.emit('chat:joined', chat.users);
+			}
+		}
+
 	});
 };
 

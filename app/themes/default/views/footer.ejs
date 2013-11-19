@@ -23,18 +23,5 @@
     var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>
     </script>
 
-    <% 
-    for(var i in plugins) {
-     if(plugins[i].enabled) {
-            for(var j in plugins[i].javascripts) {
-    %>
-       <script src="<%- plugins[i].javascripts[j] %>"></script>
-    <% 
-            }
-        }
-    }
-    %>
-
-
   </body>
 </html>
