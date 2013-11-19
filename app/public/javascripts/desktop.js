@@ -257,9 +257,19 @@ define([
 
             self.displaySelector = selector;
 
+            //Hiding miniatures
+            $(self.itemSelector + '.miniature').css('visibility', 'hidden');
+
+            //Make it async is way toooo long
             imagesLoaded(
-                document.querySelector('#' + self.$container.attr('id')), 
+                document.querySelector('#' + self.$container.attr('id') + ' .miniature'), 
             function() {
+                self.pckry.layout();
+
+                $(self.itemSelector + '.miniature h1').quickfit();
+                $(self.itemSelector + '.miniature').css('visibility', 'visible');
+
+            });
 
                 if(!self.firstLoad)
                     self.loader();
@@ -270,7 +280,6 @@ define([
                     $(this).css('display', 'block');
                 });
 
-                $(self.itemSelector + '.miniature h1').quickfit();
 
                 self.pckry.layout();
                 
@@ -283,7 +292,6 @@ define([
                 if(typeof cb == 'function')
                     cb();
                
-            });
         }
 
 
