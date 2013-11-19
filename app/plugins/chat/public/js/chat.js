@@ -1,10 +1,4 @@
-require.config({
-    'baseUrl': '/javascripts',
-    //SEE http://requirejs.org/docs/api.html#config-waitSeconds
-    waitSeconds: 25
-});
-
-require([
+define([
     'jquery', 'desktop', 'text!/views/message.ejs'
 ], function($, Desktop, Chat){
 
@@ -20,13 +14,13 @@ require([
 	});
 
 	$(document).ready(function() { 
-		if($.cookie('chatclosed')) {
-			$("#chat").css({height: '20px'}).toggleClass('closed');
-			$('#chat .entypo-minus-squared').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+		if(!$.cookie('chatclosed')) {
+			$("#chat").css({height: '350px'}).toggleClass('closed');
+			$('#chat i[class*="entypo"]').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
 		}
 	})
 
-	$('#chat i[class*="entypo"]').on('click', function() {
+	$('#chat .top').on('click', function() {
 		var $chat = $('#chat');
 
 		if($chat.hasClass('closed')) {
@@ -37,7 +31,7 @@ require([
 			$.cookie('chatclosed', true);
 		}
 
-		$(this).toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
+		$(this).find('i[class*="entypo"]').toggleClass('entypo-minus-squared').toggleClass('entypo-plus-squared');
 	});
 
 	socket.on('connect', function () {

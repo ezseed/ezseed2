@@ -43,6 +43,19 @@
 
     <script data-main="/javascripts/main" src="/javascripts/require-jquery.js"></script>
 
+    <% 
+    for(var i in plugins) {
+     if(plugins[i].enabled) {
+            for(var j in plugins[i].javascripts) {
+    %>
+       <script>require(['<%- plugins[i].javascripts[j] %>']);</script>
+    <% 
+            }
+        }
+    }
+    %>
+
+
     <% if(location.indexOf('/listen') === 0) { %>
       <link rel="stylesheet" type="text/css" href="/css/jplayer/jplayer.blue.monday.css">
     <% } %>

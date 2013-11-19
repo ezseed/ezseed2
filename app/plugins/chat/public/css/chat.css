@@ -1,8 +1,7 @@
 #chat {
 	position:fixed;
-	height: 350px;
+	height: 20px;
 	width: 275px;
-	height: auto;
 	right: 20px;
 	bottom:0;
 	background-color: rgba(71,71,71,0.95);
@@ -52,10 +51,4 @@
 
 #chat #textarea:focus {outline: 0}
 
-#chat .top {padding: 1px 5px 1px 5px}
-
-/*
-#admin h2.open, #admin h2:hover {
-	color:#D8D8CA;
-}
-*/
+#chat .top {padding: 1px 5px 1px 5px; cursor: pointer;}
