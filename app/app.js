@@ -35,6 +35,7 @@ app.set('port', 3001); //don't touch (sockets desktop.js are listening to this p
 
 //More views engines ? See ghost each theme = git submodule !
 app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
+
 app.set('view engine', 'ejs');
 
 app.use(express.logger('dev'));

@@ -198,13 +198,13 @@ module.exports.processMovies = function(params, callback) {
 					exists = true;
 
 		//Do the test again with video name
-		var m = release.getTags.video(e.path);
+		e = _.extend(e, release.getTags.video(e.path));
 
-		if(m.movieType == 'tvseries') {
+		if(e.movieType == 'tvseries') {
 			existingFile = _.filter(params.existing, function(ex){ 
-				var m_name = _s.slugify(m.name), m_title = _s.slugify(m.title),	ex_name = _s.slugify(ex.name);
+				var m_name = _s.slugify(e.name), m_title = _s.slugify(e.title),	ex_name = _s.slugify(ex.name);
 
-				return (ex_name == m_name || ex == m_title) && ex.season == m.season; 
+				return (ex_name == m_name || ex == m_title) && ex.season == e.season; 
 			}), nbExisting = existingFile.length;
 			
 			while(nbExisting-- && !exists)
@@ -221,6 +221,7 @@ module.exports.processMovies = function(params, callback) {
 				});
 
 			if(indexMatch !== null) {
+
 				movies[indexMatch].videos.push(e);
 				i++;
 				return parseMovies(arr, cb, i, movies);

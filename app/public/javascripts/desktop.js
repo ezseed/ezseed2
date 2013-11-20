@@ -86,6 +86,18 @@ define([
 
             return self;
         },
+        template : function(View, datas) {
+
+            var bytesToSize = function bytesToSize(bytes) {
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                if (bytes == 0) return 'n/a';
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                if (i == 0) return bytes + ' ' + sizes[i]; 
+                return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+            };
+
+            return _.template(View, _.extend(datas, {bytesToSize : bytesToSize}));
+        },
         //Rendering methods
         render : {
             files : function(paths, callback) {
@@ -111,14 +123,14 @@ define([
                     movies : function(callback) 
                     {
                         if(path.movies.length) {
-                            callback(null, _.template(Movies, {movies : path.movies}));
+                            callback(null, Desktop.template(Movies, {movies : path.movies}));
                         } else
                             callback(null, '');
                     },
                     albums : function(callback) 
                     {
                         if(path.albums.length) {
-                            callback(null, _.template(Albums, {albums : path.albums}));
+                            callback(null, Desktop.template(Albums, {albums : path.albums}));
                         } else
                             callback(null, '');
 
@@ -126,7 +138,7 @@ define([
                     others : function(callback) 
                     {
                         if(path.others.length) {
-                            callback(null, _.template(Others, {others : path.others}));
+                            callback(null, Desktop.template(Others, {others : path.others}));
                         } else 
                             callback(null, '');
 

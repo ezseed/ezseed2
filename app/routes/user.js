@@ -70,6 +70,12 @@ var user = {
 			res.redirect('/'+req.session.user.client);
 	},
 
+	/**
+	 * User preferences
+	 */
+	preferences : function(req, res) {
+		res.render('preferences');
+	},
 	password : function(req, res) {
 		
 	}
@@ -82,6 +88,8 @@ module.exports = function(app) {
 	app.get('/logout', user.logout);
 	app.post('/login', user.authenticate);
 	app.get('/torrents', userHelper.restrict, user.torrent);
+
+	app.get('/torrents', userHelper.restrict, user.preferences);
 
 	app.get('/user/password', userHelper.restrict, user.password);
 	app.get('/user/reset/(:uid)', user.reset); //to be moved ?
