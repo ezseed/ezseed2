@@ -83,7 +83,7 @@ movies.forEach(function(movie) {
 							if(epa && epb)
 								if(epa > epb)
 									return 1;
-							
+
 						    if (a.name == b.name) {
 						        return 0;
 						    } else if (a.name > b.name) {
@@ -96,7 +96,7 @@ movies.forEach(function(movie) {
 						%>
 						<tr data-id="<%if(file.episode !== undefined){%><%-file._id%><%} %>">
 							<td><%- i %></td>
-							<td style="text-align:left"><%- file.name %> <%= (file.episode !== undefined && file.episode.length) ? '- E' + file.episode : '' %></td>
+							<td style="text-align:left"><%- file.name %> <%= (file.episode !== null && file.episode.length) ? '- E' + file.episode : '' %></td>
 							<td><%- bytesToSize(file.size) %></td>
 							<td>
 								<a href="/download/<%-movie._id%>/<%-file._id%>"><i class="entypo-download"></i></a>
