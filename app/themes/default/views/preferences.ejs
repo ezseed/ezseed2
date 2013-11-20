@@ -1,0 +1,20 @@
+<% include header %>
+
+<h1>Configurations</h1>
+
+<div id="admin" class="text-center">
+	<form method="POST" action="/user/password/<%= user.id %>" style="padding:10px" class="text-center">
+		<input type="password" name="password" value="" placeholder="Nouveau mot de passe">
+		<br><br>
+		<input type="submit" value="Envoyer">
+	</form>
+
+	<br>
+
+	<a href="/user/reset/<%= user.id%>" class="reset-db"><i class="entypo-ccw" title="Réinitialiser la base de données"></i>Réinitialiser la base de données</a>
+	<br><br>
+</div>
+
+<div id="toTop"><i class="entypo-up-bold"></i></div>
+
+<% include footer %>
