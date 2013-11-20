@@ -74,10 +74,23 @@ var user = {
 	 * User preferences
 	 */
 	preferences : function(req, res) {
-		res.render('preferences');
+		res.render('preferences', {title : 'Préférences'});
 	},
 	password : function(req, res) {
-		
+		db.user.byId(req.params.uid, function(err, user) {
+			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+				
+			var options = ['password', user.client, user.username, ,'-p', req.body.password];
+
+			exec(shell_path, options, function(err, stderr, stdout) {
+				if(err)
+					console.log(err, stderr, stdout);
+
+				req.session.success = "Mot de passe changé";
+
+				res.redirect('/admin');
+			});
+		});
 	}
 
 };
@@ -89,8 +102,9 @@ module.exports = function(app) {
 	app.post('/login', user.authenticate);
 	app.get('/torrents', userHelper.restrict, user.torrent);
 
-	app.get('/torrents', userHelper.restrict, user.preferences);
+	app.get('/user/preferences', userHelper.restrict, user.preferences);
 
-	app.get('/user/password', userHelper.restrict, user.password);
-	app.get('/user/reset/(:uid)', user.reset); //to be moved ?
+	app.post('/user/password/(:uid)', userHelper.restrict, user.password);
+
+	app.get('/user/reset/(:uid)', userHelper.restrict, user.reset); //to be moved ?
 }
