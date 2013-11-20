@@ -77,20 +77,26 @@ movies.forEach(function(movie) {
 					</thead>
 					<tbody>
 						<%	var i = 1;
-						movie.videos.sort(function (a, b) {
-							var epa = a.episode, epb = b.episode;
 
-							if(epa && epb)
-								if(epa > epb)
+						if(movie.movieType == "tvseries") {
+							movie.videos.sort(function (a, b) {
+								if(a.episode == b.episode)
+									return 0;
+								else if(a.episode > b.episode)
 									return 1;
 
-						    if (a.name == b.name) {
-						        return 0;
-						    } else if (a.name > b.name) {
-						        return 1;
-						    }
-						    return -1;
-						});
+								return -1;
+							});
+						} else {
+							movie.videos.sort(function (a, b) {
+							    if (a.name == b.name) {
+							        return 0;
+							    } else if (a.name > b.name) {
+							        return 1;
+							    }
+							    return -1;
+							});
+						}
 
 						movie.videos.forEach(function(file) {
 						%>
