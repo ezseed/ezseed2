@@ -15,7 +15,7 @@ module.exports.listen = function(server) {
 
     io.sockets.on('connection', function (socket) {
         
-        //To be improved (got through plugins)
+        //To be improved (go through plugins)
         require('../plugins/chat').sockets(socket, io.sockets);
 
         socket.on('update', function(uid) {

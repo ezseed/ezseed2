@@ -45,13 +45,11 @@
 
     <% 
     for(var i in plugins) {
-     if(plugins[i].enabled) {
-            for(var j in plugins[i].javascripts) {
+      if(plugins[i].enabled) {
     %>
-       <script>require(['<%- plugins[i].javascripts[j] %>']);</script>
-    <% 
-            }
-        }
+       <script>require([<%- plugins[i].javascripts %>]);</script>
+    <%
+      }
     }
     %>
 

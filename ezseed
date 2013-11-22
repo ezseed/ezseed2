@@ -441,37 +441,35 @@ var install = {
 		else {
 
 			console.log("ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)".info);
-			exec('mkdir /usr/local/nginx', function(error) {
-				promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
-					var l = sslkeys.length;
+			promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
+				var l = sslkeys.length;
 
-					if(l == 2) {	
-						var cmd = new Buffer("\
-								mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
-								mv " + sslkeys[1].path + " " + __dirname + "/ezseed" + sslkeys[1].ext + " && \
-								mv *ezseed.key ezseed.pem* /usr/local/nginx/").toString();
+				if(l == 2) {	
+					var cmd = new Buffer("\
+							mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
+							mv " + sslkeys[1].path + " " + __dirname + "/ezseed" + sslkeys[1].ext + " && \
+							mv *ezseed.key ezseed.pem* /usr/local/nginx/").toString();
 
-						exec(cmd, function(error, stdout, stderr) {
-							if(cache.get('force') === true && !_.isEmpty(stderr))
-								console.log(stderr.error);
-							else if(!_.isEmpty(stderr))
-								throw stderr.error;
+					exec(cmd, function(error, stdout, stderr) {
+						if(cache.get('force') === true && !_.isEmpty(stderr))
+							console.log(stderr.error);
+						else if(!_.isEmpty(stderr))
+							throw stderr.error;
 
-							exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
-								callback(null, {});
-							});
+						exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
+							callback(null, {});
 						});
-							 
-					} else {
-						var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
-						exec(cmd, function(error, stdout, stderr) {
-							exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
-								callback(null, {});
-							});
+					});
+						 
+				} else {
+					var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
+					exec(cmd, function(error, stdout, stderr) {
+						exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
+							callback(null, {});
 						});
-					}
+					});
+				}
 
-				});
 			});
 		}
 
@@ -585,14 +583,13 @@ var daemon = function(client, command, username, done) {
 }
 
 program
-	.command('install')
-	.option('-f, --force', 'force install (will not throw errors)')
+	.command('config')
 	.option('-u, --skipuser', 'Skip admin creation')
 	.option('-n, --notorrent', 'Skip torrent client installation')
 	.option('-s, --skipnginx', 'Skip nginx configuration')
 	.action(function(options) {
-		if(options.force)
-			cache.put('force', true);
+		
+		cache.put('force', true);
 		
 		if(options.notorrent)
 			cache.put('notorrent', true);
@@ -633,7 +630,7 @@ program
 	});
 
 program
-	.command('torrent [client]')
+	.command('install [client]')
 	.description('Installation du client torrent')
 	.action(function(client) {
 
@@ -642,6 +639,16 @@ program
 			console.log('Client torrent installé'.info);
 			process.exit(1);
 		}, client);
+	});
+
+program
+	.command('update')
+	.description('Update ezseed')
+	.action(function() {
+		exec('git pull && npm install && pm2 restart all', function(error) {
+			console.log('Ezseed est à jour'.info);
+			process.exit(1);
+		});
 	});
 
 program

@@ -16,7 +16,7 @@ var plugins = function(plugin) {
 			res.locals.plugins[plugin.name] = {
 				html : html, 
 				css : plugin.stylesheets, 
-				javascripts : plugin.javascripts, 
+				javascripts : plugin.javascripts.join(','), 
 				admin : plugin.admin(),
 				enabled : plugin.enabled,
 			};
