@@ -567,11 +567,8 @@ var daemon = function(client, command, username, done) {
 
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
-
-		if(cache.get('force') === true)
-			console.log(string.error);
-		else
-			throw string.error;
+		console.log(string.error);
+		
 	});
 
 	running.on('exit', function (code) {
@@ -655,8 +652,7 @@ program
 	.command('useradd <rutorrent|transmission|aucun> <username>')
 	.option('-p, --password [password]', 'specify password')
 	.option('-P, --path [path]', 'specify userdir path [depreceated]')
-	.option('-r, --role', '<admin|[user]>')
-	.option('-f, --force', 'force')
+	.option('-r, --role <role>', '<admin|[user]>')
 	.description("Ajout d'un utilisateur au client spécifié")
 	.action(function(client, username, options) {
 
@@ -668,8 +664,7 @@ program
 				if(options.path)
 					cache.put('path', options.path);
 
-				//if(options.force)
-					cache.put('force', true);
+				cache.put('force', true);
 
 				var next = function(options) {
 
@@ -693,10 +688,15 @@ program
 
 				if(options.role) {
 
-					promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
+					if(options.role.length) {
 						cache.put('role', role);
 						next(options);
-					});
+					} else {
+						promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
+							cache.put('role', role);
+							next(options);
+						});
+					}
 				} else
 					next(options);
 
@@ -714,11 +714,9 @@ program
 
 program
 	.command('userdel <rutorrent|transmission> <username>')
-	.option('-f, --force', 'force')
 	.description("Suppression de l'utilisateur /!\\ tous les fichiers seront supprimés")
 	.action(function(client, username, options) {
-		if(options.force)
-			cache.put('force', true);
+		cache.put('force', true);
 
 		userdel[client](username, function() {
 			process.exit(1);
@@ -748,7 +746,6 @@ program
 
 program
 	.command('daemon <rutorrent|transmission> <command> <username>')
-	.option('-f, --force', 'force')
 	.description('start|stop|restart daemon-client for specified username')
 	.action(daemon);
 
