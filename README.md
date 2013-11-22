@@ -36,7 +36,7 @@ git pull && pm2 restart all
 [![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr)
 
 ### EzSeed (shell)
-![Ezseed shell](http://www.zupmage.eu/i/bYfDM1Ur0y.png)
+![Ezseed shell](http://www.zupmage.eu/i/SoDnyJbizD.png)
 
 Ce shell vous permet d'installer rutorrent, transmission ou encore d'ajouter, de supprimer un utilisateur. Pour connaître la syntaxe il suffit de taper `./ezseed -h` pour avoir liste des commandes et ses options.
 
