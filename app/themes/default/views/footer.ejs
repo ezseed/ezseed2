@@ -13,10 +13,6 @@
         Made by <a href="http://soyuka.me">soyuka</a> - Creative Commons.
     </footer>
 
-    <% if(location.match(/^\/admin/ig)) {%>
-        <script src="/js/admin.js"></script>
-    <% } %>
-
     <script>
     var user = <%- JSON.stringify(user) %>;
     var config = <%- JSON.stringify(config) %>;

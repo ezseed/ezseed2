@@ -34,6 +34,8 @@ var middlewares = {
 		
 		res.locals.plugins = [];
 
+		res.locals.themes = require(global.config.root + '/themes');
+		
 		next();
 	},
 	user : function(req, res, next) {

@@ -6,3 +6,10 @@ node_modules/
 app/scripts/transmission/config/settings.*.json
 app/config.json
 .idea/
+app/plugins/*
+!app/plugins/index.js
+!app/plugins/chat/
+!app/plugins/checkforupdat/es/
+app/themes/*
+!app/themes/default/
+!app/themes/index.js

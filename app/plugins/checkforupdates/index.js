@@ -5,7 +5,7 @@ var fs = require('fs')
     , request = require('request');
 
 var plugin = {
-	name : "checkforupdates",
+	name : "Updates notifier",
 	static : path.join(__dirname, 'public'),
 	enabled : true,
 	interval : null,
