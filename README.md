@@ -13,7 +13,7 @@ Ensuite exécutez autoInstall (installation de Nodejs et mongodb Debian Wheezy u
 chmod +x ./autoInstall.sh && ./autoInstall.sh
 # puis configurez le tout :
 cd /var/www/ezseed2
-./ezseed install
+./ezseed config
 ```
 Sur les kimsufi, si vous avez une erreur du genre `Unable to connect to localhost:27127`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Kimsufi-Mongodb-erreur).
 
