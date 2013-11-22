@@ -1,28 +1,18 @@
 var fs = require('fs')
     , _ = require('underscore')
     , _s = require('underscore.string')
-    , express = require('express')
     , path = require('path')
     , md = require("node-markdown").Markdown;
 
-var chat = {
+var plugin = {
 	name : "chat",
 	enabled : true,
+	static : path.join(__dirname, 'public'),
 	stylesheets : ['/css/chat.css'],
 	javascripts : ['/js/chat.js'],
 	admin : function() {
 		var self = this;
 		return _.template(new Buffer(fs.readFileSync(__dirname + '/public/views/admin.ejs')).toString(), {enabled : self.enabled})
-	},
-	routes : {
-		disable : function(req, res) {
-			chat.enabled = false;
-			res.redirect('back');
-		},
-		enable : function(req, res) {
-			chat.enabled = true;
-			res.redirect('back');
-		}
 	},
 	users : [],
 	usersBySID : [], //Store socket.id by users
@@ -33,8 +23,29 @@ var chat = {
 			path : path.join(__dirname, 'public', 'views', 'chat.ejs'),
 			datas : {}
 		},
+	],
+	routes : [
+		{
+			type : 'GET',
+			route : '/plugins/chat/disable',
+			action :  function(req, res) {
+				plugin.enabled = false;
+				res.redirect('back');
+			}
+		},
+
+		{ 
+			type : 'GET',
+			route : '/plugins/chat/enable', 
+			action : function(req, res) {
+				plugin.enabled = true;
+				res.redirect('back');
+			}
+		}
 	]
 };
+
+module.exports.plugin = plugin;
 
 var sockets = function(socket, sockets) {
 	socket.on('chat:join', function(u) {
@@ -43,36 +54,36 @@ var sockets = function(socket, sockets) {
 
 		u = _s.slugify(u);
 
-		if(chat.users.indexOf(u) === -1) {
-			chat.users.push(u);
-			chat.usersBySID.push({u : u, sid : socket.id});
+		if(plugin.users.indexOf(u) === -1) {
+			plugin.users.push(u);
+			plugin.usersBySID.push({u : u, sid : socket.id});
 		}
 		
-		sockets.emit('chat:joined', chat.users);
+		sockets.emit('chat:joined', plugin.users);
 
-		socket.emit('chat:init', chat.messages);
+		socket.emit('chat:init', plugin.messages);
 		
 	});
 
 	socket.on('chat:message', function(u, m) {
 		m = md(m, true);
-		chat.messages.push({user : u, message : m});
+		plugin.messages.push({user : u, message : m});
 		sockets.emit('chat:message', {user : u, message : m});
 	});
 
 	socket.on('disconnect', function() {
 
-		var u = _.findWhere(chat.usersBySID, {sid : socket.id});
+		var u = _.findWhere(plugin.usersBySID, {sid : socket.id});
 
 
 		if(u) {
 			u = u.u;
 
-			var i = chat.users.indexOf(u);
+			var i = plugin.users.indexOf(u);
 
 			if (i > -1) {
-	    		chat.users.splice(i, 1);
-				sockets.emit('chat:joined', chat.users);
+	    		plugin.users.splice(i, 1);
+				sockets.emit('chat:joined', plugin.users);
 			}
 		}
 
@@ -81,15 +92,3 @@ var sockets = function(socket, sockets) {
 
 module.exports.sockets = sockets;
 
-
-var plugin = _.extend(chat, require('../plugins')(chat));
-
-module.exports.plugin = function(app) {
-    app.use(plugin.middleware);
-	
-	app.use(express.static(path.join(__dirname, 'public')));
-
-	app.get('/plugins/chat/disable', chat.routes.disable);
-	app.get('/plugins/chat/enable', chat.routes.enable);
-
-}
