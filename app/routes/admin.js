@@ -234,7 +234,7 @@ module.exports = function(app) {
 	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
 	app.post('/admin/user/:uid/password', admin.restrict, admin.updatePassword);
 
-	app.post('/admin/theme/:theme', admin.restrict, admin.changeTheme);
+	app.post('/admin/theme', admin.restrict, admin.changeTheme);
 
 	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
 	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);
