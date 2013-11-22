@@ -10,8 +10,6 @@ module.exports =
 		_.map(themes, function(theme) { 
 			theme = path.join(themesPath, theme);
 
-			console.log(theme);
-
 			if(fs.statSync(theme).isDirectory()) {
 				return path.basename(theme);
 			} else 

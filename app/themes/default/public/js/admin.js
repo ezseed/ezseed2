@@ -46,6 +46,18 @@ require([
 		}
 	});
 
+	$('#change-theme').on('submit', function() {
+
+        alertify.confirm("Pas encore tout à fais au point, si vous avez une erreur 502 c'est normal, revenez à la page précédente :)", function (e) {
+            if (e) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+
+	});
 
 	$('a[href="#more"]').click(function() {
 		$(this).closest('li').find('.user-more').slideToggle();
