@@ -45,6 +45,9 @@ require.config({
         'desktop' : ['sockets'],
         'theme' : {
             deps : ['desktop']
+        },
+        'admin' : {
+            deps : ['collapse', 'collapse_storage', 'customselect']
         }
 
     },
@@ -54,7 +57,7 @@ require.config({
 });
 
 
-require(['desktop', 'sockets', 'theme'], function(Desktop) {
+require(['desktop', 'sockets', 'theme', 'admin'], function(Desktop) {
 
     var socket = Desktop.socket;
 

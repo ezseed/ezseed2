@@ -136,8 +136,9 @@ Date.prototype.getFrenchDateAsString = function() {
 					<% for(var t in themes) { %>
 						<option value="<%= themes[t] %>" <%= themes[t] == config.theme ? "selected" : "" %>><%= themes[t] %></option>
 					<% } %>
-					<input type="submit">
-				</select>
+				</select><br><br>
+				<input type="submit">
+
 			</form>
 
 			<% if(themes.length == 1) { %>
