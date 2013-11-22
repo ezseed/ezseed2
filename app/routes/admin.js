@@ -210,8 +210,10 @@ var admin = {
 
 		jf.writeFileSync(configPath, config);
 
+		res.redirect('/');
+
 		exec('pm2 restart ezseed', function() {
-			res.redirect('/');
+		
 		});
 	}
 
