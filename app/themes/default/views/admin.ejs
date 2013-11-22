@@ -129,11 +129,27 @@ Date.prototype.getFrenchDateAsString = function() {
 	<h2 class="last"><i class="entypo-palette"></i> Plugins</h2>
 	<div>
 		<div class="content">
-			<ul><%
-				for(var p in plugins) { %>
+			<h2>Themes</h2>
+
+			<form method="POST" action="/admin/theme" class="text-center">
+				<select name="theme" style="display:inline-block;">
+					<% for(var t in themes) { %>
+						<option value="<%= themes[t] %>"><%= themes[t] %></option>
+					<% } %>
+				</select>
+			</form>
+
+			<% if(themes.length == 1) { %>
+				<p>Il semble que vous n'avez qu'un thème d'installé ! <a href="http://github.com/soyuka/ezseed2/wiki/">En voici d'autres</a></p>
+			<% } %>
+
+			<h2>Plugins</h2>
+			<ul>
+				<% for(var p in plugins) { %>
 					<li><%= p %> <span class="pullRight"><%- plugins[p].admin %></span></li>
-				<%}
-			%></ul>
+				<% } %>
+			</ul>
+
 		</div>
 	</div>
 </div>

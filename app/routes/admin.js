@@ -202,6 +202,19 @@ var admin = {
 		});
 	}
 
+	, changeTheme : function(req, res) {
+		var configPath = pathInfo.join(global.config.root, 'config.json')
+		  , config = jf.readFileSync(configPath);
+
+		config.theme = req.body.theme;
+
+		jf.writeFileSync(configPath, config);
+
+		exec('pm2 restart ezseed', function() {
+			res.redirect('/');
+		});
+	}
+
 }
 
 module.exports = function(app) {
@@ -220,6 +233,8 @@ module.exports = function(app) {
 
 	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
 	app.post('/admin/user/:uid/password', admin.restrict, admin.updatePassword);
+
+	app.post('/admin/theme/:theme', admin.restrict, admin.changeTheme);
 
 	app.get('/admin/user/transmission/:username', admin.restrict, admin.editTransmissionConfiguration);
 	app.post('/admin/user/transmission/:username', admin.restrict, admin.saveTransmissionConfiguration);

@@ -5,7 +5,7 @@ var fs = require('fs')
     , md = require("node-markdown").Markdown;
 
 var plugin = {
-	name : "chat",
+	name : "Chat",
 	enabled : true,
 	static : path.join(__dirname, 'public'),
 	stylesheets : ['/css/chat.css'],
