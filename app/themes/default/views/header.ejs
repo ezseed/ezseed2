@@ -13,7 +13,6 @@
     <link rel="stylesheet" type="text/css" href="/css/loader.css" />
     <link rel="stylesheet" type="text/css" href="/css/alertify.css" />
 
-
     <% for(var i in plugins) {
       if(plugins[i].enabled) {
         for(var j in plugins[i].css) { %>
@@ -45,13 +44,11 @@
 
     <% 
     for(var i in plugins) {
-     if(plugins[i].enabled) {
-            for(var j in plugins[i].javascripts) {
+      if(plugins[i].enabled) {
     %>
-       <script>require(['<%- plugins[i].javascripts[j] %>']);</script>
-    <% 
-            }
-        }
+       <script>require([<%- plugins[i].javascripts %>]);</script>
+    <%
+      }
     }
     %>
 

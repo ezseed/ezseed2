@@ -14,9 +14,9 @@ module.exports.listen = function(server) {
     io.set('log level', 1); //less log
 
     io.sockets.on('connection', function (socket) {
-        
-        //To be improved (got through plugins)
-        require('../plugins/chat').sockets(socket, io.sockets);
+
+        //To be improved (go through plugins)
+        require('../plugins').sockets(socket, io.sockets);
 
         socket.on('update', function(uid) {
             console.log('Socket is ready : ' + socket.id);
