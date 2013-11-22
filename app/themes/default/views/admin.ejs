@@ -132,11 +132,11 @@ Date.prototype.getFrenchDateAsString = function() {
 			<h3>Themes</h3>
 
 			<form method="POST" action="/admin/theme" class="text-center">
-				<br>
 				<select name="theme" style="display:inline-block;">
 					<% for(var t in themes) { %>
 						<option value="<%= themes[t] %>" <%= themes[t] == config.theme ? "selected" : "" %>><%= themes[t] %></option>
 					<% } %>
+					<input type="submit">
 				</select>
 			</form>
 
