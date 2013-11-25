@@ -82,24 +82,16 @@ var db = {
       });
     },
     remove : function(id, uid, cb) {
-      Paths.findByIdAndRemove(id, function(err) {
+      // If the path isn't user-related, it should not be buggy
+      // but we could count the Users that are watching the path to be removed
+      // if == 0, we can safely delete the path.
+      // Paths.findByIdAndRemove(id, function(err) {
         Users.findByIdAndUpdate(uid, {$pull : {paths : id}}, function(err) {
           cb(err);
         });
-      });
+      // });
     },
     resetByFile : function(fid, done) {
-      // console.log(fid);
-      //   Paths.update({}, 
-      //     {
-      //       $pull : {albums : fid}, $pull : {movies: fid}, $pull : {others: fid}
-      //     }, { multi: true }
-      //   , function(err, num) {
-      //     console.log(num);
-      //     console.log(err);
-      //     process.exit(1);
-      //     done(err);
-      //   });
 
       Paths.find().exec(function(err, docs) {
 
