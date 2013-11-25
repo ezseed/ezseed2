@@ -16,7 +16,7 @@ exports.explore = function(params, cb) {
 	var explorePath = function(pathToWatch, pathCallback) {
 
 		//Get db files first
-		var id_path = _.findWhere(params.docs, {path : pathToWatch})._id;
+		var id_path = _.findWhere(params.docs.paths, {path : pathToWatch})._id;
 
 		db.paths.find(id_path, function(err, existing) {
 			

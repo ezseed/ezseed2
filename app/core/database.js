@@ -32,7 +32,7 @@ var db = {
     				 		paths.push(p[i].path);
     			
 
-    			    cb(err, {paths : paths, docs : docs.paths});
+    			    cb(err, {paths : paths, docs : docs});
           } else {
             cb(err, {paths: [], docs : null});
           }
@@ -86,6 +86,58 @@ var db = {
         Users.findByIdAndUpdate(uid, {$pull : {paths : id}}, function(err) {
           cb(err);
         });
+      });
+    },
+    resetByFile : function(fid, done) {
+      // console.log(fid);
+      //   Paths.update({}, 
+      //     {
+      //       $pull : {albums : fid}, $pull : {movies: fid}, $pull : {others: fid}
+      //     }, { multi: true }
+      //   , function(err, num) {
+      //     console.log(num);
+      //     console.log(err);
+      //     process.exit(1);
+      //     done(err);
+      //   });
+
+      Paths.find().exec(function(err, docs) {
+
+        console.log(docs);
+        var i = -1, update = false;
+
+        _.each(docs, function(path, cursor) {
+
+          i = path.albums.indexOf(fid);
+
+          if(i !== -1) {
+            docs[cursor].albums.splice(i, 1);
+            update = true;
+          }
+
+          i = path.movies.indexOf(fid);
+
+          if(i !== -1) {
+            docs[cursor].movies.splice(i, 1);
+            update = true;
+          }
+
+          i = path.others.indexOf(fid);
+          if(i !== -1) {
+            docs[cursor].others.splice(i, 1);
+            update = true;
+          }
+
+          if(update) {
+            Paths.findByIdAndUpdate(docs[cursor]._id, {movies : docs[cursor].movies, albums : docs[cursor].albums, others : docs[cursor].others }, function(err, num) {
+              console.log(err, num);
+            });
+            update = false;
+          }
+
+        });
+
+        return done();
       });
     }
 	}, 
@@ -288,8 +340,22 @@ var db = {
             }
         },
         function(err, results) {
-            done(err);
-            
+
+            db.paths.byUser(uid, function(err, map) {
+              async.each(
+                map.docs.paths, 
+                function(path,callback){
+                  //Deleting each file id, previously saved inside the path object
+                  Paths.findByIdAndUpdate(path._id, {others : [], movies: [], albums: []}, function(err) {
+                    callback(err);
+                  });
+                }, 
+                function(err){
+                  done(err);
+                }
+              );
+
+            });
         });
 
       });
