@@ -40,25 +40,28 @@ var streaming = {
 
 	},
 	listen : function(req, res) {
-		
-		db.files.albums.byId(req.params.id, function(err, doc) {
-			if(err) { 
-				console.log(err);
-				req.session.error = 'Aucun fichier trouvé';
-				res.redirect('/');
-			} else {
+		if(req.params.id) {
+			db.files.albums.byId(req.params.id, function(err, doc) {
+				if(err) { 
+					console.log(err);
+					req.session.error = 'Aucun fichier trouvé';
+					res.redirect('/');
+				} else {
 
-				var cwd = global.config.root.replace('/app', '');
+					var cwd = global.config.root.replace('/app', '');
 
-				for(var i in doc.songs)			
-					 doc.songs[i].fullUrl = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+					for(var i in doc.songs)			
+						 doc.songs[i].fullUrl = 'http://' + req.host + ':3001' + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+					
+
+					res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:doc._id });
+					
+				}
 				
-
-				res.render('listen', { title: 'Ezseed V2 - ' + doc.title , album: doc, id:doc._id });
-				
-			}
-			
-		});
+			});
+		} else {
+			res.send(404, {});
+		}
 
 	}
 };

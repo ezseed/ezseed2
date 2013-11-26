@@ -20,7 +20,6 @@ var db = {
 		byUser : function (uid, cb) {
 			 Users.findById(uid).populate('paths').exec(function (err, docs) {
         if (err) {
-          console.log(err);
           cb(err, {});
         } else {
 
