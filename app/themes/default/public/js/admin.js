@@ -31,7 +31,7 @@ define([
 	$('#change-theme input[type="submit"]').on('click', function(evt) {
 		evt.preventDefault();
 
-        alertify.confirm("Pas encore tout à fais au point, si vous avez une erreur 502 c'est normal, revenez à la page précédente :)", function (e) {
+        alertify.confirm("Pas encore tout à fais au point, si vous avez une erreur 502 ou que ça charge dans le vide c'est normal, actualisez :)", function (e) {
             if (e) {
                 return $('#change-theme').submit();
             } else {

@@ -16,7 +16,7 @@ exports.explore = function(params, cb) {
 	var explorePath = function(pathToWatch, pathCallback) {
 
 		//Get db files first
-		var id_path = _.findWhere(params.docs, {path : pathToWatch})._id;
+		var id_path = _.findWhere(params.docs.paths, {path : pathToWatch})._id;
 
 		db.paths.find(id_path, function(err, existing) {
 			
@@ -37,12 +37,15 @@ exports.explore = function(params, cb) {
 
 						//Getting types from mime (by extension)
 						do {
+							var mimetype = mime.lookup(filePaths[i]).split('/');
+
 							files[i] = {
 								name : pathInfos.basename(filePaths[i]),
 								path : filePaths[i],
 								prevDir : pathInfos.dirname(filePaths[i]),
 								prevDirRelative : pathInfos.dirname(filePaths[i]).replace(root.rootPath, ''),
-								type : mime.lookup(filePaths[i]).split('/')[0],
+								type : mimetype[0],
+								ext : mimetype[1],
 								size : fs.statSync(filePaths[i]).size
 							}
 						} while(i--)

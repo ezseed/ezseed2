@@ -86,7 +86,7 @@ var admin = {
 	 */
 	, useradd : function(req, res) {
 
-		if(req.body.client == "transmission" || req.body.client == "rutorrent") {
+		if(req.body.client == "transmission" || req.body.client == "rutorrent" || req.body.client == "aucun") {
 
 			if(global.config[req.body.client] == true) {
 
@@ -210,8 +210,10 @@ var admin = {
 
 		jf.writeFileSync(configPath, config);
 
+		res.redirect('/');
+
 		exec('pm2 restart ezseed', function() {
-			res.redirect('/');
+		
 		});
 	}
 

@@ -52,46 +52,7 @@
 </section>
 
 <script type="text/javascript">
-require.config({
-    'baseUrl': '/javascripts',
-    'paths':
-    {
-        //helpers
-        jplayer: 'listen/jplayer.min',
-        playlist : 'listen/jplayer.playlist.min'
-    },
-
-    //SEE http://requirejs.org/docs/api.html#config-waitSeconds
-    waitSeconds: 25
-});
-
-require([
-    'jquery', 'jplayer', 'playlist'
-], function($){
-	new jPlayerPlaylist({
-		jPlayer: "#jquery_jplayer_1",
-		cssSelectorAncestor: "#jp_container_1"
-	}, [
-	<% 
-	for(var i in album.songs) {
-		var file = album.songs[i];
-	%>
-		{
-			title: "<%- file.name.replace(album.title, '') %>",
-			mp3 : "<%- file.fullUrl %>"
-		},
-	<% 
-	}
-	%>
-	], {
-		swfPath: "/javascripts/listen",
-		supplied: "oga, mp3",
-		wmode: "window",
-		smoothPlayBar: true,
-		keyEnabled: true
-	});
-});
-
-
+var album = <%- JSON.stringify(album) %>;
 </script>
+<script>require(['/javascripts/listen.js']);</script>
 <% include footer %>

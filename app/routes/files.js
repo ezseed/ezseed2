@@ -187,7 +187,9 @@ var files = {
 	 */
 	reset : function(req, res) {
 		db.files[req.params.type + 's'].delete(req.params.id, function(err) {
-			res.json({err : err});
+			db.paths.resetByFile(req.params.id, function(err) {
+				res.json({err : err});
+			});
 		});
 	}
 }

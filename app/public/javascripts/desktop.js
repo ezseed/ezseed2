@@ -78,7 +78,7 @@ define([
             if(self.socket === null)
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
-            if(user)
+            if(user && isDesktop)
                 self.socket.emit('update', user.id);
 
             //hash

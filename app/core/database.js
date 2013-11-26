@@ -20,7 +20,6 @@ var db = {
 		byUser : function (uid, cb) {
 			 Users.findById(uid).populate('paths').exec(function (err, docs) {
         if (err) {
-          console.log(err);
           cb(err, {});
         } else {
 
@@ -32,7 +31,7 @@ var db = {
     				 		paths.push(p[i].path);
     			
 
-    			    cb(err, {paths : paths, docs : docs.paths});
+    			    cb(err, {paths : paths, docs : docs});
           } else {
             cb(err, {paths: [], docs : null});
           }
@@ -82,10 +81,54 @@ var db = {
       });
     },
     remove : function(id, uid, cb) {
-      Paths.findByIdAndRemove(id, function(err) {
+      // If the path isn't user-related, it should not be buggy
+      // but we could count the Users that are watching the path to be removed
+      // if == 0, we can safely delete the path.
+      // Paths.findByIdAndRemove(id, function(err) {
         Users.findByIdAndUpdate(uid, {$pull : {paths : id}}, function(err) {
           cb(err);
         });
+      // });
+    },
+    resetByFile : function(fid, done) {
+
+      Paths.find().exec(function(err, docs) {
+
+        console.log(docs);
+        var i = -1, update = false;
+
+        _.each(docs, function(path, cursor) {
+
+          i = path.albums.indexOf(fid);
+
+          if(i !== -1) {
+            docs[cursor].albums.splice(i, 1);
+            update = true;
+          }
+
+          i = path.movies.indexOf(fid);
+
+          if(i !== -1) {
+            docs[cursor].movies.splice(i, 1);
+            update = true;
+          }
+
+          i = path.others.indexOf(fid);
+          if(i !== -1) {
+            docs[cursor].others.splice(i, 1);
+            update = true;
+          }
+
+          if(update) {
+            Paths.findByIdAndUpdate(docs[cursor]._id, {movies : docs[cursor].movies, albums : docs[cursor].albums, others : docs[cursor].others }, function(err, num) {
+              console.log(err, num);
+            });
+            update = false;
+          }
+
+        });
+
+        return done();
       });
     }
 	}, 
@@ -288,8 +331,22 @@ var db = {
             }
         },
         function(err, results) {
-            done(err);
-            
+
+            db.paths.byUser(uid, function(err, map) {
+              async.each(
+                map.docs.paths, 
+                function(path,callback){
+                  //Deleting each file id, previously saved inside the path object
+                  Paths.findByIdAndUpdate(path._id, {others : [], movies: [], albums: []}, function(err) {
+                    callback(err);
+                  });
+                }, 
+                function(err){
+                  done(err);
+                }
+              );
+
+            });
         });
 
       });
