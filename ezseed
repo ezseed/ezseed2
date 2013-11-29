@@ -659,7 +659,7 @@ program
 		if(fs.existsSync('./app/config.json')) {
 			var config = jf.readFileSync('./app/config.json');
 
-			if(client !== "aucun" && config[client] == true) {
+			if(client == "aucun" || config[client] == true) {
 
 				if(options.path)
 					cache.put('path', options.path);
