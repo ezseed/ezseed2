@@ -9,7 +9,8 @@ app/config.json
 app/plugins/*
 !app/plugins/index.js
 !app/plugins/chat/
-!app/plugins/checkforupdat/es/
+!app/plugins/checkforupdates/
+!app/plugins/listen/
 app/themes/*
 !app/themes/default/
 !app/themes/index.js
