@@ -1,7 +1,7 @@
 var _ = require('underscore')
 	, db = require('../core/database')
 	, path = require('path')
-	, exec = require('child_process').exec;
+	, exec = require('child_process').exec
 	, userHelper = require('../core/helpers/users.js');
 
 var user = {
