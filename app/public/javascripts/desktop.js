@@ -109,8 +109,12 @@ define([
                     var i = results.length - 1, html = "";
 
                     do {
-                        html += results[i].movies + results[i].albums + results[i].others;
+                        if(results[i])
+                            html += results[i].movies + results[i].albums + results[i].others;
                     } while(i--)
+
+                    if(html.length == 0)
+                        err = "Aucun fichiers, le chemin est-il surveillé ?";
 
                     callback(err, html);
                 });
