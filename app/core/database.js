@@ -94,7 +94,6 @@ var db = {
 
       Paths.find().exec(function(err, docs) {
 
-        console.log(docs);
         var i = -1, update = false;
 
         _.each(docs, function(path, cursor) {
