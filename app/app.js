@@ -21,8 +21,9 @@ var express = require('express')
 global.config = jf.readFileSync(__dirname + '/config.json');
 
 //Writing conf file
-if(global.config.root.length == 0) {
+if(global.config.root.length == 0 || !global.config.aucun) {
   global.config.root = __dirname;
+  global.config.aucun = true;
   jf.writeFileSync(__dirname + '/config.json', global.config);
 }
 
