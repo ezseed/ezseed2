@@ -58,7 +58,7 @@ var plugin = {
 
 								for(var i in doc.songs) {
 
-									doc.songs[i].url = 'http://' + req.host + ':3001/'+ doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+									doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
 									
 									if(doc.songs[i].ext != 'm3u')
 										songs.push(doc.songs[i]);
