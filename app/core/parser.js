@@ -48,7 +48,7 @@ module.exports.processAlbums = function(params, callback) {
 		}
 
 		var e = arr[i];
-
+		
 		//Redifine prevDir
 		var lastDir = e.prevDir.split('/'), dirsNb = lastDir.length - 1;
 			lastDir = lastDir[dirsNb];
