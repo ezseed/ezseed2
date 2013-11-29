@@ -214,7 +214,6 @@ function DGPlayer(root) {
                 offset += obj.offsetLeft;
                 obj = obj.offsetParent;
             }
-            console.log('offset', offset);
             curX = Math.max(min, Math.min(max, x - offset - (handleSize + min)));
 
             handle.onmousedown(e);
@@ -448,8 +447,6 @@ function DGPlayer(root) {
                 $playlist.innerHTML = _.template(playlistTemplate, {songs : songs});
 
                 loadElements();
-
-                console.log(songs.length, albumEnd);
 
                 if(albumEnd !== 0 && songs.length > albumEnd) {
                     track = albumEnd;
