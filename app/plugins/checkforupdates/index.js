@@ -14,12 +14,12 @@ var plugin = {
 	stylesheets : [],
 	javascripts : ['/js/checkforupdates.js'],
 	checkForUpdates : function(socket, cb) {
-		request('https://api.github.com/repos/soyuka/ezseed2/releases', function(err, resp, body) {
+		request({url : 'https://api.github.com/repos/soyuka/ezseed2/releases', headers : {'User-Agent': 'Awesome-Octocat-App'}}, function(err, resp, body) {
 			var current = JSON.parse(body)[0].tag_name;
 
 			if(current != plugin.version && socket)
 				socket.emit('checker:available', current);
-			else if(current != plugin.version)
+			else if(current == plugin.version)
 				return typeof cb === 'function' ? cb(true) : true;
 			else
 				return typeof cb === 'function' ? cb(false) : false;
