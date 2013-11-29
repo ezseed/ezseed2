@@ -1,5 +1,7 @@
 var _ = require('underscore')
 	, db = require('../core/database')
+	, path = require('path')
+	, exec = require('child_process').exec
 	, userHelper = require('../core/helpers/users.js');
 
 var user = {
@@ -78,7 +80,7 @@ var user = {
 	},
 	password : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+			var shell_path = path.resolve(global.config.root, '..', 'ezseed');
 				
 			var options = ['password', user.client, user.username, ,'-p', req.body.password];
 
