@@ -40,8 +40,14 @@ app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.compress());
+
+//not using bodyparser middleware
+app.use(express.json());
+app.use(express.urlencoded());
+
 app.use(express.cookieParser());
+app.use(express.methodOverride());
 
 //Mongodb sessions
 app.use(express.session({
@@ -52,8 +58,7 @@ app.use(express.session({
   secret: '3xam9l3'
 }));
 
-//Crap (googleit)
-app.use(express.methodOverride());
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -108,28 +113,26 @@ if ('development' == app.get('env')) {
 }
 
 //http://www.itamarweiss.com/post/57962670227/error-handling-in-node-js-express
-app.use(function(req, res, next){
-  res.status(404);
-  
-  // respond with html page
-  if (req.accepts('html')) {
-    res.render('404', { url: req.url });
-    return;
-  }
+app.all('*', function(req, res, next){
 
-  // respond with json
-  if (req.accepts('json')) {
-    res.send({ error: 'Not found' });
-    return;
-  }
+  if(req.route.params[0].match(/css|js|views|img/))
+    next();
+  else {
+    res.status(404);
+    
+    // respond with html page
+    if (req.accepts('html')) {
+      res.render('404', { url: req.url });
+      return;
+    }
 
-  // default to plain-text. send()
-  res.type('txt').send('Not found');
+    // respond with json
+    if (req.accepts('json')) {
+      res.send({ error: 'Not found' });
+      return;
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send('Not found');
+  }
 });
-
-// app.use(function(err, req, res, next){
-//   res.status(err.status || 500);
-//   res.render('500', { error: err });
-// });
-
- 
