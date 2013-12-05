@@ -29,13 +29,7 @@ require.config({
         sockets : '../socket.io/socket.io',
         alertify : 'alertify',
         theme : '../js/theme',
-        admin : '../js/admin',
-        //Audio
-        aurora: 'audiocogs/aurora',
-        flac : 'audiocogs/flac',
-        jplayer: 'listen/jplayer.min',
-        playlist : 'listen/jplayer.playlist.min',
-        listen : 'listen',
+        admin : '../js/admin'
 
     },
 
@@ -54,12 +48,6 @@ require.config({
         },
         'admin' : {
             deps : ['collapse', 'collapse_storage', 'customselect']
-        },
-        'flac' : {
-            deps : ['aurora']
-        },
-        'listen' : {
-            deps : ['aurora', 'jplayer', 'playlist', 'flac']
         }
 
     },

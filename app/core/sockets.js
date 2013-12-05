@@ -18,58 +18,69 @@ module.exports.listen = function(server) {
         //To be improved (go through plugins)
         require('../plugins').sockets(socket, io.sockets);
 
+
         socket.on('update', function(uid) {
-            console.log('Socket is ready : ' + socket.id);
+        //     console.log('Socket is ready : ' + socket.id);
+
+            // db.paths.byUser(uid, function(err, paths) {
+
+            //     explorer.explore(paths, function(err, update) {
+
+            //         db.files.byUser(uid, 0, function(err, files) {
+            //             console.log('Sockets Updating client');
+
+            //             io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
+
+            //             cache.put('lastUpdate_'+uid, new Date);
+
+            //         });
+
 
             db.paths.byUser(uid, function(err, paths) {
+                db.users.count(function(err, num) {
+                    //Space left = disk / users
+                    var spaceLeft = global.config.diskSpace / num;
 
-                explorer.explore(paths, function(err, update) {
+                    users.usedSize(paths, function(size) {
 
-                    db.files.byUser(uid, 0, function(err, files) {
-                        console.log('Sockets Updating client');
+                        //(/helpers/users)
+                        var percent = size.size / 1024 / 1024;
 
-                        io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
+                        percent = percent / spaceLeft * 100 + '%';
 
-                        cache.put('lastUpdate_'+uid, new Date);
+                        spaceLeft = pretty(spaceLeft * 1024 * 1024);
 
-                    });
-
-                    db.users.count(function(err, num) {
-
-                        //Space left = disk / users
-                        var spaceLeft = global.config.diskSpace / num;
-
-                        users.usedSize(paths, function(size) {
-
-                            //(/helpers/users)
-                            var percent = size.size / 1024 / 1024;
-
-                            percent = percent / spaceLeft * 100 + '%';
-
-                            spaceLeft = pretty(spaceLeft * 1024 * 1024);
-
-                            io.sockets.socket(socket.id).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
-
-                        });
+                        socket.emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
                     });
-
-                    var interval = cache.get('interval_' + uid);
-
-                    if(interval) {
-                        clearInterval(interval);
-                    }
-
-                    cache.put(
-                        'interval_' + uid, 
-                        setInterval(function() {
-                            users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
-                            users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
-                        }, global.config.fetchTime)
-                    );
 
                 });
+
+                var interval = cache.get('interval_' + uid);
+
+                if(interval) {
+                    clearInterval(interval);
+                }
+
+                cache.put(
+                    'interval_' + uid, 
+                    setInterval(function() {
+                        users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
+                        users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
+                    }, global.config.fetchTime)
+                );
+
             });
+
+
+            db.files.byUser(uid, 0, function(err, files) {
+               socket.emit('files', JSON.stringify(files));
+
+                cache.put('lastUpdate_'+uid, new Date);
+            });
+
+            //     });
+            // });
         });
 
         //Adds a tmp watcher + socket id, watch change of specific archive
