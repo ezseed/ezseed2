@@ -15,7 +15,7 @@ chmod +x ./autoInstall.sh && ./autoInstall.sh
 cd /var/www/ezseed2
 ./ezseed config
 ```
-Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Kimsufi-Mongodb-erreur).
+Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
 
 ## Lancement
 ```
