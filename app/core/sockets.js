@@ -20,23 +20,20 @@ module.exports.listen = function(server) {
 
 
         socket.on('update', function(uid) {
-        //     console.log('Socket is ready : ' + socket.id);
-
-            // db.paths.byUser(uid, function(err, paths) {
-
-            //     explorer.explore(paths, function(err, update) {
-
-            //         db.files.byUser(uid, 0, function(err, files) {
-            //             console.log('Sockets Updating client');
-
-            //             io.sockets.socket(socket.id).emit('files', JSON.stringify(files));
-
-            //             cache.put('lastUpdate_'+uid, new Date);
-
-            //         });
-
 
             db.paths.byUser(uid, function(err, paths) {
+
+
+                explorer.explore(paths, function(err, update) {
+
+                    db.files.byUser(uid, 0, function(err, files) {
+                       socket.emit('files', JSON.stringify(files));
+
+                        cache.put('lastUpdate_'+uid, new Date);
+                    });
+
+                });
+
                 db.users.count(function(err, num) {
                     //Space left = disk / users
                     var spaceLeft = global.config.diskSpace / num;
@@ -58,9 +55,8 @@ module.exports.listen = function(server) {
 
                 var interval = cache.get('interval_' + uid);
 
-                if(interval) {
+                if(interval)
                     clearInterval(interval);
-                }
 
                 cache.put(
                     'interval_' + uid, 
@@ -72,15 +68,6 @@ module.exports.listen = function(server) {
 
             });
 
-
-            db.files.byUser(uid, 0, function(err, files) {
-               socket.emit('files', JSON.stringify(files));
-
-                cache.put('lastUpdate_'+uid, new Date);
-            });
-
-            //     });
-            // });
         });
 
         //Adds a tmp watcher + socket id, watch change of specific archive
