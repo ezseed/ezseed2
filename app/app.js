@@ -115,7 +115,7 @@ if ('development' == app.get('env')) {
 //http://www.itamarweiss.com/post/57962670227/error-handling-in-node-js-express
 app.all('*', function(req, res, next){
 
-  if(req.route.params[0].match(/css|js|views|img/))
+  if(req.route.params[0].match(/css|js|views|img|plugins|audiocogs/))
     next();
   else {
     res.status(404);
