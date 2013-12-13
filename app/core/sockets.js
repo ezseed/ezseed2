@@ -23,35 +23,34 @@ module.exports.listen = function(server) {
 
             db.paths.byUser(uid, function(err, paths) {
 
+                // explorer.explore(paths, function(err, update) {
 
-                explorer.explore(paths, function(err, update) {
+            db.files.byUser(uid, 0, function(err, files) {
+               socket.emit('files', JSON.stringify(files));
 
-                    db.files.byUser(uid, 0, function(err, files) {
-                       socket.emit('files', JSON.stringify(files));
+                cache.put('lastUpdate_'+uid, new Date);
+            });
 
-                        cache.put('lastUpdate_'+uid, new Date);
-                    });
+                // });
 
-                });
+                // db.users.count(function(err, num) {
+                //     //Space left = disk / users
+                //     var spaceLeft = global.config.diskSpace / num;
 
-                db.users.count(function(err, num) {
-                    //Space left = disk / users
-                    var spaceLeft = global.config.diskSpace / num;
+                //     users.usedSize(paths, function(size) {
 
-                    users.usedSize(paths, function(size) {
+                //         //(/helpers/users)
+                //         var percent = size.size / 1024 / 1024;
 
-                        //(/helpers/users)
-                        var percent = size.size / 1024 / 1024;
+                //         percent = percent / spaceLeft * 100 + '%';
 
-                        percent = percent / spaceLeft * 100 + '%';
+                //         spaceLeft = pretty(spaceLeft * 1024 * 1024);
 
-                        spaceLeft = pretty(spaceLeft * 1024 * 1024);
+                //         socket.emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
-                        socket.emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+                //     });
 
-                    });
-
-                });
+                // });
 
                 var interval = cache.get('interval_' + uid);
 

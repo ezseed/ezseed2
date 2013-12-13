@@ -1,3 +1,7 @@
+var async = require('async')
+  , explorer = require('./explorer')
+  , db = require('./database');
+
 /*
  * Retrieving configuration
  */
@@ -23,4 +27,25 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   console.log('DB opened successfuly !');
   require('./core/watcher.js').initFetch();
+
+  async.whilst(
+		function() { return true; },
+		function(callback) {
+			db.paths.getAll(function(err, docs) {
+				var paths = [];
+
+				if(docs)
+					for(var p in docs)
+						paths.push(docs[p].path);
+		           
+				explorer.explore({docs : {paths : docs}, paths : paths}, function(err, update) {
+					setTimeout(callback, global.config.fetchTime);
+				});
+			});
+		},
+		function(err) {
+			console.log('Watcher ends', err);
+		}
+	);
+
 });

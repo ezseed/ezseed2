@@ -197,7 +197,7 @@ var files = {
 
 
 module.exports = function(app) {
-  app.get('/archive/(:id)', userHelper.restrict, files.archive);
+  app.get('/archive/(:id)', files.archive); //removing restrict by user
   app.get('/download/archive/(:id)', files.downloadArchive);
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);
