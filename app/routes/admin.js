@@ -87,7 +87,7 @@ var admin = {
 	, useradd : function(req, res) {
 
 		if(req.body.client == "transmission" || req.body.client == "rutorrent" || req.body.client == "aucun") {
-
+			
 			if(global.config[req.body.client] == true) {
 
 				var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');

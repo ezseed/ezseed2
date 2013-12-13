@@ -34,6 +34,7 @@ var archiveFiles = function(archive, filePaths, callback) {
 	   zip.finalize(function(err, written) {
 			if (err) callback(err);
 
+			delete zip;
 			callback(null);
 		});
 	});
@@ -113,7 +114,10 @@ var files = {
 				fs.exists(archive.zip, function (exists) {
 					if(exists) {
 						//sends json redirect download
-						res.json({'error':null, 'download':true});
+						if(req.xhr)
+							res.json({'error':null, 'download':true});
+						else
+							res.redirect('/download/archive/'+ req.params.id);
 
 					//If it's a tvserie we need the videos paths
 					} else if(!_.isEmpty(doc.season)) {
@@ -128,8 +132,10 @@ var files = {
 						archiveFiles(archive, filePaths, function(err) {
 							if(err)
 								res.json({'error' : 'Erreur zip :' + err});
-							else
+							else if(req.xhr)
 								res.json({'error':null, 'download':true});
+							else
+								res.redirect('/download/archive/'+ req.params.id);
 						});
 
 					} else {
@@ -139,7 +145,10 @@ var files = {
 								res.json({'error' : 'Aucun fichiers trouvés'});
 							else {
 								archiveFiles(archive, filePaths, function(err) {
-									res.json({'error':null, 'download':true});
+									if(req.xhr)
+										res.json({'error':null, 'download':true});
+									else
+										res.redirect('/download/archive/'+ req.params.id);
 								});
 							}
 						});
@@ -197,7 +206,7 @@ var files = {
 
 
 module.exports = function(app) {
-  app.get('/archive/(:id)', userHelper.restrict, files.archive);
+  app.get('/archive/(:id)', files.archive); //removing restrict by user
   app.get('/download/archive/(:id)', files.downloadArchive);
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);

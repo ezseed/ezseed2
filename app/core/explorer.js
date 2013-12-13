@@ -25,9 +25,11 @@ exports.explore = function(params, cb) {
 
 			//Getting each files
 			explorer.getFiles(pathToWatch, function(err, filePaths) {
-				if(err)
-					console.log(err);
-				else {
+				if(err) {
+					console.error(err);
+					if(err.code == 'ENOENT')
+						db.paths.removeByPath(err.path, pathCallback);
+				} else {
 					if(filePaths.length) {
 
 						//reject hidden files
@@ -57,33 +59,33 @@ exports.explore = function(params, cb) {
 						//add each db finded files
 						async.parallel({
 						    albums : function(callback) {
-						    	console.time('albums');
+						    	// console.time('albums');
 						    	parser.processAlbums({pathToWatch : pathToWatch, audios: audios, existing: existing.albums}, function(err, albums) {
 
 						    		db.files.albums.save({albums : albums, id_path : id_path}, function(err) {
-						    				console.timeEnd('albums');
-											callback(err, albums);
+					    				// console.timeEnd('albums');
+										callback(err, albums);
 									});
 
 						    	});
 						    },
 						    movies : function(callback) {
-						    	console.time('movies');
+						    	// console.time('movies');
 						    	parser.processMovies({pathToWatch : pathToWatch, videos: videos, existing: existing.movies}, function(err, movies) {
 						    		
 						    		db.files.movies.save({movies : movies, id_path : id_path}, function(err) {
-						    			console.timeEnd('movies');
+						    			// console.timeEnd('movies');
 						    			callback(err, movies);
 									});
 
 						    	});
 						    },
 						    others : function(callback) {
-						    	console.time('others');
+						    	// console.time('others');
 						    	parser.processOthers({pathToWatch : pathToWatch, others: others, existing: existing.others}, function(err, others) {
 
 						    		db.files.others.save({others : others, id_path : id_path}, function(err) {
-						    			console.timeEnd('others');
+						    			// console.timeEnd('others');
 						    			callback(err, others);
 									});
 						    		
@@ -104,7 +106,7 @@ exports.explore = function(params, cb) {
 
 	async.map(params.paths, explorePath, function(err, results){
 
-		console.log('Each paths done.');
+		//console.info('Each paths done.');
 
 		cb(err, results);
 	});

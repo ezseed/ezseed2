@@ -125,19 +125,19 @@ var Watch = function(params) {
 		},
 
 		create : function(filename) {
-			var self = this;
+			// var self = this;
 
-			if(self.addTimeout !== null)
-				clearTimeout(self.addTimeout);
+			// if(self.addTimeout !== null)
+			// 	clearTimeout(self.addTimeout);
 
-			self.addTimeout = setTimeout(function() {
-				console.log('Watcher updateFiles');
+			// self.addTimeout = setTimeout(function() {
+			// 	console.log('Watcher updateFiles');
 
-				watcher.updateFiles(self.uid, function() {
-					self.addTimeout = null;
-				});
+			// 	watcher.updateFiles(self.uid, function() {
+			// 		self.addTimeout = null;
+			// 	});
 
-			}, 750);
+			// }, 750);
 		},
 
 		unknown : function(filename) {

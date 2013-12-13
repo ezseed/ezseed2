@@ -80,6 +80,9 @@ var db = {
         }
       });
     },
+    removeByPath : function(path, cb) {
+      Paths.remove({path : path}, cb);
+    },
     remove : function(id, uid, cb) {
       // If the path isn't user-related, it should not be buggy
       // but we could count the Users that are watching the path to be removed

@@ -579,6 +579,21 @@ var daemon = function(client, command, username, done) {
 	});
 }
 
+var reboot = function() {
+	var start = function(user, cb) {
+		daemon(user.client, 'start', user.username, function() {
+			console.info(user.username + " " + user.client + " started");
+			cb();
+		});
+	}
+
+	db.users.getAll(function(err, users) {
+		async.each(users, start, function(err){
+			process.exit(0);
+		});
+	});
+}
+
 program
 	.command('config')
 	.option('-u, --skipuser', 'Skip admin creation')
@@ -748,6 +763,11 @@ program
 	.command('daemon <rutorrent|transmission> <command> <username>')
 	.description('start|stop|restart daemon-client for specified username')
 	.action(daemon);
+
+program
+	.command('reboot')
+	.description('Restart all daemons')
+	.action(reboot);
 
 mongoose.connect('mongodb://localhost/ezseed');
 
