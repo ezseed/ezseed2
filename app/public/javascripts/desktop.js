@@ -69,7 +69,8 @@ define([
                     document.querySelector('section#desktop'),
                     {
                         itemSelector: '.element',
-                        transitionDuration: "0"
+                        transitionDuration: "0",
+                        gutter : 10
                         // columnWidth: $('.grid-sizer').width(),
                     }
                 );
