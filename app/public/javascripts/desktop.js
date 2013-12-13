@@ -70,7 +70,7 @@ define([
                     {
                         itemSelector: '.element',
                         transitionDuration: "0",
-                        gutter : 10
+                        gutter : 2
                         // columnWidth: $('.grid-sizer').width(),
                     }
                 );
