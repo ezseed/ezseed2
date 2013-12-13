@@ -34,6 +34,7 @@ var archiveFiles = function(archive, filePaths, callback) {
 	   zip.finalize(function(err, written) {
 			if (err) callback(err);
 
+			delete zip;
 			callback(null);
 		});
 	});
