@@ -114,7 +114,10 @@ var files = {
 				fs.exists(archive.zip, function (exists) {
 					if(exists) {
 						//sends json redirect download
-						res.json({'error':null, 'download':true});
+						if(req.xhr)
+							res.json({'error':null, 'download':true});
+						else
+							res.redirect('/download/archive/'+ req.params.id);
 
 					//If it's a tvserie we need the videos paths
 					} else if(!_.isEmpty(doc.season)) {
@@ -129,8 +132,10 @@ var files = {
 						archiveFiles(archive, filePaths, function(err) {
 							if(err)
 								res.json({'error' : 'Erreur zip :' + err});
-							else
+							else if(req.xhr)
 								res.json({'error':null, 'download':true});
+							else
+								res.redirect('/download/archive/'+ req.params.id);
 						});
 
 					} else {
@@ -140,7 +145,10 @@ var files = {
 								res.json({'error' : 'Aucun fichiers trouvés'});
 							else {
 								archiveFiles(archive, filePaths, function(err) {
-									res.json({'error':null, 'download':true});
+									if(req.xhr)
+										res.json({'error':null, 'download':true});
+									else
+										res.redirect('/download/archive/'+ req.params.id);
 								});
 							}
 						});
