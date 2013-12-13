@@ -579,12 +579,17 @@ var daemon = function(client, command, username, done) {
 	});
 }
 
-var reboot = function(done) {
+var reboot = function() {
+	var start = function(user, cb) {
+		daemon(user.client, 'start', user.username, function() {
+			console.info(user.username + " " + user.client + " started");
+			cb();
+		});
+	}
+
 	db.users.getAll(function(err, users) {
-		_.each(users, function(user) {
-			daemon(user.client, 'start', user.username, function() {
-				console.info(user.username + " " + user.client + " started");
-			});
+		async.each(users, start, function(err){
+			process.exit(0);
 		});
 	});
 }
