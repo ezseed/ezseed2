@@ -16,7 +16,6 @@ var express = require('express')
   , cache = require('memory-cache')
   , jf = require('jsonfile')
   , MongoStore = require('connect-mongo')(express)
-  , watcher = require('./core/watcher')()
 ;
 
 global.config = jf.readFileSync(__dirname + '/config.json');

@@ -25,9 +25,11 @@ exports.explore = function(params, cb) {
 
 			//Getting each files
 			explorer.getFiles(pathToWatch, function(err, filePaths) {
-				if(err)
-					console.log(err);
-				else {
+				if(err) {
+					console.error(err);
+					if(err.code == 'ENOENT')
+						db.paths.removeByPath(err.path, pathCallback);
+				} else {
 					if(filePaths.length) {
 
 						//reject hidden files
