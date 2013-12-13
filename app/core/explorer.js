@@ -106,7 +106,7 @@ exports.explore = function(params, cb) {
 
 	async.map(params.paths, explorePath, function(err, results){
 
-		console.info('Each paths done.');
+		//console.info('Each paths done.');
 
 		cb(err, results);
 	});
