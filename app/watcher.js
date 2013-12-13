@@ -1,6 +1,6 @@
 var async = require('async')
   , explorer = require('./core/explorer')
-  , db = require('./core/database');
+  , database = require('./core/database');
 
 /*
  * Retrieving configuration
@@ -31,7 +31,7 @@ db.once('open', function callback () {
   async.whilst(
 		function() { return true; },
 		function(callback) {
-			db.paths.getAll(function(err, docs) {
+			database.paths.getAll(function(err, docs) {
 				var paths = [];
 
 				if(docs)
