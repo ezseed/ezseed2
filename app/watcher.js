@@ -1,6 +1,6 @@
 var async = require('async')
-  , explorer = require('./explorer')
-  , db = require('./database');
+  , explorer = require('./core/explorer')
+  , db = require('./core/database');
 
 /*
  * Retrieving configuration
