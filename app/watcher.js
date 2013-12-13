@@ -38,8 +38,6 @@ db.once('open', function callback () {
 					for(var p in docs)
 						paths.push(docs[p].path);
 		        
-				console.log(paths);
-
 				explorer.explore({docs : {paths : docs}, paths : paths}, function(err, update) {
 					setTimeout(callback, global.config.fetchTime);
 				});
