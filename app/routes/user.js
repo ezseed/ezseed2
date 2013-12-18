@@ -84,7 +84,7 @@ var user = {
 			console.info('Executing ', shell_path);
 			console.info('with options', options);
 
-			exec(shell_path, options, function(err, stderr, stdout) {
+			exec(shell_path + ' ' + options.join(' '), function(err, stderr, stdout) {
 
 				if(err || stderr)
 					console.error(err, stderr);
