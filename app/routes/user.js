@@ -28,7 +28,6 @@ var user = {
 	  });
 	},
 
-	//It should be added some function to reset a specific element
 	reset : function(req, res) {
 		db.user.reset(req.params.uid, function() {
 			res.redirect('/');
@@ -37,9 +36,7 @@ var user = {
 
 	/*
 	* POST Login
-	* TODO !
 	*/
-
 	authenticate : function(req, res) {
 		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
 			if (user) {
@@ -82,15 +79,13 @@ var user = {
 		db.user.byId(req.params.uid, function(err, user) {
 			var shell_path = path.resolve(global.config.root, '..', 'ezseed');
 				
-			var options = ['password', user.client, user.username, ,'-p', req.body.password];
+			var options = ['password', user.client, user.username,'-p', req.body.password];
 
-			exec(shell_path, options, function(err, stderr, stdout) {
-				if(err)
-					console.log(err, stderr, stdout);
+			exec(shell_path + ' ' + options.join(' '), function(err, stderr, stdout) {
 
 				req.session.success = "Mot de passe changé";
 
-				res.redirect('/admin');
+				res.redirect('/user/preferences');
 			});
 		});
 	}
