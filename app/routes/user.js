@@ -79,15 +79,18 @@ var user = {
 		db.user.byId(req.params.uid, function(err, user) {
 			var shell_path = path.resolve(global.config.root, '..', 'ezseed');
 				
-			var options = ['password', user.client, user.username, ,'-p', req.body.password];
+			var options = ['password', user.client, user.username,'-p', req.body.password];
 
-			console.log(options);
+			console.info('Executing ', shell_path);
+			console.info('with options', options);
 
 			exec(shell_path, options, function(err, stderr, stdout) {
-				if(err)
-					console.log(err, stderr, stdout);
 
-				console.log(err, stderr, stdout);
+				if(err || stderr)
+					console.error(err, stderr);
+
+				if(stdout)
+					console.log(stdout);
 
 				req.session.success = "Mot de passe changé";
 
