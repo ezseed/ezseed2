@@ -81,16 +81,7 @@ var user = {
 				
 			var options = ['password', user.client, user.username,'-p', req.body.password];
 
-			console.info('Executing ', shell_path);
-			console.info('with options', options);
-
 			exec(shell_path + ' ' + options.join(' '), function(err, stderr, stdout) {
-
-				if(err || stderr)
-					console.error(err, stderr);
-
-				if(stdout)
-					console.log(stdout);
 
 				req.session.success = "Mot de passe changé";
 
