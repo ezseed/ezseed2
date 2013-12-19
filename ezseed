@@ -444,6 +444,9 @@ var install = {
 			promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
 				var l = sslkeys.length;
 
+				if(!fs.existsSync('/usr/local/nginx'))
+					fs.mkdirSync('/usr/local/nginx', '755');
+
 				if(l == 2) {	
 					var cmd = new Buffer("\
 							mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
