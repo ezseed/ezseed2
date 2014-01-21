@@ -5,7 +5,7 @@
 # processname: pm2
 #
 ### BEGIN INIT INFO
-# Provides:          pm2
+# Provides:          ezseed
 # Required-Start:    
 # Required-Stop:
 # Default-Start:        2 3 4 5
@@ -27,13 +27,13 @@ super() {
  
 start() {
     echo "Starting $NAME"
-    super $NODE $PM2 start /var/www/ezseed2/ezseed.json
+    super $PM2 start /var/www/ezseed2/ezseed.json
     super /var/www/ezseed2/ezseed reboot
 }
  
 stop() {
     echo "Stoping $NAME"
-    super $NODE $PM2 stop all
+    super $PM2 stop all
 }
  
 restart() {
