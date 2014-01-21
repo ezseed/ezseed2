@@ -80,8 +80,6 @@ var contains = function(words, item) {
 		v = words[j];
 
 		for(var i in item) {
-						// console.log(item[i], _s.trim(v.toLowerCase()) );
-
 			if ( _s.trim(v.toLowerCase()) == item[i] ) 
 				result = item[i];
 		}
@@ -124,7 +122,7 @@ module.exports.getTags  = {
 		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
-		  console.log(movie);
+
 		//Found a tv show
 		if(r.test(name)) {
 
