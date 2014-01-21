@@ -47,6 +47,7 @@ var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr',
 var dummyName = function (name, obj) {
 	if(name !== undefined)
 		name = name.replace(obj.quality, '').replace(obj.subtitles, '').replace(obj.language, '').replace(obj.format, '');
+	
 	return _s.trim(name);
 }
 
@@ -71,12 +72,17 @@ var findCoverInDirectory = function(dir) {
 	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
-var contains = function(array, item) {
-	
+var contains = function(words, item) {
+
+	console.log(words);
 	return 
 
-		_.find(array, function(v) { 
-			return _.contains(item, v.toLowerCase());
+		_.find(words, function(v) {
+			for(var i in item)
+				if ( _s.trim(v.toLowerCase()).indexOf(item[i]) !== -1 ) 
+					return item[i];
+			
+			return null;
 		});
 
 }
@@ -101,22 +107,20 @@ module.exports.getTags  = {
 		  		.replace(/([\w\d]{2})\./ig, "$1 ") //Replacing dot with min 2 chars before
 		  		.replace(/\.\.?([\w\d]{2})/ig, " $1") //same with 2 chars after
 
-		  , array = _s.words(name)
+		  , words = _s.words(name)
 
 		  , movie = {
-				quality : contains(array, qualities),
-				subtitles : contains(array, subtitles),
-				language : contains(array, languages),
-				audio : contains(array, audios),
-				format : contains(array, format),
+				quality : contains(words, qualities),
+				subtitles : contains(words, subtitles),
+				language : contains(words, languages),
+				audio : contains(words, audios),
+				format : contains(words, format),
 				movieType : 'movie',
 			}
 			
 		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
-
-		  console.log(array, movie);
 		//Found a tv show
 		if(r.test(name)) {
 
