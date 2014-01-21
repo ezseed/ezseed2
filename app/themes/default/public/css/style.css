@@ -645,6 +645,10 @@ table a {
 	text-decoration: none;
 }
 
+table a:visited, table a:active {
+	color:#65859E;
+}
+
 table a:hover {
 	color:#768591;
 }

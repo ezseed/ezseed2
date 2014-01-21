@@ -47,6 +47,7 @@ var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr',
 var dummyName = function (name, obj) {
 	if(name !== undefined)
 		name = name.replace(obj.quality, '').replace(obj.subtitles, '').replace(obj.language, '').replace(obj.format, '');
+	
 	return _s.trim(name);
 }
 
@@ -71,6 +72,22 @@ var findCoverInDirectory = function(dir) {
 	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
+var contains = function(words, item) {
+
+	var v = '', result = null;
+
+	for(var j in words) {
+		v = words[j];
+
+		for(var i in item) {
+			if ( _s.trim(v.toLowerCase()) == item[i] ) 
+				result = item[i];
+		}
+	}
+
+	return result;
+}
+
 module.exports.getTags  = {
 	//Searches the video type
 	//Algorithm from : https://github.com/muttsnutts/mp4autotag/issues/2
@@ -91,14 +108,14 @@ module.exports.getTags  = {
 		  		.replace(/([\w\d]{2})\./ig, "$1 ") //Replacing dot with min 2 chars before
 		  		.replace(/\.\.?([\w\d]{2})/ig, " $1") //same with 2 chars after
 
-		  , array = _s.words(name)
+		  , words = _s.words(name)
 
 		  , movie = {
-				quality : _.find(array, function(v) { return _.contains(qualities, v.toLowerCase()) }),
-				subtitles : _.find(array, function(v) { return _.contains(subtitles, v.toLowerCase()) }),
-				language : _.find(array, function(v) { return _.contains(languages, v.toLowerCase()) }),
-				audio : _.find(array, function(v) { return _.contains(audios, v.toLowerCase()) }),
-				format : _.find(array, function(v) { return _.contains(format, v.toLowerCase()) }),
+				quality : contains(words, qualities),
+				subtitles : contains(words, subtitles),
+				language : contains(words, languages),
+				audio : contains(words, audios),
+				format : contains(words, format),
 				movieType : 'movie',
 			}
 			
@@ -254,10 +271,12 @@ module.exports.getAlbumInformations = getAlbumInformations;
 
 var getMovieInformations = function(movie, cb) {
 
-	console.log('Gathering infos on', movie.name);
+	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
+
+	console.log('Gathering infos on', movie.search);
 
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '5'}, function(err, res) {
+  	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
@@ -268,7 +287,7 @@ var getMovieInformations = function(movie, cb) {
       			//Index allocine info
       			var index = false;
 
-      			var m_name = _s.slugify(movie.name);
+      			var m_name = _s.slugify(movie.search);
 
       			//Parse each infos founded, if title matchs, break
       			var nb_resultats = infos.length, i = 0;
@@ -320,12 +339,14 @@ var getMovieInformations = function(movie, cb) {
 
           		});
           	} else {
+          		//Too long
+          		var words = _s.words(movie.search);
 
-          		var words = _s.words(movie.name);
+          		if(words.length >= 3 && words[0].length > 3) {
+          			
+          			movie.search = words.splice(1, words.length).join(' ');
 
-          		if(words.length >= 2 && words[0].length > 3) {
-          			movie.name = words.splice(1, words.length).join(' ');
-          			getMovieInformations(movie , cb);
+          		 	getMovieInformations(movie, cb);
           		} else {
         			 //No movie founded
 	          		movie.title = movie.name;

@@ -58,11 +58,18 @@ movies.forEach(function(movie) {
 			<% if(movie.quality != undefined) { %>
 				<p class="info"><i class="entypo-monitor"></i><%- movie.quality %></p>
 			<% } %>
+			<% if(movie.format != undefined) { %>
+				<p class="info"><i class="entypo-doc-landscape"></i><%- movie.format %></p>
+			<% } %>
 			<% if(movie.language != undefined) { %>
 				<p class="info"><i class="entypo-sound"></i><%- movie.language %></p>
 			<% } %>
 			<% if(movie.subtitles != undefined) { %>
 				<p class="info"><i class="entypo-text-doc"></i><%- movie.subtitles %></p>
+			<% } %>
+
+			<% if(movie.audio != undefined) { %>
+				<p class="info"><i class="entypo-sound"></i><%- movie.audio %></p>
 			<% } %>
 
 		</div>
