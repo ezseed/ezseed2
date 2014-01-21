@@ -71,6 +71,16 @@ var findCoverInDirectory = function(dir) {
 	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
 }
 
+var contains = function(array, item) {
+	
+	return 
+
+		_.find(array, function(v) { 
+			return _.contains(item, v.toLowerCase());
+		});
+
+}
+
 module.exports.getTags  = {
 	//Searches the video type
 	//Algorithm from : https://github.com/muttsnutts/mp4autotag/issues/2
@@ -94,11 +104,11 @@ module.exports.getTags  = {
 		  , array = _s.words(name)
 
 		  , movie = {
-				quality : _.find(array, function(v) { return _.contains(qualities, v.toLowerCase()) }),
-				subtitles : _.find(array, function(v) { return _.contains(subtitles, v.toLowerCase()) }),
-				language : _.find(array, function(v) { return _.contains(languages, v.toLowerCase()) }),
-				audio : _.find(array, function(v) { return _.contains(audios, v.toLowerCase()) }),
-				format : _.find(array, function(v) { return _.contains(format, v.toLowerCase()) }),
+				quality : contains(array, qualities),
+				subtitles : contains(array, subtitles),
+				language : contains(array, languages),
+				audio : contains(array, audios),
+				format : contains(array, format),
 				movieType : 'movie',
 			}
 			
@@ -120,7 +130,7 @@ module.exports.getTags  = {
 			//If it matches
 			if(ar != null) {
 				movie = _.extend(movie, {
-					name : _s.trim(ar[1]),
+					name : dummyName(_s.trim(ar[1])),
 					season : ar[2],
 					episode : ar[3]
 				});
@@ -128,7 +138,7 @@ module.exports.getTags  = {
 				ar = name.match(r2);
 				if(ar) {
 					movie = _.extend(movie, {
-						name: _s.trim(ar[1]),
+						name: dummyName(_s.trim(ar[1])),
 						season: ar[2],
 						episode: ar[3]
 					});
@@ -146,7 +156,7 @@ module.exports.getTags  = {
 			if(ar != null && ar[0] > 1900) {
 				var parts = name.split(ar[0]);
 				movie : _.extend(movie, {
-					name : _s.trim(parts[0]),
+					name : dummyName(_s.trim(parts[0])),
 					year : ar[1]
 				});
 			} else {
@@ -323,8 +333,10 @@ var getMovieInformations = function(movie, cb) {
 
           		var words = _s.words(movie.name);
 
-          		if(words.length >= 2 && words[0].length > 3) {
+          		if(words.length >= 3 && words[0].length > 3) {
+          			
           			movie.name = words.splice(1, words.length).join(' ');
+
           			getMovieInformations(movie , cb);
           		} else {
         			 //No movie founded
