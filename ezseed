@@ -384,6 +384,12 @@ var useradd = {
  * @type {Object}
  */
 var install = {
+	update_rc: function(callback) {
+		console.log("Ajout du script de reboot automatique".info);
+		exec("cp "+__dirname+"/app/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
+			callback(null, {});
+		});
+	},
 	admin_creation: function(callback){
 		if(cache.get('skipuser'))
 			callback(null, {});
