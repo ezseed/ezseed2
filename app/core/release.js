@@ -74,7 +74,7 @@ var findCoverInDirectory = function(dir) {
 
 var contains = function(words, item) {
 
-	console.log(words);
+	console.log(item);
 	return 
 
 		_.find(words, function(v) {
@@ -121,6 +121,7 @@ module.exports.getTags  = {
 		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
+		  console.log(movie);
 		//Found a tv show
 		if(r.test(name)) {
 
