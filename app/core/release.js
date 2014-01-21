@@ -77,7 +77,7 @@ var contains = function(words, item) {
 	return 
 
 		_.find(words, function(v) {
-
+			console.log(v);
 			for(var i in item) {
 							console.log(item[i], _s.trim(v.toLowerCase()) );
 
