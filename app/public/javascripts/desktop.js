@@ -276,16 +276,20 @@ define([
             //Hiding miniatures
             $(self.itemSelector + '.miniature').css('visibility', 'hidden');
 
+            var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
+
             //Make it async is way toooo long
-            imagesLoaded(
-                document.querySelector('#' + self.$container.attr('id') + ' .miniature'), 
-            function() {
-                self.pckry.layout();
+            if(miniatures.length) { 
+                imagesLoaded(
+                    miniatures, 
+                function() {
+                    self.pckry.layout();
 
-                $(self.itemSelector + '.miniature h1').quickfit();
-                $(self.itemSelector + '.miniature').css('visibility', 'visible');
+                    $(self.itemSelector + '.miniature h1').quickfit();
+                    $(self.itemSelector + '.miniature').css('visibility', 'visible');
 
-            });
+                });
+            }
 
                 if(!self.firstLoad)
                     self.loader();
