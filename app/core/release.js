@@ -75,21 +75,25 @@ var findCoverInDirectory = function(dir) {
 var contains = function(words, item) {
 	console.log(words);
 	//return 
-	var v = '';
-	
+	var v = '', result = '';
+
 		for(var j in words) {
 			v = words[j];
 			
+			console.log(v);
 			for(var i in item) {
 							console.log(item[i], _s.trim(v.toLowerCase()) );
 
 				if ( _s.trim(v.toLowerCase()) == item[i] ) 
-					return item[i];
+					result = item[i];
 			}
 
-			return null;
+			result = null;
 		}
 
+		console.log(result);
+
+	return null;
 }
 
 module.exports.getTags  = {
