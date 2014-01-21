@@ -76,18 +76,16 @@ var contains = function(words, item) {
 
 	var v = '', result = null;
 
-		for(var j in words) {
-			v = words[j];
+	for(var j in words) {
+		v = words[j];
 
-			for(var i in item) {
-							// console.log(item[i], _s.trim(v.toLowerCase()) );
+		for(var i in item) {
+						// console.log(item[i], _s.trim(v.toLowerCase()) );
 
-				if ( _s.trim(v.toLowerCase()) == item[i] ) 
-					result = item[i];
-			}
+			if ( _s.trim(v.toLowerCase()) == item[i] ) 
+				result = item[i];
 		}
-
-		console.log(result);
+	}
 
 	return result;
 }
@@ -278,7 +276,6 @@ var getMovieInformations = function(movie, cb) {
 	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 
 	console.log('Gathering infos on', movie.search);
-	// console.info(movie);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
