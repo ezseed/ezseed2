@@ -335,7 +335,7 @@ var getMovieInformations = function(movie, cb) {
 
           		var words = _s.words(movie.search);
 
-          		if(words.length <= 3 && words[0].length > 3) {
+          		if(words.length >= 4 && words[0].length > 3) {
           			
           			movie.search = words.splice(1, words.length).join(' ');
 
