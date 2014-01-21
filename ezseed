@@ -707,7 +707,7 @@ program
 				if(options.role) {
 
 					if(options.role.length) {
-						cache.put('role', role);
+						cache.put('role', options.role);
 						next(options);
 					} else {
 						promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
