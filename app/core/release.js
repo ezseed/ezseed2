@@ -73,16 +73,17 @@ var findCoverInDirectory = function(dir) {
 }
 
 var contains = function(words, item) {
-	// console.log(item, words);
+	console.log(words);
 	//return 
-
+	var v = '';
+	
 		for(var j in words) {
 			v = words[j];
 			
 			for(var i in item) {
 							console.log(item[i], _s.trim(v.toLowerCase()) );
 
-				if ( _s.trim(v.toLowerCase()).indexOf(item[i]) !== -1 ) 
+				if ( _s.trim(v.toLowerCase()) == item[i] ) 
 					return item[i];
 			}
 
