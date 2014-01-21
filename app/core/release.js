@@ -266,7 +266,7 @@ var getMovieInformations = function(movie, cb) {
 
 	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 
-	console.log('Gathering infos on', movie.name);
+	console.log('Gathering infos on', movie.search);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
@@ -335,7 +335,7 @@ var getMovieInformations = function(movie, cb) {
           		//Too long
           		var words = _s.words(movie.search);
 
-          		if(words.length >= 4 && words[0].length > 3) {
+          		if(words.length >= 3 && words[0].length > 3) {
           			
           			movie.search = words.splice(1, words.length).join(' ');
 
