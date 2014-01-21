@@ -279,7 +279,7 @@ define([
             var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
 
             //Make it async is way toooo long
-            if(miniatures.length) { 
+            if(miniatures !== null && miniatures.length) { 
                 imagesLoaded(
                     miniatures, 
                 function() {
