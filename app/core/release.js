@@ -130,7 +130,7 @@ module.exports.getTags  = {
 			//If it matches
 			if(ar != null) {
 				movie = _.extend(movie, {
-					name : dummyName(_s.trim(ar[1])),
+					name : _s.trim(ar[1]),
 					season : ar[2],
 					episode : ar[3]
 				});
@@ -138,7 +138,7 @@ module.exports.getTags  = {
 				ar = name.match(r2);
 				if(ar) {
 					movie = _.extend(movie, {
-						name: dummyName(_s.trim(ar[1])),
+						name: _s.trim(ar[1]),
 						season: ar[2],
 						episode: ar[3]
 					});
@@ -156,7 +156,7 @@ module.exports.getTags  = {
 			if(ar != null && ar[0] > 1900) {
 				var parts = name.split(ar[0]);
 				movie : _.extend(movie, {
-					name : dummyName(_s.trim(parts[0])),
+					name : _s.trim(parts[0]),
 					year : ar[1]
 				});
 			} else {
@@ -264,10 +264,12 @@ module.exports.getAlbumInformations = getAlbumInformations;
 
 var getMovieInformations = function(movie, cb) {
 
+	movie.search = dummyName(movie.name, movie);
+
 	console.log('Gathering infos on', movie.name);
 
 	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.name, filter: movie.movieType, count: '5'}, function(err, res) {
+  	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
@@ -278,7 +280,7 @@ var getMovieInformations = function(movie, cb) {
       			//Index allocine info
       			var index = false;
 
-      			var m_name = _s.slugify(movie.name);
+      			var m_name = _s.slugify(movie.search);
 
       			//Parse each infos founded, if title matchs, break
       			var nb_resultats = infos.length, i = 0;
@@ -331,11 +333,11 @@ var getMovieInformations = function(movie, cb) {
           		});
           	} else {
 
-          		var words = _s.words(movie.name);
+          		var words = _s.words(movie.search);
 
-          		if(words.length >= 3 && words[0].length > 3) {
+          		if(words.length <= 3 && words[0].length > 3) {
           			
-          			movie.name = words.splice(1, words.length).join(' ');
+          			movie.search = words.splice(1, words.length).join(' ');
 
           			getMovieInformations(movie , cb);
           		} else {
