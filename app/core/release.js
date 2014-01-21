@@ -116,6 +116,7 @@ module.exports.getTags  = {
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
 
+		  console.log(array, movie);
 		//Found a tv show
 		if(r.test(name)) {
 
@@ -267,7 +268,7 @@ var getMovieInformations = function(movie, cb) {
 	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 
 	console.log('Gathering infos on', movie.search);
-	console.info(movie);
+	// console.info(movie);
 
 	//searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
