@@ -521,7 +521,10 @@ var install = {
 
 var password = {
 	rutorrent : function(username, password, done) {
+		
 		var shell_path = pathInfo.join(__dirname,'/app/scripts/rutorrent/password.sh');
+
+		fs.chmodSync(shell_path, '755');
 
 		execFile(shell_path, [username, password], function(err, stdout, stderr) {
 			db.users.update(username, {password : password}, done);
@@ -532,6 +535,8 @@ var password = {
 		//stopping daemon
 		daemon('transmission', 'stop', username, function() {
 			var shell_path = pathInfo.join(__dirname,'/app/scripts/transmission/password.sh');
+
+			fs.chmodSync(shell_path, '755');
 
 			execFile(shell_path, [username, password], function(err, stdout, stderr) {
 
