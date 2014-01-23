@@ -1,6 +1,6 @@
 {
   "name": "ezseed2",
-  "version": "2.1.10-beta",
+  "version": "2.1.11-beta",
   "keywords": [
     "seedbox",
     "torrent"
@@ -8,6 +8,9 @@
   "licence": {
     "type": "Creative Commons BY-NC-SA",
     "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE"
+  },
+  "bin": {
+    "ezseed": "./bin/ezseed"
   },
   "repository": {
     "type": "git",
