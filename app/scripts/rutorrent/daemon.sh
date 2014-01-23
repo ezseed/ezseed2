@@ -104,6 +104,7 @@ d_stop() {
     #    kill -s INT ${pid}
     #fi
     pid=`ps -ef | grep rtorrent-lebedouin | grep -v grep | awk '{print $2}'`
+    echo ${pid}
     kill -s INT ${pid}
 }
 
