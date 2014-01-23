@@ -105,7 +105,7 @@ d_stop() {
     #fi
     pid=`ps -ef | grep rtorrent-lebedouin | grep -v grep | awk '{print $2}'`
     echo ${pid}
-    kill -9 INT ${pid}
+    kill -9 ${pid}
 }
 
 getsession() { 
