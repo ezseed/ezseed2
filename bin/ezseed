@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+var app_path = pathInfo.resolve(__dirname, '..');
 
 var program = require('commander')
   , colors = require('colors')
@@ -14,13 +15,11 @@ var program = require('commander')
   , fs = require('fs')
   , pathInfo = require('path')
   , async = require('async')
-  , db = require('./app/core/database.js')
+  , db = require(app_path + '/app/core/database.js')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
   , mongoose = require('mongoose')
   ;
-
-var app_path = pathInfo.resolve(__dirname, '..');
 
 colors.setTheme({
   silly: 'rainbow',
