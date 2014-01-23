@@ -9,6 +9,9 @@
     "type": "Creative Commons BY-NC-SA",
     "url": "https://github.com/soyuka/ezseed2/blob/master/LICENCE"
   },
+  "bin": {
+    "ezseed": "./bin/ezseed"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/soyuka/ezseed2"

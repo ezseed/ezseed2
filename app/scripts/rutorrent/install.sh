@@ -11,22 +11,10 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-##Rutorrent and building tools##
+##building tools##
 apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config subversion php5-cli unzip ffmpeg curl php5-curl mediainfo screen unrar-free
 
 #Téléchargement + déplacement de rutorrent (web)
-#rutorrent
-#wget http://dl.bintray.com/novik65/generic/rutorrent-3.6.tar.gz
-#tar -xzf rutorrent-3.6.tar.gz 
-#mv rutorrent/ /var/www
-#rm rutorrent-3.6.tar.gz
-
-#plugins
-#wget http://dl.bintray.com/novik65/generic/plugins-3.6.tar.gz
-#tar -xzf plugins-3.6.tar.gz
-#mv ./plugins/* /var/www/rutorrent/plugins/
-#rm -R ./plugins
-
 svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent/
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/
 mv ./plugins/* ./rutorrent/plugins/
@@ -34,26 +22,31 @@ rm -R ./plugins
 mv rutorrent/ /var/www
 
 #clone rtorrent et libtorrent
-git clone https://github.com/rakshasa/rtorrent/
-git clone https://github.com/rakshasa/libtorrent/
-#compilation libtorrent
-cd libtorrent
+wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
+tar -xf libtorrent-0.13.2.tar.gz
+
+wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz rtorrent
+tar -xzf rtorrent-0.9.2.tar.gz
+
+# libtorrent compilation
+cd libtorrent-0.13.2
 ./autogen.sh
 ./configure
 make
 make install
 
-#compilation rtorrent
-cd ../rtorrent
+# rtorrent compilation
+cd ../rtorrent-0.9.2
 ./autogen.sh
 ./configure --with-xmlrpc-c
 make
 make install
 
-#back to script root
+# back from rtorrent
+
 cd ../
 
-rm -R rtorrent libtorrent
+rm -R rtorrent-0.9.2 libtorrent-0.13.2
 
 #Création des dossiers
 mkdir /usr/local/nginx
