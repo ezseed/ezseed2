@@ -12,9 +12,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #clone rtorrent et libtorrent
 wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
 tar -xf libtorrent-0.13.2.tar.gz
+rm libtorrent-0.13.2.tar.gz
 
 wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz
 tar -xzf rtorrent-0.9.2.tar.gz
+rm rtorrent-0.9.2.tar.gz
+
 
 #compilation libtorrent
 cd libtorrent-0.13.2
