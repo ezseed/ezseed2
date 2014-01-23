@@ -20,6 +20,8 @@ var program = require('commander')
   , mongoose = require('mongoose')
   ;
 
+var app_path = pathInfo.resolve(__dirname, '..');
+
 colors.setTheme({
   silly: 'rainbow',
   input: 'grey',
@@ -104,7 +106,7 @@ var validators = {
  */
 var torrent = {
 	rutorrent : function(done) {
-		var shell_path = __dirname + '/app/scripts/rutorrent/install.sh';
+		var shell_path = app_path + '/app/scripts/rutorrent/install.sh';
 		fs.chmodSync(shell_path, '775');
 		
 		var running = spawn(shell_path);
@@ -122,17 +124,17 @@ var torrent = {
 
 		running.on('exit', function (code) {
 			console.log('Installation de rutorrent terminée'.info);
-			var config = jf.readFileSync(__dirname + '/app/config.json');
+			var config = jf.readFileSync(app_path + '/app/config.json');
 			
 			config.rutorrent = true;
 
-			jf.writeFileSync(__dirname+'/app/config.json', config);
+			jf.writeFileSync(app_path+'/app/config.json', config);
 
 			done(null, 'rutorrent');
 		});
 	},
 	transmission : function(done) {
-		var shell_path = __dirname + '/app/scripts/transmission/install.sh';
+		var shell_path = app_path + '/app/scripts/transmission/install.sh';
 		fs.chmodSync(shell_path, '775');
 		
 		var running = spawn(shell_path);
@@ -150,11 +152,11 @@ var torrent = {
 		running.on('exit', function (code) {
 			console.log('Installation de transmission terminée'.info);
 
-			var config = jf.readFileSync(__dirname + '/app/config.json');
+			var config = jf.readFileSync(app_path + '/app/config.json');
 			
 			config.transmission = true;
 
-			jf.writeFileSync(__dirname+'/app/config.json', config);
+			jf.writeFileSync(app_path+'/app/config.json', config);
 
 			done(null, 'transmission');
 		});
@@ -166,7 +168,7 @@ var torrent = {
 
 var userdel = {
 	rutorrent : function(username, done) {
-		var shell_path = __dirname + '/app/scripts/rutorrent/userdel.sh';
+		var shell_path = app_path + '/app/scripts/rutorrent/userdel.sh';
 		fs.chmodSync(shell_path, '775');
 		
 		var running = spawn(shell_path, [username]);
@@ -192,7 +194,7 @@ var userdel = {
 		});
 	},
 	transmission: function(username, done) {
-		var shell_path =__dirname + '/app/scripts/transmission/userdel.sh';
+		var shell_path =app_path + '/app/scripts/transmission/userdel.sh';
 		fs.chmodSync(shell_path, '775');
 
 		var running = spawn(shell_path, [username]);
@@ -239,7 +241,7 @@ var useradd = {
 	    });
 	},
 	rutorrent : function(username, password, done) {
-		var shell_path =__dirname + '/app/scripts/rutorrent/useradd.sh';
+		var shell_path =app_path + '/app/scripts/rutorrent/useradd.sh';
 		fs.chmodSync(shell_path, '775');
 
 		var isInstall = cache.get('isinstall');
@@ -284,7 +286,7 @@ var useradd = {
 		});
 	},
 	transmission : function(username, password, done) {
-		var shell_path = __dirname + '/app/scripts/transmission/useradd.sh';
+		var shell_path = app_path + '/app/scripts/transmission/useradd.sh';
 		fs.chmodSync(shell_path, '775');
 
 		var isInstall = cache.get('isinstall');
@@ -309,7 +311,7 @@ var useradd = {
 
 		running.on('exit', function (code) {
 			console.log("Ajout de l'utilisateur tranmsission terminé, remplacement des configurations".info);
-			var settings = __dirname + '/app/scripts/transmission/config/settings.'+username+'.json';
+			var settings = app_path + '/app/scripts/transmission/config/settings.'+username+'.json';
 
 			fs.readFile(settings, function (err, data) {
 				if (err) throw err;
@@ -338,7 +340,7 @@ var useradd = {
 
 					console.log('Démarage du daemon transmission'.info);
 
-					fs.chmodSync(__dirname +'/app/scripts/transmission/daemon.sh', '775');
+					fs.chmodSync(app_path +'/app/scripts/transmission/daemon.sh', '775');
 
 					exec('/etc/init.d/transmission-daemon-'+username + ' start',
 				    	function(err, stdout, sdterr) {
@@ -386,7 +388,7 @@ var useradd = {
 var install = {
 	update_rc: function(callback) {
 		console.log("Ajout du script de reboot automatique".info);
-		exec("cp "+__dirname+"/app/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
+		exec("cp "+app_path+"/app/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
 			callback(null, {});
 		});
 	},
@@ -426,11 +428,11 @@ var install = {
 					"theme": "default"
 				};
 
-			jf.writeFileSync(__dirname + '/app/config.json', config);
+			jf.writeFileSync(app_path + '/app/config.json', config);
 
 			console.log("Création d'un lien symbolique sur app/public/downloads".info);
 
-			exec('ln -sfn '+ path +' ' + __dirname + '/app/public/downloads',
+			exec('ln -sfn '+ path +' ' + app_path + '/app/public/downloads',
 			  	function (error, stdout, stderr) {
 			  		cache.put('path', path);
 				    callback(null, {});
@@ -455,8 +457,8 @@ var install = {
 
 				if(l == 2) {	
 					var cmd = new Buffer("\
-							mv " + sslkeys[0].path + " " + __dirname + "/ezseed" + sslkeys[0].ext + " && \
-							mv " + sslkeys[1].path + " " + __dirname + "/ezseed" + sslkeys[1].ext + " && \
+							mv " + sslkeys[0].path + " " + app_path + "/ezseed" + sslkeys[0].ext + " && \
+							mv " + sslkeys[1].path + " " + app_path + "/ezseed" + sslkeys[1].ext + " && \
 							mv *ezseed.key ezseed.pem* /usr/local/nginx/").toString();
 
 					exec(cmd, function(error, stdout, stderr) {
@@ -465,7 +467,7 @@ var install = {
 						else if(!_.isEmpty(stderr))
 							throw stderr.error;
 
-						exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
+						exec("cat "+app_path+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf", function(error, stdout, stderr) {
 							callback(null, {});
 						});
 					});
@@ -473,7 +475,7 @@ var install = {
 				} else {
 					var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
 					exec(cmd, function(error, stdout, stderr) {
-						exec("cat "+__dirname+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
+						exec("cat "+app_path+"/app/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
 							callback(null, {});
 						});
 					});
@@ -522,7 +524,7 @@ var install = {
 var password = {
 	rutorrent : function(username, password, done) {
 		
-		var shell_path = pathInfo.join(__dirname,'/app/scripts/rutorrent/password.sh');
+		var shell_path = pathInfo.join(app_path,'/app/scripts/rutorrent/password.sh');
 
 		fs.chmodSync(shell_path, '755');
 
@@ -534,13 +536,13 @@ var password = {
 	transmission : function(username, password, done) {
 		//stopping daemon
 		daemon('transmission', 'stop', username, function() {
-			var shell_path = pathInfo.join(__dirname,'/app/scripts/transmission/password.sh');
+			var shell_path = pathInfo.join(app_path,'/app/scripts/transmission/password.sh');
 
 			fs.chmodSync(shell_path, '755');
 
 			execFile(shell_path, [username, password], function(err, stdout, stderr) {
 
-				var settings = __dirname + '/app/scripts/transmission/config/settings.'+username+'.json';
+				var settings = app_path + '/app/scripts/transmission/config/settings.'+username+'.json';
 
 				var d = jf.readFileSync(settings);
 
@@ -569,7 +571,7 @@ var resetWatcher = function(cb) {
 
 
 var daemon = function(client, command, username, done) {
-	var shell_path = pathInfo.join(__dirname,'/app/scripts/', client,'/daemon.sh');
+	var shell_path = pathInfo.join(app_path,'/app/scripts/', client,'/daemon.sh');
 	fs.chmodSync(shell_path, '775');
 
 	var running = spawn(shell_path, [command, username]);
@@ -670,12 +672,44 @@ program
 program
 	.command('update')
 	.description('Update ezseed')
-	.action(function() {
-		exec('git pull && npm install && pm2 restart all', function(error) {
-			console.log('Ezseed est à jour'.info);
-			process.exit(1);
-		});
+	.option('--rtorrent', 'update rtorrent & libtorrent')
+	.action(function(options) {
+		if(options.rtorrent) {
+			var shell_path = app_path + '/app/scripts/rutorrent/update.sh';
+			fs.chmodSync(shell_path, '775');
+		
+			var running = spawn(shell_path);
+
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string.info);
+			});
+
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string.error);
+				
+			});
+
+			running.on('exit', function (code) {
+				console.log('Mise à jour de rutorrent terminée'.info);
+				var config = jf.readFileSync(app_path + '/app/config.json');
+				
+				config.rutorrent = true;
+
+				jf.writeFileSync(app_path+'/app/config.json', config);
+
+				process.exit(1);
+			});
+		} else {
+			exec('npm update https://github.com/soyuka/ezseed2 && npm install && pm2 restart all', function(error) {
+				console.log('Ezseed est à jour'.info);
+				process.exit(1);
+			});
+		}
 	});
+
+
 
 program
 	.command('useradd <rutorrent|transmission|aucun> <username>')
@@ -685,8 +719,8 @@ program
 	.description("Ajout d'un utilisateur au client spécifié")
 	.action(function(client, username, options) {
 
-		if(fs.existsSync('./app/config.json')) {
-			var config = jf.readFileSync('./app/config.json');
+		if(fs.existsSync(app_path + '/app/config.json')) {
+			var config = jf.readFileSync(app_path + '/app/config.json');
 
 			if(client == "aucun" || config[client] == true) {
 
