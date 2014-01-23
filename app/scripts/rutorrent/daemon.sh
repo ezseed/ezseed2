@@ -99,10 +99,12 @@ d_stop() {
         return
     fi
     #awk -F: '{print($2)}' |
-    pid=`cat ${session}/rtorrent.lock | sed "s/[^0-9]//g"`
-    if ps -ef | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
-        kill -s INT ${pid}
-    fi
+    #pid=`cat ${session}/rtorrent.lock | sed "s/[^0-9]//g"`
+    #if ps -ef | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
+    #    kill -s INT ${pid}
+    #fi
+    pid=`ps -ef | grep rtorrent-lebedouin | grep -v grep | awk '{print $2}'`
+    kill -s INT ${pid}
 }
 
 getsession() { 

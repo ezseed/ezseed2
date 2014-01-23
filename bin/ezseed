@@ -806,6 +806,7 @@ program
 		}
 	})
 
+//TODO: daemon username start same everywhere
 program
 	.command('daemon <rutorrent|transmission> <command> <username>')
 	.description('start|stop|restart daemon-client for specified username')

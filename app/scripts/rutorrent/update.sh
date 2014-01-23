@@ -36,6 +36,9 @@ cd ../rtorrent-0.9.2
 make
 make install
 
+#that.
+ldconfig
+
 #back from rtorrent
 
 cd ../

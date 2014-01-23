@@ -14,6 +14,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ##building tools##
 apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config subversion php5-cli unzip ffmpeg curl php5-curl mediainfo screen unrar-free libsigc++-2.0-dev
 
+#comerr-dev libcurl3-openssl-dev libidn11-dev libkadm55 libkrb5-dev libssl-dev zlib1g-dev libncurses5 libncurses5-dev
+
 #Téléchargement + déplacement de rutorrent (web)
 svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent/
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/
@@ -41,6 +43,9 @@ cd ../rtorrent-0.9.2
 ./configure --with-xmlrpc-c
 make
 make install
+
+#that.
+ldconfig
 
 # back from rtorrent
 
