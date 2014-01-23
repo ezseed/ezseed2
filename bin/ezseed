@@ -634,7 +634,7 @@ program
 			if(results.client_torrent === null) {
 				console.log("Aucun client torrent spécifié, fin de l'installation".info);
 				console.log("Vous pouvez maintenant démarrer ezseed pm2 start ezseed.json !".info);
-				process.exit(1);
+				process.exit(0);
 			} else {
 
 				console.log("Création du compte " + results.client_torrent + " pour l'administrateur".info);
@@ -648,7 +648,7 @@ program
 					db.users.update(u.username, {client : results.client_torrent}, function(err) {
 						cache.clear();
 						console.log("Vous pouvez maintenant démarrer ezseed ! pm2 start ezseed.json".info);
-						process.exit(1);
+						process.exit(0);
 					});
 				});
 			}
@@ -664,7 +664,7 @@ program
 		install.client_torrent(function(err, obj) {
 			cache.clear();
 			console.log('Client torrent installé'.info);
-			process.exit(1);
+			process.exit(0);
 		}, client);
 	});
 
@@ -698,12 +698,12 @@ program
 
 				jf.writeFileSync(app_path+'/app/config.json', config);
 
-				process.exit(1);
+				process.exit(0);
 			});
 		} else {
 			exec('npm update https://github.com/soyuka/ezseed2 && npm install && pm2 restart all', function(error) {
 				console.log('Ezseed est à jour'.info);
-				process.exit(1);
+				process.exit(0);
 			});
 		}
 	});
@@ -735,7 +735,7 @@ program
 							useradd[client](username, pw, function() {
 								resetWatcher(function() {
 									cache.clear();
-									process.exit(1);
+									process.exit(0);
 								});
 							});
 						});
@@ -743,7 +743,7 @@ program
 						useradd[client](username, options.password, function() {
 							resetWatcher(function() {
 								cache.clear();
-								process.exit(1);
+								process.exit(0);
 							});
 						});
 				};
@@ -765,11 +765,11 @@ program
 				
 			} else {
 				console.log("Le client " + client + " n'est pas installé !".error);
-				process.exit(0);
+				process.exit(1);
 			}
 		} else {
 			console.log("Le fichier de configuration n'existe pas, lancez ./ezseed install".error);
-			process.exit(0);
+			process.exit(1);
 		}
 
 	});
@@ -781,7 +781,7 @@ program
 		cache.put('force', true);
 
 		userdel[client](username, function() {
-			process.exit(1);
+			process.exit(0);
 		});
 	});
 
@@ -795,13 +795,13 @@ program
 			promptly.password('Mot de passe :', function(err, pw) {
 				password[client](username, pw, function() {
 					cache.clear();
-					process.exit(1);
+					process.exit(0);
 				});
 			});
 		} else {
 			password[client](username, options.password, function() {
 				cache.clear();
-				process.exit(1);
+				process.exit(0);
 			});
 		}
 	})
@@ -811,6 +811,41 @@ program
 	.command('daemon <rutorrent|transmission> <command> <username>')
 	.description('start|stop|restart daemon-client for specified username')
 	.action(daemon);
+
+program
+	.command('rtorrent <start|stop|restart>')
+	.option('-u <username>','--user <username>', 'username')
+	.description('stop rtorrent daemon(s)')
+	.action(function(cmd, options) {
+
+		if(options.username) {
+
+			daemon('rutorrent', cmd, options.username, function() {
+
+				process.exit(0);
+
+			});
+
+		} else {
+
+			db.users.getAll(function(err, users) {
+
+				async.each(users
+
+				, function(user, cb) {
+					daemon('rutorrent', cmd, user.username, function() {
+						console.info(user.username + " started");
+
+						cb();
+					});
+				},
+				, function(err) {
+					console.info("Success.");
+					process.exit(0);
+				});
+			});
+		}
+	})
 
 program
 	.command('reboot')
