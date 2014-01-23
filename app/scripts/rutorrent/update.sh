@@ -9,6 +9,9 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# 9.2 dependecies
+apt-get install -y libsigc++-2.0-dev
+
 #clone rtorrent et libtorrent
 wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
 tar -xf libtorrent-0.13.2.tar.gz
