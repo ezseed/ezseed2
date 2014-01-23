@@ -3,7 +3,8 @@
 /**
  * Module dependencies.
  */
-var app_path = pathInfo.resolve(__dirname, '..');
+var   pathInfo = require('path')
+	, app_path = pathInfo.resolve(__dirname, '..');
 
 var program = require('commander')
   , colors = require('colors')
@@ -13,7 +14,6 @@ var program = require('commander')
   , spawn = require('child_process').spawn
   , _ = require('underscore')
   , fs = require('fs')
-  , pathInfo = require('path')
   , async = require('async')
   , db = require(app_path + '/app/core/database.js')
   , jf = require('jsonfile')
