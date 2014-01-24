@@ -21,11 +21,11 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
 
 ### Manuelle
 
-1) Installation de [nodejs et mongodb](https://github.com/soyuka/ezseed2/wiki/Installation-manuelle-des-d%C3%A9pendances-sous-Debian)
-3) Les paquets suivants : whois inotify-tools nginx php5-fpm
-4) `npm install pm2@0.6.3 -g` - pm2
-5) `npm i --save && npm link`
-6) `ezseed config`
+ - Installation de [nodejs et mongodb](https://github.com/soyuka/ezseed2/wiki/Installation-manuelle-des-d%C3%A9pendances-sous-Debian)
+ - Les paquets suivants : whois inotify-tools nginx php5-fpm
+ - `npm install pm2@0.6.3 -g` - pm2
+ - `npm i --save && npm link`
+ - `ezseed config`
 
 ## Lancement
 ```
