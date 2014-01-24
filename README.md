@@ -39,9 +39,10 @@ Les logs de l'application sont dans `/var/log/ezseed/`
 ezseed update
 ```
 
-## Update from < v2.1.10-beta
+## Mise à jour depuis < v2.1.10-beta
 
-If you haven't configure update-rc.d : 
+Pour configurer le reboot :
+
 `ezseed config -uns` 
 `Ctrl+C` pour annuler une fois l'étape terminée
 
