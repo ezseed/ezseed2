@@ -834,12 +834,17 @@ program
 
 					function(user, cb) {
 
-						daemon('rutorrent', cmd, user.username, function() {
+						if(user.client == 'rutorrent') {
 
-							console.info(user.username + " started");
-							cb();
+							daemon('rutorrent', cmd, user.username, function() {
 
-						});
+								console.info(user.username + " " + cmd + "ed");
+								cb();
+
+							});
+
+						}
+
 					},
 					function(err) {
 

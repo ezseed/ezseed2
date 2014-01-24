@@ -52,8 +52,9 @@ else
 	cp -R $DIR /var/www/ezseed2
 
 	cd /var/www/ezseed2/ &&	npm install --save
+	npm link
 
-	echo "Please exec 'cd /var/www/ezseed2' and start installation : ./ezseed install -h"
+	echo "Please start 'ezseed config -h'"
 fi
 
 
