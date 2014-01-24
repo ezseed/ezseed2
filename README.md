@@ -1,4 +1,4 @@
-# Still BETA ! Still a lot [TODO](https://github.com/soyuka/ezseed2/wiki/TODO-LIST)
+# Still BETA !
 
 ## Installation
 
@@ -26,6 +26,7 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
 3) Les paquets suivants : whois inotify-tools nginx php5-fpm
 4) `npm install pm2@0.6.3 -g` - pm2
 5) `npm i --save && npm link`
+6) `ezseed config`
 
 ## Lancement
 ```
@@ -59,5 +60,6 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 
 ## Liens
 
+* [Todo](https://github.com/soyuka/ezseed2/wiki/TODO-LIST)
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
