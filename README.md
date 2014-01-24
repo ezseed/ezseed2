@@ -25,7 +25,7 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
  - Les paquets suivants : whois inotify-tools nginx php5-fpm
  - `npm install pm2@0.6.3 -g` - pm2
  - `npm i --save && npm link`
- - `ezseed config`
+ - `ezseed config` /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf)
 
 ## Lancement
 ```
