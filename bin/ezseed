@@ -818,6 +818,8 @@ program
 	.description('stop rtorrent daemon(s)')
 	.action(function(cmd, options) {
 
+		console.log(options);
+
 		if(options.username) {
 
 			daemon('rutorrent', cmd, options.username, function() {

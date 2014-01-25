@@ -103,8 +103,9 @@ d_stop() {
     #if ps -ef | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
     #    kill -s INT ${pid}
     #fi
-    pid=`ps -ef | grep rtorrent-lebedouin | grep -v grep | awk '{print $2}'`
+    pid=`ps -ef | grep rtorrent-$user | grep -v grep | awk '{print $2}'`
     kill -9 ${pid}
+    rm /home/$user/rtorrent/session/rtorrent.lock
 }
 
 getsession() { 
