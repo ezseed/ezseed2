@@ -814,15 +814,13 @@ program
 
 program
 	.command('rtorrent <start|stop|restart>')
-	.option('-u <username>','--user <username>', 'username')
+	.option('-u, --user <username>', 'username')
 	.description('stop rtorrent daemon(s)')
 	.action(function(cmd, options) {
 
-		console.log(options.U);
+		if(options.user) {
 
-		if(options.U) {
-
-			daemon('rutorrent', cmd, options.U, function() {
+			daemon('rutorrent', cmd, options.user, function() {
 
 				process.exit(0);
 
