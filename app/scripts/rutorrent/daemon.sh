@@ -119,19 +119,16 @@ case "$1" in
   start)
     echo -n "Starting $DESC: $NAME"
     d_start
-    echo "."
     ;;
   stop)
     echo -n "Stopping $DESC: $NAME"
     d_stop
-    echo "."
     ;;
   restart|force-reload)
     echo -n "Restarting $DESC: $NAME"
     d_stop
     sleep 1
     d_start
-    echo "."
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload} user" >&2
