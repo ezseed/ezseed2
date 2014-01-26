@@ -1,5 +1,7 @@
 # Still BETA !
 
+Les noms utilisateurs doivent être en minuscule ! <strike>UserName</strike> => username :check:
+
 ## Installation
 
 ```
