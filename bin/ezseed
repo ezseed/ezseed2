@@ -848,7 +848,9 @@ program
 					},
 					function(err) {
 
-						console.info("Success.");
+						if(err) console.error(err);
+						
+						console.info("Success");
 						process.exit(0);
 
 				});

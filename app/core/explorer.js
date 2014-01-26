@@ -26,7 +26,7 @@ exports.explore = function(params, cb) {
 			//Getting each files
 			explorer.getFiles(pathToWatch, function(err, filePaths) {
 				if(err) {
-					console.error(err);
+					console.error("Explorer.js l29", err);
 					if(err.code == 'ENOENT')
 						db.paths.removeByPath(err.path, pathCallback);
 				} else {
