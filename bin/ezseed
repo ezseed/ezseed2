@@ -843,13 +843,16 @@ program
 
 							});
 
+						} else {
+							console.info(user.username + "is using "+user.client+", skipping");
+							cb();
 						}
 
 					},
 					function(err) {
 
 						if(err) console.error(err);
-						
+
 						console.info("Success");
 						process.exit(0);
 
