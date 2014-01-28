@@ -90,7 +90,7 @@ var admin = {
 			
 			if(global.config[req.body.client] == true) {
 
-				var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+				var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
 				
 				var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
 
@@ -127,7 +127,7 @@ var admin = {
 	 * Must be run as root = bad.
 	 */
 	, userdel : function(req, res) {
-		var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+		var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
 
 		db.user.byId(req.params.uid, function(err, user) {
 			var running = spawn(shell_path, ['userdel', user.client, user.username]);
@@ -156,7 +156,7 @@ var admin = {
 
 	, updatePassword : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = pathInfo.resolve(global.config.root, '..', 'ezseed');
+			var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
 				
 			var options = ['password', user.client, user.username, ,'-p', req.body.password];
 
@@ -213,7 +213,7 @@ var admin = {
 		res.redirect('/');
 
 		exec('pm2 restart ezseed', function() {
-		
+			
 		});
 	}
 
