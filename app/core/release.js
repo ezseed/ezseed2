@@ -111,11 +111,11 @@ module.exports.getTags  = {
 		  , words = _s.words(name)
 
 		  , movie = {
-				quality : contains(words, qualities),
-				subtitles : contains(words, subtitles),
-				language : contains(words, languages),
-				audio : contains(words, audios),
-				format : contains(words, format),
+				quality : _s.titleize(contains(words, qualities)),
+				subtitles : _s.titleize(contains(words, subtitles)),
+				language : _s.titleize(contains(words, languages)),
+				audio : _s.titleize(contains(words, audios)),
+				format : _s.titleize(contains(words, format)),
 				movieType : 'movie',
 			}
 			

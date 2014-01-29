@@ -81,6 +81,18 @@ module.exports = function(app) {
 	
 }
 
+module.exports.database = function() {
+    var plugins = fs.readdirSync(pluginsPath), databases = {};
+
+    _.each(plugins, function(plugin) {
+        plugin = path.join(pluginsPath, plugin);
+        if(fs.statSync(plugin).isDirectory())
+            databases[plugin] = require(plugin).database;
+    });
+
+    return databases;
+}
+
 module.exports.sockets = function(socket, sockets) {
 	var plugins = fs.readdirSync(pluginsPath);
 

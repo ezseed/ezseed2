@@ -6,17 +6,7 @@
 /**
  * Module dependencies.
  */
-
-var express = require('express')
-  , db = require('./core/database')
-  , users = require('./core/helpers/users')
-  , http = require('http')
-  , _ = require('underscore')
-  , path = require('path')
-  , cache = require('memory-cache')
-  , jf = require('jsonfile')
-  , MongoStore = require('connect-mongo')(express)
-;
+var jf = require('jsonfile');
 
 global.config = jf.readFileSync(__dirname + '/config.json');
 
@@ -26,6 +16,18 @@ if(global.config.root.length == 0 || !global.config.aucun) {
   global.config.aucun = true;
   jf.writeFileSync(__dirname + '/config.json', global.config);
 }
+
+
+var express = require('express')
+  , db = require('./core/database')
+  , users = require('./core/helpers/users')
+  , http = require('http')
+  , _ = require('underscore')
+  , path = require('path')
+  , cache = require('memory-cache')
+  , MongoStore = require('connect-mongo')(express)
+;
+
 
 var app = express();
 

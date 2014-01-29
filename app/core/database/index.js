@@ -11,7 +11,8 @@ var db = {
 	    }
 	},
 	user: require('./user.js'),
-	users: require('./users.js')
+	users: require('./users.js'),
+	plugins: require('../../plugins').database
 }
 
 module.exports = db;
