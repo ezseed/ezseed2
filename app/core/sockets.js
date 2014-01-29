@@ -3,7 +3,7 @@ var socketio = require('socket.io')
   , pathInfo = require('path')
   , cache = require('memory-cache')
   , users = require('../core/helpers/users.js')
-  , db = require('../core/database.js')
+  , db = require('../core/database')
   , pretty = require('prettysize')
   , _ = require('underscore');
 

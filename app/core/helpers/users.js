@@ -6,7 +6,7 @@ var _ = require('underscore')
   , async = require('async')
   , pathInfo = require('path')
   , bcrypt = require('bcrypt-nodejs')
-  , db = require('../database.js');
+  , db = require('../database');
 
 
 /**

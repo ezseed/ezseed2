@@ -4,7 +4,7 @@ var fs = require('fs')
 	, async = require('async')
 	, _ = require('underscore')
 	, pathInfo = require('path')
-	, db = require('../core/database.js')
+	, db = require('../core/database')
 	, userHelper = require('../core/helpers/users.js');
 	;
 

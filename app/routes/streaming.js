@@ -1,6 +1,6 @@
 var fs = require('fs')
 	, _ = require('underscore')
-	, db = require('../core/database.js');
+	, db = require('../core/database');
 
 var streaming = {
 	watch : function(req, res) {

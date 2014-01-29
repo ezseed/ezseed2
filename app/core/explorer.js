@@ -6,7 +6,7 @@ var _ = require('underscore')
   , pathInfos = require('path')
   , mime = require('mime')
   , async = require('async')
-  , db = require('../core/database.js')
+  , db = require('../core/database')
   , parser = require('./parser')
   , fs = require('fs');
 
