@@ -14,16 +14,16 @@ movies.forEach(function(movie) {
 					<div class="cover-hover">
 						<i class="entypo-play"></i>
 					</div>
-					<% if(movie.picture == undefined) {%>
+					<% if(movie.infos.picture == undefined) {%>
 						<img src="/images/cover/video.png" />
 					<% } else { %>
-						<img src="<%- movie.picture %>" />
+						<img src="<%- movie.infos.picture %>" />
 					<% } %>
 				</div>
 			</a>
 		</div>
 		<div class="list-infos">
-			<h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1>
+			<h1 class="league-gothic"><%- movie.infos.title %><% if(movie.infos.season != undefined) { %> - S<%- movie.infos.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1>
 
 			<div class="button-group">
 				<a href="/watch/<%- movie._id %>" title="Visionner">
@@ -49,26 +49,26 @@ movies.forEach(function(movie) {
 
 			<hr />
 			<p class="infos">
-				<%- movie.synopsis %><br>
-				<% if(movie.trailer != undefined) { %>
-					<a href="<%- movie.trailer%>" target="_blank">Voir le trailer</a>
+				<%- movie.infos.synopsis %><br>
+				<% if(movie.infos.trailer != undefined) { %>
+					<a href="<%- movie.infos.trailer %>" target="_blank">Voir le trailer</a>
 				<% } %>
 			</p>
 
-			<% if(movie.quality != undefined) { %>
+			<% if(movie.quality != undefined && movie.quality.length > 0) { %>
 				<p class="info"><i class="entypo-monitor"></i><%- movie.quality %></p>
 			<% } %>
-			<% if(movie.format != undefined) { %>
+			<% if(movie.format != undefined && movie.format.length > 0) { %>
 				<p class="info"><i class="entypo-doc-landscape"></i><%- movie.format %></p>
 			<% } %>
-			<% if(movie.language != undefined) { %>
+			<% if(movie.language != undefined && movie.language.length > 0) { %>
 				<p class="info"><i class="entypo-sound"></i><%- movie.language %></p>
 			<% } %>
-			<% if(movie.subtitles != undefined) { %>
+			<% if(movie.subtitles != undefined && movie.subtitles.length > 0) { %>
 				<p class="info"><i class="entypo-text-doc"></i><%- movie.subtitles %></p>
 			<% } %>
 
-			<% if(movie.audio != undefined) { %>
+			<% if(movie.audio != undefined && movie.audio.length > 0 ) { %>
 				<p class="info"><i class="entypo-sound"></i><%- movie.audio %></p>
 			<% } %>
 
@@ -136,13 +136,13 @@ movies.forEach(function(movie) {
 		<% } %>
 	</div>
 	<div data-id="<%- movie._id %>" class="element miniature video" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
-		<div class="titre"><h1 class="league-gothic"><%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1></div>
+		<div class="titre"><h1 class="league-gothic"><%- movie.infos.title %><% if(movie.infos.season != undefined) { %> - S<%- movie.infos.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1></div>
 	
 		<a href="/watch/<%- movie._id %>">
- 			<% if(movie.picture == undefined) {%>
+ 			<% if(movie.infos.picture == undefined) {%>
 				<img src="/images/cover/video.png" />
 			<% } else { %>
-				<img src="<%- movie.picture %>" />
+				<img src="<%- movie.infos.picture %>" />
 			<% } %>
 		</a>
 	</div>
@@ -150,7 +150,7 @@ movies.forEach(function(movie) {
 		<i class="entypo-video"></i>
 
 		<a href="/watch/<%- movie._id %>" class="table-link">
-			<%- movie.title %><% if(movie.season != undefined) { %> - S<%- movie.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %>
+			<%- movie.infos.title %><% if(movie.infos.season != undefined) { %> - S<%- movie.infos.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %>
 		</a>
 
 		<div class="button-group">

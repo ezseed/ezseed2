@@ -86,6 +86,11 @@ var contains = function(words, item) {
 	}
 
 	return result;
+},
+	tag = function(words, item) {
+		var tag = contains(words, item);
+
+		return tag.length > 0 ? tag.toUpperCase() : undefined;
 }
 
 module.exports.getTags  = {
@@ -111,11 +116,11 @@ module.exports.getTags  = {
 		  , words = _s.words(name)
 
 		  , movie = {
-				quality : _s.titleize(contains(words, qualities)),
-				subtitles : _s.titleize(contains(words, subtitles)),
-				language : _s.titleize(contains(words, languages)),
-				audio : _s.titleize(contains(words, audios)),
-				format : _s.titleize(contains(words, format)),
+				quality : tag(words, qualities),
+				subtitles : tag(words, subtitles),
+				language : tag(words, languages),
+				audio : tag(words, audios),
+				format : tag(words, format),
 				movieType : 'movie',
 			}
 			
@@ -269,96 +274,96 @@ var getAlbumInformations = function(album, cb) {
 
 module.exports.getAlbumInformations = getAlbumInformations;
 
-var getMovieInformations = function(movie, cb) {
+// var getMovieInformations = function(movie, cb) {
 
-	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
+// 	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 
-	console.log('Gathering infos on', movie.search);
+// 	console.log('Gathering infos on', movie.search);
 
-	//searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
-  		if(err) return cb(err, movie);
+// 	//searching in the allocine API (could be others)
+//   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
+//   		if(err) return cb(err, movie);
 
-  		if(!_.isUndefined(res.feed)) {
-      		var infos = Object.byString(res.feed, movie.movieType);
+//   		if(!_.isUndefined(res.feed)) {
+//       		var infos = Object.byString(res.feed, movie.movieType);
 
-      		if(infos !== undefined) {
+//       		if(infos !== undefined) {
 
-      			//Index allocine info
-      			var index = false;
+//       			//Index allocine info
+//       			var index = false;
 
-      			var m_name = _s.slugify(movie.search);
+//       			var m_name = _s.slugify(movie.search);
 
-      			//Parse each infos founded, if title matchs, break
-      			var nb_resultats = infos.length, i = 0;
+//       			//Parse each infos founded, if title matchs, break
+//       			var nb_resultats = infos.length, i = 0;
 
-      			//loop beginning with best match !
-      			while(i < nb_resultats - 1 && index === false) {
+//       			//loop beginning with best match !
+//       			while(i < nb_resultats - 1 && index === false) {
       				
-      				var e = infos[i],
-      					//slugifying names - matches are better
-      					e_title = _s.slugify(e.title), 
-      					e_original = _s.slugify(e.originalTitle);
+//       				var e = infos[i],
+//       					//slugifying names - matches are better
+//       					e_title = _s.slugify(e.title), 
+//       					e_original = _s.slugify(e.originalTitle);
 
-      				if(
+//       				if(
 
-      					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
-      					||
-      					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
+//       					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
+//       					||
+//       					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
 
-      				)	{
-      						index = i;
-      					}
+//       				)	{
+//       						index = i;
+//       					}
 
-      				i++;
-      			}
+//       				i++;
+//       			}
 
-  				if(index === false)
-  					index = 0;
+//   				if(index === false)
+//   					index = 0;
 
-          		movie.code = infos[index].code;
+//           		movie.code = infos[index].code;
 
-          		//Searching for a specific code
-          		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
-          			var specific_infos = Object.byString(result, movie.movieType);
+//           		//Searching for a specific code
+//           		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
+//           			var specific_infos = Object.byString(result, movie.movieType);
 
-          			if(specific_infos) {
-	          			movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.originalTitle;
-	          			movie.synopsis = specific_infos.synopsis ? _s.trim(specific_infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
-	          			movie.picture = specific_infos.poster !== undefined ? specific_infos.poster.href : null;
-	          			movie.trailer = _.isEmpty(specific_infos.trailer) ? null : specific_infos.trailer.href;
-	          		} else {
-	          			infos = infos[index];
+//           			if(specific_infos) {
+// 	          			movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.originalTitle;
+// 	          			movie.synopsis = specific_infos.synopsis ? _s.trim(specific_infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
+// 	          			movie.picture = specific_infos.poster !== undefined ? specific_infos.poster.href : null;
+// 	          			movie.trailer = _.isEmpty(specific_infos.trailer) ? null : specific_infos.trailer.href;
+// 	          		} else {
+// 	          			infos = infos[index];
 
-	          			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-	          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
-	          			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
-	          		}
+// 	          			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
+// 	          			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
+// 	          			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
+// 	          		}
 
-          			return cb(err, movie);
+//           			return cb(err, movie);
 
-          		});
-          	} else {
-          		//Too long
-          		var words = _s.words(movie.search);
+//           		});
+//           	} else {
+//           		//Too long
+//           		var words = _s.words(movie.search);
 
-          		if(words.length >= 3 && words[0].length > 3) {
+//           		if(words.length >= 3 && words[0].length > 3) {
           			
-          			movie.search = words.splice(1, words.length).join(' ');
+//           			movie.search = words.splice(1, words.length).join(' ');
 
-          		 	getMovieInformations(movie, cb);
-          		} else {
-        			 //No movie founded
-	          		movie.title = movie.name;
-	          		return cb(err, movie);  			
-          		}
+//           		 	getMovieInformations(movie, cb);
+//           		} else {
+//         			 //No movie founded
+// 	          		movie.title = movie.name;
+// 	          		return cb(err, movie);  			
+//           		}
 
-          	}
-      	} else {
-      		return cb(err, movie);
-      	}
-  	});
-}
+//           	}
+//       	} else {
+//       		return cb(err, movie);
+//       	}
+//   	});
+// }
 
-module.exports.getMovieInformations = getMovieInformations;
+// module.exports.getMovieInformations = getMovieInformations;
 
