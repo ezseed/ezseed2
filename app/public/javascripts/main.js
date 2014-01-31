@@ -63,7 +63,7 @@ require(['desktop', 'sockets', 'theme', 'admin'], function(Desktop) {
 
     socket.on('files', function(d) {
         d = JSON.parse(d);
-        console.log('Receiving files', d.paths);
+        //console.log('Receiving files', d.paths);
 
         if(config.location == '/')
             Desktop.append(d.paths);

@@ -59,7 +59,7 @@ define([
                 $loader.fadeIn();
         },
         showNotification : function(params) {
-            notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
+            // notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
         },
         init : function() {
             var self = this;
@@ -78,8 +78,22 @@ define([
             if(self.socket === null)
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
-            if(user && isDesktop)
-                self.socket.emit('update', user.id);
+            if(user && isDesktop) {
+
+                jQuery.getJSON( 
+                    'http://localhost:3001/api/526926db6d8dc0727718fd2f', function( data, textStatus ) {
+                        
+                        if(data) {
+                            Desktop.append(data.paths);
+                            self.socket.emit('update', user.id);
+                        } else {
+                            console.error(textStatus, data);
+                        }
+
+ 
+                });
+            }
+
 
             //hash
             self.toRemove = window.location.hash.substr(1);
