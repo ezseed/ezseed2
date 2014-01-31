@@ -21,22 +21,17 @@ var files = {
 	        ],
 	        function(err, docs) {
 
-	       		_.each(docs.paths, function(p, pathCursor) {
-	       			Movies.populate(p.movies, {path: 'infos', model: MoviesInformations}, function(err, infos) {
+	        	async.waterfall([
+	        	  function(callback){
+	        	  		Movies.populate(
+				        	docs, 
+				        	{ path: 'paths.movies.infos', model: MoviesInformations }, 
+				        	callback
+				        );
+	        	  }
+	        	], cb);
 
-	       				_.each(infos, function(info, cursor) {
-	       					  	console.log(docs.paths[pathCursor].movies[cursor], info.infos);
-	       					//docs.paths[pathCursor].movies[cursor] = _.extend(docs.paths[pathCursor].movies[cursor], info.infos);
-	       				});
-
-	          			cb(err, docs);
-
-	       				// console.info('Populating infos');
-	       				//   	console.log(docs.paths[pathCursor].movies);
-	       			});
-	       		});	
-	        }
-			)
+	        });
 		});
 	},
 	byId : function(id, cb) {
@@ -98,7 +93,6 @@ var files = {
 		},
 	    byId : function(id, cb) {
 	      Movies.findById(id).lean(true).populate('infos').exec(function(err, doc) {
-	      	  	console.log(doc);
 	        cb(err, doc);
 	      });
 	    },
