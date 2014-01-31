@@ -6,6 +6,7 @@ var pathInfos = require('path')
   , _s = require('underscore.string')
   , release = require('./release.js')
   , fs = require('fs')
+  , allocine = require('../plugins/allocine/search.js')
   ;
 
 /**
@@ -252,7 +253,7 @@ module.exports.processMovies = function(params, callback) {
 					return parseMovies(arr, cb, i, movies);
 				} else {
 					//Call to allocine-api to gather infos
-					release.getMovieInformations(e, function(err, infos) {
+					allocine.search(e, function(err, infos) {
 						movies.push({
 							movieType : e.movieType,
 							name : e.name,

@@ -4,150 +4,79 @@ var _ = require('underscore')
   , async = require('async')
   , fs = require('fs')
   , jf = require('jsonfile')
-  , db = require('./database.js');
+  , db = require('./database');
 
 if(!fs.existsSync(__dirname + '/../public/tmp'))
 	fs.mkdirSync(__dirname + '/../public/tmp', '0775');
 
-var Inotify = require('inotify').Inotify, EventEmitter = require('events').EventEmitter, util = require('util');
+// var Watch = function(params) {
+// 	var self = this;
 
-//Watcher from https://npmjs.org/package/inotifywatch
-function Watcher(filepath, options, callback) {
+// 	self.addTimeout = null;
+// 	self.removeTimeout = null;
+// 	self.removedFiles = [];
+// 	self.path = params.path;
+// 	self.uid = params.uid;
+// 	self.pid = params.pid;
 
-  var self = this;
-  EventEmitter.call(self);
-  if (typeof options === 'function') {
-    callback = options;
-    options = null;
-  }
-  options = options || {
-    persistent: true
-    //, events: Inotify.IN_ALL_EVENTS
-  };
-  var watchFor =
-    Inotify.IN_MODIFY |
-    Inotify.IN_CREATE |
-    Inotify.IN_DELETE |
-    Inotify.IN_DELETE_SELF |
-    Inotify.IN_MOVE;
-  var inotify = new Inotify(options.persistent);
-  var trampoline = function (ev, data) {
-    if (callback)
-      callback(ev, data);
-    self.emit(ev, data);
-  };
-  var moved_from;
-  inotify.addWatch({
-    path: filepath,
-    watch_for: options.events || watchFor,
-    callback: function (event) {
-      if (event.mask & Inotify.IN_ACCESS) {
-        trampoline('access', event.name);
-      } else if (event.mask & Inotify.IN_MODIFY) {
-        trampoline('modify', event.name);
-      } else if (event.mask & Inotify.IN_OPEN) {
-        trampoline('open', event.name);
-      } else if (event.mask & Inotify.IN_CLOSE_NOWRITE) {
-        trampoline('close', event.name);
-      } else if (event.mask & Inotify.IN_CLOSE_WRITE) {
-        trampoline('close', event.name);
-      } else if (event.mask & Inotify.IN_ATTRIB) {
-        trampoline('attribute', event.name);
-      } else if (event.mask & Inotify.IN_CREATE) {
-        trampoline('create', event.name);
-      } else if (event.mask & Inotify.IN_DELETE) {
-        trampoline('delete', event.name);
-      } else if (event.mask & Inotify.IN_DELETE_SELF) {
-        trampoline('delete', event.name);
-      } else if (event.mask & Inotify.IN_MOVE_SELF) {
-        trampoline('move self', event.name);
-      } else if (event.mask & Inotify.IN_IGNORED) {
-        trampoline('ignored', event.name);
-      } else if (event.mask & Inotify.IN_MOVED_FROM) {
-        trampoline('moved from', event.name);
-        moved_from = event;
-      } else if (event.mask & Inotify.IN_MOVED_TO) {
-        trampoline('moved to', event.name);
-        if (moved_from && moved_from.cookie === event.cookie) {
-          trampoline('move', { from: moved_from.name, to: event.name });
-          moved_from = null;
-        }
-      }
-    }
-  });
-  self.close = inotify.close.bind(inotify);
-  return self;
-}
-util.inherits(Watcher, EventEmitter);
+// 	self.removedIds = [];
 
-var Watch = function(params) {
-	var self = this;
+// 	return _.extend(self, {
+// 		eventHandler : function(event, data) {
 
-	self.addTimeout = null;
-	self.removeTimeout = null;
-	self.removedFiles = [];
-	self.path = params.path;
-	self.uid = params.uid;
-	self.pid = params.pid;
+// 			if(event == 'delete')
+// 				this.delete(data);
+// 			else if(event == 'move' || event == 'moved' || event == 'moved to' || event == 'create')
+// 				this.create(data);
+// 			else
+// 				this.unknown(data);
+// 		},
 
-	self.removedIds = [];
+// 		delete : function(filename) {
+// 			var self = this;
 
-	return _.extend(self, {
-		eventHandler : function(event, data) {
+// 			self.removedFiles.push(
+// 				pathInfo.join(self.path, filename)
+// 			);
 
-			if(event == 'delete')
-				this.delete(data);
-			else if(event == 'move' || event == 'moved' || event == 'moved to' || event == 'create')
-				this.create(data);
-			else
-				this.unknown(data);
-		},
+// 			if(self.removeTimeout !== null)
+// 				clearTimeout(self.removeTimeout);
 
-		delete : function(filename) {
-			var self = this;
+// 			self.removeTimeout = setTimeout(function() {
+// 				console.log('removeFile');
 
-			self.removedFiles.push(
-				pathInfo.join(self.path, filename)
-			);
+// 				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles, removedIds : self.removedIds}, function() {
+// 					self.removeTimeout = null;
+// 					watcher.writeRemovedFiles(self);
+// 				});
+// 			}, 750);
 
-			if(self.removeTimeout !== null)
-				clearTimeout(self.removeTimeout);
+// 		},
 
-			self.removeTimeout = setTimeout(function() {
-				console.log('removeFile');
+// 		create : function(filename) {
+// 			// var self = this;
 
-				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles, removedIds : self.removedIds}, function() {
-					self.removeTimeout = null;
-					watcher.writeRemovedFiles(self);
-				});
-			}, 750);
+// 			// if(self.addTimeout !== null)
+// 			// 	clearTimeout(self.addTimeout);
 
-		},
+// 			// self.addTimeout = setTimeout(function() {
+// 			// 	console.log('Watcher updateFiles');
 
-		create : function(filename) {
-			// var self = this;
+// 			// 	watcher.updateFiles(self.uid, function() {
+// 			// 		self.addTimeout = null;
+// 			// 	});
 
-			// if(self.addTimeout !== null)
-			// 	clearTimeout(self.addTimeout);
+// 			// }, 750);
+// 		},
 
-			// self.addTimeout = setTimeout(function() {
-			// 	console.log('Watcher updateFiles');
-
-			// 	watcher.updateFiles(self.uid, function() {
-			// 		self.addTimeout = null;
-			// 	});
-
-			// }, 750);
-		},
-
-		unknown : function(filename) {
-			//Could be nice : add the file once + % downloaded ? possible ?
-			//console.log('Unknow event', filename);
-		}
-	}, new Watcher(self.path, function(event, data) {
-		self.eventHandler(event, data);
-	}) );
-};
+// 		unknown : function(filename) {
+// 			//Could be nice : add the file once + % downloaded ? possible ?
+// 			//console.log('Unknow event', filename);
+// 		}
+// 	}, new Watcher(self.path, function(event, data) {
+// 		self.eventHandler(event, data);
+// 	}) );
+// };
 
 // util.inherits(Watch, Watcher);
 

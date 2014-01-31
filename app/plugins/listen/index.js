@@ -2,7 +2,7 @@ var fs = require('fs')
     , _ = require('underscore')
     , _s = require('underscore.string')
     , path = require('path')
-    , db = require(global.config.root + '/core/database.js');
+    , db = require(global.config.root + '/core/database');
 
 var plugin = {
 	name : "Audiocogs",

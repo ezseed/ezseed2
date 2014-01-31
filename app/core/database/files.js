@@ -3,6 +3,7 @@ var mongoose = require('mongoose')
   , Paths = mongoose.model('Paths')
   , Users = mongoose.model('Users')
   , Movies = mongoose.model('Movies')
+  , MoviesInformations = mongoose.model('MoviesInformations')
   , Albums = mongoose.model('Albums')
   , Others = mongoose.model('Others')
   , async = require('async')
@@ -14,44 +15,58 @@ var files = {
 		Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
 			Paths.populate(docs, 
 	  		[
-	          { path: 'paths.movies', model: Movies, match: { dateAdded: {"$gt":lastUpdate} }, lean : true },
-	          { path: 'paths.albums', model: Albums, match: { dateAdded: {"$gt":lastUpdate} }, lean : true },
-	          { path: 'paths.others', model: Others, match: { dateAdded: {"$gt":lastUpdate} }, lean : true }
+	          { path: 'paths.movies', model: Movies, match: { dateAdded: {"$gt":lastUpdate} } },
+	          { path: 'paths.albums', model: Albums, match: { dateAdded: {"$gt":lastUpdate} } },
+	          { path: 'paths.others', model: Others, match: { dateAdded: {"$gt":lastUpdate} } }
 	        ],
 	        function(err, docs) {
-	          cb(err, docs);
+
+	       		_.each(docs.paths, function(p, pathCursor) {
+	       			Movies.populate(p.movies, {path: 'infos', model: MoviesInformations}, function(err, infos) {
+
+	       				_.each(infos, function(info, cursor) {
+	       					  	console.log(docs.paths[pathCursor].movies[cursor], info.infos);
+	       					//docs.paths[pathCursor].movies[cursor] = _.extend(docs.paths[pathCursor].movies[cursor], info.infos);
+	       				});
+
+	          			cb(err, docs);
+
+	       				// console.info('Populating infos');
+	       				//   	console.log(docs.paths[pathCursor].movies);
+	       			});
+	       		});	
 	        }
 			)
 		});
 	},
-  byId : function(id, cb) {
-    var result = [], errs = [];
+	byId : function(id, cb) {
+		var result = [], errs = [];
 
-    Movies.findById(id).lean().exec(function(err, docs) {
-      if(docs !== null) result.push(docs);
-      if(err !== null) errs.push(err);
-      Albums.findById(id).lean().exec(function(err, docs) {
-       if(docs !== null)result.push(docs);
-       if(err !== null) errs.push(err);
-        Others.findById(id).lean().exec(function(err, docs) {
-          if(docs !== null)result.push(docs);
-          if(err !== null) errs.push(err);
-          cb(err, result[0]);
-        });
-      });
-    });
-  },
+		Movies.findById(id).lean().exec(function(err, docs) {
+		  if(docs !== null) result.push(docs);
+		  if(err !== null) errs.push(err);
+		  Albums.findById(id).lean().exec(function(err, docs) {
+		   if(docs !== null)result.push(docs);
+		   if(err !== null) errs.push(err);
+		    Others.findById(id).lean().exec(function(err, docs) {
+		      if(docs !== null)result.push(docs);
+		      if(err !== null) errs.push(err);
+		      cb(err, result[0]);
+		    });
+		  });
+		});
+	},
 	albums : {
 		delete : function(id, cb) {
 			Albums.findByIdAndRemove(id, function(err) {
 				cb(err);
 			});
 		},
-    byId : function(id, cb) {
-      Albums.findById(id).lean(true).exec(function(err, doc) {
-        cb(err, doc);
-      });
-    },
+	    byId : function(id, cb) {
+	      Albums.findById(id).lean(true).exec(function(err, doc) {
+	        cb(err, doc);
+	      });
+	    },
 		save : function (obj, saveCallback) {
 			async.each(obj.albums, 
 				function(album, cb) {
@@ -73,7 +88,7 @@ var files = {
 					saveCallback(err, obj.albums);
 				}
 			);
-    }		
+    	}		
 	},
 	movies : {
 		delete : function(id, cb) {
@@ -81,26 +96,34 @@ var files = {
 				cb(err);
 			});
 		},
-    byId : function(id, cb) {
-      Movies.findById(id).lean(true).exec(function(err, doc) {
-        cb(err, doc);
-      });
-    },
+	    byId : function(id, cb) {
+	      Movies.findById(id).lean(true).populate('infos').exec(function(err, doc) {
+	      	  	console.log(doc);
+	        cb(err, doc);
+	      });
+	    },
 		save : function (obj, saveCallback) {
 			async.each(obj.movies, 
 				function(movie, cb) {
 
-					movie = new Movies(movie);
+					infos = new MoviesInformations(movie);
 
-					movie.save(function(err, movie) {
-						Paths.findByIdAndUpdate(
-    					obj.id_path, 
-    					{ $addToSet : {'movies': movie._id }, 'dateUpdated': Date.now() }, 
-    					function(err) { 
-    						return cb(err);
-    					}
-    				);
+					infos.save(function(err, infos) {
+
+						  	console.log(err, infos);
+						movie = new Movies(_.extend(movie, {infos: infos._id}));
+
+						movie.save(function(err, movie) {
+							Paths.findByIdAndUpdate(
+	    					obj.id_path, 
+	    					{ $addToSet : {'movies': movie._id }, 'dateUpdated': Date.now() }, 
+	    					function(err) { 
+	    						return cb(err);
+	    					}
+	    				);
+						});
 					});
+					
 
 				},
 				function (err) {

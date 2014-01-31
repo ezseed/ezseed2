@@ -3,8 +3,12 @@ var mongoose = require('mongoose')
   , Paths = mongoose.model('Paths')
   , Users = mongoose.model('Users')
   , _ = require('underscore')
-  , async = require('async')
-  , db = require('./index.js');
+  , async = require('async');
+
+var db = {};
+
+db.files = require('./files');
+db.paths = require('./paths');
 
 var user = {
   exists : function(username, cb) {

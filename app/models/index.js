@@ -54,7 +54,7 @@ var movies = new Schema({
 	format: String,
 	movieType: String,
 	name: String,
-	informations: {'type': ObjectId, ref:'MoviesInformations'},
+	infos: {'type': ObjectId, ref:'MoviesInformations'},
 	videos: [file],
 	prevDir: String,
 	prevDirRelative: String,
@@ -107,6 +107,8 @@ module.exports = mongoose.model('Paths', PathsSchema);
 
 //Exporting individual schemas (movies,albums,others)
 module.exports = mongoose.model('Movies', movies);
+module.exports = mongoose.model('MoviesInformations', moviesInformations);
+
 module.exports = mongoose.model('Albums', albums);
 module.exports = mongoose.model('Others', others);
 module.exports = mongoose.model('File', file);

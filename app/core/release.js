@@ -1,7 +1,6 @@
 var Buffer = require('buffer').Buffer
   , _ = require('underscore')
   , _s = require('underscore.string')
-  , allocine = require('allocine-api')
   , fs = require('fs')
   , pathInfos = require('path')
   , mime = require('mime')
@@ -9,28 +8,28 @@ var Buffer = require('buffer').Buffer
   , ID3 = require('id3');
 
 
-/*
-* Get an object by the string
-* Example :
-* var file.type = "movie";
-* var x = {movie:[0,1,2,3]}
-* Object.byString(x, file.type);
-* Output [0,1,2,3 ]
-*/
-Object.byString = function(o, s) {
-    s = s.replace(/\[(\w+)\]/g, '.$1');  // convert indexes to properties
-    s = s.replace(/^\./, ''); // strip leading dot
-    var a = s.split('.');
-    while (a.length) {
-        var n = a.shift();
-        if (n in o) {
-            o = o[n];
-        } else {
-            return;
-        }
-    }
-    return o;
-}
+// /*
+// * Get an object by the string
+// * Example :
+// * var file.type = "movie";
+// * var x = {movie:[0,1,2,3]}
+// * Object.byString(x, file.type);
+// * Output [0,1,2,3 ]
+// */
+// Object.byString = function(o, s) {
+//     s = s.replace(/\[(\w+)\]/g, '.$1');  // convert indexes to properties
+//     s = s.replace(/^\./, ''); // strip leading dot
+//     var a = s.split('.');
+//     while (a.length) {
+//         var n = a.shift();
+//         if (n in o) {
+//             o = o[n];
+//         } else {
+//             return;
+//         }
+//     }
+//     return o;
+// }
 
 //Tags (to be improved)
 var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr', 'tvrip', 'hdtvrip', 'hdtv', 'brrip']
@@ -51,6 +50,7 @@ var dummyName = function (name, obj) {
 	return _s.trim(name);
 }
 
+module.exports.dummyName = dummyName;
 
 /**
 * Searches for a cover in a directory

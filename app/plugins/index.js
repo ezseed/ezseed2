@@ -24,7 +24,7 @@ var getLocals = function(plugin, user) {
         html : html, 
         css : plugin.stylesheets, 
         javascripts : js.join(','), //Join js files, see require (header.ejs)
-        admin : plugin.admin(),
+        admin : typeof plugin.admin == 'function' ? plugin.admin() : null,
         enabled : plugin.enabled
     }
 }
@@ -66,7 +66,8 @@ module.exports = function(app) {
                 }
 
                 //Adds the assets folder of each plugin
-                app.use(express.static(plugin.static));
+                if(typeof plugin.static == 'string')
+                    app.use(express.static(plugin.static));
 
                 //Defining locals vars
                 locals[plugin.name] = getLocals(plugin, req.user);
