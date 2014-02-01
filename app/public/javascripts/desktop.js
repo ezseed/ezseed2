@@ -81,7 +81,7 @@ define([
             if(user && isDesktop) {
 
                 jQuery.getJSON( 
-                    'http://localhost:3001/api/526926db6d8dc0727718fd2f', function( data, textStatus ) {
+                    '/api/'+user.id, function( data, textStatus ) {
                         
                         if(data) {
                             Desktop.append(data.paths);
