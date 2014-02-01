@@ -39,18 +39,10 @@
     <meta name="msapplication-square150x150logo" content="/favicons/mstile-150x150.png" />
     <meta name="msapplication-wide310x150logo" content="/favicons/mstile-310x150.png" />
 
+    <script src="/socket.io/socket.io.js"></script>
 
-    <script data-main="/javascripts/main" src="/javascripts/require-jquery.js"></script>
+    <script data-main="/js/main.min.js" src="/js/require-jquery.js"></script>
 
-    <% 
-    for(var i in plugins) {
-      if(plugins[i].enabled) {
-    %>
-       <script>require([<%- plugins[i].javascripts %>]);</script>
-    <%
-      }
-    }
-    %>
 
   </head>
   <body>

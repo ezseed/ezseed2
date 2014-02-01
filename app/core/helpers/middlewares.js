@@ -46,7 +46,7 @@ var middlewares = {
 		    var u = req.session.user;
 		    delete u.hash; //Deleting password from user local variable
 
-		    var confPath = global.config.root + '/scripts/transmission/config/settings.'+u.username+'.json';
+		    var confPath = global.config.root + '/../scripts/transmission/config/settings.'+u.username+'.json';
 
 		    if(u.client == 'transmission') {
 

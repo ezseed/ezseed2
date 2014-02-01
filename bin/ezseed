@@ -3,8 +3,19 @@
 /**
  * Module dependencies.
  */
-var   pathInfo = require('path')
-	, app_path = pathInfo.resolve(__dirname, '..');
+var pathInfo = require('path')
+	, jf = require('jsonfile')
+  	, app_path = pathInfo.resolve(__dirname, '..');
+
+
+global.app_path = app_path;
+
+global.config = jf.readFileSync(app_path + '/app/config.json');
+
+//Writing conf file
+if(global.config.root.length == 0) {
+  global.config.root = app_path + '/app';
+}
 
 var program = require('commander')
   , colors = require('colors')
@@ -15,8 +26,7 @@ var program = require('commander')
   , _ = require('underscore')
   , fs = require('fs')
   , async = require('async')
-  , db = require(app_path + '/app/core/database.js')
-  , jf = require('jsonfile')
+  , db = require(app_path + '/app/core/database')
   , cache = require('memory-cache')
   , mongoose = require('mongoose')
   ;
@@ -55,330 +65,8 @@ program.on('--help', function(){
 	console.log(" ");
 });
 
-/**
- * Prompt validators
- * @type {Object}
- */
-var validators = {
-	user : function(v) {
-		if(!v.match(/^[a-zA-Z0-9-_]{3,15}$/))
-			throw new Error("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets".error);
 
-		return v;
-	},
-	path : function(p) {
-		if(!fs.existsSync(p))
-			throw new Error("Le chemin spécifié n'est pas valide".error);
-
-		return p;
-	},
-	ssl : function(ssl) {
-
-		var nb = ssl.length, sslkeys = [];
-
-		ssl = nb != 0 ? ssl.split(' ') : '';
-
-		nb = ssl.length;
-
-		if(nb == 2) {
-			while(nb--) {
-				var ext = pathInfo.extname(ssl[nb]);
-				if(ext != '.pem' && ext != '.key')
-					throw new Error("Il faut un fichier pem et un fichier key".error);
-		
-				sslkeys[nb] = {path : ssl[nb], ext: ext};
-			}
-
-		} else if(nb == 1)
-			throw new Error("Il faut un fichier pem et un fichier key".error);
-		
-		if(sslkeys.length == 0)
-			sslkeys = ssl;
-
-		return sslkeys;
-	}
-};
-
-/**
- * Torrent installer
- * @type {Object}
- */
-var torrent = {
-	rutorrent : function(done) {
-		var shell_path = app_path + '/app/scripts/rutorrent/install.sh';
-		fs.chmodSync(shell_path, '775');
-		
-		var running = spawn(shell_path);
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.error);
-			
-		});
-
-		running.on('exit', function (code) {
-			console.log('Installation de rutorrent terminée'.info);
-			var config = jf.readFileSync(app_path + '/app/config.json');
-			
-			config.rutorrent = true;
-
-			jf.writeFileSync(app_path+'/app/config.json', config);
-
-			done(null, 'rutorrent');
-		});
-	},
-	transmission : function(done) {
-		var shell_path = app_path + '/app/scripts/transmission/install.sh';
-		fs.chmodSync(shell_path, '775');
-		
-		var running = spawn(shell_path);
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.error);
-		});
-
-		running.on('exit', function (code) {
-			console.log('Installation de transmission terminée'.info);
-
-			var config = jf.readFileSync(app_path + '/app/config.json');
-			
-			config.transmission = true;
-
-			jf.writeFileSync(app_path+'/app/config.json', config);
-
-			done(null, 'transmission');
-		});
-	},
-	aucun : function(done) {
-		done(null,null);
-	}
-};
-
-var userdel = {
-	rutorrent : function(username, done) {
-		var shell_path = app_path + '/app/scripts/rutorrent/userdel.sh';
-		fs.chmodSync(shell_path, '775');
-		
-		var running = spawn(shell_path, [username]);
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			// if(cache.get('force') === true)
-			 	console.log(string.error);
-			// else
-			// 	throw string.error;
-		});
-
-		running.on('exit', function (code) {
-			db.users.delete(username, function(err) {
-		 		console.log("Utilisateur "+ username + " supprimé".info);
-		 		done(null, 'rutorrent');
-		 	});
-		});
-	},
-	transmission: function(username, done) {
-		var shell_path =app_path + '/app/scripts/transmission/userdel.sh';
-		fs.chmodSync(shell_path, '775');
-
-		var running = spawn(shell_path, [username]);
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			//if(cache.get('force') === true)
-				console.log(string.error);
-			// else
-			// 	throw string.error;
-		});
-
-		running.on('exit', function (code) {
-			db.users.delete(username, function(err) {
-		 		console.log("Utilisateur "+ username + " supprimé".info);
-		 		done(null, 'transmission');
-		 	});
-		});
-	},
-	aucun: function(username, done) {
-		db.users.delete(username, function(err) {
-	 		console.log("Utilisateur "+ username + " supprimé".info);
-	 		done(null, 'aucun');
-	 	});
-	}
-};
-
-var useradd = {
-	aucun : function(username, password, done) {
-		db.user.exists(username, function(exists) {
-			if(exists)
-				done("L'utilisateur existe déjà !", "aucun");
-			else
-				db.users.create({username : username, password: password, client : 'aucun', role : cache.get('role')}, function(err, user) {
-		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-		    		cache.put('user', {username : username, password : password});
-		    		done(null,"aucun");
-		    	});
-	    });
-	},
-	rutorrent : function(username, password, done) {
-		var shell_path =app_path + '/app/scripts/rutorrent/useradd.sh';
-		fs.chmodSync(shell_path, '775');
-
-		var isInstall = cache.get('isinstall');
-
-		var running = spawn(shell_path, [username, password])
-		  , path = cache.get('path') ? cache.get('path') : '/home'
-		  , userPath = pathInfo.join(path, username, 'downloads');
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.error(string.error);
-
-		});
-
-		running.on('exit', function (code) {
-			db.user.exists(username, function(exists) {
-				if(exists) {
-					if(isInstall === true) {
-						var u = cache.get('user');
-						db.paths.save(userPath, u.username, function(err, p) {
-							console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-					 		done(null, 'rutorrent');
-						});
-					} else {
-						console.log("L'utilisateur existe");
-						done(null, 'rutorrent');
-					}
-				} else {
-					db.users.create({username : username, password: password, client : 'rutorrent', role : cache.get('role')}, function(err, u) {
-						db.paths.save(userPath, username, function(err, p) {
-					 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-					 		done(null, 'rutorrent');
-					 	});
-					});
-				}
-			});
-		});
-	},
-	transmission : function(username, password, done) {
-		var shell_path = app_path + '/app/scripts/transmission/useradd.sh';
-		fs.chmodSync(shell_path, '775');
-
-		var isInstall = cache.get('isinstall');
-
-		var running = spawn(shell_path, [username, password])
-		  , path = cache.get('path') ? cache.get('path') : '/home'
-		  , userPath = pathInfo.join(path, username, 'downloads');
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-
-			if(cache.get('force') === true)
-				console.log(string.error);
-			else
-				throw string.error;
-		});
-
-		running.on('exit', function (code) {
-			console.log("Ajout de l'utilisateur tranmsission terminé, remplacement des configurations".info);
-			var settings = app_path + '/app/scripts/transmission/config/settings.'+username+'.json';
-
-			fs.readFile(settings, function (err, data) {
-				if (err) throw err;
-				var d = JSON.parse(data);
-
-				//Default settings replacement
-				d['ratio-limit-enabled'] = true;
-				d['incomplete-dir-enabled'] = true;
-				d['incomplete-dir'] = pathInfo.join(path, username, 'incomplete');
-				d['peer-port-random-on-start'] = true;
-				d['lpd-enabled'] = true;
-				d['peer-socket-tos'] = 'lowcost';
-				d['rpc-password'] = password;
-				d['rpc-enabled'] = true;
-				d['rpc-whitelist-enabled'] = false;
-				d['rpc-authentication-required'] = true;
-				d['rpc-username'] = username;
-
-				d['download-dir'] = userPath;
-
-				db.users.count(function (err, count) {
-
-					d['rpc-port'] = d['rpc-port'] + count + 1; //+1 because of transmission default, could be started on reboot by default
-
-					fs.writeFileSync(settings, JSON.stringify(d));
-
-					console.log('Démarage du daemon transmission'.info);
-
-					fs.chmodSync(app_path +'/app/scripts/transmission/daemon.sh', '775');
-
-					exec('/etc/init.d/transmission-daemon-'+username + ' start',
-				    	function(err, stdout, sdterr) {
-				    		db.user.exists(username, function(exists) {
-								if(exists) {
-									if(isInstall === true) {
-										var u = cache.get('user');
-										db.paths.save(userPath, u.username, function(err, p) {
-											console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-									 		done(null, 'transmission');
-										});
-									} else {
-										console.log("L'utilisateur existe");
-										done(null, 'transmission');
-									}
-								} else {
-							    	db.users.create({username : username, password: password, client : 'transmission', role : cache.get('role')}, function(err, u) {
-							    		db.paths.save(userPath, username, function(err, p) {
-							    			if(err)
-							    				console.log(err.error);
-
-									 		console.log("Chemin "+ userPath + " sauvegardé en base de données".info);
-									 		done(null,'transmission');
-									 	});
-									});
-								}
-							});
-						}
-					);
-
-				});
-			});
-
-		});
-	}
-		   
-};
-
-
+var validators =  require('./lib/validators');
 
 /**
  * Main install wrapper
@@ -486,7 +174,7 @@ var install = {
 	},
 	client_torrent: function(callback, client) {
 		if(client) {
-			torrent[client](function(err, results) {
+			require('./lib/install')[client](function(err, results) {
 				callback(null, results);
 			});
 		} else {
@@ -496,7 +184,7 @@ var install = {
 					if(client == 'aucun') {
 						promptly.confirm("Êtes vous sûr de ne pas vouloir installer de client ? (l'utilisateur système ne sera pas créé) Y/n", {default : 'y'}, function (err, value) {
 						    if(value === true) {
-						    	torrent[client](function(err, results) {
+						    	require('./lib/install')[client](function(err, results) {
 							    	callback(null, results);
 							    });
 							} else {
@@ -507,7 +195,7 @@ var install = {
 						if(cache.get('notorrent') === true)
 							callback(null, client);
 						else
-						    torrent[client](function(err, results) {
+						    require('./lib/install')[client](function(err, results) {
 						    	callback(null, results);
 						    });
 					}
@@ -668,6 +356,8 @@ program
 		}, client);
 	});
 
+var deploy = require('./lib/deploy');
+
 program
 	.command('update')
 	.description('Update ezseed')
@@ -701,14 +391,28 @@ program
 				process.exit(0);
 			});
 		} else {
-			exec('npm update https://github.com/soyuka/ezseed2 && npm install && pm2 restart all', function(error) {
-				console.log('Ezseed est à jour'.info);
-				process.exit(0);
+			exec('cd '+app_path+ ' && git pull https://github.com/soyuka/ezseed2 && npm install', function(error) {
+
+
+				if(error)
+					console.log(error.error);
+
+				console.log('Ezseed est à jour préparation des fichiers'.info);
+		
+				require('./lib/deploy')(function(err, response) {
+					process.exit(0);
+				});
+
+
 			});
 		}
 	});
 
+program
+	.command('deploy')
+	.action(deploy);
 
+var useradd = require('./lib/useradd');
 
 program
 	.command('useradd <rutorrent|transmission|aucun> <username>')
@@ -780,7 +484,7 @@ program
 	.action(function(client, username, options) {
 		cache.put('force', true);
 
-		userdel[client](username, function() {
+		rqeuire('./lib/userdel')[client](username, function() {
 			process.exit(0);
 		});
 	});

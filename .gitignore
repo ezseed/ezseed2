@@ -1,6 +1,7 @@
 downloads/
 _trash/
 .idea/
+.DS_Store
 
 app/public/downloads
 app/public/tmp/*

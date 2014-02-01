@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-appdir="$(cd $DIR && cd ../../ && pwd)"
+appdir="$(cd $DIR && cd ../../app && pwd)"
 
 #Deleting user + transmission
 username=$1

@@ -1,8 +1,76 @@
-require.config(CONFIG_HERE);
+require.config({
+  "baseUrl": "/javascripts",
+  "paths": {
+    "async": "helpers/async",
+    "underscore": "helpers/underscore",
+    "notify": "modules/desktop-notify",
+    "cookie": "modules/jquery.cookie",
+    "quickfit": "modules/quickfit",
+    "collapse": "modules/jquery.collapse",
+    "collapse_storage": "modules/jquery.collapse_storage",
+    "customselect": "modules/customselect",
+    "text": "text",
+    "classie": "packery/classie",
+    "eventie": "packery/eventie",
+    "doc-ready": "packery/doc-ready",
+    "eventEmitter": "packery/eventEmitter",
+    "get-style-property": "packery/get-style-property",
+    "get-size": "packery/get-size",
+    "matches-selector": "packery/matches-selector",
+    "outlayer": "packery/outlayer",
+    "imagesloaded": "packery/imagesloaded/imagesloaded",
+    "packery": "packery/packery/js",
+    "desktop": "desktop",
+    "alertify": "alertify",
+    "theme": "../js/theme",
+    "admin": "../js/admin",
+    "chat-chat": "/Users/soyuka/Sites/ezseed2/app/plugins/chat/public/js/chat",
+    "checkforupdates-checkforupdates": "/Users/soyuka/Sites/ezseed2/app/plugins/checkforupdates/public/js/checkforupdates",
+    "listen-DGAuroraPlayer": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/DGAuroraPlayer",
+    "listen-classlist": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/classlist",
+    "listen-listen": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/listen",
+    "listen-player": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/player",
+    "listen-aurora.min": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/audiocogs/aurora.min"
+  },
+  "shim": {
+    "notify": [
+      "jquery"
+    ],
+    "cookie": [
+      "jquery"
+    ],
+    "quickfit": [
+      "jquery"
+    ],
+    "collapse": [
+      "jquery"
+    ],
+    "collapse_storage": [
+      "collapse",
+      "jquery"
+    ],
+    "customselect": [
+      "jquery"
+    ],
+    "theme": {
+      "deps": [
+        "desktop"
+      ]
+    },
+    "admin": {
+      "deps": [
+        "collapse",
+        "collapse_storage",
+        "customselect"
+      ]
+    }
+  },
+  "waitSeconds": 25
+});
 //DO NOT MOVE THIS LINE
 
 
-require(['desktop', 'theme', 'admin', REQUIRE_PLUGINS], function(Desktop) {
+require(['desktop', 'theme', 'admin', "chat-chat","checkforupdates-checkforupdates","listen-aurora.min","listen-classlist","listen-DGAuroraPlayer","listen-player","listen-listen"], function(Desktop) {
 
     var socket = Desktop.socket;
 

@@ -3,6 +3,8 @@ var fs = require('fs')
     , path = require('path')
     , express = require('express');
 
+var exec = require('child_process').exec;
+
 var pluginsPath = path.join(global.config.root, "plugins");
 
 var getLocals = function(plugin, user) {
@@ -35,7 +37,7 @@ module.exports = function(app) {
 
     app.use(function(req, res, next) {
 
-        var plugins = fs.readdirSync(pluginsPath), locals = [];
+        var plugins = fs.readdirSync(pluginsPath), locals = [], stats;
 
         //Parsing the plugins folder
         _.each(plugins, function(plugin) {
@@ -43,8 +45,19 @@ module.exports = function(app) {
             //Plugin path
             plugin = path.join(pluginsPath, plugin);
 
+            stats = fs.statSync(plugin);
+            
             //Check if it's a directory, it's a plugin
-            if(fs.statSync(plugin).isDirectory()) {
+            if(stats.isDirectory()) {
+
+                // if( fs.existsSync(path.join(plugin, 'public'))
+                //      && 
+                //     fs.existsSync(path.join(plugin, 'public/js'))
+                //      &&
+                //     !fs.existsSync(path.join(global.config.root, 'public/'))
+                // ) {
+                //     child = exec('ln -sf')
+                // }
 
                 //Require the plugin
                 plugin = require(plugin).plugin;

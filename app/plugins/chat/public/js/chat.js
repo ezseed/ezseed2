@@ -1,5 +1,5 @@
 define([
-    'jquery', 'desktop', 'text!/views/message.ejs'
+    'jquery', 'desktop', 'text!../../plugins/chat/public/views/message.ejs'
 ], function($, Desktop, Chat){
 
 	if(user) {

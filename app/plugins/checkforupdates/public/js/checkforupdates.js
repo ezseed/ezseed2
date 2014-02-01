@@ -1,5 +1,5 @@
 define([
-    'jquery', 'desktop', 'text!/views/message.ejs', 'alertify'
+    'jquery', 'desktop', 'alertify'
 ], function($, Desktop, Chat){
 
 	if(user) {

@@ -1,8 +1,8 @@
 define([
     //templates
-    'text!/views/albums.ejs',
-    'text!/views/movies.ejs',
-    'text!/views/others.ejs',
+    'text!../views/albums.ejs',
+    'text!../views/movies.ejs',
+    'text!../views/others.ejs',
 
     //Modules
     'packery/packery',
