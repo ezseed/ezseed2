@@ -1,6 +1,6 @@
 #!/bin/bash
-username=$2
 opt=$1
+username=$2
 
 /etc/init.d/transmission-daemon-$username $opt
 

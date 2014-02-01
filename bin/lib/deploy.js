@@ -4,6 +4,12 @@ var jf = require('jsonfile')
   , _ = require('underscore')
   , fs = require('fs');
 
+/**
+ * Replacing the transformed configuration from require-config.json to main.build.js
+ * to be optimized with plugins
+ * @param  {[type]}   to_require [plugins to require]
+ * @return  {Function} cb         [callback]
+ */
 var populateRequire = function(to_require, cb) {
 	
 	var main = global.app_path+'/app/public/javascripts/main.js';
@@ -25,6 +31,10 @@ var populateRequire = function(to_require, cb) {
 	});
 }
 
+/**
+ * Add plugins to the require-config.json
+ * based on directories
+ */
 var addPlugins = function() {
 	var pluginsPath = path.join(global.config.root, "plugins");
 
@@ -68,6 +78,11 @@ var addPlugins = function() {
     return to_require;
 }
 
+/**
+ * Execs the deploy.sh (which is optimizing, doing symlinks)
+ * @param  {Function} cb [description]
+ * @return {[type]}      [description]
+ */
 var deploy = function(cb) {
 
 	populateRequire(addPlugins(), function(err){

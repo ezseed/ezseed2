@@ -23,12 +23,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ############
 #Creation de l'utilisateur
 python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
-mkdir /home/$USER
-useradd --home-dir /home/$USER --groups users --password broken $USER
 #could root it, see chroot
-chown -R $USER /home/$USER/
 su $USER -c 'mkdir -p ~/downloads ~/uploads ~/incomplete ~/rtorrent ~/rtorrent/session'
-usermod -p $(mkpasswd -H md5 "$PW") $USER
 #Fin
 ##########
 

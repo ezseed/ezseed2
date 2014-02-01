@@ -16,16 +16,12 @@ appdir="$(cd $DIR && cd ../../app && pwd)"
 # 	/etc/init.d/transmission-daemon stop
 # fi
 
-echo "Adding user"
+echo "Adding user to group"
 mkdir /home/$username
-useradd --home-dir /home/$username --groups users,debian-transmission --password broken $username
+adduser $username debian-transmission
 #could root it, see chroot
 chown -R $username /home/$username/
 su $username -c "mkdir -p ~/downloads ~/uploads ~/incomplete"
-usermod -p $(mkpasswd -H md5 "$password") $username
-#Fin
-
-#useradd $username -p $(mkpasswd -H md5 $password) -G debian-transmission -d $userdir -m
 
 echo "Set new transmission-daemon-$username"
 cp /usr/bin/transmission-daemon /usr/bin/transmission-daemon-$username
