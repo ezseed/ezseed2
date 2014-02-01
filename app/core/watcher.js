@@ -9,74 +9,74 @@ var _ = require('underscore')
 if(!fs.existsSync(__dirname + '/../public/tmp'))
 	fs.mkdirSync(__dirname + '/../public/tmp', '0775');
 
-// var Watch = function(params) {
-// 	var self = this;
+var Watch = function(params) {
+	var self = this;
 
-// 	self.addTimeout = null;
-// 	self.removeTimeout = null;
-// 	self.removedFiles = [];
-// 	self.path = params.path;
-// 	self.uid = params.uid;
-// 	self.pid = params.pid;
+	self.addTimeout = null;
+	self.removeTimeout = null;
+	self.removedFiles = [];
+	self.path = params.path;
+	self.uid = params.uid;
+	self.pid = params.pid;
 
-// 	self.removedIds = [];
+	self.removedIds = [];
 
-// 	return _.extend(self, {
-// 		eventHandler : function(event, data) {
+	return _.extend(self, {
+		eventHandler : function(event, data) {
 
-// 			if(event == 'delete')
-// 				this.delete(data);
-// 			else if(event == 'move' || event == 'moved' || event == 'moved to' || event == 'create')
-// 				this.create(data);
-// 			else
-// 				this.unknown(data);
-// 		},
+			if(event == 'delete')
+				this.delete(data);
+			else if(event == 'move' || event == 'moved' || event == 'moved to' || event == 'create')
+				this.create(data);
+			else
+				this.unknown(data);
+		},
 
-// 		delete : function(filename) {
-// 			var self = this;
+		delete : function(filename) {
+			var self = this;
 
-// 			self.removedFiles.push(
-// 				pathInfo.join(self.path, filename)
-// 			);
+			self.removedFiles.push(
+				pathInfo.join(self.path, filename)
+			);
 
-// 			if(self.removeTimeout !== null)
-// 				clearTimeout(self.removeTimeout);
+			if(self.removeTimeout !== null)
+				clearTimeout(self.removeTimeout);
 
-// 			self.removeTimeout = setTimeout(function() {
-// 				console.log('removeFile');
+			self.removeTimeout = setTimeout(function() {
+				console.log('removeFile');
 
-// 				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles, removedIds : self.removedIds}, function() {
-// 					self.removeTimeout = null;
-// 					watcher.writeRemovedFiles(self);
-// 				});
-// 			}, 750);
+				watcher.removeFiles({uid : self.uid, removedFiles : self.removedFiles, removedIds : self.removedIds}, function() {
+					self.removeTimeout = null;
+					watcher.writeRemovedFiles(self);
+				});
+			}, 750);
 
-// 		},
+		},
 
-// 		create : function(filename) {
-// 			// var self = this;
+		create : function(filename) {
+			// var self = this;
 
-// 			// if(self.addTimeout !== null)
-// 			// 	clearTimeout(self.addTimeout);
+			// if(self.addTimeout !== null)
+			// 	clearTimeout(self.addTimeout);
 
-// 			// self.addTimeout = setTimeout(function() {
-// 			// 	console.log('Watcher updateFiles');
+			// self.addTimeout = setTimeout(function() {
+			// 	console.log('Watcher updateFiles');
 
-// 			// 	watcher.updateFiles(self.uid, function() {
-// 			// 		self.addTimeout = null;
-// 			// 	});
+			// 	watcher.updateFiles(self.uid, function() {
+			// 		self.addTimeout = null;
+			// 	});
 
-// 			// }, 750);
-// 		},
+			// }, 750);
+		},
 
-// 		unknown : function(filename) {
-// 			//Could be nice : add the file once + % downloaded ? possible ?
-// 			//console.log('Unknow event', filename);
-// 		}
-// 	}, new Watcher(self.path, function(event, data) {
-// 		self.eventHandler(event, data);
-// 	}) );
-// };
+		unknown : function(filename) {
+			//Could be nice : add the file once + % downloaded ? possible ?
+			//console.log('Unknow event', filename);
+		}
+	}, new Watcher(self.path, function(event, data) {
+		self.eventHandler(event, data);
+	}) );
+};
 
 // util.inherits(Watch, Watcher);
 
