@@ -18,6 +18,7 @@ app/plugins/*
 !app/plugins/chat/
 !app/plugins/checkforupdates/
 !app/plugins/listen/
+!app/plugins/allocine/
 
 app/themes/*
 !app/themes/default/

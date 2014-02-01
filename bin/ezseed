@@ -261,8 +261,8 @@ program
 
 				console.log('Ezseed est à jour préparation des fichiers'.info);
 		
-				require('./lib/deploy')(function(err, response) {
-					process.exit(0);
+				require('./lib/deploy')(function(code) {
+					process.exit(code);
 				});
 
 
