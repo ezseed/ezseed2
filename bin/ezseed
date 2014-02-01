@@ -68,8 +68,6 @@ program.on('--help', function(){
 
 var validators =  require('./lib/validators');
 
-
-
 var password = {
 	rutorrent : function(username, password, done) {
 		
@@ -158,6 +156,8 @@ var reboot = function() {
 		});
 	});
 }
+
+var install = require('./lib/install');
 
 program
 	.command('config')

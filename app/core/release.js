@@ -90,7 +90,7 @@ var contains = function(words, item) {
 	tag = function(words, item) {
 		var tag = contains(words, item);
 
-		return tag.length > 0 ? tag.toUpperCase() : undefined;
+		return tag !== null && tag.length > 0 ? tag.toUpperCase() : undefined;
 }
 
 module.exports.getTags  = {
