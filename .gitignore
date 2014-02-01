@@ -3,6 +3,8 @@ _trash/
 .idea/
 .DS_Store
 
+app/public/js
+app/public/views
 app/public/downloads
 app/public/tmp/*
 
