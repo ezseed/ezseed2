@@ -3,6 +3,8 @@ _trash/
 .idea/
 .DS_Store
 
+app/public/javascripts/main.build.js
+app/public/javascripts/require-config.json
 app/public/js
 app/public/views
 app/public/downloads
