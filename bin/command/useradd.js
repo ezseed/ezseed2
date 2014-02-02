@@ -1,5 +1,6 @@
 var fs = require('fs')
   , jf = require('jsonfile')
+  , cache = require('memory-cache')
   , promptly = require('promptly');
 
 
@@ -31,7 +32,7 @@ var useradd = {
 			next(options);
 		}
 	},
-	password: function(options) {
+	password: function(options, next) {
 
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
@@ -43,7 +44,7 @@ var useradd = {
 		}
 	},
 	command: function(client, username, options) {
-		var self = this;
+		var self = useradd;
 
 		if(fs.existsSync(app_path + '/app/config.json')) {
 			var config = jf.readFileSync(app_path + '/app/config.json');
@@ -55,9 +56,10 @@ var useradd = {
 				self.role(options, function(options) {
 					self.password(options, function(options) {
 
-			    		require('../client/'+client+'/useradd')(username, password, next);
+			    		require('../client/'+client+'/useradd')(username, options.password, function() {
+			    			process.exit(0);
+			    		});
 
-						process.exit(0);
 					});
 				});
 			} else {

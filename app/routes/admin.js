@@ -90,7 +90,7 @@ var admin = {
 			
 			if(global.config[req.body.client] == true) {
 
-				var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
+				var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 				
 				var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
 
@@ -127,7 +127,7 @@ var admin = {
 	 * Must be run as root = bad.
 	 */
 	, userdel : function(req, res) {
-		var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
+		var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 
 		db.user.byId(req.params.uid, function(err, user) {
 			var running = spawn(shell_path, ['userdel', user.client, user.username]);
@@ -156,8 +156,8 @@ var admin = {
 
 	, updatePassword : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = pathInfo.resolve(global.config.root, '..', '/bin/ezseed');
-				
+			var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
+			
 			var options = ['password', user.client, user.username, ,'-p', req.body.password];
 
 			exec(shell_path, options, function(err, stderr, stdout) {
@@ -186,7 +186,7 @@ var admin = {
 	}
 
 	, editTransmissionConfiguration : function(req, res) {
-		var transmissionConfig = jf.readFileSync(__dirname + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
+		var transmissionConfig = jf.readFileSync(global.config.root + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
 
 		res.render('admin/transmission', {title: "Editer la configuration transmission", config : transmissionConfig});
 	}
@@ -195,7 +195,7 @@ var admin = {
 		var username = req.params.username;
 
 		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
-			jf.writeFileSync(__dirname + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
+			jf.writeFileSync(global.config.root + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
 			exec('/etc/init.d/transmission-daemon-'+username + ' start', function(err, stdout, sdterr) {
 				res.redirect('/admin');
 			});

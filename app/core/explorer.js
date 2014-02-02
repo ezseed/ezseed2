@@ -7,7 +7,7 @@ var _ = require('underscore')
   , mime = require('mime')
   , async = require('async')
   , db = require('../core/database')
-  , parser = require('./parser')
+  , parser = require('./parser.js')
   , fs = require('fs');
 
 

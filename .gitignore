@@ -10,7 +10,7 @@ app/public/tmp/*
 
 node_modules/
 
-app/scripts/transmission/config/settings.*.json
+scripts/transmission/config/settings.*.json
 app/config.json
 
 app/plugins/*

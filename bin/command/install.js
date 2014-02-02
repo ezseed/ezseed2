@@ -125,30 +125,38 @@ module.exports = function(program) {
 	.option('-u, --skipuser', 'Skip admin creation')
 	.option('-n, --notorrent', 'Skip torrent client installation')
 	.option('-s, --skipnginx', 'Skip nginx configuration')
+	.description('Install ezseed or the specified client')
 	.action(function(client, options) {
 		
-		if(options.notorrent)
-			cache.put('notorrent', true);
+		if(client) {
+			require('../client/'+client+'/install')(function() {
+				process.exit();
+			});
+		} else {
 
-		if(options.skipnginx)
-			cache.put('skipnginx', true);
+			if(options.notorrent)
+				cache.put('notorrent', true);
 
-		if(options.skipuser)
-			cache.put('skipuser', true);
+			if(options.skipnginx)
+				cache.put('skipnginx', true);
 
-		cache.put('isinstall', true);
+			if(options.skipuser)
+				cache.put('skipuser', true);
 
-		async.series(install,
-			function (err, results) {
+			cache.put('isinstall', true);
 
-				require('../lib/deploy.js')(function(code) {
-					console.log("Fin de l'installation.".info);
-					require('../lib/helpers/pm2').start(function() {
-						process.exit();
+			async.series(install,
+				function (err, results) {
+
+					require('../lib/deploy.js')(function(code) {
+						console.log("Fin de l'installation.".info);
+						require('../lib/helpers/pm2').start(function() {
+							process.exit();
+						});
 					});
-				});
-			}
-		);
+				}
+			);
+		}
 
 	});
 

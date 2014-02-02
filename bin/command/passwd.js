@@ -12,13 +12,11 @@ module.exports = function (program) {
 		if(options.password === undefined) {
 			promptly.password('Mot de passe :', function(err, pw) {
 				require(passwd)(username, pw, function() {
-					cache.clear();
 					process.exit(0);
 				});
 			});
 		} else {
 			require(passwd)(username, options.password, function() {
-				cache.clear();
 				process.exit(0);
 			});
 		}

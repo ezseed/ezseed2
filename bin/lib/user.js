@@ -12,7 +12,7 @@ var user = {
 
 		self.add(username, password, function(err) {
 			self.add_to_system(username, password, function(err, user_path) {
-				self.save_path(user_path, username, function(err, user_path) {
+				self.save_path(user_path + '/downloads', username, function(err, user_path) {
 					done(null);
 				});
 			});
@@ -72,20 +72,10 @@ var user = {
 	password: function(username, password, done) {
 		var cmd = 'usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
 
-		var running = spawn(cmd);
-
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
-
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.error);
+		exec(cmd, function(err, stdout, stderr) {
 			
-		});
-
-		running.on('exit', function (code) {
+			console.log("System password changed".info);
+			
 			db.users.update(username, {password : password}, done);
 		});
 	}

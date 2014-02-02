@@ -39,7 +39,10 @@ var user = {
 	*/
 	authenticate : function(req, res) {
 		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
-			if (user) {
+			if(err)
+				global.log('error', err);
+
+			if (!err && user) {
 				// Regenerate session when logged
 				req.session.regenerate(function(){
 					req.session.user = user;
@@ -77,7 +80,7 @@ var user = {
 	},
 	password : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = path.resolve(global.config.root, '..', 'ezseed');
+			var shell_path = path.resolve(global.config.root, '../bin/', 'ezseed');
 				
 			var options = ['password', user.client, user.username,'-p', req.body.password];
 

@@ -17,7 +17,6 @@ appdir="$(cd $DIR && cd ../../app && pwd)"
 # fi
 
 echo "Adding user to group"
-mkdir /home/$username
 adduser $username debian-transmission
 #could root it, see chroot
 chown -R $username /home/$username/

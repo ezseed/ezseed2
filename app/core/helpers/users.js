@@ -21,10 +21,17 @@ var directorySize = function(path, cb) {
   child = exec('du -sk '+path,
       function (error, stdout, stderr) {
 
-        var size = stdout.match(/([0-9]+)/);
+        if(error)
+          global.log('error', error);
 
-        cb(null, size[0]*1024);
-     
+        var size = stdout.match(/([0-9]+)/);
+          
+        global.log('debug', 'User size for path', path, size);
+
+        if(typeof size == 'array')
+          cb(null, size[0]*1024);
+        else
+          cb(null, 0);
     }
   );
 } 
@@ -123,14 +130,14 @@ var helper = {
   authenticate : function(name, pass, done) {
     db.user.byUsername(name, function (err, user) {
       //No user
-      if (err || _.isEmpty(user)) return done(new Error('cannot find user'));
+      if (err || _.isEmpty(user)) return done("Cannot find user");
       
       bcrypt.compare(pass, user.hash, function(err, res){
         if (err) return done(err);
         //password is ok
         if (res === true) return done(null, user.session);
 
-        done(new Error('invalid password'));
+        done("Invalid password");
       })
     });
   },

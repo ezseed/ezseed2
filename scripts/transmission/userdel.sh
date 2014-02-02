@@ -16,7 +16,7 @@ rm -r /var/lib/transmission-daemon-$username
 rm -r /etc/transmission-daemon-$username
 rm /etc/default/transmission-daemon-$username
 
-rm $appdir/scripts/transmission/config/settings.$username.json
+rm $appdir/../scripts/transmission/config/settings.$username.json
 rm -rf /home/$username
 
 userdel $username

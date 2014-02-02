@@ -79,6 +79,7 @@ var users = {
       bcrypt.hash(update.password, null, null, function(err, hash) {
         update = _.extend(update, {hash : hash});
         delete update.password;
+        
         Users.findOneAndUpdate({username:username}, update, null, cb);
       });
     } else {
