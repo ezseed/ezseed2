@@ -11,12 +11,12 @@ var daemon = function(client, command, username, done) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.info);
+		global.log('info', string);
 	});
 
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.error);
+		global.log('error', string);
 		
 	});
 

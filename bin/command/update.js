@@ -10,17 +10,16 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.info);
+			global.log('info', string);
 		});
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
-			
+			global.log('error', string);			
 		});
 
 		running.on('exit', function (code) {
-			console.log('Mise à jour de rutorrent terminée'.info);
+			global.log('info', 'Mise à jour de rutorrent terminée');
 			var config = jf.readFileSync(global.app_path + '/app/config.json');
 			
 			config.rutorrent = true;
@@ -37,17 +36,17 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.info);
+			global.log('info', string);
 		});
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			global.log('error', string);
 			
 		});
 
 		running.on('exit', function (code) {
-			console.log('Ezseed est à jour préparation des fichiers'.info);
+			global.log('info', 'Ezseed est à jour préparation des fichiers');
 
 			require('../lib/deploy')(function(code) {
 				cb(code);

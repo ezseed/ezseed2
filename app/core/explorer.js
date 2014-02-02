@@ -20,14 +20,12 @@ exports.explore = function(params, cb) {
 
 		db.paths.find(id_path, function(err, existing) {
 			
-			// require('eyes').inspect(existing);
-			//compare in parser then
+			//compare existing in parser then
 
 			//Getting each files
 			explorer.getFiles(pathToWatch, function(err, filePaths) {
 				if(err) {
-					console.log(err);
-					console.trace(err);
+					global.log('error', err);
 					if(err.code == 'ENOENT')
 						db.paths.removeByPath(err.path, pathCallback);
 				} else {
@@ -104,10 +102,12 @@ exports.explore = function(params, cb) {
 		});
 
 	}
+	
+	global.log('debug', 'exploring', params.path);
 
 	async.map(params.paths, explorePath, function(err, results){
 
-		//console.info('Each paths done.');
+		global.log('debug', 'Each paths done.');
 
 		cb(err, results);
 	});

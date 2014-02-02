@@ -70,7 +70,11 @@ var users = {
       //     });
       //   }
       // }
-      Users.findByIdAndRemove(doc._id, cb);
+      if(!err && doc) {
+        Users.findByIdAndRemove(doc._id, cb);
+      } else {
+        cb('user ' + username + ' does not exists', null);
+      }
     });
   },
   update : function(username, update, cb) {

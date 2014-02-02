@@ -25,6 +25,9 @@ var user = {
   byId : function(uid, done) {
     Users.findById(uid, done);
   },
+  setClient: function(username, client, done) {
+    Users.findOneAndUpdate({username: username}, {client: client}, done);
+  },
   //Reset user database
   reset : function(uid, done) {
     db.files.byUser(uid, 0, function(err, docs) {

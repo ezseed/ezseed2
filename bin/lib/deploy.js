@@ -17,14 +17,14 @@ var populateRequire = function(to_require, cb) {
 	fs.readFile(main, 'utf8', function (err,data) {
 	  
 		if (err)
-			return cb(err.error);
+			return cb(err);
 	  
 		var result = data
 					.replace(/CONFIG_HERE/g, fs.readFileSync(global.app_path+'/app/public/javascripts/require-config.json'))
 					.replace(/REQUIRE_PLUGINS/g, JSON.stringify(to_require).replace('[', '').replace(']', ''));
 
 		fs.writeFile(main.replace('main.js', 'main.build.js'), result, 'utf8', function (err) {
-			if (err) return cb(err.error);
+			if (err) return cb(err);
 
 			cb(null);
 		});
@@ -87,24 +87,24 @@ var deploy = function(cb) {
 
 	populateRequire(addPlugins(), function(err){
 		if(err)
-			console.error(err.error);
+			global.log('error', err);
 
 		var deploy = spawn(global.app_path + '/scripts/deploy.sh', [config.theme]);
 
 		deploy.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.info);
+			global.log('info', string);
 		});
 
 		deploy.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string.error);
+			global.log('error', string);
 			
 		});
 
 		deploy.on('exit', function (code) {
 
-			console.log("Deploiement terminé.".info)
+			global.log('info', "Deploiement terminé.");
 
 			return cb !== undefined && typeof cb == 'function' ? cb(code) : process.exit(code);
 		});

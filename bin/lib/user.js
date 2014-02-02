@@ -7,15 +7,36 @@ var db = require(global.app_path + '/app/core/database')
 
 
 var user = {
+	//Simple wrapper for below
+	create_next: function(username, password, done) {
+		var self = user;
+
+		self.add_to_system(username, password, function(err, user_path) {
+			self.save_path(user_path + '/downloads', username, function(err, user_path) {
+				done(null);
+			});
+		});
+	},
 	create: function(username, password, done) {
 		var self = user;
 
 		self.add(username, password, function(err) {
-			self.add_to_system(username, password, function(err, user_path) {
-				self.save_path(user_path + '/downloads', username, function(err, user_path) {
-					done(null);
+			if(err) {
+				global.log('error', err);
+
+				global.log('info', "Mise à jour du client");
+
+				db.user.setClient(username, cache.get('client'), function(err) {
+					if(err)
+						global.log('error', err);
+					
+					self.create_next(username, password, done);
+
 				});
-			});
+			} else {
+				self.create_next(username, password, done);
+			}
+			
 		});
 	
 	},
@@ -26,7 +47,7 @@ var user = {
 			else {
 
 				db.users.create({username : username, password: password, client : cache.get('client'), role : cache.get('role')}, function(err, user) {
-		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
+		    		global.log('info', "Utilisateur ajouté à la base de données d'ezseed");
 		    		//cache.put('user', {username : username, password : password, client: client});
 		    		done(null);
 		    	});
@@ -42,6 +63,12 @@ var user = {
 
 	  	exec('grep -c "^'+username+':" /etc/passwd',function(err, stdout, stderr) {
 	  		
+	  		if(err)
+				global.log('error', err);
+			
+			if(stderr)
+				global.log('error', stderr);
+
 	  		if(stdout == '1') {
 	  			done("L'utilisateur existe déjà !", user_path);
 	  		} else {
@@ -50,7 +77,10 @@ var user = {
 				
 				var running = exec(cmd, function (err, stdout, stderr) {
 					if(err)
-						console.log(err.error);
+						global.log('error', err);
+					
+					if(stderr)
+						global.log('error', stderr);
 
 					done(err, user_path);
 				});
@@ -62,19 +92,29 @@ var user = {
 	save_path: function(user_path, username, done) {
 
 		db.paths.save(user_path, username, function(err, p) {
-			console.log("Chemin "+ user_path + " sauvegardé en base de données".info);
+			global.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
 
 			require('./helpers/pm2').restart('watcher', function() {
 				done(null, user_path);
 			});
 		});
 	},
+	delete: function(username, done) {
+		db.users.delete(username, function(err) {
+			if(err)
+				global.log("error", err);
+			else
+		 		global.log("info", "Utilisateur "+ username + " supprimé");
+	
+	 		done();
+	 	});
+	},
 	password: function(username, password, done) {
 		var cmd = 'usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
 
 		exec(cmd, function(err, stdout, stderr) {
 			
-			console.log("System password changed".info);
+			global.log('info', "System password changed");
 			
 			db.users.update(username, {password : password}, done);
 		});

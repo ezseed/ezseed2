@@ -5,7 +5,7 @@ var cache = require('memory-cache')
 
 var configure = {
 	update_rc: function(done) {
-		console.log("Ajout du script de reboot automatique".info);
+		global.log('info', "Ajout du script de reboot automatique");
 		exec("cp "+global.app_path+"/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
 			done(null, {});
 		});
@@ -32,7 +32,7 @@ var configure = {
 		//Writes the config
 		jf.writeFileSync(global.app_path + '/app/config.json', config);
 
-		console.log("Création d'un lien symbolique sur app/public/downloads".info);
+		global.log('info', "Création d'un lien symbolique sur app/public/downloads");
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads')) {
 			//Symlink on the path
@@ -43,7 +43,7 @@ var configure = {
 				}
 			);
 		} else {
-			console.log("Le lien symbolique existe".warn);
+			global.log('warn', "Le lien symbolique existe");
 			done(null, {});
 		}
 	},
@@ -76,8 +76,7 @@ var configure = {
 			exec(cmd, function(error, stdout, stderr) {
 				
 				if(error) {
-					console.log(error.error);
-					console.trace(error.error);
+					global.log('error', error);
 				}
 
 

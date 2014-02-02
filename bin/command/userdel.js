@@ -6,6 +6,7 @@ module.exports = function (program) {
 	.action(function(client, username) {
 
 		require('../client/'+client+'/userdel')(username, function() {
+			
 			process.exit(0);
 		});
 	});

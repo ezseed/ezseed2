@@ -20,9 +20,6 @@ module.exports = function(username, done) {
 	});
 
 	running.on('exit', function (code) {
-		db.users.delete(username, function(err) {
-	 		console.log("Utilisateur "+ username + " supprimé".info);
-	 		done(null, 'transmission');
-	 	});
+		require(global.app_path + '/bin/lib/user').delete(username, done);
 	});
 };

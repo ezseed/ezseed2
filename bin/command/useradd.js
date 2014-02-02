@@ -8,7 +8,8 @@ var fs = require('fs')
 module.exports = function(program) {
 	program
 		.command('useradd <rutorrent|transmission|aucun> <username>')
-		.option('-p, --password [password]', 'specify password')
+		.option('-P, --path <path>', 'DO NOT USE, user home path should be /home')
+		.option('-p, --password <password>', 'specify password')
 		.option('-r, --role <role>', '<admin|[user]>')
 		.description("Ajout d'un utilisateur au client spécifié")
 		.action(useradd.command);
@@ -17,19 +18,14 @@ module.exports = function(program) {
 var useradd = {
 
 	role: function(options, next) {
+
 		if(options.role) {
-			if(options.role.length) {
-				cache.put('role', options.role);
-				next(options);
-			} else {
-				promptly.choose('Choisissez le role utilisateur {user|admin} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
-					cache.put('role', role);
-					next(options);
-				});
-			}
+			cache.put('role', options.role);
 		} else {
-			cache.put('role', 'user');
-			next(options);
+			promptly.choose('Choisissez le role utilisateur {admin|[user]} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
+				cache.put('role', role);
+				next(options);
+			});
 		}
 	},
 	password: function(options, next) {
@@ -45,6 +41,9 @@ var useradd = {
 	},
 	command: function(client, username, options) {
 		var self = useradd;
+
+		if(options.path)
+			cache.put('path', options.path);
 
 		if(fs.existsSync(app_path + '/app/config.json')) {
 			var config = jf.readFileSync(app_path + '/app/config.json');
@@ -63,11 +62,11 @@ var useradd = {
 					});
 				});
 			} else {
-				console.log("Le client " + client + " n'est pas installé !".error);
+				global.log('error', "Le client " + client + " n'est pas installé !");
 				process.exit(1);
 			}
 		} else {
-			console.log("Le fichier de configuration n'existe pas, lancez ./ezseed install".error);
+			global.log('error', "Le fichier de configuration n'existe pas, lancez ./ezseed install");
 			process.exit(1);
 		}
 	}

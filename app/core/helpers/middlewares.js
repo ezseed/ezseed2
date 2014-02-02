@@ -63,7 +63,7 @@ var middlewares = {
 
 			    } else {
 			    	req.session.destroy(function(){
-			    		req.session.error = "Une erreur de client torrent est survenue, merci de vous connecter à nouveau";
+			    		// req.session.error = "Une erreur de client torrent est survenue, merci de vous connecter à nouveau";
 					    res.redirect('/login');
 					});
 			    }

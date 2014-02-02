@@ -14,7 +14,7 @@ var validators =  require(global.app_path + '/bin/lib/helpers/validators');
 var install = {
 
 	set_config: function(next) {
-		console.log("Le dossier ci-dessous sert à partager les fichiers avec nodejs, si vous n'êtes pas sûr laissez par défaut.".warn);
+		global.log('warn', "Le dossier ci-dessous sert à partager les fichiers avec nodejs, si vous n'êtes pas sûr laissez par défaut.");
 
 		promptly.prompt(
 			'Chemin des dossiers à parser [/home] :', 
@@ -30,11 +30,11 @@ var install = {
 	},
 	nginx: function(next) {
 		if(cache.get('skipnginx')) {
-			console.log("Skipping nginx configuration".warn);
+			global.log('warn', "Skipping nginx configuration");
 			next(null, {});
 		} else {
 
-			console.log("ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)".info);
+			global.log('info', "ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)");
 			promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
 				
 				configure.nginx(sslkeys, next);
@@ -92,14 +92,16 @@ var install = {
 		if(cache.get('skipuser'))
 			callback(null, {});
 		else {
-			console.log("Entrez les informations de l'admin".info);
+			global.log('info', "Entrez les informations de l'admin");
 
 			promptly.prompt('Username : ', {validator: validators.user}, function (err, username) {
 			    promptly.password('Password : ', function(err, password) {
 
-			    	var passwd = require(global.app_path+'/bin/client/'+cache.get('client')+'/useradd');
+			    	cache.put('role', 'admin');
+			    	
+			    	var useradd = require(global.app_path+'/bin/client/'+cache.get('client')+'/useradd');
 
-			    	return passwd(username, password, next);
+			    	return useradd(username, password, next);
 
 			    	//Nul on fait cache+role => aucun + useradd
 			    	// db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {

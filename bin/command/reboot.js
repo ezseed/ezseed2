@@ -5,7 +5,7 @@ var db = require(global.app_path + '/app/core/database')
 var reboot = function() {
 	var start = function(user, cb) {
 		daemon(user.client, 'start', user.username, function() {
-			console.info(user.username + " " + user.client + " started");
+			global.log('info', user.username + " " + user.client + " started");
 			cb();
 		});
 	}

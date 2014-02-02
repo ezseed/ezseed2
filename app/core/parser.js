@@ -165,7 +165,7 @@ module.exports.processAlbums = function(params, callback) {
 * @param videos : list of video files
 * @param callback : the parallel callback (see async.parallel) 
 * @return callback
-* @call : see "parseVideo" below
+* @call : see "parseMovies" below
 **/
 module.exports.processMovies = function(params, callback) {
 	var videos = params.videos, pathToWatch = params.pathToWatch;

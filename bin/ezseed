@@ -12,12 +12,12 @@ var pathInfo = require('path')
 
 global.config = {};
 global.config.root = app_path + '/app';
-
+global.log = require(global.config.root+'/core/logger');
 global.app_path = app_path;
 
-if(fs.existsSync(app_path + '/app/config.json')) {
+if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
-} 
+
 
 var program = require('commander')
   , colors = require('colors')
@@ -41,23 +41,6 @@ program
 	.version('2.0.0');
 
 
-program.on('--help', function(){
-
-	var ASCII = new Buffer("\
-		   ___  ___  ___  ___  ___  ___     _  _  ___    \n\
-		  (  _)(_  )/ __)(  _)(  _)(   \\   ( )( )(__ \\   \n\
-		   ) _) / / \\__ \\ ) _) ) _) ) ) )   \\\\// / __/   \n\
-		  (___)(___)(___/(___)(___)(___/    (__) \\___)   \n\
-		  									   \n\
-	").toString();
-
-	console.log(ASCII.yellow.bold);
-	console.log("Made with love by ".magenta + "soyuka".bold.magenta);
-	console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
-
-	console.log(" ");
-});
-
 require('./command/install')(program);
 
 require('./command/useradd')(program);
@@ -77,10 +60,32 @@ program
 	.action(require('./lib/deploy'));
 
 program
+	.command('credits')
+	.description('Credits')
+	.action(function() {
+		var ASCII = new Buffer("\
+		   ___  ___  ___  ___  ___  ___     _  _  ___    \n\
+		  (  _)(_  )/ __)(  _)(  _)(   \\   ( )( )(__ \\   \n\
+		   ) _) / / \\__ \\ ) _) ) _) ) ) )   \\\\// / __/   \n\
+		  (___)(___)(___/(___)(___)(___/    (__) \\___)   \n\
+		  									   \n\
+		").toString();
+
+		console.log(ASCII.yellow.bold);
+		console.log("Made with love by ".magenta + "soyuka".bold.magenta);
+		console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
+
+		console.log(" ");
+	});
+
+program
 	.command('*')
 	.action(function() {
+		global.log('error', 'Command not found.');
 		program.help();
 	});
+
+
 
 mongoose.connect('mongodb://localhost/ezseed');
 
@@ -88,7 +93,16 @@ var mongo = mongoose.connection;
 
 mongo.on('error', console.error.bind(console, 'connection error:'.error));
 mongo.once('open', function callback () {
-	program.parse(process.argv);
-	if (!program.args.length) program.help();
+	
+	var index = process.argv.indexOf('-d');
+
+	if(index !== -1)
+		process.argv.splice(index,1);
+	
+	if (process.argv.length == 2) 
+		program.help();
+	else
+		program.parse(process.argv);
+	
 });
 
