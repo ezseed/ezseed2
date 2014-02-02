@@ -1,1 +1,1 @@
-module.exports = require('../../lib/user').useradd;
+module.exports = require(global.app_path + '/bin/lib/user').create;

@@ -24,8 +24,11 @@ mkdir -p /data/db
 apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools nginx php5-fpm -y
 
 #Install node js
-wget http://nodejs.org/dist/node-latest.tar.gz | tar xzvf
-cd node-latest
+git clone https://github.com/joyent/node.git
+cd node
+ 
+# 'git tag' shows all available versions: select the latest stable.
+git checkout v0.10.25
  
 # Configure seems not to find libssl by default so we give it an explicit pointer.
 # Optionally: you can isolate node by adding --prefix=/opt/node

@@ -1,6 +1,7 @@
 var fs = require('fs')
   , promptly = require('promptly')
   , cache = require('memory-cache')
+  , async = require('async')
   ;
 
 var configure = require(global.app_path + '/bin/lib/helpers/configure');
@@ -66,9 +67,9 @@ var install = {
 
 							    if(value === true) {
 							    	
-							    	cache.put('client', client);
+							    	cache.put('client', 'aucun');
 
-							    	require('../client/'+client+'/install')(callback);
+							    	require('../client/aucun/install')(callback);
 									
 								} else
 									return choose(callback);
@@ -96,7 +97,9 @@ var install = {
 			promptly.prompt('Username : ', {validator: validators.user}, function (err, username) {
 			    promptly.password('Password : ', function(err, password) {
 
-			    	require('../client/'+cache.get('client')+'/useradd')(username, password, next);
+			    	var passwd = require(global.app_path+'/bin/client/'+cache.get('client')+'/useradd');
+
+			    	return passwd(username, password, next);
 
 			    	//Nul on fait cache+role => aucun + useradd
 			    	// db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
@@ -137,11 +140,12 @@ module.exports = function(program) {
 
 		async.series(install,
 			function (err, results) {
-				console.log(err, results);
 
 				require('../lib/deploy.js')(function(code) {
 					console.log("Fin de l'installation.".info);
-					start();
+					require('../lib/helpers/pm2').start(function() {
+						process.exit();
+					});
 				});
 			}
 		);

@@ -68,14 +68,14 @@ echo "Editing settings"
 #ln -sf /var/lib/transmission-daemon-$username/info/settings.json $appdir/scripts/transmission/config/settings.$username.json 
 #cp /etc/transmission-daemon-$username/settings.json $appdir/scripts/transmission/config/settings.$username.json
 
-ln -sf /etc/transmission-daemon-$username/settings.json $appdir/scripts/transmission/config/settings.$username.json 
+ln -sf /etc/transmission-daemon-$username/settings.json $appdir/../scripts/transmission/config/settings.$username.json 
 ln -sf /etc/transmission-daemon-$username/settings.json /var/lib/transmission-daemon-$username/info/settings.json 
 #ln -sf /var/lib/transmission-daemon-$username/info/settings.json /etc/transmission-daemon-$username/settings.json
 
 chown -R $username:$username /var/lib/transmission-daemon-$username
 chown -R $username:$username /etc/transmission-daemon-$username
 
-chmod 775 $appdir/scripts/transmission/config/settings.$username.json 
+chmod 775 $appdir/../scripts/transmission/config/settings.$username.json 
 chmod -R 755 /etc/transmission-daemon-$username
 
 #echo "Adding user config username/peerport/rpcport/daysleft"

@@ -24,13 +24,13 @@
     "alertify": "alertify",
     "theme": "../js/theme",
     "admin": "../js/admin",
-    "chat-chat": "/Users/soyuka/Sites/ezseed2/app/plugins/chat/public/js/chat",
-    "checkforupdates-checkforupdates": "/Users/soyuka/Sites/ezseed2/app/plugins/checkforupdates/public/js/checkforupdates",
-    "listen-DGAuroraPlayer": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/DGAuroraPlayer",
-    "listen-classlist": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/classlist",
-    "listen-listen": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/listen",
-    "listen-player": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/js/player",
-    "listen-aurora.min": "/Users/soyuka/Sites/ezseed2/app/plugins/listen/public/audiocogs/aurora.min"
+    "chat-chat": "/var/www/ezseed2/app/plugins/chat/public/js/chat",
+    "checkforupdates-checkforupdates": "/var/www/ezseed2/app/plugins/checkforupdates/public/js/checkforupdates",
+    "listen-DGAuroraPlayer": "/var/www/ezseed2/app/plugins/listen/public/js/DGAuroraPlayer",
+    "listen-classlist": "/var/www/ezseed2/app/plugins/listen/public/js/classlist",
+    "listen-listen": "/var/www/ezseed2/app/plugins/listen/public/js/listen",
+    "listen-player": "/var/www/ezseed2/app/plugins/listen/public/js/player",
+    "listen-aurora.min": "/var/www/ezseed2/app/plugins/listen/public/audiocogs/aurora.min"
   },
   "shim": {
     "notify": [

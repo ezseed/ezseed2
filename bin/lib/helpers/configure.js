@@ -1,4 +1,7 @@
-var cache = require('memory-cache'), exec = require('child_process'), jf = require('jsonfile');
+var cache = require('memory-cache')
+  , exec = require('child_process').exec
+  , fs = require('fs')
+  , jf = require('jsonfile');
 
 var configure = {
 	update_rc: function(done) {
@@ -14,7 +17,7 @@ var configure = {
 		var config = {
 					"path": path,
 					"fetchTime": 5000,
-					"root": "",
+					"root": global.app_path +'/app',
 					"location": "",
 					"torrentLink": "embed",
 					"diskSpace": "1048576",
@@ -23,6 +26,8 @@ var configure = {
   					"rutorrent":false,
 					"theme": "default"
 				};
+		
+		global.config = config;
 
 		//Writes the config
 		jf.writeFileSync(global.app_path + '/app/config.json', config);
@@ -74,7 +79,6 @@ var configure = {
 					console.log(error.error);
 					console.trace(error.error);
 				}
-				console.log(stderr.error);
 
 
 				self.nginx_copy_config(done);

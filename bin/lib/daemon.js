@@ -1,9 +1,10 @@
 var fs = require('fs')
   , spawn = require('child_process').spawn
+  , path = require('path')
   ;
 
 var daemon = function(client, command, username, done) {
-	var shell_path = pathInfo.join(app_path,'/scripts/', client,'/daemon.sh');
+	var shell_path = path.join(app_path,'/scripts/', client,'/daemon.sh');
 	fs.chmodSync(shell_path, '775');
 
 	var running = spawn(shell_path, [command, username]);
@@ -26,3 +27,5 @@ var daemon = function(client, command, username, done) {
 			process.exit(code);
 	});
 }
+
+module.exports = daemon;

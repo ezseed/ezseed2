@@ -36,11 +36,11 @@ var populateRequire = function(to_require, cb) {
  * based on directories
  */
 var addPlugins = function() {
-	var pluginsPath = path.join(global.config.root, "plugins");
+	var pluginsPath = path.join(global.app_path, "/app/plugins");
 
     var plugins = fs.readdirSync(pluginsPath), to_require = [], stats, name;
 
-    var require_config_path = global.config.root + '/public/javascripts/require-config.json'
+    var require_config_path = global.app_path+ '/app/public/javascripts/require-config.json'
       , require_config = jf.readFileSync(require_config_path);
 
     //Parsing the plugins folder

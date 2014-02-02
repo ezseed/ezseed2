@@ -5,7 +5,7 @@ var fs = require('fs')
   , exec = child_process.exec
   , user = require('../../lib/user');
 
-var shell_path = global.app_path + '/app/scripts/rutorrent/useradd.sh';
+var shell_path = global.app_path + '/scripts/rutorrent/useradd.sh';
 
 var useradd = function (username, password, next) {
 

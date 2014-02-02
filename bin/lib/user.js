@@ -1,12 +1,14 @@
 var db = require(global.app_path + '/app/core/database')
 	   , child_process = require('child_process')
+	   , cache = require('memory-cache')
+	   , path = require('path')
 	   , spawn = child_process.spawn
 	   , exec = child_process.exec;
 
 
 var user = {
 	create: function(username, password, done) {
-		var self = this;
+		var self = user;
 
 		self.add(username, password, function(err) {
 			self.add_to_system(username, password, function(err, user_path) {
@@ -34,8 +36,9 @@ var user = {
 	},
 	add_to_system: function(username, password, done) {
 
-	  	var user_path = path.join(require('./helpers/path'), username, 'downloads'), self = this;
+		var p = require('./helpers/path')();
 
+	  	var user_path = path.join(p, username), self = user;
 
 	  	exec('grep -c "^'+username+':" /etc/passwd',function(err, stdout, stderr) {
 	  		
@@ -43,26 +46,15 @@ var user = {
 	  			done("L'utilisateur existe déjà !", user_path);
 	  		} else {
 
-				var cmd = 'mkdir '+user_path+' && useradd --home-dir '+user_path+' --groups users --password broken '+username+' && \
+				var cmd = 'mkdir -p '+user_path+' && useradd --home-dir '+user_path+' --groups users --password broken '+username+' && chown -R '+username+' '+user_path+'/ && usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
+				
+				var running = exec(cmd, function (err, stdout, stderr) {
+					if(err)
+						console.log(err.error);
 
-					    chown -R '+username+' '+user_path+'/ && usermod -p $(mkpasswd -H md5 "'+password+'") '+username+ ' && exit 0';
-
-				var running = spawn(cmd);
-
-				running.stdout.on('data', function (data) {
-					var string = new Buffer(data).toString();
-					console.log(string.info);
+					done(err, user_path);
 				});
 
-				running.stderr.on('data', function (data) {
-					var string = new Buffer(data).toString();
-					console.log(string.error);
-					
-				});
-
-				running.on('exit', function (code) {
-					done(code, user_path);
-				});
 	  		}
 	  	});
 
