@@ -5,12 +5,14 @@
  */
 var pathInfo = require('path')
 	, jf = require('jsonfile')
+	, fs = require('fs')
   	, app_path = pathInfo.resolve(__dirname, '..');
 
 
 global.app_path = app_path;
 
-global.config = jf.readFileSync(app_path + '/app/config.json');
+if(fs.readFileSync(app_path + '/app/config.json'))
+	global.config = jf.readFileSync(app_path + '/app/config.json');
 
 //Writing conf file
 if(global.config.root.length == 0) {
