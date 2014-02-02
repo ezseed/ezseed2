@@ -11,7 +11,7 @@ var pathInfo = require('path')
 
 global.app_path = app_path;
 
-if(fs.readFileSync(app_path + '/app/config.json'))
+if(!fs.readFileSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
 //Writing conf file
