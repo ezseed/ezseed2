@@ -17,19 +17,15 @@ apt-get update
 apt-get upgrade -y
 
 #mongodb
-mkdir /data
-mkdir /data/db
+mkdir -p /data/db
 
 # Dependecies
 # whois = mkpasswd
 apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python inotify-tools nginx php5-fpm -y
 
 #Install node js
-git clone https://github.com/joyent/node.git
-cd node
- 
-# 'git tag' shows all available versions: select the latest stable.
-git checkout v0.10.22
+wget http://nodejs.org/dist/node-latest.tar.gz | tar xzvf
+cd node-latest
  
 # Configure seems not to find libssl by default so we give it an explicit pointer.
 # Optionally: you can isolate node by adding --prefix=/opt/node
@@ -46,7 +42,7 @@ if [ -z $(node -v) && -z $(npm -v) ]
 then
 	exit 0
 else
-	npm install pm2@0.6.3 -g #to be changed
+	npm install pm2@latest -g #to be changed
 	mkdir -p /var/log/ezseed
 	mkdir -p /var/www
 	cp -R $DIR /var/www/ezseed2
@@ -54,7 +50,7 @@ else
 	cd /var/www/ezseed2/ &&	npm install --save
 	npm link
 
-	echo "Please start 'ezseed config -h'"
+	echo "Please start 'ezseed install -h'"
 fi
 
 

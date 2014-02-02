@@ -19,15 +19,6 @@ if(global.config.root.length == 0) {
 
 var program = require('commander')
   , colors = require('colors')
-  , promptly = require('promptly')
-  , exec = require('child_process').exec
-  , execFile = require('child_process').execFile
-  , spawn = require('child_process').spawn
-  , _ = require('underscore')
-  , fs = require('fs')
-  , async = require('async')
-  , db = require(app_path + '/app/core/database')
-  , cache = require('memory-cache')
   , mongoose = require('mongoose')
   ;
 
