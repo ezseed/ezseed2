@@ -4,13 +4,28 @@ var _ = require('underscore')
     , cache = require('memory-cache');
 
 var api = {
+	//Parse req.query.t
+	parameters: function(req, res, next) {
+		req.parameters = {
+				last_update: req.query.t ? new Date(parseInt(req.query.t)) : 0,
+				limit: {
+					start: req.query.start ? req.query.start : 0,
+					limit: req.query.limit ? req.query.limit : 10,
+					sort: req.query.sort ? req.query.sort : 'dateAdded'
+				}
+			};
 
+		console.log(req.parameters);
+
+		next();
+
+	},
 	getByUID: function(req, res) {
 
-		var lastUpdate = req.query.t ? new Date(parseInt(req.query.t)) : 0;
+ 		db.files.byUser(req.params.uid, req.parameters.last_update, req.parameters.limit, function(err, files) {
 
- 		db.files.byUser(req.params.uid, lastUpdate, function(err, files) {
-
+ 			delete files.hash;
+ 			
            	res.json(files);
 
             cache.put('lastUpdate_'+req.params.uid, new Date);
@@ -20,6 +35,6 @@ var api = {
 };
 
 module.exports = function(app) {
-	app.get('/api/:uid', userHelper.restrict, api.getByUID);
+	app.get('/api/:uid', userHelper.restrict, api.parameters, api.getByUID);
 
 }

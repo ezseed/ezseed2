@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
   , models = require('../../models')
 	, Paths = mongoose.model('Paths')
+	, Movies = mongoose.model('Movies')
 	, Users = mongoose.model('Users')
 	, _ = require('underscore');
 
@@ -34,7 +35,31 @@ var paths = {
 	},
 	find : function(id, cb) {
 		Paths.findById(id).populate('movies albums others').lean().exec(function (err, docs) {
-			cb(err, docs);
+			//mongoose plugin ?
+			Movies.populate(
+				docs,
+				{ 
+					path: 'movies.infos',
+					model: 'MoviesInformations',
+					select: '-_id -__v',
+					options: {lean: true}
+				}, 
+				function(err, path) {
+					
+					//workarroung for getting back all
+					//the movies informations back to movie root node
+					//should it be improved in the rest of the code ?
+					_.each(docs.movies, function(d, i) {
+						if(typeof d.infos == 'object') {
+							_.each(d.infos, function(e, j) {
+								docs.movies[i][j] = e;
+							});
+						}
+					});
+
+					cb(err, docs);		
+				}
+			);
 		});
 	}, 
 	save : function(path, username, cb) {

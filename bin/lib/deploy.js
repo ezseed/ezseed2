@@ -93,7 +93,7 @@ var deploy = function(cb) {
 
 		deploy.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('info', string);
+			global.log(string);
 		});
 
 		deploy.stderr.on('data', function (data) {

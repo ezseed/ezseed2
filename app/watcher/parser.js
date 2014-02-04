@@ -5,6 +5,7 @@ var pathInfos = require('path')
   , _ = require('underscore')
   , _s = require('underscore.string')
   , release = require('./release.js')
+  , db = require('../core/database')
   , fs = require('fs')
   , allocine = require('../plugins/allocine/search.js')
   ;
@@ -189,33 +190,26 @@ module.exports.processMovies = function(params, callback) {
 		if(i == arr.length)
 			return cb(movies);
 
-		var indexMatch = null, e = arr[i];
+		var e = arr[i];
 
+		//Testing if the file exists //add type test ?!
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = existingFile.length;
 
+		//Testing if the path has a match then file exists
 		if(nbExisting)
 			while(nbExisting-- && !exists)
 				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
 
-		//Do the test again with video name
-		e = _.extend(e, release.getTags.video(e.path));
-
-		if(e.movieType == 'tvseries') {
-			existingFile = _.filter(params.existing, function(ex){ 
-				var m_name = _s.slugify(e.name), m_title = _s.slugify(e.title),	ex_name = _s.slugify(ex.name);
-
-				return (ex_name == m_name || ex == m_title) && ex.season == e.season; 
-			}), nbExisting = existingFile.length;
-			
-			while(nbExisting-- && !exists)
-				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
-					exists = true;
-				
-		}
-
 		if(!exists) {
 
+			//Getting some informations
+			e = _.extend(e, release.getTags.video(e.path));
+
+			// e = _.extend(e, release.getTags.video(e.path));
+			var indexMatch = null;
+
+			//If movies are in the same directory
 			if(pathToWatch != e.prevDir)
 				indexMatch = findIndex(movies, function(movie) {
 					return movie.prevDir == e.prevDir;
@@ -223,32 +217,70 @@ module.exports.processMovies = function(params, callback) {
 
 			if(indexMatch !== null) {
 
+				global.log('debug', 'index Match on prevDir, pushing array');
+
 				movies[indexMatch].videos.push(e);
 				i++;
 				return parseMovies(arr, cb, i, movies);
+
 			} else {
-				e = _.extend(e, release.getTags.video(e.path));
 
-				//Movies types are the same, we look after the same name | same season
-				indexMatch = findIndex(movies, function(movie) { 
-					if(movie.movieType == e.movieType) {
-						var m_name = _s.slugify(movie.name), m_title = _s.slugify(movie.title);
-						var e_name = _s.slugify(e.name);
+				indexMatch = null;
 
-						if(e_name == m_name || e_name == m_title) {
-							if(movie.movieType == 'tvseries') {
-								if(movie.season == e.season)
-									return true;
-							} else {
-								return true;
-							}
-						}
-					}
-					return false;
-				});
+				if(e.movieType == 'tvseries') {
+
+					//Searching for a similar name && an equal season on existing
+					indexMatch = findIndex(params.existing, function(movie){ 
+
+						if(movie.movieType == e.movieType) {
+							var m_name = _s.slugify(e.name)
+							  ,	movie_name = _s.slugify(movie.name);
+
+							return movie_name == m_name && movie.season == e.season; 
+						} else
+							return false;
+					});
+
+
+					var moviesMatch = null;
+
+					//same on movies
+					moviesMatch = findIndex(movies, function(movie){ 
+
+						if(movie.movieType == e.movieType) {
+							var m_name = _s.slugify(e.name)
+							  ,	movie_name = _s.slugify(movie.name);
+
+							return movie_name == m_name && movie.season == e.season; 
+						} else
+							return false;
+					});
+
+					//Same as before, if the video path is there, skip
+					//, should not be necessary because we did all the existing before
+					// while(nbExisting-- && !exists)
+					// 	if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
+					// 		exists = true;
+						
+
+				}
 				
+
 				if(indexMatch !== null) {
-					movies[indexMatch].videos.push(e);
+					
+					db.files.movies.addVideo(params.existing[indexMatch]._id, e, function(err) {
+						
+						if(err) {
+							global.log('err', 'Error by adding the video in the movie', err);
+							global.log('debug', e);
+						}
+
+						i++;
+						return parseMovies(arr, cb, i, movies);
+					});
+					//movies[indexMatch].videos.push(e);
+				} else if (moviesMatch !== null) {
+					movies[moviesMatch].videos.push(e);
 					i++;
 					return parseMovies(arr, cb, i, movies);
 				} else {
@@ -295,6 +327,29 @@ module.exports.processMovies = function(params, callback) {
 		callback(null, movies);
 	});
 }
+
+/////TOBEREMOVED////
+//Movies types are the same, we look after the same name | same season
+// indexMatch = findIndex(movies, function(movie) { 
+
+// 	if(movie.movieType == e.movieType) {
+// 		var m_name = _s.slugify(movie.name); //, m_title = _s.slugify(movie.title)
+// 		var e_name = _s.slugify(e.name);
+
+// 		if(e_name == m_name) {
+// 			if(movie.movieType == 'tvseries') {
+// 				if(movie.season == e.season)
+// 					return true;
+// 			} else {
+// 				return true;
+// 			}
+// 		}
+// 	}
+// 	return false;
+// });
+/**
+ * \\\\\\\\Êı∆\\\\\\\
+ */
 
 /**
 * Parses files, search if there is a movie / an audio file

@@ -84,7 +84,13 @@ define([
                     '/api/'+user.id, function( data, textStatus ) {
                         
                         if(data) {
-                            Desktop.append(data.paths);
+                            if(data.paths.length) {
+                                Desktop.append(data.paths);
+                            } else {
+                                alert('Aucuns fichiers trouvés');
+                                loader();
+                            }
+
                             self.socket.emit('update', user.id);
                         } else {
                             console.error(textStatus, data);
@@ -175,8 +181,8 @@ define([
 
             var titre = $el.find('h1:first').text();
 
-            if(notify)
-                self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+            // if(notify)
+            //     self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
 
             self.pckry.remove($el);
 
@@ -256,9 +262,9 @@ define([
 
                         if(count == 1) {
                             var titre = els[0].find('h1').text();
-                            self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
+                            //self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
                         } else if(count != 0) {
-                            self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
+                            //self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
                         }
                     }
 

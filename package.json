@@ -53,6 +53,8 @@
     "node-markdown": "~0.1.1",
     "caterpillar-filter": "~2.0.3",
     "caterpillar-human": "~2.1.2",
-    "caterpillar": "~2.0.7"
+    "caterpillar": "~2.0.7",
+    "mongoose-list": "~0.2.1",
+    "pretty-error": "~0.1.16"
   }
 }

@@ -111,9 +111,10 @@ module.exports.getTags  = {
 		  		.replace(/^\-[\w\d]+$/i, '') //team name
 		  		.replace(/\-|_|\(|\)/g, ' ') //special chars
 		  		.replace(/([\w\d]{2})\./ig, "$1 ") //Replacing dot with min 2 chars before
-		  		.replace(/\.\.?([\w\d]{2})/ig, " $1") //same with 2 chars after
+		  		.replace(/\.\.?([\w\d]{2})/ig, " $1")
+		  		.replace(/\s\s+/, ' ') //same with 2 chars after
 
-		  , words = _s.words(name)
+	      , words = _s.words(name)
 
 		  , movie = {
 				quality : tag(words, qualities),
@@ -124,7 +125,7 @@ module.exports.getTags  = {
 				movieType : 'movie',
 			}
 			
-		  , r = new RegExp(/E[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
+		  , r = new RegExp(/EP?[0-9]{1,2}|[0-9]{1,2}x[0-9]{1,2}/i) //searches for the tv show
 		  , y = new RegExp(/([0-9]{4})/) //Year regex
 		  ;
 
@@ -134,7 +135,7 @@ module.exports.getTags  = {
 			movie.movieType = 'tvseries';
 
 			//Searches for the Season number + Episode number
-			r = new RegExp(/(.+)S([0-9]+)E([0-9]+)/i);
+			r = new RegExp(/(.+)S([0-9]+)EP?([0-9]+)/i);
 			var r2 = new RegExp(/(.+)([0-9]+)x([0-9])+/i);
 
 			var ar = name.match(r);
@@ -142,7 +143,7 @@ module.exports.getTags  = {
 			//If it matches
 			if(ar != null) {
 				movie = _.extend(movie, {
-					name : _s.trim(ar[1]),
+					name : ar[1],
 					season : ar[2],
 					episode : ar[3]
 				});
@@ -150,7 +151,7 @@ module.exports.getTags  = {
 				ar = name.match(r2);
 				if(ar) {
 					movie = _.extend(movie, {
-						name: _s.trim(ar[1]),
+						name: ar[1],
 						season: ar[2],
 						episode: ar[3]
 					});
@@ -168,7 +169,7 @@ module.exports.getTags  = {
 			if(ar != null && ar[0] > 1900) {
 				var parts = name.split(ar[0]);
 				movie : _.extend(movie, {
-					name : _s.trim(parts[0]),
+					name : parts[0],
 					year : ar[1]
 				});
 			} else {

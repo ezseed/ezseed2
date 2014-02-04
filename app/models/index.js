@@ -1,9 +1,6 @@
-//TODO Move this along files
 var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
-
-var _ = require('underscore');
 
 /* Setting the pathes Schemes */
 
@@ -37,14 +34,7 @@ var albums = new Schema(
 	}
 );
 
-var moviesInformations = new Schema({
-	season: String,
-	title: String,
-	synopsis: String,
-	trailer: String,
-	picture: String,
-	id: String
-});
+
 
 var movies = new Schema({
 	quality: String,
@@ -60,6 +50,9 @@ var movies = new Schema({
 	prevDirRelative: String,
 	dateAdded: { type: Date, default: Date.now },
 });
+
+movies.plugin(require(global.config.root + '/plugins/allocine/mongoose').plugin);
+
 
 //Others
 var others = new Schema(
@@ -107,7 +100,8 @@ module.exports = mongoose.model('Paths', PathsSchema);
 
 //Exporting individual schemas (movies,albums,others)
 module.exports = mongoose.model('Movies', movies);
-module.exports = mongoose.model('MoviesInformations', moviesInformations);
+
+module.exports = require('../plugins/allocine/mongoose').model;
 
 module.exports = mongoose.model('Albums', albums);
 module.exports = mongoose.model('Others', others);

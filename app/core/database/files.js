@@ -10,14 +10,38 @@ var mongoose = require('mongoose')
   , _ = require('underscore');
 
 var files = {
-	byUser : function (uid, lastUpdate, cb) {
+	byUser : function (uid, last_update, limit, cb) {
     
 		Users.findById(uid).lean().populate('paths').exec(function (err, docs) {
 			Paths.populate(docs, 
 	  		[
-	          { path: 'paths.movies', model: Movies, match: { dateAdded: {"$gt":lastUpdate} } },
-	          { path: 'paths.albums', model: Albums, match: { dateAdded: {"$gt":lastUpdate} } },
-	          { path: 'paths.others', model: Others, match: { dateAdded: {"$gt":lastUpdate} } }
+	            { 
+		          	path: 'paths.movies',
+		            model: Movies, 
+		            match: { 
+		            	dateAdded: {"$gt":last_update} 
+		            },
+		            sort: limit.sort,
+		            skip: limit.start
+	            },
+	            { 
+		          	path: 'paths.albums',
+		            model: Albums, 
+		            match: { 
+		            	dateAdded: {"$gt":last_update} 
+		            },
+		            sort: limit.sort,
+		            skip: limit.start
+	        	},
+	            { 
+		          	path: 'paths.others',
+		            model: Others, 
+		            match: { 
+		            	dateAdded: {"$gt":last_update} 
+		            },
+		            sort: limit.sort,
+		            skip: limit.start
+	        	}
 	        ],
 	        function(err, docs) {
 
@@ -57,6 +81,21 @@ var files = {
 				cb(err);
 			});
 		},
+		deleteSong: function(id, id_song, cb) {
+			Albums.findByIdAndUpdate(id, 
+				{  
+					$pull: { songs: {_id: id_song } }
+				},
+				function(err, docs) {
+					if(err)
+						global.log('error', err);
+					
+					if(docs.songs.length == 0)
+						files.albums.delete(id, cb);
+					else
+						cb(err);
+				});
+		},
 	    byId : function(id, cb) {
 	      Albums.findById(id).lean(true).exec(function(err, doc) {
 	        cb(err, doc);
@@ -87,9 +126,30 @@ var files = {
 	},
 	movies : {
 		delete : function(id, cb) {
-			Movies.findByIdAndRemove(id, function(err) {
-				cb(err);
-			});
+			Movies.findByIdAndRemove(id, cb);
+		},
+		addVideo: function(id, video, cb) {
+			Movies
+			.findByIdAndUpdate(id, 
+				
+				{ $push: { videos: video } }, 
+
+				cb);
+		},
+		deleteVideo: function(id, id_video, cb) {
+			Movies.findByIdAndUpdate(id, 
+				{  
+					$pull: { videos: {_id: id_video } }
+				},
+				function(err, docs) {
+					if(err)
+						global.log('error', err);
+					
+					if(docs.videos.length == 0)
+						files.movies.delete(id, cb);
+					else
+						cb(err);
+				});
 		},
 	    byId : function(id, cb) {
 	      Movies.findById(id).lean(true).populate('infos').exec(function(err, doc) {
@@ -104,7 +164,6 @@ var files = {
 
 					infos.save(function(err, infos) {
 
-						  	console.log(err, infos);
 						movie = new Movies(_.extend(movie, {infos: infos._id}));
 
 						movie.save(function(err, movie) {
@@ -127,6 +186,22 @@ var files = {
 		}
 	},
 	others : {
+		deleteFile: function(id, id_file, cb) {
+			Others.findByIdAndUpdate(id, 
+				{  
+					$pull: { files: {_id: id_file} }
+				},
+				function(err, docs) {
+					if(err)
+						global.log('error', err);
+					
+					if(docs.files.length == 0)
+						files.others.delete(id, cb);
+					else
+						cb(err);
+				});
+
+		},
 		delete : function(id, cb) {
 			Others.findByIdAndRemove(id, function(err) {
 				cb(err);

@@ -1,7 +1,7 @@
 var allocine = require('allocine-api')
   , _ = require('underscore')
   , _s = require('underscore.string')
-  , dummyName = require(global.config.root + '/core/release.js').dummyName;
+  , dummyName = require(global.config.root + '/watcher/release.js').dummyName;
 
 /*
 * Get an object by the string

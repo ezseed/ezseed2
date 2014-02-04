@@ -1,9 +1,8 @@
 var socketio = require('socket.io')
-  , explorer = require('./explorer')
   , pathInfo = require('path')
   , cache = require('memory-cache')
-  , users = require('../core/helpers/users.js')
-  , db = require('../core/database')
+  , users = require('./helpers/users.js')
+  , db = require('./database')
   , pretty = require('prettysize')
   , _ = require('underscore');
 
