@@ -110,8 +110,6 @@ var remove = function (existing, id_path, cb) {
 	},
 	function(err, results) {
 		//global.log('debug','To be removed', to_remove);
-
-		// write_remove(id_path, to_remove);
 		
 		db.remove.store(id_path, to_remove, function(err, docs) {
 
@@ -127,35 +125,5 @@ var remove = function (existing, id_path, cb) {
 		
 	});	
 }
-
-var write_remove = function(id_path, to_remove) {
-
-	// db.remove.store(id_path, to_remove, )
-
-	//var key = 'to_remove_'+id_path, cached = cache.get(key);
-
-	//cache.put(key, cached !== null ? _.extend(cached, to_remove) : to_remove);
-
-	// global.log('debug', to_remove);
-
-	// var tmp_dir = path.join(global.config.root, '/public/tmp/paths')
-	//   , file = path.join(tmp_dir, id_path + '.json');
-
-	// if(!fs.existsSync(tmp_dir))
-	// 	mkdirp.sync(tmp_dir);
-	
-	// to_remove = fs.existsSync(file) ? to_remove : to_remove;
-	
-	// // global.log('debug', to_remove);
-
-	// jf.writeFileSync(file, to_remove);
-
-	// global.log('debug', 'Watcher 2', to_remove);
-
-	to_remove = [];
-
-}
-
-
 
 module.exports = remove;

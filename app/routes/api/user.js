@@ -56,9 +56,6 @@ var user = {
 					
 					db.remove.get(p._id, cb);
 					
-					//to_remove.push(cache.get('to_remove_'+p._id));
-
-					// cache.del('to_remove_'+p._id);
 				}, function(err, results) {
 					// global.log('debug', 'API', results);
 
@@ -84,8 +81,6 @@ var user = {
 		 			delete files.hash;
 		 			
 		           	res.json(files);
-
-		            // cache.put('lastUpdate_'+req.params.uid, new Date);
 		        }
 
 	        });
