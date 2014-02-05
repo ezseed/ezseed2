@@ -118,7 +118,7 @@ exports.explore = function(params, cb) {
 
 		global.log('info', 'Each paths done.' );
 		console.timeEnd('paths');
-		global.log('-------------------------');
+		global.log('-------------------------------------------------'.rainbow);
 		cb(err, results);
 	});
 }

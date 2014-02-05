@@ -5,6 +5,7 @@ var _ = require('underscore')
     , fs = require('fs')
     , jf = require('jsonfile')
     , path = require('path')
+    , async = require('async')
     , pretty = require('prettysize')
     , api = require('../api').api;
 
@@ -43,39 +44,29 @@ var user = {
 		});
 	},
 	getFilesToRemove: function(req, res) {
+		var to_remove = [];
+
 		if(req.params.uid) {
 			db.paths.byUser(req.params.uid, function(err, results) {
 	
 				if(err)
 					api.error(res, err);
 
-				var tmp_dir = path.join(global.config.root, '/public/tmp/paths')
-				  , to_remove = [];
-
-				_.each(results.docs.paths, function(p) {
-
-					var file = path.join(tmp_dir, p._id + '.json');
-
-					if(fs.existsSync(file)) {
+				async.map(results.docs.paths, function(p, cb) {
 					
-						to_remove.push(jf.readFileSync(file));
-						jf.writeFileSync(file, []);
+					db.remove.get(p._id, cb);
+					
+					//to_remove.push(cache.get('to_remove_'+p._id));
 
-					}
+					// cache.del('to_remove_'+p._id);
+				}, function(err, results) {
+					// global.log('debug', 'API', results);
+
+					res.json(_.flatten(results));
 				});
 
-				res.json(_.flatten(to_remove));
-			});
-			//Get each paths
-			// var tmp_dir = path.join(global.config.root, '/public/tmp/paths')
-			//   , file = path.join(tmp_dir, id_path + '.json');
-
-			// if(!fs.existsSync(tmp_dir))
-			// 	mkdirp.sync(tmp_dir);
 			
-			// to_remove = fs.existsSync(file) ? _.extend(to_remove, jf.readFileSync(file)) : to_remove;
-
-			// jf.writeFileSync(file, to_remove);
+			});
 
 		}
 	},

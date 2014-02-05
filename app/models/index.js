@@ -95,6 +95,19 @@ UsersSchema.virtual('session').get(function() {
 	}
 });
 
+var RemoveSchema = new Schema({
+	path: {'type':ObjectId, 'required':true, 'unique': true, index: true},
+	to_remove: [{
+		type: {'type': String},
+		item: {'type': ObjectId},
+		file: {'type': ObjectId}
+	}]
+}, { autoIndex: false });
+
+//store things that should be removed... Redis would me more appropriate... 
+//Big change from mongo => SQL Lite ? + Redis ? :D
+module.exports = mongoose.model('Remove', RemoveSchema);
+
 module.exports = mongoose.model('Users', UsersSchema);
 module.exports = mongoose.model('Paths', PathsSchema);
 

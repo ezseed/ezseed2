@@ -116,9 +116,6 @@ define([
                             html += results[i].movies + results[i].albums + results[i].others;
                     } while(i--)
 
-                    if(html.length == 0)
-                        err = "Aucun fichiers";
-
                     callback(err, html);
                 });
                 
@@ -161,9 +158,11 @@ define([
             var self = this
               , removed = [];
 
+              console.log(to_remove);
+
             if(to_remove.length) {
                 _.each(to_remove, function(r) {
-                    var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + file + '"]');
+                    var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + r.file + '"]');
 
                     if($el.length) {
                         removed.push($el.find('td.file_name').text());
@@ -185,7 +184,7 @@ define([
 
             var self = this;
 
-            if(!firstLoad)
+            if(!self.firstLoad)
                 self.loader();
 
             var displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
@@ -194,6 +193,8 @@ define([
                 $(e).attr('data-display', displayOption); 
             });
             
+            console.log(datas);
+
             self.render.files(datas, function(err, html) {
                 if(err)
                     console.error(err);

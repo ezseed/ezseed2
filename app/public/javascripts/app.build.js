@@ -1,10 +1,11 @@
 ({
-    name: 'main.build',
+    name: "main.build",
     mainConfigFile : "main.build.js",
     baseUrl: "./",
-    optimize: 'uglify2',
+    optimize: "none"
+    //optimize: 'uglify2',
     paths: {
         jquery: "empty:"
     },
-    out: '../js/main.min.js'
+    out: "../js/main.min.js"
 })

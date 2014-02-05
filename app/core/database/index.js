@@ -12,7 +12,8 @@ var db = {
 	},
 	user: require('./user.js'),
 	users: require('./users.js'),
-	plugins: require('../../plugins').database
+	plugins: require('../../plugins').database,
+	remove: require('./remove'),
 }
 
 module.exports = db;

@@ -1,6 +1,7 @@
 /*
  * Retrieving configuration
  */
+var colors = require('colors');
 var jf = require('jsonfile'), fs = require('fs');
 
 global.config = jf.readFileSync(__dirname + '/config.json');
@@ -25,8 +26,8 @@ var init = false;
 
 var watcher = {
 	interval: null,
-	setInterval: function(self) {
-		var self = self ? self : this;
+	setInterval: function() {
+		var self =  this;
 
 		self.interval = setInterval(function() {
 			self.parse(self);
@@ -34,8 +35,8 @@ var watcher = {
 		
 		init = true;
 	},
-	parse: function(self) {
-		self = self ? self : this;
+	parse: function() {
+		self = this;
 
 		clearInterval(self.interval);
 
@@ -48,10 +49,10 @@ var watcher = {
 					paths.push(docs[p].path);
 
 				explorer.explore({docs : {paths : docs}, paths : paths}, function(err, update) {
-					self.setInterval(self);
+					self.setInterval();
 				});
 			} else {
-				self.setInterval(self);
+				self.setInterval();
 			}
 		});
 	},

@@ -21,8 +21,8 @@ var files = {
 		            match: { 
 		            	dateAdded: {"$gt":last_update} 
 		            },
-		            sort: limit.sort,
-		            skip: limit.start
+		            // sort: limit.sort,
+		            // skip: limit.start
 	            },
 	            { 
 		          	path: 'paths.albums',
@@ -30,8 +30,8 @@ var files = {
 		            match: { 
 		            	dateAdded: {"$gt":last_update} 
 		            },
-		            sort: limit.sort,
-		            skip: limit.start
+		            // sort: limit.sort,
+		            // skip: limit.start
 	        	},
 	            { 
 		          	path: 'paths.others',
@@ -39,8 +39,8 @@ var files = {
 		            match: { 
 		            	dateAdded: {"$gt":last_update} 
 		            },
-		            sort: limit.sort,
-		            skip: limit.start
+		            // sort: limit.sort,
+		            // skip: limit.start
 	        	}
 	        ],
 	        function(err, docs) {

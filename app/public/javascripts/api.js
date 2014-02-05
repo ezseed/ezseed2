@@ -55,7 +55,6 @@ define([
 
 				return typeof cb == 'function' ? cb(null, to_remove) : true;
 
-				//Desktop.remove(to_remove);
 			});
 		},
 		setInterval: function() {
