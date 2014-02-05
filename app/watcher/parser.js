@@ -207,7 +207,7 @@ module.exports.processMovies = function(params, callback) {
 			e = _.extend(e, release.getTags.video(e.path));
 
 			// e = _.extend(e, release.getTags.video(e.path));
-			var indexMatch = null;
+			var indexMatch = null, moviesMatch = null;
 
 			//If movies are in the same directory
 			if(pathToWatch != e.prevDir)
@@ -241,8 +241,6 @@ module.exports.processMovies = function(params, callback) {
 							return false;
 					});
 
-
-					var moviesMatch = null;
 
 					//same on movies
 					moviesMatch = findIndex(movies, function(movie){ 
@@ -280,8 +278,6 @@ module.exports.processMovies = function(params, callback) {
 					});
 					//movies[indexMatch].videos.push(e);
 				} else if (moviesMatch !== null) {
-					global.log(moviesMatch);
-
 					movies[moviesMatch].videos.push(e);
 					i++;
 					return parseMovies(arr, cb, i, movies);
