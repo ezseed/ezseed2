@@ -10,12 +10,13 @@ define([
     'async',
     'jquery',
     'api',
+    'alertify',
 
     //Helpers
-    'underscore', 'notify', 'cookie', 'quickfit',
+    'underscore', 'cookie', 'quickfit',
 
 
-], function(Albums, Movies, Others, Packery, imagesLoaded, async, $, api){
+], function(Albums, Movies, Others, Packery, imagesLoaded, async, $, api, alertify){
 
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
@@ -157,17 +158,23 @@ define([
                 });
             }
         },
-        remove: function(id, notify) {
+        remove: function(to_remove) {
             var self = this
-              , $el = $(self.itemSelector + '[data-id="' + id + '"]')
-              , notify = notify === undefined ? true : notify;
+              , removed = [];
 
-            var titre = $el.find('h1:first').text();
+            _.each(to_remove, function(r) {
+                var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + file + '"]');
 
-            // if(notify)
-            //     self.showNotification({title: 'Fichier supprimé',tag:id,text: titre + ' a été supprimé'});
+                if($el.length) {
+                    removed.push($el.find('td.file_name').text());
+                    $el.remove();
+                } else {
+                    removed.push($item.find('h1:first').text());
+                    self.pckry.remove($item);
+                }
+            });
 
-            self.pckry.remove($el);
+            alertify.log("Fichier(s) supprimé(s)", removed.join('<br>'));
 
             self.layout();
 
