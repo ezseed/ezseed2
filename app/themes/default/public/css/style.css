@@ -309,6 +309,7 @@ section#desktop .element.miniature {
 	position: relative;
 	overflow:hidden;
 	font-size: 0;
+	margin: 3px;
 }
 
 	section#desktop .element.miniature img {
@@ -507,7 +508,7 @@ section#desktop .element.list.login-box {
 	section#desktop .element.list .showFiles{
 		cursor: pointer;
 		position: absolute;
-		right: 0;
+		right: -1px;
 		bottom: 0;
 		width: 90px;
 		height: 28px;

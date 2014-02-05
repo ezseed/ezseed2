@@ -191,16 +191,16 @@ var files = {
 		});
 
 	},
-	/**
-	 * Remove item from database
-	 */
-	reset : function(req, res) {
-		db.files[req.params.type + 's'].delete(req.params.id, function(err) {
-			db.paths.resetByFile(req.params.id, function(err) {
-				res.json({err : err});
-			});
-		});
-	}
+	// /**
+	//  * Remove item from database
+	//  */
+	// reset : function(req, res) {
+	// 	db.files[req.params.type + 's'].delete(req.params.id, function(err) {
+	// 		db.paths.resetByFile(req.params.id, function(err) {
+	// 			res.json({err : err});
+	// 		});
+	// 	});
+	// }
 }
 
 
@@ -211,5 +211,5 @@ module.exports = function(app) {
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);
   app.get('/delete/(:type)/(:id)', userHelper.restrict, files.delete);
-  app.get('/reset/(:type)/(:id)', userHelper.restrict, files.reset);
+  // app.get('/reset/(:type)/(:id)', userHelper.restrict, files.reset);
 }

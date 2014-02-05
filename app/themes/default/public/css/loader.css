@@ -12,6 +12,7 @@
 
 #loader {
 	display: inline-block;
+	visibility: hidden;
 	float: left;
 }
 

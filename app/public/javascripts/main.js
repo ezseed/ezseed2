@@ -2,7 +2,7 @@ require.config(CONFIG_HERE);
 //DO NOT MOVE THIS LINE
 
 
-require(['desktop', 'theme', 'admin', REQUIRE_PLUGINS], function(Desktop) {
+require(['desktop', 'imagesloaded', 'theme', 'admin', REQUIRE_PLUGINS], function(Desktop) {
 
     var socket = Desktop.socket;
 

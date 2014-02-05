@@ -44,7 +44,7 @@ var files = {
 	        	}
 	        ],
 	        function(err, docs) {
-
+	        	//?
 	        	async.waterfall([
 	        	  function(callback){
 	        	  		Movies.populate(
@@ -126,13 +126,18 @@ var files = {
 	},
 	movies : {
 		delete : function(id, cb) {
-			Movies.findByIdAndRemove(id, cb);
+			Movies.findByIdAndRemove(id, {select: 'infos'}, function(err, infos) {
+
+				MoviesInformations.findByIdAndRemove(infos.infos, cb);
+
+			});
 		},
 		addVideo: function(id, video, cb) {
+
 			Movies
 			.findByIdAndUpdate(id, 
 				
-				{ $push: { videos: video } }, 
+				{ $push: { videos: video }, dateAdded: Date.now() }, 
 
 				cb);
 		},
@@ -143,8 +148,9 @@ var files = {
 				},
 				function(err, docs) {
 					if(err)
-						global.log('error', err);
 					
+					console.log(docs.videos);
+
 					if(docs.videos.length == 0)
 						files.movies.delete(id, cb);
 					else

@@ -71,7 +71,7 @@ require.config({
 //DO NOT MOVE THIS LINE
 
 
-require(['desktop', 'theme', 'admin', "chat-chat","checkforupdates-checkforupdates","listen-aurora.min","listen-classlist","listen-DGAuroraPlayer","listen-player","listen-listen"], function(Desktop) {
+require(['desktop', 'imagesloaded', 'theme', 'admin', "chat-chat","checkforupdates-checkforupdates","listen-aurora.min","listen-classlist","listen-DGAuroraPlayer","listen-player","listen-listen"], function(Desktop) {
 
     var socket = Desktop.socket;
 

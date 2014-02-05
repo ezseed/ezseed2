@@ -10,6 +10,7 @@ var api = {
 	},
 	//Parse req.query.t
 	parameters: function(req, res, next) {
+
 		req.parameters = {
 				last_update: req.query.t ? new Date(parseInt(req.query.t)) : 0,
 				limit: {
@@ -18,8 +19,6 @@ var api = {
 					sort: req.query.sort ? req.query.sort : 'dateAdded'
 				}
 			};
-
-		global.log('debug', 'API request with params', req.parameters);
 
 		next();
 

@@ -2,9 +2,8 @@
 movies.forEach(function(movie) {
 	var tailleDossier = 0;
 
-	if(movie.videos.length > 1)
-		for(var i = 0; i < movie.videos.length; i++)
-			tailleDossier += parseFloat(movie.videos[i].size);
+	for(var i = 0; i < movie.videos.length; i++)
+		tailleDossier += parseFloat(movie.videos[i].size);
 
 %>
 	<div data-id="<%- movie._id %>" class="element list video clearfix" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
@@ -41,10 +40,10 @@ movies.forEach(function(movie) {
 				<a href="/delete/movie/<%- movie._id %>" class="delete-item" title="Supprimer">
 					<i class="entypo-trash"></i>
 				</a>
-
+<!-- 
 				<a href="#" class="reset-item" title="Enlever de la base de données (il reviens)" data-type="movie">
 					<i class="entypo-cancel"></i>
-				</a>
+				</a> -->
 			</div>
 
 			<hr />

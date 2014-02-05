@@ -4,25 +4,36 @@ define([
     'underscore', 'notify', 'cookie', 'quickfit',
 ], function($){
 
+	var last_update = 0;
+
+	var countData = function(data) {
+		var c = 0, l = data.paths.length;
+
+		while(l--)
+			c += data.paths[l].movies.length + data.paths[l].albums.length + data.paths[l].others.length;
+		
+		return c;
+	}
+
 	var api = {
-		last_update: 0,
 		interval: null,
 		files: function(cb) {
 			var self = this, url = '/api/'+user.id+'/files';
 
-        	if(self.last_update !== 0) {
-        		url = url + '?t=' + self.last_update;
+        	if(last_update !== 0) {
+        		url = url + '?t=' + last_update;
 			}
 
             jQuery.getJSON( url
                 , function( data, textStatus ) {
                     
                     if(data) {
-                        if(data.paths.length) {
+
+                        if(countData(data)) {
                             self.desktop.append(data.paths);
-                            self.last_update = Date.now();
+                            last_update = Date.now();
                         } else {
-                            alert('Aucuns fichiers trouvés');
+                            console.log('Aucuns fichiers trouvés');
                         }
 
                     } else {

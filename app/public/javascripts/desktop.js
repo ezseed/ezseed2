@@ -85,8 +85,8 @@ define([
 
 
             //hash
-/*            self.toRemove = window.location.hash.substr(1);
-*/
+//            self.toRemove = window.location.hash.substr(1);
+//            
             return self;
         },
         template : function(View, datas) {
@@ -121,12 +121,23 @@ define([
                 
             }, 
             path : function(path, cb) {
-                var render = Desktop.render;
 
                 async.parallel({
                     movies : function(callback) 
                     {
                         if(path.movies.length) {
+
+                            //parse each path + search dom id and remove it :p
+                            path.movies.forEach(function(movie) {
+
+                                var $el = $(Desktop.itemSelector + '[data-id="' + movie._id + '"]');
+
+                                //Cheating...
+                                if($el.length)
+                                    Desktop.pckry.remove($el);
+
+                            });
+
                             callback(null, Desktop.template(Movies, {movies : path.movies}));
                         } else
                             callback(null, '');
@@ -158,24 +169,29 @@ define([
             var self = this
               , removed = [];
 
-              console.log(to_remove);
-
             if(to_remove.length) {
                 _.each(to_remove, function(r) {
                     var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + r.file + '"]');
 
                     if($el.length) {
                         removed.push($el.find('td.file_name').text());
-                        $el.remove();
+
+                        if($el.closest('tbody').find('tr').length == 1) {
+                            self.pckry.remove($item);
+                            $el.remove();
+                        } else 
+                            $el.remove();
+
                     } else {
                         removed.push($item.find('h1:first').text());
                         self.pckry.remove($item);
                     }
                 });
 
-
-
-                alertify.log("Fichier(s) supprimé(s)", removed.join('<br>'));
+                if(removed.length == 1)
+                    alertify.log(removed[0]+' a été supprimé');
+                else
+                    alertify.log(removed.length + " fichiers supprimés");
 
                 self.layout();
             }
@@ -184,8 +200,9 @@ define([
 
             var self = this;
 
-            if(!self.firstLoad)
-                self.loader();
+            // if(!self.firstLoad)
+            
+            self.loader();
 
             var displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
 
@@ -193,8 +210,6 @@ define([
                 $(e).attr('data-display', displayOption); 
             });
             
-            console.log(datas);
-
             self.render.files(datas, function(err, html) {
                 if(err)
                     console.error(err);
@@ -237,7 +252,7 @@ define([
                     self.displaySelector = displayOption;
 
                     self.layout(displayOption, function() { 
-                        self.loader();
+                        // self.loader();
 
                         if(self.firstLoad) {
                             self.firstLoad = false;
@@ -246,15 +261,18 @@ define([
 
                             _.each($items, function(e) {
                                     if($(e).hasClass('list'))
-                                        els.push($(e));
+                                        els.push($(e).find('h1').text());
                             });
 
                             count = els.length;
 
+                            self.loader();
+
                             if(count == 1) {
-                                var titre = els[0].find('h1').text();
+                                alertify.log(els[0] + ' a été ajouté');
                                 //self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
                             } else if(count != 0) {
+                                alertify.log(count + ' élements ajoutés');
                                 //self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
                             }
                         }
@@ -278,6 +296,43 @@ define([
             });
 
         },
+        layoutThumbnails: function(cb) {
+            var self = this;
+            
+            $(self.itemSelector).css('display', 'none');
+            
+            $(self.itemSelector + '.miniature').each(function() {
+                $(this).css('display', 'block');
+            });
+
+            $(self.itemSelector + '.miniature').css('visibility', 'hidden');
+
+            var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
+              //Hiding miniatures
+
+            if(miniatures) {
+                
+                imagesLoaded(
+                    miniatures, 
+                function() {
+
+                    $(self.itemSelector + '.miniature h1').quickfit();
+                    $(self.itemSelector + '.miniature').css('visibility', 'visible');
+                    
+                    
+                    self.pckry._isLayoutInited = false;
+                    self.pckry.layout();
+
+                    self.countElementsByLetter();
+
+                    self.hasLayout();
+
+                    if(typeof cb == 'function')
+                        cb();
+
+                });
+            }
+        },
         layout : function(selector, cb) {
             var self = this;
 
@@ -285,26 +340,9 @@ define([
 
             self.displaySelector = selector;
 
-            //Hiding miniatures
-            $(self.itemSelector + '.miniature').css('visibility', 'hidden');
-
-            var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
-
-            //Make it async is way toooo long
-            if(miniatures !== null && miniatures.length) { 
-                imagesLoaded(
-                    miniatures, 
-                function() {
-                    self.pckry.layout();
-
-                    $(self.itemSelector + '.miniature h1').quickfit();
-                    $(self.itemSelector + '.miniature').css('visibility', 'visible');
-
-                });
-            }
-
-                if(!self.firstLoad)
-                    self.loader();
+            if(selector == '.miniature') {
+                self.layoutThumbnails(cb);
+            } else {
 
                 $(self.itemSelector).css('display', 'none');
 
@@ -312,17 +350,14 @@ define([
                     $(this).css('display', 'block');
                 });
 
-
                 self.pckry.layout();
-                
-                if(!self.firstLoad)
-                    self.loader();                
-
+             
                 self.countElementsByLetter();
 
                 self.hasLayout();
                 if(typeof cb == 'function')
                     cb();
+            }
                
         }
 
