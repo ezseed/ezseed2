@@ -80,7 +80,7 @@ require('./routes/user')(app);
 require('./routes/files')(app);
 require('./routes/streaming')(app);
 require('./routes/admin')(app);
-require('./routes/api')(app);
+require('./routes/api').app(app);
 
 
 /* 

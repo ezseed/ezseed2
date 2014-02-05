@@ -93,6 +93,8 @@ var search = function(movie, cb) {
             			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
             		}
 
+                global.log(movie);
+
           			return cb(err, movie);
 
           		});

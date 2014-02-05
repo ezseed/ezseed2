@@ -333,11 +333,11 @@ define([
 
     var socket = Desktop.socket;
 
-    socket.on('size', function(size) {
-        $('#diskSpace #usedBar').css('width', size.percent);
-        $('#diskSpace .used').text(size.pretty);
-        $('#diskSpace .left').text(' / ' + size.left)
-    });
+    // socket.on('size', function(size) {
+    //     $('#diskSpace #usedBar').css('width', size.percent);
+    //     $('#diskSpace .used').text(size.pretty);
+    //     $('#diskSpace .left').text(' / ' + size.left)
+    // });
 
     var waitForDownloadTimeout;
 

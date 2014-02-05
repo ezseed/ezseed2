@@ -6,13 +6,13 @@ require(['desktop', 'theme', 'admin', REQUIRE_PLUGINS], function(Desktop) {
 
     var socket = Desktop.socket;
 
-    socket.on('files', function(d) {
-        d = JSON.parse(d);
-        //console.log('Receiving files', d.paths);
+    // socket.on('files', function(d) {
+    //     d = JSON.parse(d);
+    //     //console.log('Receiving files', d.paths);
 
-        if(config.location == '/')
-            Desktop.append(d.paths);
-    });
+    //     if(config.location == '/')
+    //         Desktop.append(d.paths);
+    // });
     
     socket.on('remove', function(id) {
         Desktop.remove(id);

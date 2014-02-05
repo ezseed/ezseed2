@@ -20,7 +20,7 @@ module.exports.listen = function(server) {
 
         socket.on('update', function(uid) {
 
-            db.paths.byUser(uid, function(err, paths) {
+            // db.paths.byUser(uid, function(err, paths) {
 
                 // explorer.explore(paths, function(err, update) {
 
@@ -64,7 +64,7 @@ module.exports.listen = function(server) {
             //         }, global.config.fetchTime)
             //     );
 
-            });
+            // });
 
         });
 

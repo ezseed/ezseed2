@@ -4,6 +4,10 @@ var _ = require('underscore')
     , cache = require('memory-cache');
 
 var api = {
+	error: function(res, err) {
+		global.log('error', err);
+		res.json({error: err});
+	},
 	//Parse req.query.t
 	parameters: function(req, res, next) {
 		req.parameters = {
@@ -15,26 +19,15 @@ var api = {
 				}
 			};
 
-		console.log(req.parameters);
+		global.log(req.parameters);
 
 		next();
-
-	},
-	getByUID: function(req, res) {
-
- 		db.files.byUser(req.params.uid, req.parameters.last_update, req.parameters.limit, function(err, files) {
-
- 			delete files.hash;
- 			
-           	res.json(files);
-
-            cache.put('lastUpdate_'+req.params.uid, new Date);
-        });
 
 	}
 };
 
-module.exports = function(app) {
-	app.get('/api/:uid', userHelper.restrict, api.parameters, api.getByUID);
-
+module.exports.app = function(app) {
+	require('./api/user.js')(app);
 }
+
+module.exports.api = api;

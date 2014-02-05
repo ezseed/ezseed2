@@ -1,7 +1,10 @@
 var _ = require('underscore')
   , async = require('async')
   , db = require('../core/database')
-  , fs = require('fs');
+  , fs = require('fs')
+  , jf = require('jsonfile')
+  , path = require('path')
+  , mkdirp = require('mkdirp');
 
 //Remove 
 var to_remove = [];
@@ -11,10 +14,8 @@ var exists = function(params, callback) {
 	var item = params.item;
 
 	if(!fs.existsSync(item.path)) {
-		// global.log(0, 'Exists', type, item.path);
-		// global.log(0, 'has been deleted', item);
-		
-		global.log(0, 'should be deleted');
+
+		global.log('warn', item.path + ' has been deleted');
 
 		to_remove.push({
 			type: params.type,
@@ -91,10 +92,11 @@ var find_missing = function(type, files, next) {
 	});
 }
 
-var remove = function (existing, cb) {
+var remove = function (existing, id_path, cb) {
 
 	//Parallel on 3 types, find the missing ones
-	async.parallel({
+	async.parallel(
+	{
 	    movies: function(callback){
 	        find_missing('movies', existing.movies, callback);
 	    },
@@ -106,7 +108,9 @@ var remove = function (existing, cb) {
 	    }
 	},
 	function(err, results) {
-		global.log('debug','To be removed', to_remove);
+		//global.log('debug','To be removed', to_remove);
+
+		write_remove(id_path, to_remove);
 
 		//Replacing original variables
 		existing.movies = results.movies;
@@ -114,8 +118,24 @@ var remove = function (existing, cb) {
 		existing.others = results.others;
 
 	    cb(null, existing);
-	});
+	});	
+}
 
-};
+var write_remove = function(id_path, to_remove) {
+
+	var tmp_dir = path.join(global.config.root, '/public/tmp/paths')
+	  , file = path.join(tmp_dir, id_path + '.json');
+
+	if(!fs.existsSync(tmp_dir))
+		mkdirp.sync(tmp_dir);
+	
+	to_remove = fs.existsSync(file) ? _.extend(to_remove, jf.readFileSync(file)) : to_remove;
+
+	jf.writeFileSync(file, to_remove);
+
+
+}
+
+
 
 module.exports = remove;

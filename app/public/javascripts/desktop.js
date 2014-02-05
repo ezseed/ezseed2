@@ -9,12 +9,13 @@ define([
     'imagesloaded',
     'async',
     'jquery',
+    'api',
 
     //Helpers
     'underscore', 'notify', 'cookie', 'quickfit',
 
 
-], function(Albums, Movies, Others, Packery, imagesLoaded, async, $){
+], function(Albums, Movies, Others, Packery, imagesLoaded, async, $, api){
 
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
@@ -79,25 +80,7 @@ define([
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
             if(user && isDesktop) {
-
-                jQuery.getJSON( 
-                    '/api/'+user.id, function( data, textStatus ) {
-                        
-                        if(data) {
-                            if(data.paths.length) {
-                                Desktop.append(data.paths);
-                            } else {
-                                alert('Aucuns fichiers trouvés');
-                                loader();
-                            }
-
-                            self.socket.emit('update', user.id);
-                        } else {
-                            console.error(textStatus, data);
-                        }
-
- 
-                });
+                api.init(self);
             }
 
 

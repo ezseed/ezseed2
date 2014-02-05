@@ -23,10 +23,8 @@ exports.explore = function(params, cb) {
 
 		db.paths.find(id_path, function(err, existing) {
 			
-			//compare existing in parser then
-			// global.log('debug', 'Existing files', existing);
-			
-			remove(existing, function(err, existing) {
+			//compare existing in parser after removing the files who doesn't exists			
+			remove(existing, id_path, function(err, existing) {
 				
 				//Getting each files
 				explorer.getFiles(pathToWatch, function(err, filePaths) {
@@ -117,9 +115,10 @@ exports.explore = function(params, cb) {
 	
 	async.map(params.paths, explorePath, function(err, results){
 
-		global.log('info', 'Each paths done.');
-		console.timeEnd('paths');
 
+		global.log('info', 'Each paths done.' );
+		console.timeEnd('paths');
+		global.log('-------------------------');
 		cb(err, results);
 	});
 }

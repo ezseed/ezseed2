@@ -21,6 +21,7 @@
     "imagesloaded": "packery/imagesloaded/imagesloaded",
     "packery": "packery/packery/js",
     "desktop": "desktop",
+    "api": "api",
     "alertify": "alertify",
     "theme": "../js/theme",
     "admin": "../js/admin",

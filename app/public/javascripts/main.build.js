@@ -21,6 +21,7 @@ require.config({
     "imagesloaded": "packery/imagesloaded/imagesloaded",
     "packery": "packery/packery/js",
     "desktop": "desktop",
+    "api": "api",
     "alertify": "alertify",
     "theme": "../js/theme",
     "admin": "../js/admin",
@@ -74,13 +75,13 @@ require(['desktop', 'theme', 'admin', "chat-chat","checkforupdates-checkforupdat
 
     var socket = Desktop.socket;
 
-    socket.on('files', function(d) {
-        d = JSON.parse(d);
-        //console.log('Receiving files', d.paths);
+    // socket.on('files', function(d) {
+    //     d = JSON.parse(d);
+    //     //console.log('Receiving files', d.paths);
 
-        if(config.location == '/')
-            Desktop.append(d.paths);
-    });
+    //     if(config.location == '/')
+    //         Desktop.append(d.paths);
+    // });
     
     socket.on('remove', function(id) {
         Desktop.remove(id);
