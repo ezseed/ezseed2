@@ -93,18 +93,16 @@ var search = function(movie, cb) {
             			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
             		}
 
-                global.log(movie);
-
           			return cb(err, movie);
 
           		});
           	} else {
           		//Too long
-          		var words = _s.words(movie.search);
+          		var words = _s.words(movie.search), num_words = words.length;
 
-          		if(words.length >= 3 && words[0].length > 3) {
+          		if(num_words >= 3 && words[num_words - 1].length > 3) {
           			
-          			movie.search = words.splice(1, words.length).join(' ');
+          			movie.search = words.pop().join(' ');
 
           		 	search(movie, cb);
           		} else {
