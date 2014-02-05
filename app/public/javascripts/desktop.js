@@ -47,7 +47,6 @@ define([
         //Packery Instance
         pckry : null,
         hasLayout : false,
-        toRemove : null,
         //Socket
         socket : null,
         hasLayout : function() {},
@@ -86,8 +85,8 @@ define([
 
 
             //hash
-            self.toRemove = window.location.hash.substr(1);
-
+/*            self.toRemove = window.location.hash.substr(1);
+*/
             return self;
         },
         template : function(View, datas) {
@@ -232,13 +231,6 @@ define([
 
                     if(self.firstLoad) {
                         self.firstLoad = false;
-
-                        if(self.toRemove) {
-                            self.remove(self.toRemove);
-                            self.toRemove = null;
-                            location.hash = '#';
-                        }
-
                         self.loader();
                     } else {
                         var count = 0, els = [];
