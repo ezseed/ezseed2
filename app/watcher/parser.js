@@ -251,7 +251,7 @@ module.exports.processMovies = function(params, callback) {
 							var m_name = _s.slugify(e.name)
 							  ,	movie_name = _s.slugify(movie.name);
 
-							return movie_name == m_name && movie.season == e.season; 
+							return movie_name == m_name; 
 						} else
 							return false;
 					});
@@ -280,6 +280,8 @@ module.exports.processMovies = function(params, callback) {
 					});
 					//movies[indexMatch].videos.push(e);
 				} else if (moviesMatch !== null) {
+					global.log(moviesMatch);
+
 					movies[moviesMatch].videos.push(e);
 					i++;
 					return parseMovies(arr, cb, i, movies);
