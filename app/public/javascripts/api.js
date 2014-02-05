@@ -11,7 +11,6 @@ define([
 			var self = this, url = '/api/'+user.id+'/files';
 
         	if(self.last_update !== 0) {
-        		loader();
         		url = url + '?t=' + self.last_update;
 			}
 
@@ -24,7 +23,6 @@ define([
                             self.last_update = Date.now();
                         } else {
                             alert('Aucuns fichiers trouvés');
-                            loader();
                         }
 
                     } else {
@@ -49,10 +47,13 @@ define([
 
 		},
 		fetchRemove: function(cb) {
-			jQuery.getJSON( '/api/'+user.id+'/files/to_remove', function(to_remove) {
-				console.log('To remove', to_remove);
+			var self = this;
 
-				return typeof cb == 'funtion' ? cb(null, data) : true;
+			jQuery.getJSON( '/api/'+user.id+'/files/to_remove', function(to_remove) {
+
+				self.desktop.remove(to_remove);
+
+				return typeof cb == 'function' ? cb(null, to_remove) : true;
 
 				//Desktop.remove(to_remove);
 			});
@@ -60,11 +61,13 @@ define([
 		setInterval: function() {
 			var self = this;
 			
-			console.log(config);
-
 			self.interval = setInterval(function() {
-				self.fetchRemove(function() {
-					self.files();
+				clearInterval(self.interval);
+
+				self.fetchRemove(function(err, to_remove) {
+					self.files(function() {
+						self.setInterval();
+					});
 				});
 				
 			}, config.fetchTime)

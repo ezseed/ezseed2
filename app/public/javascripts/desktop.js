@@ -117,7 +117,7 @@ define([
                     } while(i--)
 
                     if(html.length == 0)
-                        err = "Aucun fichiers, le chemin est-il surveillé ?";
+                        err = "Aucun fichiers";
 
                     callback(err, html);
                 });
@@ -161,26 +161,32 @@ define([
             var self = this
               , removed = [];
 
-            _.each(to_remove, function(r) {
-                var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + file + '"]');
+            if(to_remove.length) {
+                _.each(to_remove, function(r) {
+                    var $item = $(self.itemSelector + '[data-id="' + r.item + '"]'), $el = $item.find('tr[data-id="' + file + '"]');
 
-                if($el.length) {
-                    removed.push($el.find('td.file_name').text());
-                    $el.remove();
-                } else {
-                    removed.push($item.find('h1:first').text());
-                    self.pckry.remove($item);
-                }
-            });
+                    if($el.length) {
+                        removed.push($el.find('td.file_name').text());
+                        $el.remove();
+                    } else {
+                        removed.push($item.find('h1:first').text());
+                        self.pckry.remove($item);
+                    }
+                });
 
-            alertify.log("Fichier(s) supprimé(s)", removed.join('<br>'));
 
-            self.layout();
 
+                alertify.log("Fichier(s) supprimé(s)", removed.join('<br>'));
+
+                self.layout();
+            }
         },
         append : function(datas) {
 
             var self = this;
+
+            if(!firstLoad)
+                self.loader();
 
             var displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
 
@@ -190,69 +196,72 @@ define([
             
             self.render.files(datas, function(err, html) {
                 if(err)
-                    console.log(err);
+                    console.error(err);
 
-                var $items = $.parseHTML(html), $els = [];
+                if(html.length > 0) {
 
-                _.each($items, function(e) {
-                    var isTxt = e instanceof Text; //parseHTML causes element duplicated
+                    var $items = $.parseHTML(html), $els = [];
 
-                    if(!isTxt)
-                        $els.push(e);
-                    
-                });
+                    _.each($items, function(e) {
+                        var isTxt = e instanceof Text; //parseHTML causes element duplicated
 
-                $items = $els;
-                delete $els;
+                        if(!isTxt)
+                            $els.push(e);
+                        
+                    });
 
-                $items.sort(function (a, b) {
-                    a = $(a), b = $(b); //jquerying -"-
-                    if (a.data('date-added') == b.data('date-added')) {
-                        return 0;
-                    } else if (a.data('date-added') < b.data('date-added')) {
-                        return 1;
-                    }
-                    return -1;
-                });
+                    $items = $els;
+                    delete $els;
 
-                if(self.firstLoad) {
-                    self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
-
-                    self.pckry.appended($items);
-                } else {
-                    self.$container.addClass('notransition').css('visibility', 'hidden').prepend($items);
-
-                    self.pckry.prepended($items);
-                }
-
-                self.displaySelector = displayOption;
-
-                self.layout(displayOption, function() { 
+                    $items.sort(function (a, b) {
+                        a = $(a), b = $(b); //jquerying -"-
+                        if (a.data('date-added') == b.data('date-added')) {
+                            return 0;
+                        } else if (a.data('date-added') < b.data('date-added')) {
+                            return 1;
+                        }
+                        return -1;
+                    });
 
                     if(self.firstLoad) {
-                        self.firstLoad = false;
-                        self.loader();
+                        self.$container.addClass('notransition').css('visibility', 'hidden').append($items);
+
+                        self.pckry.appended($items);
                     } else {
-                        var count = 0, els = [];
+                        self.$container.addClass('notransition').css('visibility', 'hidden').prepend($items);
 
-                        _.each($items, function(e) {
-                                if($(e).hasClass('list'))
-                                    els.push($(e));
-                        });
-
-                        count = els.length;
-
-                        if(count == 1) {
-                            var titre = els[0].find('h1').text();
-                            //self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
-                        } else if(count != 0) {
-                            //self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
-                        }
+                        self.pckry.prepended($items);
                     }
 
-                    self.$container.removeClass('notransition').css('visibility', 'visible');
+                    self.displaySelector = displayOption;
 
-                });
+                    self.layout(displayOption, function() { 
+                        self.loader();
+
+                        if(self.firstLoad) {
+                            self.firstLoad = false;
+                        } else {
+                            var count = 0, els = [];
+
+                            _.each($items, function(e) {
+                                    if($(e).hasClass('list'))
+                                        els.push($(e));
+                            });
+
+                            count = els.length;
+
+                            if(count == 1) {
+                                var titre = els[0].find('h1').text();
+                                //self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
+                            } else if(count != 0) {
+                                //self.showNotification({title: 'Fichiers ajoutés',text: count + ' fichiers ajoutés'});
+                            }
+                        }
+
+                        self.$container.removeClass('notransition').css('visibility', 'visible');
+
+                    });
+                }
             });
         },
         countElementsByLetter : function() {

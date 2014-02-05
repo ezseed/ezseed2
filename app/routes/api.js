@@ -19,7 +19,7 @@ var api = {
 				}
 			};
 
-		global.log(req.parameters);
+		global.log('debug', 'API request with params', req.parameters);
 
 		next();
 

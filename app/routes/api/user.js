@@ -64,7 +64,7 @@ var user = {
 					}
 				});
 
-				res.json(to_remove);
+				res.json(_.flatten(to_remove));
 			});
 			//Get each paths
 			// var tmp_dir = path.join(global.config.root, '/public/tmp/paths')
