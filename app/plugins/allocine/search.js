@@ -32,9 +32,14 @@ var search = function(movie, cb) {
   movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 
   global.log('info','Gathering infos on', movie.search);
+  console.time('infos');
 
   //searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
+
+      console.timeEnd('infos');
+      
+      if(err) global.log('error', err);
   		if(err) return cb(err, movie);
 
   		if(!_.isUndefined(res.feed)) {
@@ -98,7 +103,7 @@ var search = function(movie, cb) {
           		});
           	} else {
           		//Too long
-          		var words = _s.words(movie.search), num_words = words.length;
+          	//	var words = _s.words(movie.search), num_words = words.length;
 
           		// if(num_words >= 3 && words[num_words - 1].length > 3) {
           			 
