@@ -89,6 +89,8 @@ var find_missing = function(type, files, next) {
 			done(null, file);
 
 	}, function(err, results) {
+
+
 		next(err, _.flatten(results));
 	});
 }
@@ -104,7 +106,7 @@ var remove = function (existing, id_path, cb) {
 	    albums: function(callback){
 	        find_missing('albums', existing.albums, callback);
 	    },
-	    other: function(callback) {
+	    others: function(callback) {
 	    	find_missing('others', existing.others, callback);
 	    }
 	},

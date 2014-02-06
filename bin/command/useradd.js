@@ -21,6 +21,7 @@ var useradd = {
 
 		if(options.role) {
 			cache.put('role', options.role);
+			next(options);
 		} else {
 			promptly.choose('Choisissez le role utilisateur {admin|[user]} : ', ['user', 'admin'], {default : 'user'}, function (err, role) {
 				cache.put('role', role);
@@ -40,6 +41,9 @@ var useradd = {
 		}
 	},
 	command: function(client, username, options) {
+		console.log(options.role, options.password);
+
+
 		var self = useradd;
 
 		if(options.path)

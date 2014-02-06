@@ -92,7 +92,9 @@ var admin = {
 
 				var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 				
-				var options = ['useradd', req.body.client, req.body.username, ,'-p', req.body.password];
+				var options = ['useradd', '-r', 'user','-p', req.body.password, req.body.client, req.body.username];
+
+				console.log(options.join(' '));
 
 				var running = spawn(shell_path, options);
 

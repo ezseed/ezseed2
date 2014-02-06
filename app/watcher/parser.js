@@ -71,13 +71,12 @@ module.exports.processAlbums = function(params, callback) {
 			while(nbExisting-- && !exists)
 				if(_.findWhere(existingFile[nbExisting].songs, {path : e.path}))
 					exists = true;
-		
 
 		if(!exists) {
 
 			if(e.prevDir != pathToWatch)
 				indexMatch = findIndex(albums, function(album) { return e.prevDir == album.prevDir; });
-			
+
 			if(indexMatch !== null) {
 				release.getTags.audio(e.path, false, function(err, infos) {
 
@@ -95,24 +94,33 @@ module.exports.processAlbums = function(params, callback) {
 
 				});
 			} else {
+		    	indexMatch = null;
 
 			    release.getTags.audio(e.path, true, function(err, infos) {
 
 			    	var e_album = _s.slugify(infos.album);
-
+			    	
 					//Index match album
 					indexMatch = findIndex(albums, function(album) { 
-						var a_album = _s.slugify(album.album);
+						var a_album = _s.slugify(_s.trim(album.album));
 
-						if(e_album == null && infos.artist == null)
+
+						if(a_album.length == 0)
+							return false
+						else if(e_album == null)
+							return false; 
+						else if(e_album == null && infos.artist == null)
 							return false;
-						else if(a_album !== null && a_album == e_album)
+						else if(e_album !== null && a_album !== null && a_album == e_album)
 							return true;
 						else
 							return false;
 					});
+
+					global.log('debug', indexMatch);
 					
 					if(indexMatch !== null) {
+
 						albums[indexMatch].songs.push(e);
 						i++;
 						return parseAudios(arr, cb, i, albums);
@@ -396,7 +404,7 @@ var checkIsOther = function (files, i) {
 * @return callback
 **/
 module.exports.processOthers = function(params, callback) {
-	
+
 	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
 
 	_.each(othersFiles, function(e, i) {
@@ -413,7 +421,7 @@ module.exports.processOthers = function(params, callback) {
 			single = true;
 			name = e.name;
 		}
-
+		
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {

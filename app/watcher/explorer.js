@@ -113,7 +113,7 @@ exports.explore = function(params, cb) {
 
 	}
 	
-	async.map(params.paths, explorePath, function(err, results){
+	async.mapSeries(params.paths, explorePath, function(err, results){
 
 
 		global.log('info', 'Each paths done.' );

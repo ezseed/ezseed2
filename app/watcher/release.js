@@ -44,9 +44,22 @@ var qualities = ['720p', '1080p', 'cam', 'ts', 'dvdscr', 'r5', 'dvdrip', 'dvdr',
 
 //Dummy name by replacing the founded vars
 var dummyName = function (name, obj) {
+
+	var o = {quality: '', subtitles: '', language: '', format: ''};
+
+	_.each(o, function(e, i) {
+		if(obj[i] === undefined)
+			obj[i] = '';
+	});
+
 	if(name !== undefined)
-		name = name.replace(obj.quality, '').replace(obj.subtitles, '').replace(obj.language, '').replace(obj.format, '');
+		name = name.toLowerCase()
+				.replace(obj.quality.toLowerCase(), '')
+				.replace(obj.subtitles.toLowerCase(), '')
+				.replace(obj.language.toLowerCase(), '')
+				.replace(obj.format.toLowerCase(), '');
 	
+
 	return _s.trim(name);
 }
 
@@ -143,7 +156,7 @@ module.exports.getTags  = {
 			//If it matches
 			if(ar != null) {
 				movie = _.extend(movie, {
-					name : ar[1],
+					name : dummyName(ar[1], movie),
 					season : ar[2],
 					episode : ar[3]
 				});
@@ -151,7 +164,7 @@ module.exports.getTags  = {
 				ar = name.match(r2);
 				if(ar) {
 					movie = _.extend(movie, {
-						name: ar[1],
+						name: dummyName(ar[1], movie),
 						season: ar[2],
 						episode: ar[3]
 					});
@@ -169,7 +182,7 @@ module.exports.getTags  = {
 			if(ar != null && ar[0] > 1900) {
 				var parts = name.split(ar[0]);
 				movie : _.extend(movie, {
-					name : parts[0],
+					name : dummyName(parts[0], movie),
 					year : ar[1]
 				});
 			} else {

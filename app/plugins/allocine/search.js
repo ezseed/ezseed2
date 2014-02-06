@@ -101,8 +101,10 @@ var search = function(movie, cb) {
           		var words = _s.words(movie.search), num_words = words.length;
 
           		if(num_words >= 3 && words[num_words - 1].length > 3) {
-          			
-          			movie.search = words.pop().join(' ');
+          			 
+                words.pop();
+
+          			movie.search = words.join(' ');
 
           		 	search(movie, cb);
           		} else {
