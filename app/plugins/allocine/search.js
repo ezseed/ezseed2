@@ -38,9 +38,10 @@ var search = function(movie, cb) {
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
 
       console.timeEnd('infos');
-      
-      if(err) global.log('error', err);
-  		if(err) return cb(err, movie);
+
+      if(err) global.log('error', err, movie);
+
+  		if(err) return cb(null, _.extend(movie, {title: movie.name}));
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
