@@ -4,19 +4,14 @@ albums.forEach(function(album) {
 	album.title = '';
 	album.title += (album.artist !== undefined && album.artist !== null) ? album.artist : '';
 	album.title += (album.album !== undefined && album.album !== null) ? ' - ' + album.album : '';
-	if(album.title.length == 0) {
-		var t = album.prevDir.split('/');
-		t = t[t.length-1];
 
-		album.title += t;
-	}
-	if(album.songs.length > 1) {
-		var tailleDossier = 0;
+	if(album.title.length == 0) 
+		album.title += album.songs[0].name;
+	
+	var tailleDossier = 0;
 
-		for(var i = 0; i < album.songs.length; i++) {
-			tailleDossier += parseFloat(album.songs[i].size);
-		}
-
+	for(var i = 0; i < album.songs.length; i++) {
+		tailleDossier += parseFloat(album.songs[i].size);
 	}
 	%>
 	<div data-id="<%- album._id %>" class="element list audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">

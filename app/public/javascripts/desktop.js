@@ -204,7 +204,10 @@ define([
             
             self.loader();
 
-            var displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
+            if(self.firstLoad)
+                displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
+            else
+                displayOption = self.displaySelector;
 
             $('#displayFilters li').each(function(i, e) { 
                 $(e).attr('data-display', displayOption); 
@@ -248,8 +251,6 @@ define([
 
                         self.pckry.prepended($items);
                     }
-
-                    self.displaySelector = displayOption;
 
                     self.layout(displayOption, function() { 
                         // self.loader();
@@ -297,15 +298,15 @@ define([
 
         },
         layoutThumbnails: function(cb) {
-            var self = this;
+            var self = this, selector = self.itemSelector + self.displaySelector + '.miniature';
             
             $(self.itemSelector).css('display', 'none');
             
-            $(self.itemSelector + '.miniature').each(function() {
+            $(selector).each(function() {
                 $(this).css('display', 'block');
             });
 
-            $(self.itemSelector + '.miniature').css('visibility', 'hidden');
+            $(selector).css('visibility', 'hidden');
 
             var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
               //Hiding miniatures
@@ -316,8 +317,8 @@ define([
                     miniatures, 
                 function() {
 
-                    $(self.itemSelector + '.miniature h1').quickfit();
-                    $(self.itemSelector + '.miniature').css('visibility', 'visible');
+                    $(selector+' h1').quickfit();
+                    $(selector).css('visibility', 'visible');
                     
                     
                     self.pckry._isLayoutInited = false;
@@ -340,7 +341,7 @@ define([
 
             self.displaySelector = selector;
 
-            if(selector == '.miniature') {
+            if(selector.indexOf('.miniature') !== -1) {
                 self.layoutThumbnails(cb);
             } else {
 

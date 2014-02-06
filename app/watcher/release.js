@@ -60,7 +60,7 @@ var dummyName = function (name, obj) {
 				.replace(obj.format.toLowerCase(), '');
 	
 
-	return _s.trim(name);
+	return _s.titleize(_s.trim(name));
 }
 
 module.exports.dummyName = dummyName;

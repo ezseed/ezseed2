@@ -18,20 +18,18 @@ var directorySize = function(path, cb) {
   
   var exec = require('child_process').exec, child;
 
-  child = exec('du -sk '+path,
+  child = exec('du -sk '+path.replace(' ', '\\ '),
       function (error, stdout, stderr) {
 
         if(error)
           global.log('error', error);
 
         var size = stdout.match(/([0-9]+)/);
-          
-        global.log('debug', 'User size for path', path, size);
 
-        if(typeof size == 'array')
+        if(typeof size == 'object' || typeof size == 'array')
           cb(null, size[0]*1024);
         else
-          cb(null, 0);
+          cb(null, 0);      
     }
   );
 } 
@@ -54,12 +52,16 @@ var countDatas = function(p, cb) {
 
 var helper = {
   usedSize : function(paths, cb) {
+    
     var key = 'size_' + new Buffer(paths.paths.join('-')).toString('hex'), cachedSize = cache.get(key);
 
     if(cachedSize)
       cb({size : cachedSize, pretty : pretty(cachedSize)});
     else {
       async.map(paths.paths, directorySize, function(err, sizes){
+
+          global.log('debug', 'User size', sizes);
+
           var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
           cache.put(key, size, 10000);
           cb({size : size, pretty : pretty(size)});

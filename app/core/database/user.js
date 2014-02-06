@@ -28,6 +28,9 @@ var user = {
   setClient: function(username, client, done) {
     Users.findOneAndUpdate({username: username}, {client: client}, done);
   },
+  setSpaceLeft: function(username, left, done) {
+    Users.findOneAndUpdate({username: username}, {spaceLeft: left}, done);
+  },
   //Reset user database
   reset : function(uid, done) {
     db.files.byUser(uid, 0, function(err, docs) {

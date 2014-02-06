@@ -177,6 +177,51 @@ module.exports.processAlbums = function(params, callback) {
 module.exports.processMovies = function(params, callback) {
 	var videos = params.videos, pathToWatch = params.pathToWatch;
 
+	var match = function(existing, movies, e, fn) {
+		var result = {
+			match: null,
+			existing: null,
+			movies: null
+		};
+
+		result.existing = findIndex(existing, function(movie){ 
+
+			if(movie.movieType == e.movieType) {
+				var m_name = _s.slugify(e.name)
+				  ,	movie_name = _s.slugify(movie.name);
+
+				  	if(e.movieType == 'tvseries')
+						return movie_name == m_name && movie.season == e.season; 
+					else
+						return movie_name == m_name;
+			} else
+				return false;
+		});
+
+		result.movies = findIndex(movies, function(movie){ 
+
+			if(movie.movieType == e.movieType) {
+				var m_name = _s.slugify(e.name)
+				  ,	movie_name = _s.slugify(movie.name);
+
+				  	if(e.movieType == 'tvseries')
+						return movie_name == m_name && movie.season == e.season; 
+					else
+						return movie_name == m_name;
+			} else
+				return false;
+		});
+
+		if(result.existing !== null)
+			result.match = 'existing';
+		else if(result.movies)
+			result.match = 'movies';
+		else
+			result = null;
+
+		return result;
+	}
+
 	/**
 	* Declaration within the module because of "pathToWatch"
 	* Process the array of movies asynchronously
@@ -223,7 +268,7 @@ module.exports.processMovies = function(params, callback) {
 
 			if(indexMatch !== null) {
 
-				global.log('debug', 'index Match on prevDir, pushing array');
+				global.log('debug', 'index Match on prevDir : '+e.prevDir);
 
 				movies[indexMatch].videos.push(e);
 				i++;
@@ -231,34 +276,10 @@ module.exports.processMovies = function(params, callback) {
 
 			} else {
 
-				indexMatch = null;
-
 				if(e.movieType == 'tvseries') {
 
 					//Searching for a similar name && an equal season on existing
-					indexMatch = findIndex(params.existing, function(movie){ 
-
-						if(movie.movieType == e.movieType) {
-							var m_name = _s.slugify(e.name)
-							  ,	movie_name = _s.slugify(movie.name);
-
-							return movie_name == m_name && movie.season == e.season; 
-						} else
-							return false;
-					});
-
-
-					//same on movies
-					moviesMatch = findIndex(movies, function(movie){ 
-
-						if(movie.movieType == e.movieType) {
-							var m_name = _s.slugify(e.name)
-							  ,	movie_name = _s.slugify(movie.name);
-
-							return movie_name == m_name; 
-						} else
-							return false;
-					});
+					indexMatch = match(params.existing, movies, e);
 
 					//Same as before, if the video path is there, skip
 					//, should not be necessary because we did all the existing before
@@ -267,26 +288,49 @@ module.exports.processMovies = function(params, callback) {
 					// 		exists = true;
 						
 
+				} else {
+					//same on movies
+					moviesMatch = match(params.existing, movies, e);
 				}
-				
 
 				if(indexMatch !== null) {
-					
-					db.files.movies.addVideo(params.existing[indexMatch]._id, e, function(err) {
-						
-						if(err) {
-							global.log('err', 'Error by adding the video in the movie', err);
-							global.log('debug', e);
-						}
+					global.log('Index match series', indexMatch);
 
+					if(indexMatch.match == 'existing') {
+						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								global.log('err', 'Error by adding the video in the movie', err);
+								global.log('debug', e);
+							}
+
+							i++;
+							return parseMovies(arr, cb, i, movies);
+						});
+					} else {
+						movies[indexMatch.movies].videos.push(e);
 						i++;
 						return parseMovies(arr, cb, i, movies);
-					});
-					//movies[indexMatch].videos.push(e);
+					}
 				} else if (moviesMatch !== null) {
-					movies[moviesMatch].videos.push(e);
-					i++;
-					return parseMovies(arr, cb, i, movies);
+					global.log('Index match movies');
+
+					if(movies.match == 'existing') {
+						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								global.log('err', 'Error by adding the video in the movie', err);
+								global.log('debug', e);
+							}
+
+							i++;
+							return parseMovies(arr, cb, i, movies);
+						});
+					} else {
+						movies[moviesMatch].videos.push(e);
+						i++;
+						return parseMovies(arr, cb, i, movies);
+					}
 				} else {
 					//Call to allocine-api to gather infos
 					allocine.search(e, function(err, infos) {

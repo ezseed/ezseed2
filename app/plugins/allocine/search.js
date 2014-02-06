@@ -30,18 +30,19 @@ Object.byString = function(o, s) {
 var search = function(movie, cb) {
 
   movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
+  movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
 
   global.log('info','Gathering infos on', movie.search);
   console.time('infos');
 
   //searching in the allocine API (could be others)
-  	allocine.api('search', { q:movie.search, filter: movie.movieType, count: '5'}, function(err, res) {
+  	allocine.api('search', { q:movie.search, filter: movie.movieType, count: 5}, function(err, res) {
 
       console.timeEnd('infos');
 
-      if(err) global.log('error', err, movie);
+      if(err) global.log('error', 'Error Allocine call', err);
 
-  		if(err) return cb(null, _.extend(movie, {title: movie.name}));
+  		if(err) return cb(null, movie);
 
   		if(!_.isUndefined(res.feed)) {
       		var infos = Object.byString(res.feed, movie.movieType);
@@ -115,7 +116,6 @@ var search = function(movie, cb) {
           		//  	search(movie, cb);
           		// } else {
         			 //No movie founded
-            		movie.title = movie.name;
             		return cb(err, movie);  			
           		//}
 

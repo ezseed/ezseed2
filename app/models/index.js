@@ -41,6 +41,7 @@ var movies = new Schema({
 	subtitles: String,
 	language: String,
 	audio: String,
+	season: String,
 	format: String,
 	movieType: String,
 	name: String,
@@ -81,6 +82,7 @@ var UsersSchema = new Schema({
 	hash: { 'type': String },
 	role: { 'type': String, 'default': 'user' },
 	client: {type: String, 'default': 'aucun'},
+	spaceLeft: {type: Number, 'default': 1024},
 	paths: [{'type': ObjectId, ref:'Paths'}]
 });
 
@@ -91,7 +93,8 @@ UsersSchema.virtual('session').get(function() {
 		'username': this.username,
 		'role': this.role,
 		'paths': this.pathes,
-		'client': this.client
+		'client': this.client,
+		'size':this.spaceLeft
 	}
 });
 

@@ -15,41 +15,50 @@ var users = {
   create : function(u, done) {
     var password = u.password, username = u.username;
 
-    //Generates the hash
-    bcrypt.hash(password, null, null, function(err, hash) {
+    db.users.count(function(err, num) {
 
-      //We save only the hash
-      // var user = new Users ({
-      //   username : username,
-      //   role : 'admin',
-      //   client : client,
-      //   hash : hash
-      // });
+      //Space left = disk / users
+      var spaceLeft = global.config.diskSpace / num;
 
-      Users.findOne({username : username}, function (err, doc){
-        if(doc) {
-          doc.role = u.role ? u.role : 'user';
-          doc.hash = hash;
-          doc.client = u.client ? u.client : 'aucun';
-        } else {
-          doc = new Users ({
-            username : username,
-            role : u.role ? u.role : 'user',
-            hash : hash,
-            client : u.client ? u.client : 'aucun'
+      //Generates the hash
+      bcrypt.hash(password, null, null, function(err, hash) {
+
+        //We save only the hash
+        // var user = new Users ({
+        //   username : username,
+        //   role : 'admin',
+        //   client : client,
+        //   hash : hash
+        // });
+
+        Users.findOne({username : username}, function (err, doc){
+          if(doc) {
+            doc.role = u.role ? u.role : 'user';
+            doc.hash = hash;
+            doc.client = u.client ? u.client : 'aucun';
+          } else {
+            doc = new Users ({
+              username : username,
+              spaceLeft: spaceLeft,
+              role : u.role ? u.role : 'user',
+              hash : hash,
+              client : u.client ? u.client : 'aucun'
+            });
+          }
+          
+          doc.save(function(err) {
+            if(err) {
+              //Checking for the username validation - see models/index.js
+              if(_.isEqual(err.name, 'ValidationError'))
+                done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
+              else
+                done(err, null);
+            } else
+              done(null, doc);
           });
-        }
-        
-        doc.save(function(err) {
-          if(err) {
-            //Checking for the username validation - see models/index.js
-            if(_.isEqual(err.name, 'ValidationError'))
-              done("Le nom d'utilisateur ne peut contenir que des caractères alphanumériques et des tirets", null);
-            else
-              done(err, null);
-          } else
-            done(null, doc);
+
         });
+
       });
 
     });
