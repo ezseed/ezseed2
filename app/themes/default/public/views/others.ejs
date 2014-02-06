@@ -10,7 +10,7 @@ others.forEach(function(other) {
 
 	}
 %>
-	<div data-id="<%- other._id %>" class="element list other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+	<div data-id="<%- other._id %>" data-path="<%= path %>" class="element list other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
 		<div class="pullLeft">
 			<% if(other.files.length > 1) {%>
 			<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
@@ -101,7 +101,7 @@ others.forEach(function(other) {
 			</div>
 		<% } %>
 	</div>
-	<div data-id="<%- other._id %>" class="element miniature other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+	<div data-id="<%- other._id %>" data-path="<%= path %>" class="element miniature other clearfix" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
 		<div class="titre"><h1 class="league-gothic" title="<%- other.name %>"><%- other.name %></h1></div>
 		<% if(other.files.length > 1) {%>
 		<a href="/archive/<%- other._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger">
@@ -111,7 +111,7 @@ others.forEach(function(other) {
 			<img src="/images/cover/other.png" />
 		</a>
 	</div>
-	<div data-id="<%- other._id %>" class="element table other" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
+	<div data-id="<%- other._id %>" data-path="<%= path %>" class="element table other" data-date-added="<%- new Date(other.dateAdded).getTime() %>">
 		<i class="entypo-box"></i> 
 		<a href="/download/<%- other._id %>" class="table-link" title="Télécharger">
 			<%- other.name %>

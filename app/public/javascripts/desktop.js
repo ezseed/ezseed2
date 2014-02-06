@@ -138,14 +138,14 @@ define([
 
                             });
 
-                            callback(null, Desktop.template(Movies, {movies : path.movies}));
+                            callback(null, Desktop.template(Movies, {movies : path.movies, path: path._id}));
                         } else
                             callback(null, '');
                     },
                     albums : function(callback) 
                     {
                         if(path.albums.length) {
-                            callback(null, Desktop.template(Albums, {albums : path.albums}));
+                            callback(null, Desktop.template(Albums, {albums : path.albums, path: path._id}));
                         } else
                             callback(null, '');
 
@@ -153,7 +153,7 @@ define([
                     others : function(callback) 
                     {
                         if(path.others.length) {
-                            callback(null, Desktop.template(Others, {others : path.others}));
+                            callback(null, Desktop.template(Others, {others : path.others, path: path._id}));
                         } else 
                             callback(null, '');
 

@@ -6,7 +6,7 @@ movies.forEach(function(movie) {
 		tailleDossier += parseFloat(movie.videos[i].size);
 
 %>
-	<div data-id="<%- movie._id %>" class="element list video clearfix <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+	<div data-id="<%- movie._id %>" data-path="<%= path %>" class="element list video clearfix <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
 		<div class="pullLeft">
 			<a href="/watch/<%- movie._id %>" title="Visionner">
 				<div class="cover">
@@ -134,7 +134,7 @@ movies.forEach(function(movie) {
 			</div>
 		<% } %>
 	</div>
-	<div data-id="<%- movie._id %>" class="element miniature video  <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+	<div data-id="<%- movie._id %>" data-path="<%= path %>" class="element miniature video  <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
 		<div class="titre"><h1 class="league-gothic"><%- movie.infos.title %><% if(movie.infos.season != undefined) { %> - S<%- movie.infos.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1></div>
 	
 		<a href="/watch/<%- movie._id %>">
@@ -145,7 +145,7 @@ movies.forEach(function(movie) {
 			<% } %>
 		</a>
 	</div>
-	<div data-id="<%- movie._id %>" class="element table video  <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
+	<div data-id="<%- movie._id %>" data-path="<%= path %>" class="element table video  <%=movie.movieType%>" data-date-added="<%- new Date(movie.dateAdded).getTime() %>">
 		<i class="entypo-video"></i>
 
 		<a href="/watch/<%- movie._id %>" class="table-link">

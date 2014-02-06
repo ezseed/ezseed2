@@ -14,7 +14,7 @@ albums.forEach(function(album) {
 		tailleDossier += parseFloat(album.songs[i].size);
 	}
 	%>
-	<div data-id="<%- album._id %>" class="element list audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+	<div data-id="<%- album._id %>" data-path="<%= path %>" class="element list audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
 		<div class="pullLeft">
 			<a href="#/listen/<%- album._id %>" title="Écouter" class="listen">
 				<div class="cover">
@@ -139,7 +139,7 @@ albums.forEach(function(album) {
 			</div>
 		<% } %>
 	</div>
-	<div data-id="<%- album._id %>" class="element miniature audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+	<div data-id="<%- album._id %>" data-path="<%= path %>" class="element miniature audio clearfix" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
 		<div class="titre"><h1 class="league-gothic" title="<%- album.title %>"><%- album.title %></h1></div>
 
 		<a href="#/listen/<%- album._id %>" title="Écouter" class="listen">
@@ -150,7 +150,7 @@ albums.forEach(function(album) {
 			<% } %>
 		</a>
 	</div>
-	<div data-id="<%- album._id %>" class="element table audio" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
+	<div data-id="<%- album._id %>" data-path="<%= path %>" class="element table audio" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
 		<i class="entypo-music"></i>
 		<a href="#/listen/<%- album._id %>" title="Écouter" class="listen table-link">
 			<%- album.title %>
