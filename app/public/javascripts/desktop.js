@@ -3,6 +3,7 @@ define([
     'text!../views/albums.ejs',
     'text!../views/movies.ejs',
     'text!../views/others.ejs',
+    'text!../views/paths.ejs',
 
     //Modules
     'packery/packery',
@@ -16,7 +17,7 @@ define([
     'underscore', 'cookie', 'quickfit',
 
 
-], function(Albums, Movies, Others, Packery, imagesLoaded, async, $, api, alertify){
+], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify){
 
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
@@ -115,6 +116,10 @@ define([
                         if(results[i])
                             html += results[i].movies + results[i].albums + results[i].others;
                     } while(i--)
+
+
+                    if($('#displayPath').length !== 0)
+                        $('#displayPath').html(_.template(Paths, {paths: paths}));
 
                     callback(err, html);
                 });
@@ -305,34 +310,29 @@ define([
             $(selector).each(function() {
                 $(this).css('display', 'block');
             });
-
+            
+            //Hiding miniatures            
             $(selector).css('visibility', 'hidden');
 
-            var miniatures = document.querySelector('#' + self.$container.attr('id') + ' .miniature');
-              //Hiding miniatures
+            imagesLoaded(
+                '#' + self.$container.attr('id') + ' .miniature img', 
+            function(instance) {
 
-            if(miniatures) {
+                $(selector+' h1').quickfit();
+                $(selector).css('visibility', 'visible');
                 
-                imagesLoaded(
-                    miniatures, 
-                function() {
+                self.pckry._isLayoutInited = false;
+                self.pckry.layout();
 
-                    $(selector+' h1').quickfit();
-                    $(selector).css('visibility', 'visible');
-                    
-                    
-                    self.pckry._isLayoutInited = false;
-                    self.pckry.layout();
+                self.countElementsByLetter();
 
-                    self.countElementsByLetter();
+                self.hasLayout();
 
-                    self.hasLayout();
+                if(typeof cb == 'function')
+                    cb();
 
-                    if(typeof cb == 'function')
-                        cb();
-
-                });
-            }
+            });
+            
         },
         layout : function(selector, cb) {
             var self = this;

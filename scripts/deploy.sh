@@ -5,16 +5,20 @@ appdir="$(cd $DIR && cd ../app && pwd)"
 cd $appdir
 echo "Optimizing javascripts"
 
-if [ ! -d "$appdir/public/views" ]
+if [ -d "$appdir/public/views" ]
 then
-	ln -sf "$appdir/themes/$1/public/views" "$appdir/public/views"
+	rm -r "$appdir/public/js"
+
 fi
 
-if [ ! -d "$appdir/public/js" ]
+ln -sf "$appdir/themes/$1/public/views" "$appdir/public/views"
+
+if [ -d "$appdir/public/js" ]
 then
-	ln -sf "$appdir/themes/$1/public/js" "$appdir/public/js"
+	rm -r "$appdir/public/js"
 fi
 
+ln -sf "$appdir/themes/$1/public/js" "$appdir/public/js"
 
 cd public/javascripts
 node ../r.js -o app.build.js

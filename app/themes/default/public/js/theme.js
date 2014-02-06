@@ -340,6 +340,16 @@ define([
         }
     });
 
+    //
+
+  var $buttongroup = $('#displayPath'),
+    $buttongroup = $('#displayPath');
+  
+    $buttongroup.click(function() {
+      $buttongroup.toggleClass('active');
+      return false;
+    });
+
     var socket = Desktop.socket;
 
     // socket.on('size', function(size) {
