@@ -100,18 +100,18 @@ var search = function(movie, cb) {
           		//Too long
           		var words = _s.words(movie.search), num_words = words.length;
 
-          		if(num_words >= 3 && words[num_words - 1].length > 3) {
+          		// if(num_words >= 3 && words[num_words - 1].length > 3) {
           			 
-                words.pop();
+            //     words.pop();
 
-          			movie.search = words.join(' ');
+          		// 	movie.search = words.join(' ');
 
-          		 	search(movie, cb);
-          		} else {
+          		//  	search(movie, cb);
+          		// } else {
         			 //No movie founded
             		movie.title = movie.name;
             		return cb(err, movie);  			
-          		}
+          		//}
 
           	}
       	} else {

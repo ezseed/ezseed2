@@ -116,8 +116,6 @@ module.exports.processAlbums = function(params, callback) {
 						else
 							return false;
 					});
-
-					global.log('debug', indexMatch);
 					
 					if(indexMatch !== null) {
 
