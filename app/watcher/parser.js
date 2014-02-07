@@ -7,7 +7,7 @@ var pathInfos = require('path')
   , release = require('./release.js')
   , db = require('../core/database')
   , fs = require('fs')
-  , allocine = require('../plugins/allocine/search.js')
+  , allocine = require('../scrappers/allocine/search.js')
   ;
 
 /**

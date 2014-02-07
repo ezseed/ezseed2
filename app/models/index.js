@@ -117,7 +117,7 @@ module.exports = mongoose.model('Paths', PathsSchema);
 //Exporting individual schemas (movies,albums,others)
 module.exports = mongoose.model('Movies', movies);
 
-module.exports = require('../plugins/allocine/mongoose').model;
+module.exports = require('../scrappers/mongoose').model;
 
 module.exports = mongoose.model('Albums', albums);
 module.exports = mongoose.model('Others', others);
