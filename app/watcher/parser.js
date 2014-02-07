@@ -219,6 +219,9 @@ module.exports.processMovies = function(params, callback) {
 		else
 			result = null;
 
+		if(result.match == 'existing')
+			global.log(e, existing[result.existing]);
+		
 		return result;
 	}
 
@@ -336,7 +339,7 @@ module.exports.processMovies = function(params, callback) {
 				} else {
 					//Call to allocine-api to gather infos
 					//A décomenter + check sans infos + log 
-					allocine.search(e, function(err, infos) {
+					// allocine.search(e, function(err, infos) {
 						movies.push({
 							movieType : e.movieType,
 							name : e.name,
@@ -361,7 +364,7 @@ module.exports.processMovies = function(params, callback) {
 
 						i++;
 						return parseMovies(arr, cb, i, movies);
-					});
+					// });
 				}
 
 			}
