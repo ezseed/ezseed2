@@ -252,6 +252,8 @@ module.exports.processMovies = function(params, callback) {
 				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
 					exists = true;
 
+		global.log('Exists ? ', exists ? 'yes' : 'no');
+
 		if(!exists) {
 
 			//Getting some informations
@@ -333,6 +335,7 @@ module.exports.processMovies = function(params, callback) {
 					}
 				} else {
 					//Call to allocine-api to gather infos
+					//A décomenter + check sans infos + log 
 					allocine.search(e, function(err, infos) {
 						movies.push({
 							movieType : e.movieType,
