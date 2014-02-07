@@ -219,7 +219,7 @@ module.exports.processMovies = function(params, callback) {
 		else
 			result = null;
 
-		if(results && result.match == 'existing')
+		if(result !== null && result.match == 'existing')
 			global.log(e, existing[result.existing]);
 
 		return result;
