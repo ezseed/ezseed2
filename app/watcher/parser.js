@@ -329,9 +329,9 @@ module.exports.processMovies = function(params, callback) {
 				} else if (moviesMatch !== null) {
 					global.log('Index match movies');
 
-					if(movies.match == 'existing') {
+					if(moviesMatch.match == 'existing') {
 
-						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
+						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
 							
 							if(err) {
 								global.log('err', 'Error by adding the video in the movie', err);
@@ -342,7 +342,7 @@ module.exports.processMovies = function(params, callback) {
 							return parseMovies(arr, cb, i, movies);
 						});
 					} else {
-						movies[moviesMatch].videos.push(e);
+						movies[moviesMatch.movies].videos.push(e);
 						i++;
 						return parseMovies(arr, cb, i, movies);
 					}
