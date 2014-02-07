@@ -246,16 +246,25 @@ module.exports.processMovies = function(params, callback) {
 
 		var e = arr[i];
 
-		//Testing if the file exists //add type test ?!
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = existingFile.length;
+		var exists = false;
 
-		//Testing if the path has a match then file exists
-		if(nbExisting)
-			while(nbExisting-- && !exists)
-				if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
+		for(var p in params.existing) {
+			for(var o in params.existing[p].videos) {
+				if(params.existing[p].videos[o].path.indexOf(e.path) !== -1 ) {
 					exists = true;
+					break;
+				}
+			}
+		}
 
-		global.log('Exists ? ', exists ? 'yes' : 'no');
+		// //Testing if the file exists //add type test ?!
+		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = params.existing;
+
+		// //Testing if the path has a match then file exists
+		// if(nbExisting)
+		// 	while(nbExisting-- && !exists)
+		// 		if(_.findWhere(params.existing[nbExisting].videos, {path : e.path}))
+		// 			exists = true;
 
 		if(!exists) {
 
@@ -321,6 +330,7 @@ module.exports.processMovies = function(params, callback) {
 					global.log('Index match movies');
 
 					if(movies.match == 'existing') {
+
 						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
 							
 							if(err) {
@@ -337,6 +347,13 @@ module.exports.processMovies = function(params, callback) {
 						return parseMovies(arr, cb, i, movies);
 					}
 				} else {
+					var infos = {
+						title: e.name,
+						synopsis: null,
+						trailer: null,
+						picture: null
+					};
+
 					//Call to allocine-api to gather infos
 					//A décomenter + check sans infos + log 
 					// allocine.search(e, function(err, infos) {
@@ -348,14 +365,13 @@ module.exports.processMovies = function(params, callback) {
 							synopsis : infos.synopsis,
 							trailer : infos.trailer,
 							picture : infos.picture,
+							quality : e.quality,
+							subtitles : e.subtitles,
+							language : e.language,
+							audio : e.audio,
+							format : e.format,
 
-							quality : infos.quality,
-							subtitles : infos.subtitles,
-							language : infos.language,
-							audio : infos.audio,
-							format : infos.format,
-
-							allocine : infos.code,
+							// allocine : infos.code,
 
 							videos : [e],
 							prevDir : e.prevDir,
