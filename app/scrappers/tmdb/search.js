@@ -1,5 +1,4 @@
-var rotten = require('rotten-api')("grd2ag2tf3nzdrkmrkxrqdkc");
-  , _ = require('underscore')
+var _ = require('underscore')
   , _s = require('underscore.string')
   , dummyName = require(global.config.root + '/watcher/release.js').dummyName;
 
@@ -26,26 +25,28 @@ Object.byString = function(o, s) {
     return o;
 }
 
+var tmdb = require('tmdb-3')("7c5105894b0446bb59b01a30cf235f3b")(function(err, tmdb) {
 
 var search = function(movie, cb) {
 
-  movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
-  movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
+	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
+	movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
 
-  global.log('info','Gathering infos on', movie.search);
-  console.time('infos');
+	global.log('info','Gathering infos on', movie.search);
+
+	console.time('infos');
 
   //searching in the allocine API (could be others)
-  	r.search({ query:movie.search, limit: 5}, function(err, res) {
+  	tmdb.search(movie.movieType == 'tvseries' ? 'tv' : 'movie', {query: movie.search, language: 'fr'}, function(err, res) {
 
-      console.timeEnd('infos');
+        console.timeEnd('infos');
 
-      if(err) global.log('error', 'Error Allocine call', err);
+        if(err) global.log('error', 'Error TMDB call', err);
 
   		if(err) return cb(null, movie);
 
-  		if(!_.isUndefined(res.feed)) {
-      		var infos = Object.byString(res.feed, movie.movieType);
+  		if(res.total_results > 0) {
+      		var infos = res.results;
 
       		if(infos !== undefined) {
 
@@ -69,7 +70,7 @@ var search = function(movie, cb) {
 
       					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
       					||
-      					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
+      					( e.originalTitle !== undefined && e_original.indexOf({m_name) !== -1 )
 
       				)	{
       						index = i;
@@ -81,23 +82,21 @@ var search = function(movie, cb) {
   				if(index === false)
   					index = 0;
 
-          		movie.code = infos[index].code;
+          		movie.code = infos[index].id;
 
           		//Searching for a specific code
-          		allocine.api(movie.movieType, {code: movie.code}, function(err, result) { 
-          			var specific_infos = Object.byString(result, movie.movieType);
+          		tmdb.infos(movie.movieType == 'tvseries' ? 'tv' : 'movie', movie.code, function(err, specific_infos) { 
 
           			if(specific_infos) {
             			movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.originalTitle;
-            			movie.synopsis = specific_infos.synopsis ? _s.trim(specific_infos.synopsis.replace(/(<([^>]+)>)/ig, '')) : '';
-            			movie.picture = specific_infos.poster !== undefined ? specific_infos.poster.href : null;
-            			movie.trailer = _.isEmpty(specific_infos.trailer) ? null : specific_infos.trailer.href;
+            			movie.synopsis = specific_infos.overview ? _s.trim(specific_infos.overview.replace(/(<([^>]+)>)/ig, '')) : '';
+            			movie.picture = specific_infos.poster_path;
+
             		} else {
             			infos = infos[index];
 
             			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
-            			movie.picture = infos.poster !== undefined ? infos.poster.href : null;
-            			movie.synopsis = infos.link !== undefined && infos.link.href !== undefined ? '<a href="'+infos.link.href+'">Fiche allociné</a>' : null;
+            			movie.picture = infos.poster_path !== undefined ? infos.poster_path : null;
             		}
 
           			return cb(err, movie);
@@ -127,3 +126,5 @@ var search = function(movie, cb) {
 }
 
 module.exports.search = search;
+
+});

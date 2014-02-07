@@ -49,6 +49,7 @@ var movies = new Schema({
 	videos: [file],
 	prevDir: String,
 	prevDirRelative: String,
+	code: String,
 	dateAdded: { type: Date, default: Date.now },
 });
 
