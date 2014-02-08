@@ -1,7 +1,7 @@
 var spawn = require('child_process').spawn;
 
 var shortcut = function(cmd) {
-	var running = spawn(global.app_path+'/scripts/update.sh');
+	var running = spawn('/etc/init.d/ezseed.sh', [cmd]);
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
@@ -24,18 +24,18 @@ module.exports = function(program) {
 	program
 		.command('start')
 		.action(function() {
-			shortcut('service ezseed start');
+			shortcut('start');
 		});
 
 	program
 		.command('stop')
 		.action(function() {
-			shortcut('service ezseed stop');
+			shortcut('stop');
 		});
 
 	program
 		.command('restart')
 		.action(function() {
-			shortcut('service ezseed restart');
+			shortcut('restart');
 		});
 }
