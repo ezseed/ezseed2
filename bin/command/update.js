@@ -1,5 +1,6 @@
 var child_process = require('child_process')
-	   , spawn = child_process.spawn;
+	   , spawn = child_process.spawn
+	   , jf = require('jsonfile');
 
 var update = {
 	rtorrent: function(cb) {
