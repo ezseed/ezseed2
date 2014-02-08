@@ -21,13 +21,21 @@ var shortcut = function(cmd) {
 }
 
 module.exports = function(program) {
-	program.command('start', function() {
-		shortcut('service ezseed start');
-	});
-	program.command('stop', function() {
-		shortcut('service ezseed stop');
-	});
-	program.command('restart', function() {
-		shortcut('service ezseed restart');
-	});
+	program
+		.command('start')
+		.action(function() {
+			shortcut('service ezseed start');
+		});
+
+	program
+		.command('stop')
+		.action(function() {
+			shortcut('service ezseed stop');
+		});
+
+	program
+		.command('restart')
+		.action(function() {
+			shortcut('service ezseed restart');
+		});
 }
