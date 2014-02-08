@@ -23,8 +23,9 @@ var install = {
 
 			function(err, path) {
 
-				configure.set_config(path, next);
-
+				configure.update_rc(function() {
+					configure.set_config(path, next);					
+				});
 			}
 		);
 	},
@@ -155,10 +156,8 @@ module.exports = function(program) {
 				function (err, results) {
 
 					require('../lib/deploy.js')(function(code) {
-						console.log("Fin de l'installation.".info);
-						require('../lib/helpers/pm2').start(function() {
-							process.exit();
-						});
+						console.log("Fin de l'installation. Lancez ezseed start".info);
+						process.exit(0);
 					});
 				}
 			);
