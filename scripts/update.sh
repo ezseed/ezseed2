@@ -23,7 +23,7 @@ git clean -f
 # Reset the files
 git reset --hard HEAD
 # Get the changes
-git pull -fu
+git pull -f --no-edit
 
 echo "Installing dependecies"
 npm cache clear -f
