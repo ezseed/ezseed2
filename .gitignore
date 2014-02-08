@@ -13,6 +13,7 @@ app/public/tmp/*
 
 node_modules/
 
+app/scripts
 scripts/transmission/config/settings.*.json
 app/config.json
 
@@ -21,7 +22,6 @@ app/plugins/*
 !app/plugins/chat/
 !app/plugins/checkforupdates/
 !app/plugins/listen/
-!app/plugins/allocine/
 
 app/themes/*
 !app/themes/default/
