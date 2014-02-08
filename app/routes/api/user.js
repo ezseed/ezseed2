@@ -40,7 +40,7 @@ var user = {
 			          //io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
 			    });
-			});
+			}, true); //only user direct paths
 		});
 	},
 	getFilesToRemove: function(req, res) {

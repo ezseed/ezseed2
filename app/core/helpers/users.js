@@ -68,64 +68,64 @@ var helper = {
       });
     } 
   },
-  fetchDatas : function(params) {
+  // fetchDatas : function(params) {
 
-    var lastUpdate = cache.get('lastUpdate_'+params.uid);
+  //   var lastUpdate = cache.get('lastUpdate_'+params.uid);
 
-    if(lastUpdate === null)
-     cache.put('lastUpdate_'+params.uid, params.lastUpdate);
+  //   if(lastUpdate === null)
+  //    cache.put('lastUpdate_'+params.uid, params.lastUpdate);
     
-    var io = params.io;
+  //   var io = params.io;
 
-    db.files.byUser(params.uid, cache.get('lastUpdate_'+params.uid), function(err, files) {
-      if(files) {
-        countDatas(files.paths, function(count) {
+  //   db.files.byUser(params.uid, cache.get('lastUpdate_'+params.uid), function(err, files) {
+  //     if(files) {
+  //       countDatas(files.paths, function(count) {
 
-         if(count > 0) {
-            io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
+  //        if(count > 0) {
+  //           io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
             
-            cache.put('lastUpdate_'+params.uid, new Date());
+  //           cache.put('lastUpdate_'+params.uid, new Date());
 
-          }
-        });
-      }
-    });
+  //         }
+  //       });
+  //     }
+  //   });
 
-    db.users.count(function(err, num) {
+  //   db.users.count(function(err, num) {
 
-      //Space left = disk / users
-      var spaceLeft = global.config.diskSpace / num;
+  //     //Space left = disk / users
+  //     var spaceLeft = global.config.diskSpace / num;
 
-      helper.usedSize(params, function(size) {
+  //     helper.usedSize(params, function(size) {
 
-          //(/helpers/users)
-          var percent = size.size / 1024 / 1024;
+  //         //(/helpers/users)
+  //         var percent = size.size / 1024 / 1024;
 
-          percent = percent / spaceLeft * 100 + '%';
+  //         percent = percent / spaceLeft * 100 + '%';
 
-          spaceLeft = pretty(spaceLeft * 1024 * 1024);
+  //         spaceLeft = pretty(spaceLeft * 1024 * 1024);
 
-          io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
+  //         io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
-      });
+  //     });
 
-    });
+  //   });
 
-  },
-  fetchRemoved : function(params) {
-    var path = pathInfo.join(global.config.root, '/public/tmp/', params.uid+'.json');
+  // },
+  // fetchRemoved : function(params) {
+  //   var path = pathInfo.join(global.config.root, '/public/tmp/', params.uid+'.json');
 
-    if(!fs.existsSync(path))
-      jf.writeFileSync(path, []);
+  //   if(!fs.existsSync(path))
+  //     jf.writeFileSync(path, []);
 
-    var files = jf.readFileSync(path)
-      , nb = files.length;
+  //   var files = jf.readFileSync(path)
+  //     , nb = files.length;
 
-      while(nb--)
-        io.sockets.socket(params.sid).emit('remove', files[nb]);
+  //     while(nb--)
+  //       io.sockets.socket(params.sid).emit('remove', files[nb]);
       
-      jf.writeFileSync(path, []);
-  },
+  //     jf.writeFileSync(path, []);
+  // },
   /*
   * Authentication fonction
   */
