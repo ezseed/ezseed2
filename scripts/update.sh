@@ -21,9 +21,9 @@ echo "Getting changes from github"
 # Clean the directory, but don't remove files specified in .gitignore.
 git clean -f
 # Reset the files
-git reset --hard HEAD -f
+git reset --hard HEAD
 # Get the changes
-git pull -f
+git pull -fu
 
 echo "Installing dependecies"
 npm cache clear -f
