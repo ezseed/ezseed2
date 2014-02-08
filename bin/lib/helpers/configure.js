@@ -96,22 +96,3 @@ var configure = {
 };
 
 module.exports = configure;
-
-
-
-// admin_creation: function(callback){
-// 	if(cache.get('skipuser'))
-// 		callback(null, {});
-// 	else {
-// 		console.log("Entrez les informations de l'admin".info);
-
-// 		promptly.prompt('Username : ', {validator: validators.user}, function (err, username) {
-// 		    promptly.password('Password : ', function(err, password) {
-// 		    	db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
-// 		    		console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-// 		    		cache.put('user', {username : username, password : password});
-// 		    		callback(null,{});
-// 		    	});
-// 		    });
-// 		});
-// 	}
