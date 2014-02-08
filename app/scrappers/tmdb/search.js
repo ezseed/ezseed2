@@ -25,7 +25,7 @@ Object.byString = function(o, s) {
     return o;
 }
 
-var tmdb = require('tmdb-3')("7c5105894b0446bb59b01a30cf235f3b")(function(err, tmdb) {
+var tmdb = require('tmdb-3')("7c5105894b0446bb59b01a30cf235f3b");
 
 var search = function(movie, cb) {
 
@@ -70,7 +70,7 @@ var search = function(movie, cb) {
 
       					( e.title !== undefined && e_title.indexOf(m_name) !== -1 ) 
       					||
-      					( e.originalTitle !== undefined && e_original.indexOf({m_name) !== -1 )
+      					( e.originalTitle !== undefined && e_original.indexOf(m_name) !== -1 )
 
       				)	{
       						index = i;
@@ -88,14 +88,18 @@ var search = function(movie, cb) {
           		tmdb.infos(movie.movieType == 'tvseries' ? 'tv' : 'movie', movie.code, function(err, specific_infos) { 
 
           			if(specific_infos) {
-            			movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.originalTitle;
+                  if(movie.movieType == 'tvseries')
+                    movie.title = specific_infos.name ? specific_infos.name : specific_infos.original_name;
+                  else
+            			 movie.title = specific_infos.title !== undefined ? specific_infos.title : specific_infos.original_title;
+
             			movie.synopsis = specific_infos.overview ? _s.trim(specific_infos.overview.replace(/(<([^>]+)>)/ig, '')) : '';
             			movie.picture = specific_infos.poster_path;
 
             		} else {
             			infos = infos[index];
 
-            			movie.title = infos.title !== undefined ? infos.title : infos.originalTitle;
+            			movie.title = infos.title !== undefined ? infos.title : infos.original_title;
             			movie.picture = infos.poster_path !== undefined ? infos.poster_path : null;
             		}
 
@@ -123,8 +127,6 @@ var search = function(movie, cb) {
       		return cb(err, movie);
       	}
   	});
-}
+};
 
 module.exports.search = search;
-
-});

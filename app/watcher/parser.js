@@ -7,7 +7,7 @@ var pathInfos = require('path')
   , release = require('./release.js')
   , db = require('../core/database')
   , fs = require('fs')
-  , allocine = require('../scrappers/allocine/search.js')
+  , scrapper = require('../scrappers')
   ;
 
 /**
@@ -219,8 +219,8 @@ module.exports.processMovies = function(params, callback) {
 		else
 			result = null;
 
-		if(result !== null && result.match == 'existing')
-			global.log(e, existing[result.existing]);
+		// if(result !== null && result.match == 'existing')
+		// 	global.log(e, existing[result.existing]);
 
 		return result;
 	}
@@ -256,15 +256,6 @@ module.exports.processMovies = function(params, callback) {
 				}
 			}
 		}
-
-		// //Testing if the file exists //add type test ?!
-		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false, nbExisting = params.existing;
-
-		// //Testing if the path has a match then file exists
-		// if(nbExisting)
-		// 	while(nbExisting-- && !exists)
-		// 		if(_.findWhere(params.existing[nbExisting].videos, {path : e.path}))
-		// 			exists = true;
 
 		if(!exists) {
 
@@ -308,7 +299,7 @@ module.exports.processMovies = function(params, callback) {
 				}
 
 				if(indexMatch !== null) {
-					global.log('Index match series', indexMatch);
+					global.log('debug', 'Index match series', indexMatch);
 
 					if(indexMatch.match == 'existing') {
 						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
@@ -327,7 +318,7 @@ module.exports.processMovies = function(params, callback) {
 						return parseMovies(arr, cb, i, movies);
 					}
 				} else if (moviesMatch !== null) {
-					global.log('Index match movies');
+					global.log('debug', 'Index match movies');
 
 					if(moviesMatch.match == 'existing') {
 
@@ -354,9 +345,7 @@ module.exports.processMovies = function(params, callback) {
 						picture: null
 					};
 
-					//Call to allocine-api to gather infos
-					//A décomenter + check sans infos + log 
-					// allocine.search(e, function(err, infos) {
+					scrapper.search(e, function(err, infos) {
 						movies.push({
 							movieType : e.movieType,
 							name : e.name,
@@ -380,7 +369,7 @@ module.exports.processMovies = function(params, callback) {
 
 						i++;
 						return parseMovies(arr, cb, i, movies);
-					// });
+					});
 				}
 
 			}
@@ -397,29 +386,6 @@ module.exports.processMovies = function(params, callback) {
 		callback(null, movies);
 	});
 }
-
-/////TOBEREMOVED////
-//Movies types are the same, we look after the same name | same season
-// indexMatch = findIndex(movies, function(movie) { 
-
-// 	if(movie.movieType == e.movieType) {
-// 		var m_name = _s.slugify(movie.name); //, m_title = _s.slugify(movie.title)
-// 		var e_name = _s.slugify(e.name);
-
-// 		if(e_name == m_name) {
-// 			if(movie.movieType == 'tvseries') {
-// 				if(movie.season == e.season)
-// 					return true;
-// 			} else {
-// 				return true;
-// 			}
-// 		}
-// 	}
-// 	return false;
-// });
-/**
- * \\\\\\\\Êı∆\\\\\\\
- */
 
 /**
 * Parses files, search if there is a movie / an audio file

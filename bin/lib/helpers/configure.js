@@ -24,7 +24,8 @@ var configure = {
 					"availableSpace": "1 TB",
 					"transmission":false,
   					"rutorrent":false,
-					"theme": "default"
+					"theme": "default",
+					"scrapper": "allocine"
 				};
 		
 		global.config = config;

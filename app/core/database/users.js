@@ -15,7 +15,7 @@ var users = {
   create : function(u, done) {
     var password = u.password, username = u.username;
 
-    db.users.count(function(err, num) {
+    users.count(function(err, num) {
 
       //Space left = disk / users
       var spaceLeft = global.config.diskSpace / num;
