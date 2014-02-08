@@ -49,7 +49,13 @@ define([
 			jQuery.getJSON( '/api/'+user.id+'/size', function(size) {
 
 				if(size) {
-			        $('#diskSpace #usedBar').css('width', size.percent);
+
+					if(size.percent > 100) {
+						$('#diskSpace #usedBar').css('width', '100%');
+						$('#diskSpace .used').css('color', '#E23A33');
+					} else
+				        $('#diskSpace #usedBar').css('width', size.percent);
+	
 			        $('#diskSpace .used').text(size.pretty);
 			        $('#diskSpace .left').text(' / ' + size.left)
 				} else

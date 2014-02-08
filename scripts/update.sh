@@ -21,7 +21,7 @@ git reset --hard HEAD
 git pull -f
 
 echo "Installing dependecies"
-npm i pm2@latest -g
+npm i pm2 -g
 npm cache clear -f
 npm i
 npm link
