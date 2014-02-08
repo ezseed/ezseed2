@@ -8,7 +8,9 @@ pm2 kill
 cd $appdir
 
 if [ -d "$appdir/app/scripts" ]
+then
 	mv "$appdir/app/scripts" "$appdir/scripts"
+fi
 
 echo "Getting changes from github"
 # Clean the directory, but don't remove files specified in .gitignore.
