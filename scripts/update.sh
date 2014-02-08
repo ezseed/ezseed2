@@ -3,7 +3,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 appdir="$(cd $DIR && cd ../ && pwd)"
 
 #Killing running script
-pm2 kill
+if [ -z $(pm2 -V) ] 
+then
+	pm2 stop all
+else
+	npm i pm2 -g
+fi
 
 cd $appdir
 
@@ -22,7 +27,6 @@ git pull -f
 
 echo "Installing dependecies"
 npm cache clear -f
-npm i pm2 -g
 npm i
 npm link
 
