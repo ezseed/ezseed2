@@ -7,7 +7,7 @@ var mongoose = require('mongoose')
 
 var paths = {
 	byUser : function (uid, cb, strict) {
-		Users.findById(uid).populate('paths').exec(function (err, docs) {
+		Users.findById(uid).populate('paths').lean(true).exec(function (err, docs) {
 			if (err)
 				cb(err, {});
 			else {
@@ -16,6 +16,9 @@ var paths = {
 
 				 	var paths = [], p = docs.paths;
 
+				 	for(var i in p)
+				 		global.log('debug', p[i].path.indexOf(docs.username), strict);
+				 	
 				 	for(var i in p)
 				 		if(p[i].path !== undefined && p[i].path !== 'paths')
 				 			if(strict === true && p[i].path.indexOf(docs.username) !== -1)
