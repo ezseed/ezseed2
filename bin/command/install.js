@@ -45,51 +45,51 @@ var install = {
 
 		var choose = function(callback) {
 
-			if(cache.get('notorrent') == 'true')
-				callback(null, 'aucun');
-			else {
-				promptly.choose(
+			promptly.choose(
 
-					'Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', 
-					['rutorrent', 'transmission', 'aucun'], 
-					{default : 'aucun'}, 
+				'Choisissez le client torrent à installer {rutorrent|transmission|[aucun]} : ', 
+				['rutorrent', 'transmission', 'aucun'], 
+				{default : 'aucun'}, 
 
-					function (err, client) {
+				function (err, client) {
 
-						if(cache.get('notorrent') === true) {
-							cache.put('client', 'aucun');
-							callback(null, 'aucun');
-						} else if(client == 'aucun') {
+					if(cache.get('notorrent') === true) {
+						cache.put('client', 'aucun');
+						callback(null, 'aucun');
+					} else if(client == 'aucun') {
 
-							promptly.confirm(
+						promptly.confirm(
 
-								"Êtes vous sûr de ne pas vouloir installer de client ? Y/n", 
-								{default : 'y'}, 
+							"Êtes vous sûr de ne pas vouloir installer de client ? Y/n", 
+							{default : 'y'}, 
 
-								function (err, value) {
+							function (err, value) {
 
-								    if(value === true) {
-								    	
-								    	cache.put('client', 'aucun');
+							    if(value === true) {
+							    	
+							    	cache.put('client', 'aucun');
 
-								    	require('../client/aucun/install')(callback);
-										
-									} else
-										return choose(callback);
+							    	require('../client/aucun/install')(callback);
+									
+								} else
+									return choose(callback);
 
-								}
-							);
+							}
+						);
 
-						} else {
-					    	cache.put('client', client);
+					} else {
+				    	cache.put('client', client);
 
-							require('../client/'+client+'/install')(callback);
-						}
-				});
-			}
+						require('../client/'+client+'/install')(callback);
+					}
+			});
 		}
 
-		choose(next);
+		if(cache.get('notorrent') === true) {
+			cache.put('client', 'aucun');
+			next(null);
+		} else
+			choose(next);
 	},
 	admin: function(next) {
 
