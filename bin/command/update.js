@@ -30,9 +30,8 @@ var update = {
 		});
 	},
 	ezseed: function (cb) {
-		var cmd = 'cd '+global.app_path+ ' && git pull https://github.com/soyuka/ezseed2 && npm install';
 
-		var running = spawn(cmd);
+		var running = spawn(global.app_path+'/scripts/update.sh');
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
@@ -46,9 +45,18 @@ var update = {
 		});
 
 		running.on('exit', function (code) {
-			global.log('info', 'Ezseed est à jour préparation des fichiers');
+			global.log('info', 'Ezseed est à jour déploiement des fichiers');
 
 			require('../lib/deploy')(function(code) {
+
+				var config = jf.readFileSync(global.app_path + '/app/config.json');
+
+				if(config.scrapper == undefined) {
+					config.scrapper = 'allocine';
+					jf.writeFileSync(global.app_path+'/app/config.json', config);
+				}
+
+				global.log('info', 'Mise à jour terminée, lancez : ezseed start');
 				cb(code);
 			});
 

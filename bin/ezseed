@@ -40,11 +40,12 @@ colors.setTheme({
 program
 	.version('2.0.0');
 
+require('./command/daemon')(program);
 
 require('./command/install')(program);
+require('./command/update')(program);
 
 require('./command/useradd')(program);
-require('./command/update')(program);
 require('./command/userdel')(program);
 require('./command/passwd')(program);
 

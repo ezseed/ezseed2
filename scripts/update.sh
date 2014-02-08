@@ -26,8 +26,5 @@ npm cache clear -f
 npm i
 npm link
 
-echo "Deploying app"
-ezseed deploy
-
-echo "Ezseed is up to date starting"
-pm2 start "$appdir/ezseed.json"
+# echo "Ezseed is up to date starting"
+# pm2 start "$appdir/ezseed.json"
