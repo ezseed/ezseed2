@@ -94,7 +94,7 @@ var install = {
 	admin: function(next) {
 
 		if(cache.get('skipuser'))
-			callback(null, {});
+			next(null, {});
 		else {
 			global.log('info', "Entrez les informations de l'admin");
 
