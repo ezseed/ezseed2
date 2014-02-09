@@ -41,8 +41,6 @@ var useradd = {
 		}
 	},
 	command: function(client, username, options) {
-		console.log(options.role, options.password);
-
 
 		var self = useradd;
 
