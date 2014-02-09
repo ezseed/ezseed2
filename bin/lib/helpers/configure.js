@@ -28,6 +28,15 @@ var configure = {
 					"scrapper": "allocine"
 				};
 		
+		if(fs.existsSync(global.app_path+'/app/config.json')) {
+			var cf = jf.readFileSync(global.app_path + '/app/config.json');
+
+			_.each(config, function(e, i) {
+				if(cf[i])
+					config[i] = e;
+			});
+		}
+		
 		global.config = config;
 
 		//Writes the config
