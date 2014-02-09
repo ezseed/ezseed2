@@ -5,6 +5,8 @@ _trash/
 sftp-config.json
 
 app/public/javascripts/main.build.js
+app/public/js/main.min.js
+app/public/css/main.min.css
 app/public/javascripts/require-config.json
 app/public/js
 app/public/views
