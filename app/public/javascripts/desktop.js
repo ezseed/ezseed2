@@ -82,8 +82,9 @@ define([
 
             if(user && isDesktop) {
                 api.init(self);
+            } else if(user) {
+                api.size();
             }
-
 
             //hash
 //            self.toRemove = window.location.hash.substr(1);

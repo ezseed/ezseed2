@@ -17,9 +17,6 @@ var paths = {
 				 	var paths = [], p = docs.paths;
 
 				 	for(var i in p)
-				 		global.log('debug', p[i].path.indexOf(docs.username), strict);
-
-				 	for(var i in p)
 				 		if(p[i].path !== undefined && p[i].path !== 'paths')
 				 			if(strict === true && p[i].path.indexOf(docs.username) !== -1)
 				 				paths.push(p[i].path);

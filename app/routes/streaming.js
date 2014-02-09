@@ -4,15 +4,15 @@ var fs = require('fs')
 
 var streaming = {
 	watch : function(req, res) {
+
 		db.files.movies.byId(req.params.id, function(err, doc) {
 			if(err) { 
-				console.log(err);
+				global.log('error', err);
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
 
 				var file;
-
 				if(req.params.fid === undefined)
 					file = doc.videos[0];
 				else
@@ -70,8 +70,8 @@ var streaming = {
 
 
 module.exports = function(app) {
-	app.get('/watch/(:id)', streaming.watch);
-	app.get('/watch/(:id)/(:fid)', streaming.watch);
+	app.get('/watch/:id/:fid?', streaming.watch);
+	//app.get('/watch/(:id)/(:fid)', streaming.watch);
 	// app.get('/stream/(:id)', streaming.stream);
 	//app.get('/listen/(:id)', streaming.listen);
 };
