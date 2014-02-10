@@ -3,7 +3,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 appdir="$(cd $DIR && cd ../ && pwd)"
 
 #Killing running script
-if [ -z $(pm2 -V) ] 
+if [ -n $(pm2 -V) ] 
 then
 	pm2 stop all
 else
