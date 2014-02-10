@@ -32,3 +32,4 @@ npm link
 
 # echo "Ezseed is up to date starting"
 # pm2 start "$appdir/ezseed.json"
+exit 0
