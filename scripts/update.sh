@@ -5,7 +5,7 @@ appdir="$(cd $DIR && cd ../ && pwd)"
 #Killing running script
 if [ -n $(pm2 -V) ] 
 then
-	pm2 stop all
+	pm2 kill
 else
 	npm i pm2 -g
 fi
