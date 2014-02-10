@@ -38,8 +38,8 @@ stop() {
  
 restart() {
     echo "Restarting $NAME"
-    super stop
-    super start
+    super pm2 kill
+    super ezseed start
 }
  
 status() {
