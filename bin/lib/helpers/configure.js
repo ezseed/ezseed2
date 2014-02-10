@@ -1,5 +1,6 @@
 var cache = require('memory-cache')
   , exec = require('child_process').exec
+  , _ = require('underscore')
   , fs = require('fs')
   , jf = require('jsonfile');
 
