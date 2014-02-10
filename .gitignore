@@ -6,7 +6,8 @@ sftp-config.json
 
 app/public/javascripts/main.build.js
 app/public/js/main.min.js
-app/themes/*/public/js/main.min.js
+app/themes/default/public/js/main.min.js
+app/themes/default/public/css/main.min.css
 app/public/css/main.min.css
 app/public/javascripts/require-config.json
 app/public/js
