@@ -1,3 +1,4 @@
+
 /**
  * Module dependencies.
  */
@@ -13,6 +14,22 @@ if(global.config.root.length == 0 || !global.config.aucun) {
 }
 
 global.log = require('./core/logger');
+
+process.on('uncaughtException', function ( err ) {
+
+    global.log(1, err.message);
+    global.log(1, err.stack);
+
+    if(err.code == 'MODULE_NOT_FOUND')
+      global.log(5, 'Please try : npm install');
+
+
+    setTimeout(function() {
+      process.exit(1);
+    }, 10);
+});
+
+
 
 var express = require('express')
   , db = require('./core/database')
@@ -92,13 +109,13 @@ mongoose.connect('mongodb://localhost/ezseed');
 
 var mongo = mongoose.connection;
 
-mongo.on('error', console.error.bind(console, 'connection error:'));
+mongo.on('error', global.log.bind(global, 'connection error:'));
 
 mongo.once('open', function callback () {
-  console.log('DB opened successfuly !');
+  global.log('DB opened successfuly !');
 
   var server = http.createServer(app).listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
+    global.log('Express server listening on port ' + app.get('port'));
   });
 
   var io = require('./core/sockets').listen(server);
@@ -111,27 +128,38 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//http://www.itamarweiss.com/post/57962670227/error-handling-in-node-js-express
-app.all('*', function(req, res, next){
+//This should be an error
+app.use(function(err, req, res, next) {
+  global.log('This should be an error');
 
-  if(req.route.params[0].match(/css|js|views|img|plugins|audiocogs/))
-    next();
-  else {
-    res.status(404);
-    
-    // respond with html page
-    if (req.accepts('html')) {
-      res.render('404', { url: req.url });
-      return;
-    }
+  if(err)
+    global.log('error', err);
 
-    // respond with json
-    if (req.accepts('json')) {
-      res.send({ error: 'Not found' });
-      return;
-    }
-
-    // default to plain-text. send()
-    res.type('txt').send('Not found');
-  }
+  next(err);
 });
+
+//This is shit
+//http://www.itamarweiss.com/post/57962670227/error-handling-in-node-js-express
+// app.all('*', function(req, res, next){
+
+//   if(req.route.params[0].match(/css|js|views|img|plugins|audiocogs/))
+//     next();
+//   else {
+//     res.status(404);
+    
+//     // respond with html page
+//     if (req.accepts('html')) {
+//       res.render('404', { url: req.url });
+//       return;
+//     }
+
+//     // respond with json
+//     if (req.accepts('json')) {
+//       res.send({ error: 'Not found' });
+//       return;
+//     }
+
+//     // default to plain-text. send()
+//     res.type('txt').send('Not found');
+//   }
+// });

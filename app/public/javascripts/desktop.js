@@ -75,6 +75,8 @@ define([
             } else if(remove)
                 this.display = this.display.replace(selector, '');
 
+            $.cookie('display', this.display);
+
             return this;
         },
         //Packery Instance
@@ -289,7 +291,7 @@ define([
                         self.pckry.prepended($items);
                     }
 
-                    self.layout(self.display, function() { 
+                    self.layout(function() { 
                         // self.loader();
 
                         if(self.firstLoad) {
@@ -337,30 +339,18 @@ define([
         },
         layoutThumbnails: function(cb) {
 
-
-            var self = this, selector = self.itemSelector + self.display;
+            var self = this, selector = '#' + self.$container.attr('id') + ' '+ self.display +' img';
            
-            console.log('layoutThumbs', self.display, selector);
-
-            $(self.itemSelector).css('display', 'none');
+            // console.log('layoutThumbs', self.display, selector);            
             
-            
-            //Hiding miniatures            
-            $(selector).css(
-                {
-                    'visibility': 'hidden',
-                    'display': 'block'
-                }
-            );
-
             imagesLoaded(
-                '#' + self.$container.attr('id') + ' .miniature img', 
+                selector, 
             function(instance) {
+                self.pckry.layout();
 
-                $(selector+' h1').quickfit();
-                $(selector).css('visibility', 'visible');
+                // $(selector+' h1').quickfit();
+                $(self.itemSelector + self.display).css('display', 'block');
                 
-                self.pckry._isLayoutInited = false;
                 self.pckry.layout();
 
                 self.countElementsByLetter();
@@ -373,18 +363,16 @@ define([
             });
             
         },
-        layout : function(selector, cb) {
+        layout : function(cb) {
             var self = this;
+
+            $(self.itemSelector).css('display', 'none');
 
             if(self.display.indexOf('.miniature') !== -1) {
                 self.layoutThumbnails(cb);
             } else {
 
-                $(self.itemSelector).css('display', 'none');
-
-                $(self.itemSelector + self.display).each(function() {
-                    $(this).css('display', 'block');
-                });
+                $(self.itemSelector + self.display).css('display', 'block');
 
                 self.pckry.layout();
              

@@ -148,7 +148,7 @@ define([
 
             $files.css({'visibility':'hidden', 'opacity':'0'});
 
-            Desktop.layout(null, function() {
+            Desktop.layout(function() {
                $element.toggleClass('notransition');
             });
 
@@ -157,7 +157,7 @@ define([
     
             $element.toggleClass('notransition').css({'margin-bottom':'+'+margin+'px'});
 
-            Desktop.layout(null, function() {
+            Desktop.layout(function() {
                 $files.css({'top': $element.height() + 20 + 'px', 'visibility': 'visible', 'opacity': 1});
                 $element.toggleClass('notransition');
             });
@@ -236,23 +236,10 @@ define([
 
             $(this).addClass('active');
 
-            // $.cookie('display', selector);
-
             toTop();
-
-            // if($('#displayFilters li.active').length)
-            //     display = $('#displayFilters li.active').attr('data-filter');
-
-            // var displayPath = '';
-
-            // if($('#displayPath li.active').length)
-            //     displayPath = '[data-path="'+$('#displayPath li.active').attr('data-path')+'"]';
 
             Desktop.setDisplay(selector).layout();
 
-            // $('#displayFilters li').each(function() {
-            //     $(this).attr('data-display', selector);
-            // });
         }
 
         return false;
@@ -305,7 +292,7 @@ define([
 
             var matches;
 
-            if(letter == '#')
+            if(letter === '#')
                 matches = $section.find(Desktop.itemSelector + ':match("\\d+")');
             else
                 matches = $section.find(Desktop.itemSelector + ':startsWith("'+letter+'")');
@@ -320,24 +307,24 @@ define([
             });
 
             Desktop.setDisplay('.startsWith')
-                    .layout(null, function() {
+                    .layout(function() {
                         $letter.parent().addClass('active');
                     });
         } else {
-            Desktop.setDisplay('.startsWith').layout();
+            Desktop.setDisplay('.startsWith', true).layout();
         }
     });
 
     
-    //
-
     var $buttongroup = $('#displayPath');
   
     $buttongroup.on('click', function(e) {
-        if(!$buttongroup.hasClass('active'))
-            $buttongroup.toggleClass('active');
-        else {
-            var target = $(e.target);
+
+        var target = $(e.target);
+
+        if( target[0].nodeName === 'LI' ) {
+
+            console.log('OK', target);
             if(target.hasClass('active')) {
                 target.toggleClass('active');
                 Desktop.setDisplay('.path', true).layout();
@@ -347,16 +334,26 @@ define([
                 $(Desktop.itemSelector + '.path').toggleClass('path');
 
                 target.toggleClass('active');
-                $.each(Desktop.itemSelector + '[data-path="'+target.attr('data-path')+'"]', function(i, e) {
+                $(Desktop.itemSelector + '[data-path="'+target.attr('data-path')+'"]').each(function(i, e) {
                     $(e).addClass('path');
                 });
 
-                Desktop.setDisplay('.path').layout();
+                Desktop.setDisplay('.path').layout(function() {
+                    $buttongroup.toggleClass('active');
+                });
             }
-
+        //If it's the arrow <i>
+        } else if( target[0].nodeName === 'I') {
             $buttongroup.toggleClass('active');
         }
+
         return false;
+    });
+
+    //Hate this
+    $(document).on('click', function() {
+        if($buttongroup.hasClass('active'))
+            $buttongroup.removeClass('active');
     });
 
     var socket = Desktop.socket;

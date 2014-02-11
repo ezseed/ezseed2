@@ -1145,19 +1145,6 @@ button:focus, input:focus, select:focus {
 #displayPath i:before {
 	cursor: pointer;
 	border-left: 0px;
-	 /* margin: 0;
-	padding-left: 7px;
-	padding-right: 7px;
-	border: 1px solid #b14827;
-	border-right: 0px;
-	height: 30px;
-	line-height: 30px;
-	color: #272726;
-	text-shadow: 0 -1px 0 rgba(101,38,17,.5);
-	background-color: #c9532d;
-	-moz-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
-	-webkit-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
-	box-shadow: inset 0 0 3px rgba(222,86,47,.9);*/
 }
 
 #displayPath .options {
@@ -1168,16 +1155,15 @@ button:focus, input:focus, select:focus {
 	color: #b2b2af;
 	overflow: hidden;
  	max-height: 0;
- 	-webkit-transition: max-height 0.3s ease-in;
-    -moz-transition: max-height 0.3s ease-in;
-    -o-transition: max-height 0.3s ease-in;
-    transition: max-height 0.3s ease-in;
+
+    /*border-radius*/
 	-webkit-border-bottom-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px;
 	-moz-border-radius-bottomleft: 5px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+	
 	background: #373634 url('../images/grey.png');
 	-webkit-box-shadow: inset 0px -2px 1px 0px rgba(0,0,0,0.30),
 	inset 0 1px 0px 0 rgba(0,0,0,0.1);
@@ -1199,10 +1185,10 @@ button:focus, input:focus, select:focus {
 
 #displayPath.active .options {
 	max-height: 400px;
-	 -webkit-transition: max-height 0.3s ease-out;
-    -moz-transition: max-height 0.3s ease-out;
-    -o-transition: max-height 0.3s ease-out;
-    transition: max-height 0.3s ease-out;
+	 -webkit-transition: max-height 1s ease-out;
+    -moz-transition: max-height 1s ease-out;
+    -o-transition: max-height 1s ease-out;
+    transition: max-height 1s ease-out;
 }
 
 

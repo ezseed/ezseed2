@@ -1,4 +1,4 @@
-UNKNOWN_ART = 'img/avatar.jpeg';
+UNKNOWN_ART = '/img/avatar.jpeg';
 
 function DGAuroraPlayer(player, DGPlayer) {
     this.player = player;
@@ -51,7 +51,7 @@ function DGAuroraPlayer(player, DGPlayer) {
     
     var originalDescription = DGPlayer.fileDescription;
     player.on('error', onerror = function(e) {
-    	console.log(e);
+    	console.trace(e);
 
         // reset state
         DGPlayer.state = 'paused';

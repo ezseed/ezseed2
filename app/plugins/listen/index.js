@@ -44,6 +44,7 @@ var plugin = {
 			type: 'GET',
 			route : '/plugins/listen/(:id)',
 			action : function(req, res) {
+
 				if(req.xhr) {
 					if(req.params.id) {
 						db.files.albums.byId(req.params.id, function(err, doc) {
@@ -58,7 +59,8 @@ var plugin = {
 
 								for(var i in doc.songs) {
 
-									doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+									//doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+									doc.songs[i].url = 'http://' + req.headers.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
 									
 									if(doc.songs[i].ext != 'm3u')
 										songs.push(doc.songs[i]);
