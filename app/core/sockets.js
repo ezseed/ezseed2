@@ -62,7 +62,8 @@ module.exports.listen = function(server) {
 
                             child.stdout.on('data', function (data) {
                                 var d = new Buffer(data).toString();
-                                d = path.basename('/'+ d.replace('adding: ', '').replace(' (deflated [0-9]%)', ''));
+                                d = d.replace(' \(deflated ([0-9]+)%\)', '');
+                                d = path.basename('/'+ d.replace('adding: ', ''));
                                 global.log(d);
 
                                 socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
@@ -77,27 +78,6 @@ module.exports.listen = function(server) {
                     });
                 }
             });
-
-            /*var chokidar = require('chokidar');
-
-            //Starts watching by omitting invisible files 
-            //(see https://github.com/paulmillr/chokidar/issues/47) 
-            var watcher = chokidar.watch(pathInfo.join(global.config.root, '/public/downloads/.tmp'),
-                { 
-                    // ignored: function(p) {
-                    //     return /^\./.test(pathInfo.basename(p));
-                    // },
-                    persistent:false
-
-                }
-            );
-
-            watcher.on('change', function(p, stats) {
-                var id = pathInfo.basename(p).replace('.zip', '');
-                io.sockets.socket(socket.id).emit('compressing', {'done': stats.size, 'id':id});
-            });
-
-            watcher.close();*/
         });
 
    });

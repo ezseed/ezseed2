@@ -90,6 +90,7 @@ var files = {
 					
 	},
 	//Take _id as archive name + no tmp/user only 1 tmp
+	//Code is duplicated in sockets ! is this route really necessary ?
 	//To be improved
 	archive : function(req, res) {
 		var archive = {};

@@ -406,16 +406,32 @@ define([
     }
 
     socket.on('archive:error', function(error) {
-        $('#archiving .progress').text(error);
+        $('#archiving .name').text(error);
 
-       archiveComplete();
+        archiveComplete();
     });
 
     socket.on('archive:progress', function(progress) {
+        var done = $('#archiving').data('done') ? parseInt($('#archiving').data('done')) : 0;
+            done += progress.size;
+
+        $('#archiving').data('done', done);
+
+        var percentDone = (parseInt(done) / parseInt(progress.total)) * 100; 
+
+        percentDone = Math.round(percentDone * 100) / 100;
+
+        percentDone = (percentDone < 100) ? percentDone : 100;
+
+        $('#archiving .name').text(progress.el);
+        $('#archiving .percent').text(percentDone+'%');
+        $('#archiving .progress').css('width', percentDone+'%');
+
         console.log(progress);
     });
 
     socket.on('archive:complete', function(url) {
+        $(window).unbind('beforeunload');
         window.location.href = url;
         archiveComplete();
     });
