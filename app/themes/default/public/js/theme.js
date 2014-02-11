@@ -359,44 +359,7 @@ define([
         return false;
     });
 
-    // $('#displayPath.active .options li').on('click', function(e) {
-    //     // e.stopPropagation();
-    //     console.log(e);
-    // });
-
     var socket = Desktop.socket;
-
-    // socket.on('size', function(size) {
-    //     $('#diskSpace #usedBar').css('width', size.percent);
-    //     $('#diskSpace .used').text(size.pretty);
-    //     $('#diskSpace .left').text(' / ' + size.left)
-    // });
-
-    var waitForDownloadTimeout;
-
-    socket.on('compressing', function(data) {
-        
-        // data.done
-        var $el = $('.element.list[data-id='+data.id +']'),
-        $archiving =  $('#archiving'),
-        size = $el.find('a.archive').attr('data-full-size');
-
-        var percentDone = (parseInt(data.done) / parseInt(size)) * 100; 
-
-        percentDone = Math.round(percentDone * 100) / 100;
-
-        percentDone = (percentDone < 100) ? percentDone : 100;
-
-        if(percentDone == 100 && waitForDownloadTimeout == undefined)
-            waitForDownloadTimeout = setTimeout(
-                $archiving.find('.progress').text('En attente...')
-            , 750);
-
-        $archiving.find('.percent').text(percentDone+ '%');
-        $archiving.find('.progress').css('width', percentDone+ '%');
-    });
-    
-
 
     var archiveComplete = function() {
         setTimeout(function() {
@@ -423,11 +386,10 @@ define([
 
         percentDone = (percentDone < 100) ? percentDone : 100;
 
-        $('#archiving .name').text(progress.el);
+        $('#archiving .name').text(progress.el.length ? progress.el : 'Finition...');
         $('#archiving .percent').text(percentDone+'%');
         $('#archiving .progress').css('width', percentDone+'%');
 
-        console.log(progress);
     });
 
     socket.on('archive:complete', function(url) {
@@ -454,26 +416,6 @@ define([
         $(window).bind('beforeunload', function() {
             return 'Une compression est en cours';
         });
-
-        /*$.get($(this).attr('href'), function(res) {
-            if(res.error == null) {
-                $(window).unbind('beforeunload');
-                window.location.href = '/download/archive/'+id;
-                $archiving.find('.percent').text('Téléchargement en cours...');
-                $archiving.find('.progress').css('width', '100%');
-
-                //todo show err
-                setTimeout(function() {
-                    $archiving.fadeOut('800');
-                    $archiving.find('.percent').delay('800').text('0%');
-                }, 3000);
-            } else {
-                $archiving.find('.percent').text(res.error);
-                $archiving.find('.progress').css('width', '100%');
-                console.log(res.error);
-            }
-
-        }, 'json');*/
     });
 
 });

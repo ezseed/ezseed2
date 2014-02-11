@@ -66,7 +66,6 @@ module.exports.listen = function(server) {
 
                                 if(d.length) {
                                     d = path.basename('/'+ d);
-                                    global.log(d);
 
                                     socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
                                 }
