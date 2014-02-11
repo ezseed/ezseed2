@@ -18,7 +18,7 @@ module.exports.listen = function(server) {
         require('../plugins').sockets(socket, io.sockets);
 
 
-        socket.on('update', function(uid) {
+       /* socket.on('update', function(uid) {*/
 
             // db.paths.byUser(uid, function(err, paths) {
 
@@ -66,12 +66,70 @@ module.exports.listen = function(server) {
 
             // });
 
-        });
+       // });
 
-        //Adds a tmp watcher + socket id, watch change of specific archive
         socket.on('archive', function(id) {
             
-            var chokidar = require('chokidar');
+            var tmpFolder = pathInfo.join(global.config.path, '.tmp');
+
+            if(!fs.existsSync(tmpFolder))
+                fs.mkdirSync(tmpFolder);
+
+            db.files.byId(id, function(err, doc) {
+
+                if(!doc || err) {
+                    if(err)
+                        global.log('error', err);
+
+                    socket.emit('archive:error', 'Aucun fichier trouvé');
+                } else {
+                    
+                    var dest = pathInfo.join(tmpFolder, id +'.zip');
+
+                    fs.exists(dest, function (exists) {
+                        if(exists) {
+                            socket.emit('archive:complete', '/download/archive/'+id);
+                        } else {
+                            var filePaths = []
+                              , sizes = []
+                              , docs = doc.videos || doc.songs || doc.files, l = docs.length;
+
+                            while(l--) {
+                                sizes.push(docs[l].size);
+                                filePaths.push(docs[l].path);
+                            }
+
+                            var total = 0;
+
+                            for(var i in sizes)
+                                total += sizes[i];
+
+                            var cmd = 'zip -jr "'+dest+'"';
+
+                            for(var i in filePaths)
+                                cmd += ' "'+filePaths[i]+'"';
+
+                            var child = spawn(cmd);
+
+                            child.stdout.on('data', function (data) {
+                                var d = new Buffer(data).toString();
+                                d = pathInfo.basename('/'+ d.replace('adding: ', '').replace(' (deflated [0-9]%)', ''));
+                                global.log(d);
+
+                                socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total}):
+
+                            });
+
+                            child.on('exit', function (exitCode) {
+                                socket.emit('archive:complete', '/download/archive/'+id);
+                            });
+                        }
+                        
+                    });
+                }
+            });
+
+            /*var chokidar = require('chokidar');
 
             //Starts watching by omitting invisible files 
             //(see https://github.com/paulmillr/chokidar/issues/47) 
@@ -90,7 +148,7 @@ module.exports.listen = function(server) {
                 io.sockets.socket(socket.id).emit('compressing', {'done': stats.size, 'id':id});
             });
 
-            watcher.close();
+            watcher.close();*/
         });
 
    });

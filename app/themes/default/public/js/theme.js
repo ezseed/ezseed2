@@ -285,32 +285,6 @@ define([
         }
     });
 
-    var currentDisplay = function() {
-
-        // var display = {};
-
-        // if($('#display').length == 0) {
-        //     $('body').append('<div id="display"></div>');
-            
-        //     var filter = ''
-        //       , display = $('#displayFilters li:first-child').attr('data-display')
-        //       , highlight = '';
-
-        //     if($('#displayFilters li.active').length)
-        //         filter = $('#displayFilters li.active').attr('data-filter');
-
-        //     if($('#search input').val().length > 2)
-        //         highlight = '.highlight';
-
-        //     return filter + display + highlight;
-        // } else 
-        //     display = JSON.parse($('#display').data('display'));
-
-
-
-
-     
-    }
 
     /**
      * Filters on first letter
@@ -423,6 +397,29 @@ define([
     });
     
 
+
+    var archiveComplete = function() {
+        setTimeout(function() {
+            $('#archiving').fadeOut('800');
+            $('#archiving .percent').delay('800').text('0%');
+        }, 3000);
+    }
+
+    socket.on('archive:error', function(error) {
+        $('#archiving .progress').text(error);
+
+       archiveComplete();
+    });
+
+    socket.on('archive:progress', function(progress) {
+        console.log(progress);
+    });
+
+    socket.on('archive:complete', function(url) {
+        window.location.href = url;
+        archiveComplete();
+    });
+
     //Archive through ajax
     $section.on('click', '.archive', function(e) {
         e.preventDefault();
@@ -442,7 +439,7 @@ define([
             return 'Une compression est en cours';
         });
 
-        $.get($(this).attr('href'), function(res) {
+        /*$.get($(this).attr('href'), function(res) {
             if(res.error == null) {
                 $(window).unbind('beforeunload');
                 window.location.href = '/download/archive/'+id;
@@ -460,7 +457,7 @@ define([
                 console.log(res.error);
             }
 
-        }, 'json');
+        }, 'json');*/
     });
 
 });

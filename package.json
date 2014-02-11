@@ -55,6 +55,7 @@
     "caterpillar-human": "~2.1.2",
     "caterpillar": "~2.0.7",
     "mkdirp": "~0.3.5",
-    "tmdb-3": "0.0.4"
+    "tmdb-3": "0.0.4",
+    "spawn-command": "0.0.2"
   }
 }

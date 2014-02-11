@@ -5,7 +5,7 @@ var fs = require('fs')
 	, _ = require('underscore')
 	, pathInfo = require('path')
 	, db = require('../core/database')
-	, exec = require('child_process').exec
+	, spawn = require('spawn-command')
 	, userHelper = require('../core/helpers/users.js');
 	;
 
@@ -121,65 +121,25 @@ var files = {
 						while(l--)
 							filePaths.push(docs[l].path);
 
-						var cmd = 'zip -r "'+dest+'"';
+						var cmd = 'zip -jr "'+dest+'"';
 
 						for(var i in filePaths)
 							cmd += ' "'+filePaths[i]+'"';
 
-						exec(cmd, function(err, stdout, stderr) {
-							/*if(err) {
-								global.log('error', err);
+						var child = spawn(cmd);
 
-								if(req.xhr)
-									res.json({'error': err});
-								else {
-									req.session.error = err;
-									res.redirect('/');
-								}
-							} else {*/
-								global.log(err, stdout, stderr);
-								if(req.xhr)
-									res.json({'error':null, 'download':true});
-								else
-									res.redirect('/download/archive/'+ req.params.id);
-							//}
-						})
-					}
-					//If it's a tvserie we need the videos paths
-					/*} else if(!_.isEmpty(doc.season)) {
-						
-						var filePaths = [];
+						child.stdout.on('data', function (data) {
+							global.log(data);
+						});
 
-						for(var k in doc.videos)
-							filePaths.push(doc.videos[k].path);
-
-						archive.path = doc.name + ' - ' + doc.season;
-
-						archiveFiles(archive, filePaths, function(err) {
-							if(err)
-								res.json({'error' : 'Erreur zip :' + err});
-							else if(req.xhr)
+						child.on('exit', function (exitCode) {
+							if(req.xhr)
 								res.json({'error':null, 'download':true});
 							else
 								res.redirect('/download/archive/'+ req.params.id);
 						});
-
-					} else {
-
-						explorer.getFiles(archive.path, function(err, filePaths) {
-							if(err)
-								res.json({'error' : 'Aucun fichiers trouvés'});
-							else {
-								archiveFiles(archive, filePaths, function(err) {
-									if(req.xhr)
-										res.json({'error':null, 'download':true});
-									else
-										res.redirect('/download/archive/'+ req.params.id);
-								});
-							}
-						});
-						
-					}*/
+					}
+					
 				});
 			}
 		});
