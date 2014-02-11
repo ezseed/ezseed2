@@ -121,8 +121,8 @@ var files = {
 						while(l--)
 							filePaths.push(docs[l].path);
 
-						exec('zip -r '+dest+' '+filePaths.join(' '), function(err) {
-							if(err) {
+						exec('zip -r '+dest+' '+filePaths.join(' '), function(err, stdout, stderr) {
+							/*if(err) {
 								global.log('error', err);
 
 								if(req.xhr)
@@ -131,12 +131,13 @@ var files = {
 									req.session.error = err;
 									res.redirect('/');
 								}
-							} else {
+							} else {*/
+								global.log(err, stdout, stderr);
 								if(req.xhr)
 									res.json({'error':null, 'download':true});
 								else
 									res.redirect('/download/archive/'+ req.params.id);
-							}
+							//}
 						})
 					}
 					//If it's a tvserie we need the videos paths
