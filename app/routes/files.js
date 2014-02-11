@@ -121,7 +121,12 @@ var files = {
 						while(l--)
 							filePaths.push(docs[l].path);
 
-						exec('zip -r '+dest+' '+filePaths.join(' '), function(err, stdout, stderr) {
+						var cmd = 'zip -r "'+dest+'"';
+
+						for(var i in filePaths)
+							cmd += ' "'+filePaths[i]+'"';
+
+						exec(cmd, function(err, stdout, stderr) {
 							/*if(err) {
 								global.log('error', err);
 
