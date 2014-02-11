@@ -17,57 +17,6 @@ module.exports.listen = function(server) {
         //To be improved (go through plugins)
         require('../plugins').sockets(socket, io.sockets);
 
-
-       /* socket.on('update', function(uid) {*/
-
-            // db.paths.byUser(uid, function(err, paths) {
-
-                // explorer.explore(paths, function(err, update) {
-
-            // db.files.byUser(uid, 0, function(err, files) {
-            //    socket.emit('files', JSON.stringify(files));
-
-            //     cache.put('lastUpdate_'+uid, new Date);
-            // });
-
-            //     // });
-
-            //     // db.users.count(function(err, num) {
-            //     //     //Space left = disk / users
-            //     //     var spaceLeft = global.config.diskSpace / num;
-
-            //     //     users.usedSize(paths, function(size) {
-
-            //     //         //(/helpers/users)
-            //     //         var percent = size.size / 1024 / 1024;
-
-            //     //         percent = percent / spaceLeft * 100 + '%';
-
-            //     //         spaceLeft = pretty(spaceLeft * 1024 * 1024);
-
-            //     //         socket.emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
-
-            //     //     });
-
-            //     // });
-
-            //     var interval = cache.get('interval_' + uid);
-
-            //     if(interval)
-            //         clearInterval(interval);
-
-            //     cache.put(
-            //         'interval_' + uid, 
-            //         setInterval(function() {
-            //             users.fetchDatas(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
-            //             users.fetchRemoved(_.extend(paths, {sid: socket.id, uid: uid, io: io}));
-            //         }, global.config.fetchTime)
-            //     );
-
-            // });
-
-       // });
-
         socket.on('archive', function(id) {
             
             var tmpFolder = pathInfo.join(global.config.path, '.tmp');
@@ -99,14 +48,15 @@ module.exports.listen = function(server) {
                                 filePaths.push(docs[l].path);
                             }
 
-                            var total = 0;
+                            var total = 0, i = 0
+                              , cmd = 'zip -jr "'+dest+'"';
 
-                            for(var i in sizes)
+                            for(i in sizes)
                                 total += sizes[i];
+                            
+                            i=0;
 
-                            var cmd = 'zip -jr "'+dest+'"';
-
-                            for(var i in filePaths)
+                            for(i in filePaths)
                                 cmd += ' "'+filePaths[i]+'"';
 
                             var child = spawn(cmd);
@@ -116,7 +66,7 @@ module.exports.listen = function(server) {
                                 d = pathInfo.basename('/'+ d.replace('adding: ', '').replace(' (deflated [0-9]%)', ''));
                                 global.log(d);
 
-                                socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total}):
+                                socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
 
                             });
 

@@ -4,7 +4,6 @@ var _ = require('underscore')
   , jf = require('jsonfile')
   , fs = require('fs')
   , async = require('async')
-  , pathInfo = require('path')
   , bcrypt = require('bcrypt-nodejs')
   , db = require('../database');
 
@@ -34,22 +33,6 @@ var directorySize = function(path, cb) {
   );
 } 
 
-/**
- * Count datas founded
- */
-var countDatas = function(p, cb) {
-  var count = 0;
-
-  if(!_.isArray(p))
-    p = [p];
-
-  _.each(p, function(e, i) {
-    count += e.albums.length + e.movies.length + e.others.length;
-  });
-
-  cb(count);
-}
-
 var helper = {
   usedSize : function(paths, cb) {
     
@@ -68,64 +51,6 @@ var helper = {
       });
     } 
   },
-  // fetchDatas : function(params) {
-
-  //   var lastUpdate = cache.get('lastUpdate_'+params.uid);
-
-  //   if(lastUpdate === null)
-  //    cache.put('lastUpdate_'+params.uid, params.lastUpdate);
-    
-  //   var io = params.io;
-
-  //   db.files.byUser(params.uid, cache.get('lastUpdate_'+params.uid), function(err, files) {
-  //     if(files) {
-  //       countDatas(files.paths, function(count) {
-
-  //        if(count > 0) {
-  //           io.sockets.socket(params.sid).emit('files', JSON.stringify(files));
-            
-  //           cache.put('lastUpdate_'+params.uid, new Date());
-
-  //         }
-  //       });
-  //     }
-  //   });
-
-  //   db.users.count(function(err, num) {
-
-  //     //Space left = disk / users
-  //     var spaceLeft = global.config.diskSpace / num;
-
-  //     helper.usedSize(params, function(size) {
-
-  //         //(/helpers/users)
-  //         var percent = size.size / 1024 / 1024;
-
-  //         percent = percent / spaceLeft * 100 + '%';
-
-  //         spaceLeft = pretty(spaceLeft * 1024 * 1024);
-
-  //         io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
-
-  //     });
-
-  //   });
-
-  // },
-  // fetchRemoved : function(params) {
-  //   var path = pathInfo.join(global.config.root, '/public/tmp/', params.uid+'.json');
-
-  //   if(!fs.existsSync(path))
-  //     jf.writeFileSync(path, []);
-
-  //   var files = jf.readFileSync(path)
-  //     , nb = files.length;
-
-  //     while(nb--)
-  //       io.sockets.socket(params.sid).emit('remove', files[nb]);
-      
-  //     jf.writeFileSync(path, []);
-  // },
   /*
   * Authentication fonction
   */
