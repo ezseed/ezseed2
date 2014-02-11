@@ -1,5 +1,3 @@
-# Still BETA !
-
 Les noms utilisateurs doivent être en minuscule ! <strike>UserName</strike> => username
 
 ## Installation
@@ -17,21 +15,22 @@ Ensuite exécutez autoInstall (installation de Nodejs et mongodb Debian Wheezy u
 ```
 chmod +x ./autoInstall.sh && ./autoInstall.sh
 # puis configurez le tout :
-ezseed config
+ezseed install
 ```
 Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
 
 ### Manuelle
 
  - Installation de [nodejs et mongodb](https://github.com/soyuka/ezseed2/wiki/Installation-manuelle-des-d%C3%A9pendances-sous-Debian)
- - Les paquets suivants : whois inotify-tools nginx php5-fpm
- - `npm install pm2@0.6.3 -g` - pm2
- - `npm i --save && npm link`
- - `ezseed config` /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf)
+ - Les paquets suivants : whois nginx php5-fpm unzip zip
+ - `mkdir -p /var/log/ezseed`
+ - `npm install pm2 -g`
+ - `npm install && npm link`
+ - `ezseed install` /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf)
 
 ## Lancement
 ```
-pm2 start ezseed.json
+ezseed start
 ```
 
 Les logs de l'application sont dans `/var/log/ezseed/`
@@ -40,6 +39,9 @@ Les logs de l'application sont dans `/var/log/ezseed/`
 ```
 ezseed update
 ```
+
+## Mise à jour depuis < v2.1.11-beta
+TODO
 
 ## Mise à jour depuis < v2.1.10-beta
 
