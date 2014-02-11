@@ -78,6 +78,7 @@ define([
 			var self = this;
 			
 			self.interval = setInterval(function() {
+				//http://codepen.io/calebnance/pen/bIjid
 				clearInterval(self.interval);
 
 				self.fetchRemove(function(err, to_remove) {
