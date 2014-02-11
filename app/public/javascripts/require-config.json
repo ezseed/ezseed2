@@ -24,7 +24,7 @@
     "api": "api",
     "alertify": "alertify",
     "theme": "../js/theme",
-    "admin": "../js/admin",
+    "admin": "../js/admin"
   },
   "shim": {
     "notify": [

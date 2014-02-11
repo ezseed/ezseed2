@@ -9,7 +9,7 @@ app/public/js
 app/public/javascripts/main.build.js
 app/themes/default/public/js/main.min.js
 app/themes/default/public/css/main.min.css
-app/public/javascripts/require-config.json
+
 
 app/public/views
 app/public/downloads
