@@ -11,21 +11,6 @@ define([
 
     $(window).load(function() {
 
-        var allowed = notify.permissionLevel();
-
-        switch(allowed) {
-            case notify.PERMISSION_DEFAULT:
-                //Ask for notify permissions
-                $('#alert').append('<p class="warning"><i class="entypo-warning"></i> <a href="#" class="allow-notify">Cliquez ici pour activer les notifications de bureau.</a></p>');
-            break;
-            // case notify.PERMISSION_GRANTED:
-
-            // break;
-            case notify.PERMISSION_DENIED:
-            //kaput
-
-            break;
-        }
         var $msg = $('#alert').find('.msg');
 
         if($msg.length) {

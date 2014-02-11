@@ -3,7 +3,6 @@
   "paths": {
     "async": "helpers/async",
     "underscore": "helpers/underscore",
-    "notify": "modules/desktop-notify",
     "cookie": "modules/jquery.cookie",
     "quickfit": "modules/quickfit",
     "collapse": "modules/jquery.collapse",

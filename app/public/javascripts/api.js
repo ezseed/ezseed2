@@ -1,7 +1,7 @@
 define([
 	'jquery',
     //Helpers
-    'underscore', 'notify', 'cookie', 'quickfit',
+    'underscore', 'cookie', 'quickfit',
 ], function($){
 
 	var last_update = 0;
