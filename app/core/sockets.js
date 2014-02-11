@@ -62,12 +62,15 @@ module.exports.listen = function(server) {
 
                             child.stdout.on('data', function (data) {
                                 var d = new Buffer(data).toString();
-                                d = d.replace(' \(deflated ([0-9]+)%\)', '');
-                                d = path.basename('/'+ d.replace('adding: ', ''));
-                                global.log(d);
+                                d = d.replace('\s?\(deflated [0-9]+%\)', '');
 
-                                socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
+                                if(d.length) {
+                                    d = path.basename('/'+ d.replace('\s?adding: ', ''));
+                                    global.log(d);
 
+                                    socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
+                                }
+                                
                             });
 
                             child.on('exit', function (exitCode) {
