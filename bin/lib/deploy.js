@@ -10,7 +10,7 @@ var jf = require('jsonfile')
  * @param  {[type]}   to_require [plugins to require]
  * @return  {Function} cb         [callback]
  */
-var populateRequire = function(to_require, cb) {
+var populateRequire = function(conf, cb) {
 	
 	var main = global.app_path+'/app/public/javascripts/main.js';
 
@@ -20,8 +20,8 @@ var populateRequire = function(to_require, cb) {
 			return cb(err);
 	  
 		var result = data
-					.replace(/CONFIG_HERE/g, fs.readFileSync(global.app_path+'/app/public/javascripts/require-config.json'))
-					.replace(/REQUIRE_PLUGINS/g, JSON.stringify(to_require).replace('[', '').replace(']', ''));
+					.replace(/CONFIG_HERE/g, JSON.stringify(conf.config))
+					.replace(/REQUIRE_PLUGINS/g, JSON.stringify(conf.to_require).replace('[', '').replace(']', ''));
 
 		fs.writeFile(main.replace('main.js', 'main.build.js'), result, 'utf8', function (err) {
 			if (err) return cb(err);
@@ -73,9 +73,9 @@ var addPlugins = function() {
 		}
 	});
 
-    jf.writeFileSync(require_config_path, require_config);
+    /*jf.writeFileSync(require_config_path, require_config);*/
     
-    return to_require;
+    return {config: require_config, to_require: to_require};
 }
 
 /**
