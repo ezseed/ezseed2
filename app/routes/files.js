@@ -5,11 +5,12 @@ var fs = require('fs')
 	, _ = require('underscore')
 	, pathInfo = require('path')
 	, db = require('../core/database')
+	, exec = require('child_process').exec
 	, userHelper = require('../core/helpers/users.js');
 	;
 
 //To be moved
-var archiveFiles = function(archive, filePaths, callback) {
+/*var archiveFiles = function(archive, filePaths, callback) {
 	var output = fs.createWriteStream(archive.zip);
 	var zip = archiver('zip');
 	
@@ -39,7 +40,7 @@ var archiveFiles = function(archive, filePaths, callback) {
 		});
 	});
 
-}
+}*/
 
 var files = {
 	download : function(req, res) {
@@ -55,7 +56,6 @@ var files = {
 				res.download(files[0].path);
 			}
 		});
-
 
 	},
 
@@ -80,7 +80,7 @@ var files = {
 				name += doc.name;
 			}
 
-			if(_.isUndefined(name)) {
+			if(!name) {
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
@@ -99,28 +99,48 @@ var files = {
 		if(!fs.existsSync(tmpFolder))
 			fs.mkdirSync(tmpFolder);
 
-
 		db.files.byId(req.params.id, function(err, doc) {
 
-			archive.path = doc.prevDir;
-
-			if(_.isUndefined(archive.path)) {
+			if(!doc || err) {
 				//sends json error
 				res.json({'error':'Aucun fichier trouvé'});
 			} else {
 				
-				archive.zip = pathInfo.join(tmpFolder, req.params.id +'.zip');
+				dest = pathInfo.join(tmpFolder, req.params.id +'.zip');
 
-				fs.exists(archive.zip, function (exists) {
+				fs.exists(dest, function (exists) {
 					if(exists) {
 						//sends json redirect download
 						if(req.xhr)
 							res.json({'error':null, 'download':true});
 						else
 							res.redirect('/download/archive/'+ req.params.id);
+					} else {
+						var filePaths = [], docs = doc.videos || doc.songs || doc.files, l = docs.length;
 
+						while(l--)
+							filePaths.push(docs[l].path);
+
+						exec('zip -r '+dest+' '+filePaths.join(' '), function(err) {
+							if(err) {
+								global.log('error', err);
+
+								if(req.xhr)
+									res.json({'error': err});
+								else {
+									req.session.error = err;
+									res.redirect('/');
+								}
+							} else {
+								if(req.xhr)
+									res.json({'error':null, 'download':true});
+								else
+									res.redirect('/download/archive/'+ req.params.id);
+							}
+						})
+					}
 					//If it's a tvserie we need the videos paths
-					} else if(!_.isEmpty(doc.season)) {
+					/*} else if(!_.isEmpty(doc.season)) {
 						
 						var filePaths = [];
 
@@ -153,7 +173,7 @@ var files = {
 							}
 						});
 						
-					}
+					}*/
 				});
 			}
 		});
