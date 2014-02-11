@@ -45,12 +45,45 @@ define([
         $container : $('section#desktop'), //Elements container
         itemSelector : '.element',
         displaySelector : null,
+        display: $.cookie('display') === undefined ? '.list' : $.cookie('display'),
+        setDisplay: function(selector, remove) {
+            
+            var option = ['.list', '.miniature','.table']
+              , filter = ['.video.movie', '.video.tvseries', '.audio', '.other']
+              , remove = remove ? remove : false
+              , i = -1
+              , display = this.display;         
+
+            if(this.display.indexOf(selector) === -1) {
+                    
+                i = option.indexOf(selector);
+
+                if(i !== -1)
+                    for(var j in option)
+                        if(j !== i)
+                            this.display = this.display.replace(option[j], '');               
+
+                i = filter.indexOf(selector);
+
+                if(i !== -1)
+                    for(var j in filter)
+                        if(j !== i)
+                           this.display = this.display.replace(filter[j], '');
+
+                this.display += selector;
+
+            } else if(remove)
+                this.display = this.display.replace(selector, '');
+
+            return this;
+        },
         //Packery Instance
         pckry : null,
         hasLayout : false,
         //Socket
         socket : null,
         hasLayout : function() {},
+        currentDisplay: function() {},
         alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
         loader : function() {
             var $loader = $('#loader');
@@ -82,8 +115,9 @@ define([
 
             if(user && isDesktop) {
                 api.init(self);
+            } else if(user) {
+                api.size();
             }
-
 
             //hash
 //            self.toRemove = window.location.hash.substr(1);
@@ -209,14 +243,11 @@ define([
             
             self.loader();
 
-            if(self.firstLoad)
-                displayOption = $.cookie('display') === undefined ? '.list' : $.cookie('display');
-            else
-                displayOption = self.displaySelector;
-
-            $('#displayFilters li').each(function(i, e) { 
-                $(e).attr('data-display', displayOption); 
-            });
+            // self.display = $.cookie('display') === undefined ? '.list' : $.cookie('display');
+           
+            // $('#displayFilters li').each(function(i, e) { 
+            //     $(e).attr('data-display', displayOption); 
+            // });
             
             self.render.files(datas, function(err, html) {
                 if(err)
@@ -237,6 +268,7 @@ define([
                     $items = $els;
                     delete $els;
 
+                    //SORT TODO
                     $items.sort(function (a, b) {
                         a = $(a), b = $(b); //jquerying -"-
                         if (a.data('date-added') == b.data('date-added')) {
@@ -257,7 +289,7 @@ define([
                         self.pckry.prepended($items);
                     }
 
-                    self.layout(displayOption, function() { 
+                    self.layout(self.display, function() { 
                         // self.loader();
 
                         if(self.firstLoad) {
@@ -265,6 +297,7 @@ define([
                         } else {
                             var count = 0, els = [];
 
+                            //Getting titles
                             _.each($items, function(e) {
                                     if($(e).hasClass('list'))
                                         els.push($(e).find('h1').text());
@@ -303,16 +336,22 @@ define([
 
         },
         layoutThumbnails: function(cb) {
-            var self = this, selector = self.itemSelector + self.displaySelector + '.miniature';
-            
+
+
+            var self = this, selector = self.itemSelector + self.display;
+           
+            console.log('layoutThumbs', self.display, selector);
+
             $(self.itemSelector).css('display', 'none');
             
-            $(selector).each(function() {
-                $(this).css('display', 'block');
-            });
             
             //Hiding miniatures            
-            $(selector).css('visibility', 'hidden');
+            $(selector).css(
+                {
+                    'visibility': 'hidden',
+                    'display': 'block'
+                }
+            );
 
             imagesLoaded(
                 '#' + self.$container.attr('id') + ' .miniature img', 
@@ -337,17 +376,13 @@ define([
         layout : function(selector, cb) {
             var self = this;
 
-            selector = selector ? selector : self.displaySelector;
-
-            self.displaySelector = selector;
-
-            if(selector.indexOf('.miniature') !== -1) {
+            if(self.display.indexOf('.miniature') !== -1) {
                 self.layoutThumbnails(cb);
             } else {
 
                 $(self.itemSelector).css('display', 'none');
 
-                $(self.itemSelector + selector).each(function() {
+                $(self.itemSelector + self.display).each(function() {
                     $(this).css('display', 'block');
                 });
 
@@ -356,6 +391,7 @@ define([
                 self.countElementsByLetter();
 
                 self.hasLayout();
+
                 if(typeof cb == 'function')
                     cb();
             }

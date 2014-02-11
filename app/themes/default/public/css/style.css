@@ -1211,6 +1211,22 @@ button:focus, input:focus, select:focus {
 	color:#272728;	
 }
 
+#displayPath .options li.active:before {
+	content: '\e8b2';
+	font-family: "entypo";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	text-align: center;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1em;
+
+}
+
 a {
 	color:#e15d33;
 }

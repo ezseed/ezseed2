@@ -1,5 +1,6 @@
 var cache = require('memory-cache')
   , exec = require('child_process').exec
+  , _ = require('underscore')
   , fs = require('fs')
   , jf = require('jsonfile');
 
@@ -27,6 +28,15 @@ var configure = {
 					"theme": "default",
 					"scrapper": "allocine"
 				};
+		
+		if(fs.existsSync(global.app_path+'/app/config.json')) {
+			var cf = jf.readFileSync(global.app_path + '/app/config.json');
+
+			_.each(config, function(e, i) {
+				if(cf[i])
+					config[i] = e;
+			});
+		}
 		
 		global.config = config;
 

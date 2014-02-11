@@ -39,7 +39,7 @@ var update = {
 			global.log('info', string);
 		});
 
-		running.stderr.on('data', function (data) {
+		running.stderr.on('error', function (data) {
 			var string = new Buffer(data).toString();
 			global.log('error', string);
 			

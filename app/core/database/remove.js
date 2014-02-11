@@ -27,8 +27,10 @@ var remove = {
 			if(err)
 				global.log('error', err);
 
-			done(err, docs.to_remove);
-
+			if(docs)
+				done(err, docs.to_remove);
+			else
+				done(err, []);
 		});
 
 	}

@@ -2,8 +2,8 @@
     name: "main.build",
     mainConfigFile : "main.build.js",
     baseUrl: "./",
-    optimize: "none",
-    //optimize: 'uglify2',
+    //optimize: "none",
+    optimize: 'uglify2',
     paths: {
         jquery: "empty:"
     },

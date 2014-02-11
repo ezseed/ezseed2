@@ -183,11 +183,6 @@ define([
     $('#search input').on('keyup', function(e) {
         toTop();
 
-        var filter = '', display = $('#displayFilters li:first-child').attr('data-display');
-
-        if($('#displayFilters li.active').length)
-            filter = $('#displayFilters li.active').attr('data-filter');
-
         if($(this).val().length > 2) {
             var matches = $section.find(Desktop.itemSelector + ':contains("'+$(this).val()+'")');
             
@@ -199,11 +194,11 @@ define([
                 }
             });
 
-           Desktop.layout(display+filter+'.highlight');
+           Desktop.setDisplay('.highlight').layout();
 
         } else {
             $section.find('.highlight').toggleClass('highlight');
-            Desktop.layout(display+filter);
+            Desktop.setDisplay('.highlight', true).layout();
         }
     });
 
@@ -214,54 +209,50 @@ define([
 
         toTop();
 
-        var highlight = '';
-
-        if($('#search input').val().length > 2)
-            highlight = '.highlight';
+        var selector = $(this).attr('data-filter');
 
         if(!$(this).hasClass('active')) { 
-            var selector = $(this).attr('data-filter');
-            var display = $(this).attr('data-display');
 
             $('#displayFilters li.active').removeClass('active');
 
             $(this).addClass('active');
             
-            Desktop.layout(highlight + display + selector);
+            Desktop.setDisplay(selector).layout();
         
         } else {
             $(this).removeClass('active');
-            Desktop.layout(highlight + $(this).attr('data-display'));
+            Desktop.setDisplay(selector, true).layout();
         }    
         return false;
     });
 
     $('body').on('click', '#displayOptions i', function() {
-        var selector = $(this).attr('data-filter'), display="";
+        var selector = $(this).attr('data-filter');
 
-        var highlight = '';
-
-        if($('#search input').val().length > 2)
-            highlight = '.highlight';
-
+        
         if(!$(this).hasClass('active')) {
 
             $(this).parent().find('.active').removeClass('active');
 
             $(this).addClass('active');
 
-            $.cookie('display', selector);
+            // $.cookie('display', selector);
 
             toTop();
 
-            if($('#displayFilters li.active').length)
-                display = $('#displayFilters li.active').attr('data-filter');
+            // if($('#displayFilters li.active').length)
+            //     display = $('#displayFilters li.active').attr('data-filter');
 
-            Desktop.layout(highlight + selector + display);
+            // var displayPath = '';
 
-            $('#displayFilters li').each(function() {
-                $(this).attr('data-display', selector);
-            });
+            // if($('#displayPath li.active').length)
+            //     displayPath = '[data-path="'+$('#displayPath li.active').attr('data-path')+'"]';
+
+            Desktop.setDisplay(selector).layout();
+
+            // $('#displayFilters li').each(function() {
+            //     $(this).attr('data-display', selector);
+            // });
         }
 
         return false;
@@ -294,6 +285,33 @@ define([
         }
     });
 
+    var currentDisplay = function() {
+
+        // var display = {};
+
+        // if($('#display').length == 0) {
+        //     $('body').append('<div id="display"></div>');
+            
+        //     var filter = ''
+        //       , display = $('#displayFilters li:first-child').attr('data-display')
+        //       , highlight = '';
+
+        //     if($('#displayFilters li.active').length)
+        //         filter = $('#displayFilters li.active').attr('data-filter');
+
+        //     if($('#search input').val().length > 2)
+        //         highlight = '.highlight';
+
+        //     return filter + display + highlight;
+        // } else 
+        //     display = JSON.parse($('#display').data('display'));
+
+
+
+
+     
+    }
+
     /**
      * Filters on first letter
      */
@@ -308,11 +326,6 @@ define([
         $section.find('.startsWith').toggleClass('startsWith');
 
         $(this).closest('ul').find('li.active').removeClass('active');
-
-        var filter = '', display = $('#displayFilters li:first-child').attr('data-display');
-
-        if($('#displayFilters li.active').length)
-            filter = $('#displayFilters li.active').attr('data-filter');
 
         if(letter.length || letter === '#') {
 
@@ -332,23 +345,50 @@ define([
                 }
             });
 
-            Desktop.layout(display+filter+'.startsWith', function() {
-                $letter.parent().addClass('active');
-            });
+            Desktop.setDisplay('.startsWith')
+                    .layout(null, function() {
+                        $letter.parent().addClass('active');
+                    });
         } else {
-            Desktop.layout(display+filter);
+            Desktop.setDisplay('.startsWith').layout();
         }
     });
 
+    
     //
 
-  var $buttongroup = $('#displayPath'),
-    $buttongroup = $('#displayPath');
+    var $buttongroup = $('#displayPath');
   
-    $buttongroup.click(function() {
-      $buttongroup.toggleClass('active');
-      return false;
+    $buttongroup.on('click', function(e) {
+        if(!$buttongroup.hasClass('active'))
+            $buttongroup.toggleClass('active');
+        else {
+            var target = $(e.target);
+            if(target.hasClass('active')) {
+                target.toggleClass('active');
+                Desktop.setDisplay('.path', true).layout();
+            } else {
+                //removing previous active 
+                $('#displayPath li.active').toggleClass('active');
+                $(Desktop.itemSelector + '.path').toggleClass('path');
+
+                target.toggleClass('active');
+                $.each(Desktop.itemSelector + '[data-path="'+target.attr('data-path')+'"]', function(i, e) {
+                    $(e).addClass('path');
+                });
+
+                Desktop.setDisplay('.path').layout();
+            }
+
+            $buttongroup.toggleClass('active');
+        }
+        return false;
     });
+
+    // $('#displayPath.active .options li').on('click', function(e) {
+    //     // e.stopPropagation();
+    //     console.log(e);
+    // });
 
     var socket = Desktop.socket;
 

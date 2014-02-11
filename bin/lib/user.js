@@ -94,9 +94,9 @@ var user = {
 		db.paths.save(user_path, username, function(err, p) {
 			global.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
 
-			require('./helpers/pm2').restart('watcher', function() {
+			// require('./helpers/pm2').restart('watcher', function() {
 				done(null, user_path);
-			});
+			// });
 		});
 	},
 	delete: function(username, done) {

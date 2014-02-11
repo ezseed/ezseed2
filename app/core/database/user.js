@@ -33,7 +33,7 @@ var user = {
   },
   //Reset user database
   reset : function(uid, done) {
-    db.files.byUser(uid, 0, function(err, docs) {
+    db.files.byUser(uid, 0, {}, function(err, docs) {
       
       var albums = [], movies = [], others = [];
 

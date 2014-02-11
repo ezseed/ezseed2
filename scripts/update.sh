@@ -3,9 +3,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 appdir="$(cd $DIR && cd ../ && pwd)"
 
 #Killing running script
-if [ -z $(pm2 -V) ] 
+if [ -n $(pm2 -V) ] 
 then
-	pm2 stop all
+	pm2 kill
 else
 	npm i pm2 -g
 fi
@@ -23,7 +23,7 @@ git clean -f
 # Reset the files
 git reset --hard HEAD
 # Get the changes
-git pull -f --no-edit
+git pull -f
 
 echo "Installing dependecies"
 npm cache clear -f
@@ -32,3 +32,4 @@ npm link
 
 # echo "Ezseed is up to date starting"
 # pm2 start "$appdir/ezseed.json"
+exit 0
