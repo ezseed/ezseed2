@@ -4,13 +4,13 @@ _trash/
 .DS_Store
 sftp-config.json
 
+app/public/js
+
 app/public/javascripts/main.build.js
-app/public/js/main.min.js
 app/themes/default/public/js/main.min.js
 app/themes/default/public/css/main.min.css
-app/public/css/main.min.css
 app/public/javascripts/require-config.json
-app/public/js
+
 app/public/views
 app/public/downloads
 app/public/tmp/*
