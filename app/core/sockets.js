@@ -1,9 +1,8 @@
 var socketio = require('socket.io')
-  , pathInfo = require('path')
-  , cache = require('memory-cache')
-  , users = require('./helpers/users.js')
+  , fs = require('fs')
+  , spawn = require('spawn-command')
+  , path = require('path')
   , db = require('./database')
-  , pretty = require('prettysize')
   , _ = require('underscore');
 
 
@@ -19,7 +18,7 @@ module.exports.listen = function(server) {
 
         socket.on('archive', function(id) {
             
-            var tmpFolder = pathInfo.join(global.config.path, '.tmp');
+            var tmpFolder = path.join(global.config.path, '.tmp');
 
             if(!fs.existsSync(tmpFolder))
                 fs.mkdirSync(tmpFolder);
@@ -33,7 +32,7 @@ module.exports.listen = function(server) {
                     socket.emit('archive:error', 'Aucun fichier trouvé');
                 } else {
                     
-                    var dest = pathInfo.join(tmpFolder, id +'.zip');
+                    var dest = path.join(tmpFolder, id +'.zip');
 
                     fs.exists(dest, function (exists) {
                         if(exists) {
@@ -63,7 +62,7 @@ module.exports.listen = function(server) {
 
                             child.stdout.on('data', function (data) {
                                 var d = new Buffer(data).toString();
-                                d = pathInfo.basename('/'+ d.replace('adding: ', '').replace(' (deflated [0-9]%)', ''));
+                                d = path.basename('/'+ d.replace('adding: ', '').replace(' (deflated [0-9]%)', ''));
                                 global.log(d);
 
                                 socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
