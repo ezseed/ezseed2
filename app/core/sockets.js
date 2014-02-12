@@ -40,7 +40,7 @@ module.exports.listen = function(server) {
 
                     fs.exists(dest, function (exists) {
                         if(exists) {
-                            global.log('info', 'Archive exists');
+                            global.log('debug', 'Archive exists');
                             socket.emit('archive:complete', '/download/archive/'+id);
                         } else {
                             var filePaths = []
@@ -65,13 +65,9 @@ module.exports.listen = function(server) {
 
                             var child = spawn(cmd);
 
-                            global.log(filePaths, sizes);
-
                             child.stdout.on('data', function (data) {
                                 var d = new Buffer(data).toString();
                                 d = d.replace(/\s?\(deflated [0-9]+%\)/ig, '').replace(/\s?adding:\s?/ig, '');
-
-                                global.log(_s.trim(d));
 
                                 if(_s.trim(d).length) {
                                     d = path.basename('/'+ d);
