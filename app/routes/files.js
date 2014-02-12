@@ -95,7 +95,7 @@ var files = {
 	archive : function(req, res) {
 
 		global.log('Archive', req.params.id);
-		var archive = {};
+		/*var archive = {};
 
 		var tmpFolder = pathInfo.join(global.config.root, '/public/downloads/.tmp');
 
@@ -106,6 +106,7 @@ var files = {
 
 			if(err)
 				global.log('error', err);
+
 			if(!doc)
 				global.log('error', 'No documents');
 
@@ -118,6 +119,8 @@ var files = {
 			} else {
 				
 				dest = pathInfo.join(tmpFolder, req.params.id +'.zip');
+				
+				global.log('dest');
 
 				if(fs.existsSync(dest)) {
 					global.log('File exists', dest);
@@ -140,7 +143,12 @@ var files = {
 					var child = spawn(cmd);
 
 					child.stdout.on('data', function (data) {
+						var d = data;
 						global.log(data);
+					});
+
+					child.stderr.on('data', function(data) {
+
 					});
 
 					child.on('exit', function (exitCode) {
@@ -153,7 +161,7 @@ var files = {
 					
 			}
 		});
-
+*/
 	},
 
 	//a lot more to do here !

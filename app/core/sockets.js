@@ -29,6 +29,9 @@ module.exports.listen = function(server) {
                     if(err)
                         global.log('error', err);
 
+                    if(!doc)
+                        global.log('error', doc);
+
                     socket.emit('archive:error', 'Aucun fichier trouvé');
                 } else {
                     
@@ -36,6 +39,7 @@ module.exports.listen = function(server) {
 
                     fs.exists(dest, function (exists) {
                         if(exists) {
+                            global.log('info', 'Archive exists');
                             socket.emit('archive:complete', '/download/archive/'+id);
                         } else {
                             var filePaths = []
@@ -70,6 +74,12 @@ module.exports.listen = function(server) {
                                     socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
                                 }
                                 
+                            });
+
+                            child.stderr.on('data', function(data) {
+                                var d = new Buffer(data).toString();
+
+                                global.log('error', d);
                             });
 
                             child.on('exit', function (exitCode) {
