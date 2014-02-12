@@ -467,7 +467,7 @@ module.exports.processOthers = function(params, callback) {
 				name = e.name;
 			}
 
-			global.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
+			global.log(e.path, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
 
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
