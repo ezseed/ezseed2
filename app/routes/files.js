@@ -9,39 +9,6 @@ var fs = require('fs')
 	, userHelper = require('../core/helpers/users.js');
 	;
 
-//To be moved
-/*var archiveFiles = function(archive, filePaths, callback) {
-	var output = fs.createWriteStream(archive.zip);
-	var zip = archiver('zip');
-	
-	zip.on('error', function(err) {
-		callback(err);
-	});
-
-	zip.pipe(output);
-
-
-	async.each(filePaths, function(item, cb) {
-
-		zip.append(
-			fs.createReadStream(pathInfo.normalize(item)), 
-			{ name: pathInfo.basename(pathInfo.dirname(item)) + '/' + pathInfo.basename(item) },  //, store: true
-			function(err) {
-				cb(err);
-			}
-		);
-	}, function(err){
-	   if(err) callback(err);
-	   zip.finalize(function(err, written) {
-			if (err) callback(err);
-
-			delete zip;
-			callback(null);
-		});
-	});
-
-}*/
-
 var files = {
 	download : function(req, res) {
 		//to do add db Files search.
@@ -89,81 +56,6 @@ var files = {
 		});
 					
 	},
-	//Take _id as archive name + no tmp/user only 1 tmp
-	//Code is duplicated in sockets ! is this route really necessary ?
-	//To be improved
-	archive : function(req, res) {
-
-		global.log('Archive', req.params.id);
-		/*var archive = {};
-
-		var tmpFolder = pathInfo.join(global.config.root, '/public/downloads/.tmp');
-
-		if(!fs.existsSync(tmpFolder))
-			fs.mkdirSync(tmpFolder);
-
-		db.files.byId(req.params.id, function(err, doc) {
-
-			if(err)
-				global.log('error', err);
-
-			if(!doc)
-				global.log('error', 'No documents');
-
-			if(!doc || err) {
-				//sends json error
-				if(req.xhr)
-					res.json({'error':'Aucun fichier trouvé'});
-				else
-					res.redirect('/');
-			} else {
-				
-				dest = pathInfo.join(tmpFolder, req.params.id +'.zip');
-				
-				global.log('dest');
-
-				if(fs.existsSync(dest)) {
-					global.log('File exists', dest);
-					//sends json redirect download
-					if(req.xhr)
-						res.json({'error':null, 'download':true});
-					else
-						res.redirect('/download/archive/'+ req.params.id);
-				} else {
-					var filePaths = [], docs = doc.videos || doc.songs || doc.files, l = docs.length;
-
-					while(l--)
-						filePaths.push(docs[l].path);
-
-					var cmd = 'zip -jr "'+dest+'"';
-
-					for(var i in filePaths)
-						cmd += ' "'+filePaths[i]+'"';
-
-					var child = spawn(cmd);
-
-					child.stdout.on('data', function (data) {
-						var d = data;
-						global.log(data);
-					});
-
-					child.stderr.on('data', function(data) {
-
-					});
-
-					child.on('exit', function (exitCode) {
-						if(req.xhr)
-							res.json({'error':null, 'download':true});
-						else
-							res.redirect('/download/archive/'+ req.params.id);
-					});
-				}
-					
-			}
-		});
-*/
-	},
-
 	//a lot more to do here !
 	delete : function(req, res) {
 		db.paths.byUser(req.session.user._id, function(err, paths) {
@@ -210,7 +102,7 @@ var files = {
 
 
 module.exports = function(app) {
-  app.get('/archive/(:id)', files.archive); //removing restrict by user
+  //app.get('/archive/(:id)', files.archive); //removing restrict by user
   app.get('/download/archive/(:id)', files.downloadArchive);
   app.get('/download/(:id)', files.download);
   app.get('/download/(:id)/(:fid)', files.download);
