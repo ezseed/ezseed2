@@ -84,7 +84,7 @@ var files = {
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
-				res.download(global.config.path + '/.tmp/' + req.params.id +'.zip', name + '.zip');
+				res.download(global.config.root + '/public/downloads/.tmp/' + req.params.id +'.zip', name + '.zip');
 			}
 		});
 					
@@ -93,9 +93,11 @@ var files = {
 	//Code is duplicated in sockets ! is this route really necessary ?
 	//To be improved
 	archive : function(req, res) {
+
+		global.log('Archive', req.params.id);
 		var archive = {};
 
-		var tmpFolder = pathInfo.join(global.config.path, '.tmp');
+		var tmpFolder = pathInfo.join(global.config.root, '/public/downloads/.tmp');
 
 		if(!fs.existsSync(tmpFolder))
 			fs.mkdirSync(tmpFolder);
@@ -104,48 +106,51 @@ var files = {
 
 			if(err)
 				global.log('error', err);
+			if(!doc)
+				global.log('error', 'No documents');
 
 			if(!doc || err) {
 				//sends json error
-				res.json({'error':'Aucun fichier trouvé'});
+				if(req.xhr)
+					res.json({'error':'Aucun fichier trouvé'});
+				else
+					res.redirect('/');
 			} else {
 				
 				dest = pathInfo.join(tmpFolder, req.params.id +'.zip');
 
-				fs.exists(dest, function (exists) {
-					if(exists) {
-						global.log('File exists', dest);
-						//sends json redirect download
+				if(fs.existsSync(dest)) {
+					global.log('File exists', dest);
+					//sends json redirect download
+					if(req.xhr)
+						res.json({'error':null, 'download':true});
+					else
+						res.redirect('/download/archive/'+ req.params.id);
+				} else {
+					var filePaths = [], docs = doc.videos || doc.songs || doc.files, l = docs.length;
+
+					while(l--)
+						filePaths.push(docs[l].path);
+
+					var cmd = 'zip -jr "'+dest+'"';
+
+					for(var i in filePaths)
+						cmd += ' "'+filePaths[i]+'"';
+
+					var child = spawn(cmd);
+
+					child.stdout.on('data', function (data) {
+						global.log(data);
+					});
+
+					child.on('exit', function (exitCode) {
 						if(req.xhr)
 							res.json({'error':null, 'download':true});
 						else
 							res.redirect('/download/archive/'+ req.params.id);
-					} else {
-						var filePaths = [], docs = doc.videos || doc.songs || doc.files, l = docs.length;
-
-						while(l--)
-							filePaths.push(docs[l].path);
-
-						var cmd = 'zip -jr "'+dest+'"';
-
-						for(var i in filePaths)
-							cmd += ' "'+filePaths[i]+'"';
-
-						var child = spawn(cmd);
-
-						child.stdout.on('data', function (data) {
-							global.log(data);
-						});
-
-						child.on('exit', function (exitCode) {
-							if(req.xhr)
-								res.json({'error':null, 'download':true});
-							else
-								res.redirect('/download/archive/'+ req.params.id);
-						});
-					}
+					});
+				}
 					
-				});
 			}
 		});
 
