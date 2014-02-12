@@ -307,8 +307,6 @@ define([
 
                             count = els.length;
 
-                            self.loader();
-
                             if(count == 1) {
                                 alertify.log(els[0] + ' a été ajouté');
                                 //self.showNotification({title: 'Fichier ajouté',text: titre + ' ajouté !'});
@@ -356,6 +354,8 @@ define([
                 self.countElementsByLetter();
 
                 self.hasLayout();
+                
+                self.loader();
 
                 if(typeof cb == 'function')
                     cb();
@@ -379,6 +379,8 @@ define([
                 self.countElementsByLetter();
 
                 self.hasLayout();
+
+                self.loader();
 
                 if(typeof cb == 'function')
                     cb();

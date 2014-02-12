@@ -497,5 +497,6 @@ module.exports.processOthers = function(params, callback) {
 		
 	});
 
-	callback(null, others);
+  	setImmediate(function() { callback(null, others); });    
+
 }
