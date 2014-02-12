@@ -84,7 +84,7 @@ var files = {
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {
-				res.download(global.config.root + '/public/downloads/.tmp/' + req.params.id +'.zip', name + '.zip');
+				res.download(global.config.path + '/.tmp/' + req.params.id +'.zip', name + '.zip');
 			}
 		});
 					
@@ -95,12 +95,15 @@ var files = {
 	archive : function(req, res) {
 		var archive = {};
 
-		var tmpFolder = pathInfo.join(global.config.root, 'public/downloads/.tmp');
+		var tmpFolder = pathInfo.join(global.config.path, '.tmp');
 
 		if(!fs.existsSync(tmpFolder))
 			fs.mkdirSync(tmpFolder);
 
 		db.files.byId(req.params.id, function(err, doc) {
+
+			if(err)
+				global.log('error', err);
 
 			if(!doc || err) {
 				//sends json error
@@ -111,6 +114,7 @@ var files = {
 
 				fs.exists(dest, function (exists) {
 					if(exists) {
+						global.log('File exists', dest);
 						//sends json redirect download
 						if(req.xhr)
 							res.json({'error':null, 'download':true});
