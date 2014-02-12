@@ -64,6 +64,8 @@ module.exports.listen = function(server) {
 
                             var child = spawn(cmd);
 
+                            global.log(filePaths, sizes);
+
                             child.stdout.on('data', function (data) {
                                 var d = new Buffer(data).toString();
                                 d = d.replace(/\s?\(deflated [0-9]+%\)/ig, '').replace(/\s?adding:\s?/ig, '');
@@ -71,7 +73,10 @@ module.exports.listen = function(server) {
                                 if(d.length) {
                                     d = path.basename('/'+ d);
 
-                                    socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
+                                    var index = filePaths.indexOf(d);
+                                    global.log(d);
+                                    if(index !== -1)
+                                        socket.emit('archive:progress', {el: d, size: sizes[index], total: total});
                                 }
                                 
                             });
