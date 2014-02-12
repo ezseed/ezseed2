@@ -368,6 +368,8 @@ define([
 
         percentDone = (percentDone < 100) ? percentDone : 100;
 
+        console.log(done, progress.total, percentDone);
+
         $('#archiving .name').text(progress.el.length ? progress.el : 'Finition...');
         $('#archiving .percent').text(percentDone+'%');
         $('#archiving .progress').css('width', percentDone+'%');

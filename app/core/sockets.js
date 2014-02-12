@@ -55,7 +55,7 @@ module.exports.listen = function(server) {
                               , cmd = 'zip -jr "'+dest+'"';
 
                             for(i in sizes)
-                                total += sizes[i];
+                                total += parseInt(sizes[i]);
                             
                             i=0;
 
