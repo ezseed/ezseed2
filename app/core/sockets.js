@@ -71,27 +71,12 @@ module.exports.listen = function(server) {
                                 var d = new Buffer(data).toString();
                                 d = d.replace(/\s?\(deflated [0-9]+%\)/ig, '').replace(/\s?adding:\s?/ig, '');
 
+                                global.log(_s.trim(d));
+
                                 if(_s.trim(d).length) {
                                     d = path.basename('/'+ d);
 
-                                    var index = -1;
-
-                                    for(var j in filePaths) {
-                                        index = filePaths[j].indexOf(d);
-
-                                        if(index !== -1) {
-                                            index = j;
-                                            break;
-                                        }
-                                    }
-
-                                    if(index !== -1)
-                                        global.log(filePaths[index]);
-                                    else
-                                        global.log('error', d);
-
-                                    if(index !== -1)
-                                        socket.emit('archive:progress', {el: d, size: sizes[index], total: total});
+                                    socket.emit('archive:progress', {el: d, size: sizes[index], total: total});
                                 }
                                 
                             });
