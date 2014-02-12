@@ -438,19 +438,6 @@ module.exports.processOthers = function(params, callback) {
 	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
 
 	_.each(othersFiles, function(e, i) {
-
-		if(e.prevDir != pathToWatch) {
-			e.prevDir = pathInfos.join(
-				pathToWatch, 
-				e.prevDir.replace(pathToWatch, '').split('/')[1]);
-			
-			indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
-			name = pathInfos.basename(e.prevDir);
-			single = false;
-		} else {
-			single = true;
-			name = e.name;
-		}
 		
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
@@ -462,9 +449,25 @@ module.exports.processOthers = function(params, callback) {
 				}
 			}
 		}
+		
+		global.log(exists ? 'Other exists' : 'Doesn\'t exists');
 
 		if(!exists) {
-			// console.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
+
+			if(e.prevDir != pathToWatch) {
+				e.prevDir = pathInfos.join(
+					pathToWatch, 
+					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+				
+				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
+				name = pathInfos.basename(e.prevDir);
+				single = false;
+			} else {
+				single = true;
+				name = e.name;
+			}
+
+			global.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
 
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
