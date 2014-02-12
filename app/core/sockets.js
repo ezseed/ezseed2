@@ -76,7 +76,7 @@ module.exports.listen = function(server) {
                                 if(_s.trim(d).length) {
                                     d = path.basename('/'+ d);
 
-                                    socket.emit('archive:progress', {el: d, size: sizes[index], total: total});
+                                    socket.emit('archive:progress', {el: d, size: sizes.shift(), total: total});
                                 }
                                 
                             });
