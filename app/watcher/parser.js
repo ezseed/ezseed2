@@ -437,8 +437,10 @@ module.exports.processOthers = function(params, callback) {
 
 	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
 
-	_.each(othersFiles, function(e, i) {
+	for (var i in othersFiles) {
 		
+		var e = othersFiles[i];
+
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {
@@ -450,8 +452,6 @@ module.exports.processOthers = function(params, callback) {
 			}
 		}
 		
-		global.log(exists ? 'Other exists' : 'Doesn\'t exists');
-
 		if(!exists) {
 
 			if(e.prevDir != pathToWatch) {
@@ -498,7 +498,7 @@ module.exports.processOthers = function(params, callback) {
 			}
 		}
 		
-	});
+	}
 
   	setImmediate(function() { callback(null, others); });    
 
