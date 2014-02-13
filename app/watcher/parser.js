@@ -468,6 +468,8 @@ module.exports.processOthers = function(params, callback) {
 				process.nextTick(function() { parseOthers(arr, cb, others); });
 		} else {
 
+			global.log('Does not exists');
+
 			var indexMatch = null
 			  , name = ''
 			  , single = false;
@@ -529,6 +531,7 @@ module.exports.processOthers = function(params, callback) {
 	parseOthers(othersFiles, function(others) {
 		delete othersFiles;
 		delete params;
+		debugger;
 		callback(null, others);
 	});
 
