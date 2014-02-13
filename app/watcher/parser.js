@@ -469,6 +469,8 @@ module.exports.processOthers = function(params, callback) {
 			if(e.path == cached[z].path)
 				exists = true;
 		
+		global.log(cached);
+
 		if(!exists) {
 
 			//Same but on existing files (database)
@@ -491,6 +493,11 @@ module.exports.processOthers = function(params, callback) {
 			  , single = false;
 
 			if(e.prevDir != pathToWatch) {
+
+				if(!exists) {
+					global.log(e, existing);
+					process.exit();
+				}
 
 				global.log(e.prevDir);
 				e.prevDir = 
