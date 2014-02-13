@@ -401,16 +401,16 @@ var checkIsOther = function (files, i) {
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
 			if(fs.existsSync(files[i])) {
-				var stats = fs.statSync(files[i]);
+				// var stats = fs.statSync(files[i]);
 				
-				if(stats.isDirectory()) {
-					return checkIsOther(files, i+1);
-					// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
-					// if(!checkIsOther(arr))
-					// 	return false;
-					// else
-					// 	return checkIsOther(files, i + 1);
-				} else {
+				// if(stats.isDirectory()) {
+				// 	return checkIsOther(files, i+1);
+				// 	// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+				// 	// if(!checkIsOther(arr))
+				// 	// 	return false;
+				// 	// else
+				// 	// 	return checkIsOther(files, i + 1);
+				// } else {
 					var t = mime.lookup(files[i]).split('/')[0];
 
 					if( (t == 'audio' || t == 'video'))
@@ -418,7 +418,7 @@ var checkIsOther = function (files, i) {
 						return false;
 					} else
 						return checkIsOther(files, i + 1);
-				}
+				//}
 			} else {
 				return checkIsOther(files, i + 1);
 			}
@@ -450,10 +450,10 @@ module.exports.processOthers = function(params, callback) {
 		var e = arr.shift()
 		  , exists = false;
 
-		if(typeof e !== 'object') {
-			global.log('error', e, 'is not an object');
-			return parseOthers(arr, cb, others);
-		}
+		// if(typeof e !== 'object') {
+		// 	global.log('error', e, 'is not an object');
+		// 	return parseOthers(arr, cb, others);
+		// }
 
 		//Test if the file already exists by path
 		var k = params.existing.length, j = 0;
@@ -511,7 +511,9 @@ module.exports.processOthers = function(params, callback) {
 				return parseOthers(arr, cb, others);
 			} else {
 				//Checking if the directory contains a video/audio file
-				var map = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+				var directoryFiles = fs.readdirSync(e.prevDir)
+				  , map = _.map(directoryFiles, function(p){ return pathInfos.join(e.prevDir, p); });
+				
 				if(checkIsOther(map)) {
 					others.push({
 						name : name,
