@@ -531,7 +531,6 @@ module.exports.processOthers = function(params, callback) {
 	parseOthers(othersFiles, function(others) {
 		delete othersFiles;
 		delete params;
-		debugger;
 		callback(null, others);
 	});
 
