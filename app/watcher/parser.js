@@ -443,7 +443,7 @@ module.exports.processOthers = function(params, callback) {
 		others = others === undefined ? [] : others;
 
 		if(arr.length == 0)
-			return cb(others);
+			setImmediate(cb, others);
 
 		var e = arr.shift()
 		  , exists = false;
@@ -465,7 +465,7 @@ module.exports.processOthers = function(params, callback) {
 		}
 
 		if(exists) {
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+			setImmediate(parseOthers, arr, cb, others);
 		} else {
 
 			global.log('Does not exists');
@@ -502,13 +502,13 @@ module.exports.processOthers = function(params, callback) {
 					prevDirRelative : e.prevDir.replace(global.rootPath, '')
 				});
 				
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(parseOthers, arr, cb, others);
 
 				//}
 			} else if(indexMatch !== null) {
 				others[indexMatch].files.push(e);
 
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(parseOthers, arr, cb, others);
 			} else {
 				//Checking if the directory contains a video/audio file
 				var map = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
@@ -521,7 +521,7 @@ module.exports.processOthers = function(params, callback) {
 					});
 				}
 
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(parseOthers, arr, cb, others);
 			}
 		}
 	};
