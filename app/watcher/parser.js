@@ -536,37 +536,4 @@ module.exports.processOthers = function(params, callback) {
 		callback(null, others);
 	});
 
-
-/*	for (var i in othersFiles) {
-*/		
-/*		var e = othersFiles[i]
-		  , exists = false;
-
-		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
-
-		// if(existingFile.length) {
-		// 	for(var k in existingFile) {
-		// 		if(_.findWhere(existingFile[k].files, {path : e.path})) {
-		// 			exists = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
-		for(var k in params.existing) {
-			for(var j in params.existing[k].files)
-				if(params.existing[k].files[j].path == e.path)
-					exists = true;
-		}
-		
-		if(!exists) {
-			
-			// global.log('info', e.path, 'doesn\'t exists', e.prevDir );
-
-			
-		}
-		
-	}
-
-  	setImmediate(function() { callback(null, others); });    */
-
 }
