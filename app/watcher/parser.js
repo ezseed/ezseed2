@@ -448,10 +448,10 @@ module.exports.processOthers = function(params, callback) {
 		var e = arr.shift()
 		  , exists = false;
 
-		/*if(typeof e !== 'object') {
+		if(typeof e !== 'object') {
 			global.log('error', e, 'is not an object');
 			return parseOthers(arr, cb, others);
-		}*/
+		}
 
 		//Test if the file already exists by path
 		var k = params.existing.length, j = 0;
