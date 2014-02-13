@@ -54,28 +54,51 @@ define([
               , i = -1
               , display = this.display;         
 
-            if(this.display.indexOf(selector) === -1) {
+
+            if(this.firstLoad) {
+                
+                display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
+
+                $('#displayOptions i').each(function(i, e) {
+
+                    if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                        $(e).addClass('active');
+                });
+
+                $('#displayFilters li').each(function(i, e) {
+
+                    if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                        $(e).addClass('active');
+                });
+                
+            }
+
+
+            if(selector !== undefined && display.indexOf(selector) === -1) {
                     
                 i = option.indexOf(selector);
 
                 if(i !== -1)
                     for(var j in option)
                         if(j !== i)
-                            this.display = this.display.replace(option[j], '');               
+                            display = display.replace(option[j], '');               
 
                 i = filter.indexOf(selector);
 
                 if(i !== -1)
                     for(var j in filter)
                         if(j !== i)
-                           this.display = this.display.replace(filter[j], '');
+                           display = display.replace(filter[j], '');
 
-                this.display += selector;
+                display += selector;
 
-            } else if(remove)
-                this.display = this.display.replace(selector, '');
+            } else if(selector !== undefined && remove)
+                display = display.replace(selector, '');
 
-            $.cookie('display', this.display);
+            $.cookie('display', display);
+            this.display = display;
+
+            console.log(display);
 
             return this;
         },
@@ -88,12 +111,14 @@ define([
         currentDisplay: function() {},
         alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
         loader : function() {
+
             var $loader = $('#loader');
             
             if($loader.is(':visible'))
                 $loader.fadeOut();
             else 
                 $loader.fadeIn();
+
         },
         showNotification : function(params) {
             // notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
@@ -235,15 +260,15 @@ define([
                     alertify.log(removed.length + " fichiers supprimés");
 
                 self.layout();
+
             }
         },
         append : function(datas) {
 
             var self = this;
 
-            // if(!self.firstLoad)
-            
-            self.loader();
+            if(!self.firstLoad)
+                self.loader();
 
             // self.display = $.cookie('display') === undefined ? '.list' : $.cookie('display');
            
@@ -291,8 +316,12 @@ define([
                         self.pckry.prepended($items);
                     }
 
+                    if(self.firstLoad) {
+                        self.setDisplay();
+                    }
+
                     self.layout(function() { 
-                        // self.loader();
+                        self.loader();
 
                         if(self.firstLoad) {
                             self.firstLoad = false;
@@ -355,8 +384,6 @@ define([
 
                 self.hasLayout();
                 
-                self.loader();
-
                 if(typeof cb == 'function')
                     cb();
 
@@ -379,8 +406,6 @@ define([
                 self.countElementsByLetter();
 
                 self.hasLayout();
-
-                self.loader();
 
                 if(typeof cb == 'function')
                     cb();

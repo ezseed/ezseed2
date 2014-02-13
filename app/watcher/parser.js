@@ -441,8 +441,6 @@ module.exports.processOthers = function(params, callback) {
 		
 		var e = othersFiles[i];
 
-		global.log(params.existing);
-
 		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
 		if(existingFile.length) {
@@ -453,8 +451,6 @@ module.exports.processOthers = function(params, callback) {
 				}
 			}
 		}
-
-		global.log(existingFile.length);
 		
 		if(!exists) {
 
@@ -470,8 +466,6 @@ module.exports.processOthers = function(params, callback) {
 				single = true;
 				name = e.name;
 			}
-
-			global.log(e.path, indexMatch);
 
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
@@ -504,6 +498,6 @@ module.exports.processOthers = function(params, callback) {
 		
 	}
 
-  	setImmediate(function() { callback(null, others); });    
+  	callback(null, others);
 
 }
