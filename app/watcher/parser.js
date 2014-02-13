@@ -529,6 +529,9 @@ module.exports.processOthers = function(params, callback) {
 		}
 	};
 
+	global.log(params);
+	process.exit();
+	
 	parseOthers(params.others, function(others) {
 		callback(null, others);
 		delete others;
