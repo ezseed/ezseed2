@@ -496,7 +496,6 @@ module.exports.processOthers = function(params, callback) {
 
 				if(!exists) {
 					global.log(e, params.existing);
-					process.exit();
 				}
 
 				global.log(e.prevDir);
