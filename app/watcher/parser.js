@@ -466,7 +466,7 @@ module.exports.processOthers = function(params, callback) {
 
 		//Search paths in cached values (only files belonging to an album or a movie nfo|pictures etc.)
 		while(z--)
-			if(e.path == e.path)
+			if(e.path == cached[z].path)
 				exists = true;
 		
 		if(!exists) {
@@ -479,7 +479,7 @@ module.exports.processOthers = function(params, callback) {
 						exists = true;
 				}
 			}
-			
+
 		}
 
 		if(exists) {
