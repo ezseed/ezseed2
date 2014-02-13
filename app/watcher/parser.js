@@ -427,38 +427,75 @@ var checkIsOther = function (files, i) {
 		return true;
 }
 
+var cache = require('memory-cache')
+
+
 /**
 * Main function to process files
 * @param othersFiles : list of others files
 * @param callback : the parallel callback (see async.parallel) 
 * @return callback
 **/
+
 module.exports.processOthers = function(params, callback) {
 
-	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
+	//Redis would be prefered
+	var cached = cache.get('others') ? cache.get('others') : [];
 
-	for (var i in othersFiles) {
-		
-		var e = othersFiles[i];
+	var pathToWatch = params.pathToWatch, parsed = 0;
 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+	var parseOthers = function(arr, cb, others) {
 
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].files, {path : e.path})) {
-					exists = true;
-					break;
-				}
-			}
-		}
+		parsed++;
+
+		others = others === undefined ? [] : others;
+
+		if(arr.length == 0)
+			return cb(others);
+
+		var e = arr.shift()
+		  , exists = false;
+
+		//Test if the file already exists by path
+		var k = params.existing.length, z = cached.length, j = 0;
+
+		//Search paths in cached values (only files belonging to an album or a movie nfo|pictures etc.)
+		while(z--)
+			if(e.path == cached[z])
+				exists = true;
 		
 		if(!exists) {
 
+			//Same but on existing files (database)
+			while(k--) {
+				j = params.existing[k].files.length;
+				while(j--) {
+					if(params.existing[k].files[j].path == e.path)
+						exists = true;
+				}
+			}
+
+		}
+
+		if(exists) {
+			process.nextTick(function() { parseOthers(arr, cb, others); });
+		} else {
+
+			var indexMatch = null
+			  , name = ''
+			  , single = false;
+
 			if(e.prevDir != pathToWatch) {
-				e.prevDir = pathInfos.join(
-					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+
+				// global.log(e.prevDir);
+				e.prevDir = 
+					pathInfos.join(
+						pathToWatch, 
+						e.prevDir.replace(pathToWatch, '').split('/')[1]
+					);
 				
+				// global.log(e.prevDir);
+
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
 				single = false;
@@ -467,37 +504,63 @@ module.exports.processOthers = function(params, callback) {
 				name = e.name;
 			}
 
-			if(indexMatch !== null)
-				others[indexMatch].files.push(e);
-			else {
-				if(!single) {
-					var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
-					if(checkIsOther(arr)) {
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-					}
-				} else {
-					var t = mime.lookup(e.path).split('/')[0];
+			// global.log('info', e.prevDir);
 
-					if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
-					{
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-					}
+			if(single) {
+				//var t = mime.lookup(e.path).split('/')[0];
+
+				//if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
+				//{
+				others.push({
+					name : name,
+					files : [e],
+					prevDir : e.prevDir,
+					prevDirRelative : e.prevDir.replace(global.config.root, '')
+				});
+				
+				process.nextTick(function() { parseOthers(arr, cb, others); });
+
+				//}
+			} else if(indexMatch !== null) {
+				others[indexMatch].files.push(e);
+
+				process.nextTick(function() { parseOthers(arr, cb, others); });
+			} else {
+
+				indexMatch = findIndex(params.existing, function(other) { return e.prevDir == other.prevDir});
+
+				if(indexMatch !== null)
+					global.log('error', 'Find existsing in database ?');
+
+				//Checking if the directory contains a video/audio file
+				var directoryFiles = fs.readdirSync(e.prevDir)
+				  , map = _.map(directoryFiles, function(p){ return pathInfos.join(e.prevDir, p); });
+				
+				if(checkIsOther(map)) {
+					others.push({
+						name : name,
+						files : [e],
+						prevDir : e.prevDir,
+						prevDirRelative : e.prevDir.replace(global.config.root, '')
+					});
+				} else {
+					cached.push(e.path);
+					cache.put('others', cached);
 				}
+
+				process.nextTick(function() { parseOthers(arr, cb, others); });
 			}
 		}
-		
-	}
+	};
+	
+	var othersFiles = params.others;
 
-  	callback(null, others);
+	parseOthers(othersFiles, function(others) {
+		global.log('debug', 'Parsed objects: ', parsed);
+		global.log('debug', 'News', others.length);
+		delete othersFiles;
+		delete params;
+		callback(null, others);
+	});
 
 }
