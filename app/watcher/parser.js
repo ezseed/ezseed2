@@ -475,9 +475,12 @@ module.exports.processOthers = function(params, callback) {
 			  , single = false;
 
 			if(e.prevDir != pathToWatch) {
+
+				global.log(e.prevDir);
+				/*
 				e.prevDir = pathInfos.join(
 					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+					e.prevDir.replace(pathToWatch, '').split('/')[1]);*/
 				
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
