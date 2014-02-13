@@ -132,7 +132,7 @@ module.exports.processAlbums = function(params, callback) {
 								songs : [e],
 								picture : infos.picture,
 								prevDir : e.prevDir,
-								prevDirRelative : e.prevDir.replace(global.rootPath, '')
+								prevDirRelative : e.prevDir.replace(global.config.root, '')
 							};
 
 						if(a.picture === null) {
@@ -141,7 +141,7 @@ module.exports.processAlbums = function(params, callback) {
 								if(!err)
 									albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
 								else
-									albums.push(a);
+									albums.push(a); //WTF ?!
 
 								i++;
 								return parseAudios(arr, cb, i, albums);
@@ -364,7 +364,7 @@ module.exports.processMovies = function(params, callback) {
 
 							videos : [e],
 							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+							prevDirRelative : e.prevDir.replace(global.config.root, '')
 						});
 
 						i++;
@@ -478,9 +478,14 @@ module.exports.processOthers = function(params, callback) {
 
 			if(e.prevDir != pathToWatch) {
 
-				e.prevDir = pathInfos.join(
-					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+				global.log(e.prevDir);
+				e.prevDir = 
+					pathInfos.join(
+						pathToWatch, 
+						e.prevDir.replace(pathToWatch, '').split('/')[1]
+					);
+				
+				global.log(e.prevDir);
 				
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
@@ -501,7 +506,7 @@ module.exports.processOthers = function(params, callback) {
 					name : name,
 					files : [e],
 					prevDir : e.prevDir,
-					prevDirRelative : e.prevDir.replace(global.rootPath, '')
+					prevDirRelative : e.prevDir.replace(global.config.root, '')
 				});
 				
 				process.nextTick(function() { parseOthers(arr, cb, others); });
@@ -521,7 +526,7 @@ module.exports.processOthers = function(params, callback) {
 						name : name,
 						files : [e],
 						prevDir : e.prevDir,
-						prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						prevDirRelative : e.prevDir.replace(global.config.root, '')
 					});
 				}
 
@@ -613,7 +618,7 @@ module.exports.processOthers = function(params, callback) {
 							name : name,
 							files : [e],
 							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+							prevDirRelative : e.prevDir.replace(global.config.root, '')
 						});
 					}
 				} else {
@@ -626,7 +631,7 @@ module.exports.processOthers = function(params, callback) {
 							name : name,
 							files : [e],
 							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+							prevDirRelative : e.prevDir.replace(global.config.root, '')
 						});
 					//}
 				}
