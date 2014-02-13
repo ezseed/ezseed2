@@ -440,9 +440,6 @@ module.exports.processOthers = function(params, callback) {
 
 	var parseOthers = function(arr, cb, i, others) {
 
-		global.log(arr);
-		process.exit();
-
 		i = i === undefined ? 0 : i;
 		others = others === undefined ? [] : others;
 
@@ -516,8 +513,8 @@ module.exports.processOthers = function(params, callback) {
 				return parseOthers(arr, cb, i, others);
 			} else {
 				//Checking if the directory contains a video/audio file
-				var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
-				if(checkIsOther(arr)) {
+				var map = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+				if(checkIsOther(map)) {
 					others.push({
 						name : name,
 						files : [e],
