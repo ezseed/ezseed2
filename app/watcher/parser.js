@@ -401,16 +401,17 @@ var checkIsOther = function (files, i) {
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
 			if(fs.existsSync(files[i])) {
-				// var stats = fs.statSync(files[i]);
+				var stats = fs.statSync(files[i]);
 				
-				// if(stats.isDirectory()) {
-				// 	return checkIsOther(files, i+1);
-				// 	// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
-				// 	// if(!checkIsOther(arr))
-				// 	// 	return false;
-				// 	// else
-				// 	// 	return checkIsOther(files, i + 1);
-				// } else {
+				//could be recursive
+				if(stats.isDirectory()) {
+					return checkIsOther(files, i+1);
+					// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+					// if(!checkIsOther(arr))
+					// 	return false;
+					// else
+					// 	return checkIsOther(files, i + 1);
+				} else {
 					var t = mime.lookup(files[i]).split('/')[0];
 
 					if( (t == 'audio' || t == 'video'))
@@ -418,7 +419,7 @@ var checkIsOther = function (files, i) {
 						return false;
 					} else
 						return checkIsOther(files, i + 1);
-				//}
+				}
 			} else {
 				return checkIsOther(files, i + 1);
 			}
@@ -434,6 +435,7 @@ var checkIsOther = function (files, i) {
 * @param callback : the parallel callback (see async.parallel) 
 * @return callback
 **/
+/*
 module.exports.processOthers = function(params, callback) {
 
 	var pathToWatch = params.pathToWatch, parsed = 0;
@@ -491,10 +493,10 @@ module.exports.processOthers = function(params, callback) {
 			// global.log('info', e.prevDir);
 
 			if(single) {
-				/*var t = mime.lookup(e.path).split('/')[0];
+				//var t = mime.lookup(e.path).split('/')[0];
 
-				if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
-				{*/
+				//if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
+				//{
 				others.push({
 					name : name,
 					files : [e],
@@ -538,4 +540,99 @@ module.exports.processOthers = function(params, callback) {
 		callback(null, others);
 	});
 
+}
+*/
+
+/**
+* Main function to process files
+* @param othersFiles : list of others files
+* @param callback : the parallel callback (see async.parallel) 
+* @return callback
+**/
+module.exports.processOthers = function(params, callback) {
+
+	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
+
+	_.each(othersFiles, function(e, i) {
+
+
+	var exists = false;
+		//Test if the file already exists by path
+		var k = params.existing.length, j = 0;
+
+		while(k--) {
+			j = params.existing[k].files.length;
+			while(j--) {
+				if(params.existing[k].files[j].path == e.path)
+					exists = true;
+			}
+		}
+
+
+
+
+		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
+
+		// if(existingFile.length) {
+		// 	for(var k in existingFile) {
+		// 		if(_.findWhere(existingFile[k].files, {path : e.path})) {
+		// 			exists = true;
+		// 			break;
+		// 		}
+		// 	}
+		// }
+
+		if(!exists) {
+
+			if(e.prevDir != pathToWatch) {
+				e.prevDir = pathInfos.join(
+					pathToWatch, 
+					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+
+				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
+				name = pathInfos.basename(e.prevDir);
+				single = false;
+			} else {
+				single = true;
+				name = e.name;
+			}
+
+			// console.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
+
+			if(indexMatch !== null)
+				others[indexMatch].files.push(e);
+			else {
+				if(!single) {
+					var directoryFiles = fs.readdirSync(e.prevDir)
+					  , arr = _.map(directoryFiles, function(p){ return pathInfos.join(e.prevDir, p); });
+					
+
+					if(checkIsOther(arr)) {
+						others.push({
+							name : name,
+							files : [e],
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						});
+					}
+				} else {
+
+					// var t = mime.lookup(e.path).split('/')[0];
+
+					// if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
+					// {
+						others.push({
+							name : name,
+							files : [e],
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						});
+					//}
+				}
+			}
+		}
+
+	});
+
+	callback(null, others);
 }
