@@ -454,7 +454,7 @@ module.exports.processOthers = function(params, callback) {
 
 		// if(typeof e !== 'object') {
 		// 	global.log('error', e, 'is not an object');
-		// 	return parseOthers(arr, cb, others);
+		// 	process.nextTick(function() { parseOthers(arr, cb, others); });
 		// }
 
 		//Test if the file already exists by path
@@ -469,7 +469,7 @@ module.exports.processOthers = function(params, callback) {
 		}
 
 		if(exists) {
-			return parseOthers(arr, cb, others);
+			process.nextTick(function() { parseOthers(arr, cb, others); });
 		} else {
 
 			var indexMatch = null
@@ -504,13 +504,13 @@ module.exports.processOthers = function(params, callback) {
 					prevDirRelative : e.prevDir.replace(global.rootPath, '')
 				});
 				
-				return parseOthers(arr, cb, others);
+				process.nextTick(function() { parseOthers(arr, cb, others); });
 
 				//}
 			} else if(indexMatch !== null) {
 				others[indexMatch].files.push(e);
 
-				return parseOthers(arr, cb, others);
+				process.nextTick(function() { parseOthers(arr, cb, others); });
 			} else {
 				//Checking if the directory contains a video/audio file
 				var directoryFiles = fs.readdirSync(e.prevDir)
@@ -525,7 +525,7 @@ module.exports.processOthers = function(params, callback) {
 					});
 				}
 
-				return parseOthers(arr, cb, others);
+				process.nextTick(function() { parseOthers(arr, cb, others); });
 			}
 		}
 	};

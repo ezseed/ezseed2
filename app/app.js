@@ -15,19 +15,19 @@ if(global.config.root.length == 0 || !global.config.aucun) {
 
 global.log = require('./core/logger');
 
-process.on('uncaughtException', function ( err ) {
+// process.on('uncaughtException', function ( err ) {
 
-    global.log(1, err.message);
-    global.log(1, err.stack);
+//     global.log(1, err.message);
+//     global.log(1, err.stack);
 
-    if(err.code == 'MODULE_NOT_FOUND')
-      global.log(5, 'Please try : npm install');
+//     if(err.code == 'MODULE_NOT_FOUND')
+//       global.log(5, 'Please try : npm install');
 
 
-    setTimeout(function() {
-      process.exit(1);
-    }, 10);
-});
+//     setTimeout(function() {
+//       process.exit(1);
+//     }, 100);
+// });
 
 
 
