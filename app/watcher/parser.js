@@ -492,18 +492,14 @@ module.exports.processOthers = function(params, callback) {
 
 			if(e.prevDir != pathToWatch) {
 
-				if(!exists) {
-					global.log('error', e);
-				}
-
-				global.log(e.prevDir);
+				// global.log(e.prevDir);
 				e.prevDir = 
 					pathInfos.join(
 						pathToWatch, 
 						e.prevDir.replace(pathToWatch, '').split('/')[1]
 					);
 				
-				global.log(e.prevDir);
+				// global.log(e.prevDir);
 
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
