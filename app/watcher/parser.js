@@ -449,6 +449,11 @@ module.exports.processOthers = function(params, callback) {
 		var e = arr[i]
 		  , exists = false;
 
+		global.log('debug', e);
+
+		if(!e)
+			global.log('error', 'No el', arr);
+
 		//Test if the file already exists by path
 		var k = params.existing.length, j = 0;
 
