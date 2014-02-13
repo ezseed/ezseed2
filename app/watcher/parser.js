@@ -401,15 +401,25 @@ var checkIsOther = function (files, i) {
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
 			if(fs.existsSync(files[i])) {
+
+
+				//Should be useless
+
 				var stats = fs.statSync(files[i]);
 				
+				//could be recursive
+				/*
+				
 				if(stats.isDirectory()) {
+					return checkIsOther(files, i+1);
 					var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
 					if(!checkIsOther(arr))
 						return false;
 					else
 						return checkIsOther(files, i + 1);
 				} else {
+				 */
+				
 					var t = mime.lookup(files[i]).split('/')[0];
 
 					if( (t == 'audio' || t == 'video'))
@@ -417,7 +427,7 @@ var checkIsOther = function (files, i) {
 						return false;
 					} else
 						return checkIsOther(files, i + 1);
-				}
+				//}
 			} else {
 				return checkIsOther(files, i + 1);
 			}
@@ -426,7 +436,6 @@ var checkIsOther = function (files, i) {
 	} else 
 		return true;
 }
-
 var cache = require('memory-cache')
 
 
