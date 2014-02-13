@@ -528,13 +528,12 @@ module.exports.processOthers = function(params, callback) {
 			}
 		}
 	};
-
-	global.log(params);
-	process.exit();
 	
-	parseOthers(params.others, function(others) {
+	var othersFiles = params.others;
+
+	parseOthers(othersFiles, function(others) {
+		delete othersFiles;
 		callback(null, others);
-		delete others;
 	});
 
 
