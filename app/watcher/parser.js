@@ -469,8 +469,6 @@ module.exports.processOthers = function(params, callback) {
 			if(e.path == cached[z].path)
 				exists = true;
 		
-		global.log(cached);
-
 		if(!exists) {
 
 			//Same but on existing files (database)
