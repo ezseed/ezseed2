@@ -3,7 +3,7 @@
 	"script"    : "/var/www/ezseed2/app/watcher.js",
 	"error_file": "/var/log/ezseed/watcher-err.log",
 	"out_file"  : "/var/log/ezseed/watcher-out.log",
-	"args": "[--stack-size=10000]"
+	"args": "['--stack-size=10000']"
 },{
     	"name"      : "ezseed",
     	"script"    : "/var/www/ezseed2/app/app.js",
