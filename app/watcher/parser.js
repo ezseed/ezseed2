@@ -438,21 +438,19 @@ module.exports.processOthers = function(params, callback) {
 
 	var pathToWatch = params.pathToWatch;
 
-	var parseOthers = function(arr, cb, i, others) {
+	var parseOthers = function(arr, cb, others) {
 
-		i = i === undefined ? 0 : i;
 		others = others === undefined ? [] : others;
 
-		if(i == arr.length)
+		if(arr.length == 0)
 			return cb(others);
 
-		var e = arr[i]
+		var e = arr.shift()
 		  , exists = false;
 
 		if(typeof e !== 'object') {
 			global.log('error', e, 'is not an object');
-			i++;
-			return parseOthers(arr, cb, i, others);
+			return parseOthers(arr, cb, others);
 		}
 
 		//Test if the file already exists by path
@@ -467,8 +465,7 @@ module.exports.processOthers = function(params, callback) {
 		}
 
 		if(exists) {
-			i++;
-			return parseOthers(arr, cb, i, others);
+			return parseOthers(arr, cb, others);
 		} else {
 
 			var indexMatch = null
@@ -503,14 +500,13 @@ module.exports.processOthers = function(params, callback) {
 					prevDirRelative : e.prevDir.replace(global.rootPath, '')
 				});
 				
-				i++;
-				return parseOthers(arr, cb, i, others);
+				return parseOthers(arr, cb, others);
 
 				//}
 			} else if(indexMatch !== null) {
 				others[indexMatch].files.push(e);
-				i++;
-				return parseOthers(arr, cb, i, others);
+
+				return parseOthers(arr, cb, others);
 			} else {
 				//Checking if the directory contains a video/audio file
 				var map = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
@@ -523,8 +519,7 @@ module.exports.processOthers = function(params, callback) {
 					});
 				}
 
-				i++;
-				return parseOthers(arr, cb, i, others);
+				return parseOthers(arr, cb, others);
 			}
 		}
 	};
