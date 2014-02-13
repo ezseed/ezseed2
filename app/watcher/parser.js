@@ -436,16 +436,101 @@ var checkIsOther = function (files, i) {
 **/
 module.exports.processOthers = function(params, callback) {
 
-	var others = []
-	  , indexMatch = null
-	  , name
-	  , othersFiles = params.others
-	  , pathToWatch = params.pathToWatch
-	  , single;
+	var pathToWatch = params.pathToWatch;
 
-	for (var i in othersFiles) {
-		
-		var e = othersFiles[i]
+	var parseOthers = function(arr, cb, i, others) {
+
+		i = i === undefined ? 0 : i;
+		others = others === undefined ? [] : others;
+
+		if(i == arr.length)
+			return cb(others);
+
+		var e = arr[i]
+		  , exists = false;
+
+		//Test if the file already exists by path
+		var k = params.existing.length, j = 0;
+
+		while(k--) {
+			j = params.existing[k].files.length;
+			while(j--) {
+				if(params.existing[k].files[j].path == e.path)
+					exists = true;
+			}
+		}
+
+		if(exists) {
+			i++;
+			return parseOthers(arr, cb, i, others);
+		} else {
+
+			var indexMatch = null
+			  , name = ''
+			  , single = false;
+
+			if(e.prevDir != pathToWatch) {
+				e.prevDir = pathInfos.join(
+					pathToWatch, 
+					e.prevDir.replace(pathToWatch, '').split('/')[1]);
+				
+				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
+				name = pathInfos.basename(e.prevDir);
+				single = false;
+			} else {
+				single = true;
+				name = e.name;
+			}
+
+			// global.log('info', e.prevDir);
+
+			if(single) {
+				/*var t = mime.lookup(e.path).split('/')[0];
+
+				if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
+				{*/
+				others.push({
+					name : name,
+					files : [e],
+					prevDir : e.prevDir,
+					prevDirRelative : e.prevDir.replace(global.rootPath, '')
+				});
+				
+				i++;
+				return parseOthers(arr, cb, i, others);
+
+				//}
+			} else if(indexMatch !== null) {
+				others[indexMatch].files.push(e);
+				i++;
+				return parseOthers(arr, cb, i, others);
+			} else {
+				//Checking if the directory contains a video/audio file
+				var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
+				if(checkIsOther(arr)) {
+					others.push({
+						name : name,
+						files : [e],
+						prevDir : e.prevDir,
+						prevDirRelative : e.prevDir.replace(global.rootPath, '')
+					});
+				}
+
+				i++;
+				return parseOthers(arr, cb, i, others);
+			}
+		}
+	};
+
+	parseOthers(params.others, function(others) {
+		callback(null, others);
+		delete others;
+	});
+
+
+/*	for (var i in othersFiles) {
+*/		
+/*		var e = othersFiles[i]
 		  , exists = false;
 
 		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
@@ -468,52 +553,11 @@ module.exports.processOthers = function(params, callback) {
 			
 			// global.log('info', e.path, 'doesn\'t exists', e.prevDir );
 
-			if(e.prevDir != pathToWatch) {
-				e.prevDir = pathInfos.join(
-					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
-				
-				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
-				name = pathInfos.basename(e.prevDir);
-				single = false;
-			} else {
-				single = true;
-				name = e.name;
-			}
-
-			// global.log('info', e.prevDir);
-
-			if(indexMatch !== null)
-				others[indexMatch].files.push(e);
-			else {
-				if(!single) {
-					var arr = _.map(fs.readdirSync(e.prevDir), function(p){ return pathInfos.join(e.prevDir, p); });
-					if(checkIsOther(arr)) {
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-					}
-				} else {
-					var t = mime.lookup(e.path).split('/')[0];
-
-					if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
-					{
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-					}
-				}
-			}
+			
 		}
 		
 	}
 
-  	setImmediate(function() { callback(null, others); });    
+  	setImmediate(function() { callback(null, others); });    */
 
 }
