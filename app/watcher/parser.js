@@ -402,24 +402,21 @@ var checkIsOther = function (files, i) {
 
 			if(fs.existsSync(files[i])) {
 
-
 				//Should be useless
 
 				var stats = fs.statSync(files[i]);
 				
 				//could be recursive
-				/*
-				
 				if(stats.isDirectory()) {
-					return checkIsOther(files, i+1);
-					var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+
+					var directoryFiles = fs.readdirSync(files[i])
+					  , arr = _.map(directoryFiles, function(p){ return pathInfos.join(files[i], p); });
+
 					if(!checkIsOther(arr))
 						return false;
 					else
 						return checkIsOther(files, i + 1);
 				} else {
-				 */
-				
 					var t = mime.lookup(files[i]).split('/')[0];
 
 					if( (t == 'audio' || t == 'video'))
@@ -427,7 +424,7 @@ var checkIsOther = function (files, i) {
 						return false;
 					} else
 						return checkIsOther(files, i + 1);
-				//}
+				}
 			} else {
 				return checkIsOther(files, i + 1);
 			}
