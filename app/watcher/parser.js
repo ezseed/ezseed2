@@ -404,11 +404,12 @@ var checkIsOther = function (files, i) {
 				var stats = fs.statSync(files[i]);
 				
 				if(stats.isDirectory()) {
-					var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
-					if(!checkIsOther(arr))
-						return false;
-					else
-						return checkIsOther(files, i + 1);
+					return checkIsOther(files, i+1);
+					// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
+					// if(!checkIsOther(arr))
+					// 	return false;
+					// else
+					// 	return checkIsOther(files, i + 1);
 				} else {
 					var t = mime.lookup(files[i]).split('/')[0];
 
@@ -435,28 +436,37 @@ var checkIsOther = function (files, i) {
 **/
 module.exports.processOthers = function(params, callback) {
 
-	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
+	var others = []
+	  , indexMatch = null
+	  , name
+	  , othersFiles = params.others
+	  , pathToWatch = params.pathToWatch
+	  , single;
 
 	for (var i in othersFiles) {
 		
-		var e = othersFiles[i];
+		var e = othersFiles[i]
+		  , exists = false;
 
-		global.log(params.existing);
+		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
 
-		var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
-
-		if(existingFile.length) {
-			for(var k in existingFile) {
-				if(_.findWhere(existingFile[k].files, {path : e.path})) {
+		// if(existingFile.length) {
+		// 	for(var k in existingFile) {
+		// 		if(_.findWhere(existingFile[k].files, {path : e.path})) {
+		// 			exists = true;
+		// 			break;
+		// 		}
+		// 	}
+		// }
+		for(var k in params.existing) {
+			for(var j in params.existing[k].files)
+				if(params.existing[k].files[j].path == e.path)
 					exists = true;
-					break;
-				}
-			}
 		}
-
-		global.log(existingFile.length);
 		
 		if(!exists) {
+			
+			// global.log('info', e.path, 'doesn\'t exists', e.prevDir );
 
 			if(e.prevDir != pathToWatch) {
 				e.prevDir = pathInfos.join(
@@ -471,7 +481,7 @@ module.exports.processOthers = function(params, callback) {
 				name = e.name;
 			}
 
-			global.log(e.path, indexMatch);
+			// global.log('info', e.prevDir);
 
 			if(indexMatch !== null)
 				others[indexMatch].files.push(e);
