@@ -435,7 +435,7 @@ var checkIsOther = function (files, i) {
 * @param callback : the parallel callback (see async.parallel) 
 * @return callback
 **/
-/*
+
 module.exports.processOthers = function(params, callback) {
 
 	var pathToWatch = params.pathToWatch, parsed = 0;
@@ -541,7 +541,7 @@ module.exports.processOthers = function(params, callback) {
 	});
 
 }
-*/
+
 
 /**
 * Main function to process files
@@ -549,6 +549,7 @@ module.exports.processOthers = function(params, callback) {
 * @param callback : the parallel callback (see async.parallel) 
 * @return callback
 **/
+/*
 module.exports.processOthers = function(params, callback) {
 
 	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
@@ -636,3 +637,4 @@ module.exports.processOthers = function(params, callback) {
 
 	callback(null, others);
 }
+*/
