@@ -436,9 +436,11 @@ var checkIsOther = function (files, i) {
 **/
 module.exports.processOthers = function(params, callback) {
 
-	var pathToWatch = params.pathToWatch;
+	var pathToWatch = params.pathToWatch, parsed = 0;
 
 	var parseOthers = function(arr, cb, others) {
+
+		global.log('debug', 'Parsed objects: ', parsed++);
 
 		others = others === undefined ? [] : others;
 
