@@ -449,10 +449,11 @@ module.exports.processOthers = function(params, callback) {
 		var e = arr[i]
 		  , exists = false;
 
-		global.log('debug', e);
-
-		if(!e)
-			global.log('error', 'No el', arr);
+		if(typeof e !== 'object') {
+			global.log('error', e, 'is not an object');
+			i++;
+			return parseOthers(arr, cb, i, others);
+		}
 
 		//Test if the file already exists by path
 		var k = params.existing.length, j = 0;
@@ -476,11 +477,9 @@ module.exports.processOthers = function(params, callback) {
 
 			if(e.prevDir != pathToWatch) {
 
-				global.log(e.prevDir);
-				/*
 				e.prevDir = pathInfos.join(
 					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);*/
+					e.prevDir.replace(pathToWatch, '').split('/')[1]);
 				
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
