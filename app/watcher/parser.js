@@ -8,6 +8,7 @@ var pathInfos = require('path')
   , db = require('../core/database')
   , fs = require('fs')
   , scrapper = require('../scrappers')
+  , cache = require('memory-cache')
   ;
 
 /**
@@ -438,6 +439,9 @@ var checkIsOther = function (files, i) {
 
 module.exports.processOthers = function(params, callback) {
 
+	//Redis would be prefered
+	var cached = cache.get('others') ? cache.get('others') : [];
+
 	var pathToWatch = params.pathToWatch, parsed = 0;
 
 	var parseOthers = function(arr, cb, others) {
@@ -458,14 +462,24 @@ module.exports.processOthers = function(params, callback) {
 		// }
 
 		//Test if the file already exists by path
-		var k = params.existing.length, j = 0;
+		var k = params.existing.length, z = cached.length, j = 0;
 
-		while(k--) {
-			j = params.existing[k].files.length;
-			while(j--) {
-				if(params.existing[k].files[j].path == e.path)
-					exists = true;
+		//Search paths in cached values (only files belonging to an album or a movie nfo|pictures etc.)
+		while(z--)
+			if(e.path == e.path)
+				exists = true;
+		
+		if(!exists) {
+
+			//Same but on existing files (database)
+			while(k--) {
+				j = params.existing[k].files.length;
+				while(j--) {
+					if(params.existing[k].files[j].path == e.path)
+						exists = true;
+				}
 			}
+			
 		}
 
 		if(exists) {
@@ -486,7 +500,7 @@ module.exports.processOthers = function(params, callback) {
 					);
 				
 				global.log(e.prevDir);
-				
+
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
 				single = false;
@@ -528,6 +542,9 @@ module.exports.processOthers = function(params, callback) {
 						prevDir : e.prevDir,
 						prevDirRelative : e.prevDir.replace(global.config.root, '')
 					});
+				} else {
+					cached.push(e.path);
+					cache.put('others', cached);
 				}
 
 				process.nextTick(function() { parseOthers(arr, cb, others); });
