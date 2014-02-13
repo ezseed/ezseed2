@@ -440,6 +440,9 @@ module.exports.processOthers = function(params, callback) {
 
 	var parseOthers = function(arr, cb, i, others) {
 
+		global.log(arr);
+		process.exit();
+
 		i = i === undefined ? 0 : i;
 		others = others === undefined ? [] : others;
 
