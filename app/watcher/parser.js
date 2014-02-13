@@ -440,7 +440,7 @@ module.exports.processOthers = function(params, callback) {
 
 	var parseOthers = function(arr, cb, others) {
 
-		global.log('debug', 'Parsed objects: ', parsed++);
+		parsed++;
 
 		others = others === undefined ? [] : others;
 
@@ -529,6 +529,8 @@ module.exports.processOthers = function(params, callback) {
 	var othersFiles = params.others;
 
 	parseOthers(othersFiles, function(others) {
+		global.log('debug', 'Parsed objects: ', parsed);
+		global.log('debug', 'News', others.length);
 		delete othersFiles;
 		delete params;
 		callback(null, others);
