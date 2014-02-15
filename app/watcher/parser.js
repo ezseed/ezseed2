@@ -37,19 +37,14 @@ var findIndex = function(arr, iterator) {
 module.exports.processAlbums = function(params, callback) {
 	var audios = params.audios, pathToWatch = params.pathToWatch;
 
-	// _.each(audios, function(e, i) {
+	var parseAudios = function(arr, cb, albums) {
 
-	var parseAudios = function(arr, cb, i, albums) {
-
-		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
-		if(i == arr.length) {
-			delete arr;
+		if(arr.length == 0)
 			return cb(albums);
-		}
-
-		var e = arr[i];
+	
+		var e = arr.shift();
 		
 		//Redifine prevDir
 		var lastDir = e.prevDir.split('/'), dirsNb = lastDir.length - 1;
@@ -89,8 +84,8 @@ module.exports.processAlbums = function(params, callback) {
 					}
 
 					albums[indexMatch].songs.push(e);
-					i++;
-					return parseAudios(arr, cb, i, albums);
+					
+					return parseAudios(arr, cb, albums);
 
 				});
 			} else {
@@ -120,8 +115,8 @@ module.exports.processAlbums = function(params, callback) {
 					if(indexMatch !== null) {
 
 						albums[indexMatch].songs.push(e);
-						i++;
-						return parseAudios(arr, cb, i, albums);
+						
+						return parseAudios(arr, cb, albums);
 					} else {
 						//New album detected
 						var a = {
@@ -143,20 +138,20 @@ module.exports.processAlbums = function(params, callback) {
 								else
 									albums.push(a);
 
-								i++;
-								return parseAudios(arr, cb, i, albums);
+								
+								return parseAudios(arr, cb, albums);
 							})
 						} else {
 							albums.push(a);
-							i++;
-							return parseAudios(arr, cb, i, albums);
+							
+							return parseAudios(arr, cb, albums);
 						}
 					}
 				});
 			}
 		} else {
-			i++;
-			return parseAudios(arr, cb, i, albums);
+			
+			return parseAudios(arr, cb, albums);
 		}
 	}
 
@@ -177,7 +172,166 @@ module.exports.processAlbums = function(params, callback) {
 module.exports.processMovies = function(params, callback) {
 	var videos = params.videos, pathToWatch = params.pathToWatch;
 
-	var match = function(existing, movies, e, fn) {
+
+	/**
+	* Declaration within the module because of "pathToWatch"
+	* Process the array of movies asynchronously
+	* Must be async because we might call allocine to gather some infos
+	* + in serie, wait until previous has finish
+	* @param arr : list of videos files
+	* @param cb : callback when everything is done
+	* @param i : cursor
+	* @param movies : movies array spawned on the fly
+	* @return callback
+	**/
+	var parseMovies = function(arr, cb, movies) {
+
+		movies = movies === undefined ? [] : movies;
+
+		if(arr.length == 0)
+			return cb(movies);
+
+		var e = arr.shift();
+
+		var exists = false;
+
+		for(var p in params.existing) {
+			for(var o in params.existing[p].videos) {
+				if(params.existing[p].videos[o].path.indexOf(e.path) !== -1 ) {
+					exists = true;
+					break;
+				}
+			}
+		}
+
+		if(!exists) {
+
+			//Getting some informations
+			e = _.extend(e, release.getTags.video(e.path));
+
+			// e = _.extend(e, release.getTags.video(e.path));
+			var indexMatch = null, moviesMatch = null;
+
+			//If movies are in the same directory
+			if(pathToWatch != e.prevDir)
+				indexMatch = findIndex(movies, function(movie) {
+					return movie.prevDir == e.prevDir;
+				});
+
+			if(indexMatch !== null) {
+
+				global.log('debug', 'index Match on prevDir : '+e.prevDir);
+
+				movies[indexMatch].videos.push(e);
+
+				return parseMovies(arr, cb, movies);
+
+			} else {
+
+				if(e.movieType == 'tvseries') {
+
+					//Searching for a similar name && an equal season on existing
+					indexMatch = match(params.existing, movies, e);
+
+				} else {
+					//same on movies
+					moviesMatch = match(params.existing, movies, e);
+				}
+
+				if(indexMatch !== null) {
+					global.log('debug', 'Index match series', indexMatch);
+
+					if(indexMatch.match == 'existing') {
+						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								global.log('err', 'Error by adding the video in the movie', err);
+								global.log('debug', e);
+							}
+
+							return parseMovies(arr, cb, movies);
+						});
+					} else {
+						movies[indexMatch.movies].videos.push(e);
+
+						return parseMovies(arr, cb, movies);
+					}
+				} else if (moviesMatch !== null) {
+					global.log('debug', 'Index match movies');
+
+					if(moviesMatch.match == 'existing') {
+
+						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								global.log('err', 'Error by adding the video in the movie', err);
+								global.log('debug', e);
+							}
+
+							return parseMovies(arr, cb, movies);
+						});
+					} else {
+						movies[moviesMatch.movies].videos.push(e);
+
+						return parseMovies(arr, cb, movies);
+					}
+				} else {
+					var infos = {
+						title: e.name,
+						synopsis: null,
+						trailer: null,
+						picture: null
+					};
+
+					scrapper.search(e, function(err, infos) {
+						movies.push({
+							movieType : e.movieType,
+							name : e.name,
+							season : e.season,
+							title : infos.title,
+							synopsis : infos.synopsis,
+							trailer : infos.trailer,
+							picture : infos.picture,
+							quality : e.quality,
+							subtitles : e.subtitles,
+							language : e.language,
+							audio : e.audio,
+							format : e.format,
+
+							// allocine : infos.code,
+
+							videos : [e],
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						});
+
+						return parseMovies(arr, cb, movies);
+					});
+				}
+
+			}
+		} else {
+			return parseMovies(arr, cb, movies);
+		}
+
+	}
+
+
+	parseMovies(videos, function(movies) {
+		delete videos;
+		callback(null, movies);
+	});
+}
+
+
+/**
+ * Movies match helper
+ * @param  {array}   existing   Existing files
+ * @param  {array}   movies     Movies just parsed
+ * @param  {element}   e        Current parsed element
+ * @return {Object}  result     { match - existing|movies, movies: index|null, existing: index|null
+ */
+var match = function(existing, movies, e) {
 		var result = {
 			match: null,
 			existing: null,
@@ -225,167 +379,6 @@ module.exports.processMovies = function(params, callback) {
 		return result;
 	}
 
-	/**
-	* Declaration within the module because of "pathToWatch"
-	* Process the array of movies asynchronously
-	* Must be async because we might call allocine to gather some infos
-	* + in serie, wait until previous has finish
-	* @param arr : list of videos files
-	* @param cb : callback when everything is done
-	* @param i : cursor
-	* @param movies : movies array spawned on the fly
-	* @return callback
-	**/
-	var parseMovies = function(arr, cb, i, movies) {
-
-		i = i === undefined ? 0 : i;
-		movies = movies === undefined ? [] : movies;
-
-		if(i == arr.length)
-			return cb(movies);
-
-		var e = arr[i];
-
-		var exists = false;
-
-		for(var p in params.existing) {
-			for(var o in params.existing[p].videos) {
-				if(params.existing[p].videos[o].path.indexOf(e.path) !== -1 ) {
-					exists = true;
-					break;
-				}
-			}
-		}
-
-		if(!exists) {
-
-			//Getting some informations
-			e = _.extend(e, release.getTags.video(e.path));
-
-			// e = _.extend(e, release.getTags.video(e.path));
-			var indexMatch = null, moviesMatch = null;
-
-			//If movies are in the same directory
-			if(pathToWatch != e.prevDir)
-				indexMatch = findIndex(movies, function(movie) {
-					return movie.prevDir == e.prevDir;
-				});
-
-			if(indexMatch !== null) {
-
-				global.log('debug', 'index Match on prevDir : '+e.prevDir);
-
-				movies[indexMatch].videos.push(e);
-				i++;
-				return parseMovies(arr, cb, i, movies);
-
-			} else {
-
-				if(e.movieType == 'tvseries') {
-
-					//Searching for a similar name && an equal season on existing
-					indexMatch = match(params.existing, movies, e);
-
-					//Same as before, if the video path is there, skip
-					//, should not be necessary because we did all the existing before
-					// while(nbExisting-- && !exists)
-					// 	if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
-					// 		exists = true;
-						
-
-				} else {
-					//same on movies
-					moviesMatch = match(params.existing, movies, e);
-				}
-
-				if(indexMatch !== null) {
-					global.log('debug', 'Index match series', indexMatch);
-
-					if(indexMatch.match == 'existing') {
-						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
-							
-							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
-							}
-
-							i++;
-							return parseMovies(arr, cb, i, movies);
-						});
-					} else {
-						movies[indexMatch.movies].videos.push(e);
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					}
-				} else if (moviesMatch !== null) {
-					global.log('debug', 'Index match movies');
-
-					if(moviesMatch.match == 'existing') {
-
-						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
-							
-							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
-							}
-
-							i++;
-							return parseMovies(arr, cb, i, movies);
-						});
-					} else {
-						movies[moviesMatch.movies].videos.push(e);
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					}
-				} else {
-					var infos = {
-						title: e.name,
-						synopsis: null,
-						trailer: null,
-						picture: null
-					};
-
-					scrapper.search(e, function(err, infos) {
-						movies.push({
-							movieType : e.movieType,
-							name : e.name,
-							season : e.season,
-							title : infos.title,
-							synopsis : infos.synopsis,
-							trailer : infos.trailer,
-							picture : infos.picture,
-							quality : e.quality,
-							subtitles : e.subtitles,
-							language : e.language,
-							audio : e.audio,
-							format : e.format,
-
-							// allocine : infos.code,
-
-							videos : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.rootPath, '')
-						});
-
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					});
-				}
-
-			}
-		} else {
-			i++;
-			return parseMovies(arr,cb, i, movies);
-		}
-
-	}
-
-
-	parseMovies(videos, function(movies) {
-		delete videos;
-		callback(null, movies);
-	});
-}
 
 /**
 * Parses files, search if there is a movie / an audio file
@@ -402,11 +395,8 @@ var checkIsOther = function (files, i) {
 
 			if(fs.existsSync(files[i])) {
 
-				//Should be useless
-
 				var stats = fs.statSync(files[i]);
 				
-				//could be recursive
 				if(stats.isDirectory()) {
 
 					var directoryFiles = fs.readdirSync(files[i])
@@ -565,7 +555,6 @@ module.exports.processOthers = function(params, callback) {
 		global.log('debug', 'Parsed objects: ', parsed);
 		global.log('debug', 'News', others.length);
 		delete othersFiles;
-		delete params;
 		callback(null, others);
 	});
 
