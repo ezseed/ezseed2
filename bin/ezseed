@@ -18,6 +18,7 @@ global.app_path = app_path;
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
+var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 
 var program = require('commander')
   , colors = require('colors')
@@ -38,7 +39,18 @@ colors.setTheme({
 });
 
 program
-	.version('2.0.0');
+	.version(autoUpdate.version);
+
+autoUpdate.checkForUpdates(function(update) {
+	if(update) {
+		global.log('warn', 'An update is available, please run ezseed update');
+	}
+});
+
+if(process.argv.length == 2) {
+	console.error('At least one argument is required'.error);
+	process.exit();
+}
 
 require('./command/daemon')(program);
 
