@@ -37,7 +37,6 @@ var express = require('express')
   , http = require('http')
   , _ = require('underscore')
   , path = require('path')
-  , cache = require('memory-cache')
   , MongoStore = require('connect-mongo')(express)
 ;
 
