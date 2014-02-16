@@ -124,6 +124,12 @@ var user = {
 	get_client: function(username, done) {
 		db.user.byUsername(username, function(err, user) {
 
+			if(err)
+				console.error(err);
+			
+			if(!user)
+				done('No user founded');
+
 			if(global.config && global.config[user.client])
 				done(err, user.client);
 			else {
