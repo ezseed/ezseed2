@@ -83,7 +83,7 @@ var user = {
 		db.user.byId(req.params.uid, function(err, user) {
 			var shell_path = path.resolve(global.config.root, '../bin/', 'ezseed');
 				
-			var options = ['password', user.client, user.username,'-p', req.body.password];
+			var options = ['password', user.username,'-p', req.body.password];
 
 			exec(shell_path + ' ' + options.join(' '), function(err, stderr, stdout) {
 
