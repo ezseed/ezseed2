@@ -122,13 +122,13 @@ var user = {
 		});
 	},
 	get_client: function(username, done) {
-		db.user.byUsername(username, function(err, u) {
+		db.user.byUsername(username, function(err, user) {
 
-			if(global.config && global.config[u.client])
-				done(err, u.client);
+			if(global.config && global.config[user.client])
+				done(err, user.client);
 			else {
-				console.log('error', "Le client "+u.client+" n'est pas installé")	
-				done(err, u.client);
+				console.log('error', "Le client "+user.client+" n'est pas installé")	
+				done(err, user.client);
 			}
 		
 		});
