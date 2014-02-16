@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var exec = require('child_process').exec;
 
 //https://github.com/Unitech/pm2-interface ?
@@ -6,8 +7,8 @@ module.exports = {
 		exec('pm2', ['restart', name], function(err) {
 			
 			if(err !== undefined && err !== null) {
-				log('error', err);
-				log('debug', 'pm2 restart '+name+''.info);
+				console.log('error', err);
+				console.log('debug', 'pm2 restart '+name+''.info);
 			}
 
 			return typeof cb == 'function' ? cb() : true;
@@ -17,8 +18,8 @@ module.exports = {
 	 	exec('pm2', ['start', global.app_path+'/ezseed.json'], function(err) {
 			
 			if(err !== undefined && err !== null) {
-				log('error', err);
-				log('debug', 'pm2 start ezseed.json'.info);
+				console.log('error', err);
+				console.log('debug', 'pm2 start ezseed.json'.info);
 			}
 
 			return typeof cb == 'function' ? cb() : true;

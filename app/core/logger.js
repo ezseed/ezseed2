@@ -1,7 +1,7 @@
 var level   = process.argv.indexOf('-d') === -1 ? 6 : 7;
 var logger  = require('caterpillar').createLogger({level:level});
 var filter  = require('caterpillar-filter').createFilter();
-var human   = require('caterpillar-human').createHuman();
+var human   = require('caterpillar-human').createHuman({spacer: "  "});
 
 logger.pipe(filter).pipe(human).pipe(process.stdout);
 

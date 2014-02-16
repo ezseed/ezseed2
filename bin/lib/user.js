@@ -1,3 +1,5 @@
+var console = require(global.config.root+'/core/logger');
+
 var db = require(global.app_path + '/app/core/database')
 	   , child_process = require('child_process')
 	   , cache = require('memory-cache')
@@ -22,13 +24,13 @@ var user = {
 
 		self.add(username, password, function(err) {
 			if(err) {
-				log('error', err);
+				console.log('error', err);
 
-				log('info', "Mise à jour du client");
+				console.log('info', "Mise à jour du client");
 
 				db.user.setClient(username, cache.get('client'), function(err) {
 					if(err)
-						log('error', err);
+						console.log('error', err);
 					
 					self.create_next(username, password, done);
 
@@ -47,7 +49,7 @@ var user = {
 			else {
 
 				db.users.create({username : username, password: password, client : cache.get('client'), role : cache.get('role')}, function(err, user) {
-		    		log('info', "Utilisateur ajouté à la base de données d'ezseed");
+		    		console.log('info', "Utilisateur ajouté à la base de données d'ezseed");
 		    		//cache.put('user', {username : username, password : password, client: client});
 		    		done(null);
 		    	});
@@ -64,10 +66,10 @@ var user = {
 	  	exec('grep -c "^'+username+':" /etc/passwd',function(err, stdout, stderr) {
 	  		
 	  		if(err)
-				log('error', err);
+				console.log('error', err);
 			
 			if(stderr)
-				log('error', stderr);
+				console.log('error', stderr);
 
 	  		if(stdout == '1') {
 	  			done("L'utilisateur existe déjà !", user_path);
@@ -77,10 +79,10 @@ var user = {
 				
 				var running = exec(cmd, function (err, stdout, stderr) {
 					if(err)
-						log('error', err);
+						console.log('error', err);
 					
 					if(stderr)
-						log('error', stderr);
+						console.log('error', stderr);
 
 					done(err, user_path);
 				});
@@ -92,7 +94,7 @@ var user = {
 	save_path: function(user_path, username, done) {
 
 		db.paths.save(user_path, username, function(err, p) {
-			log('info', "Chemin "+ user_path + " sauvegardé en base de données");
+			console.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
 
 			// require('./helpers/pm2').restart('watcher', function() {
 				done(null, user_path);
@@ -102,9 +104,9 @@ var user = {
 	delete: function(username, done) {
 		db.users.delete(username, function(err) {
 			if(err)
-				log("error", err);
+				console.log("error", err);
 			else
-		 		log("info", "Utilisateur "+ username + " supprimé");
+		 		console.log("info", "Utilisateur "+ username + " supprimé");
 	
 	 		done();
 	 	});
@@ -114,7 +116,7 @@ var user = {
 
 		exec(cmd, function(err, stdout, stderr) {
 			
-			log('info', "System password changed");
+			console.log('info', "System password changed");
 			
 			db.users.update(username, {password : password}, done);
 		});
@@ -125,7 +127,7 @@ var user = {
 			if(global.config && global.config[u.client])
 				done(err, u.client);
 			else {
-				log('error', "Le client "+u.client+" n'est pas installé")	
+				console.log('error', "Le client "+u.client+" n'est pas installé")	
 				done(err, u.client);
 			}
 		

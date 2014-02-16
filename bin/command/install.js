@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , promptly = require('promptly')
   , cache = require('memory-cache')
@@ -14,7 +15,7 @@ var validators =  require(global.app_path + '/bin/lib/helpers/validators');
 var install = {
 
 	set_config: function(next) {
-		log('warn', "Le dossier ci-dessous sert à partager les fichiers avec nodejs, si vous n'êtes pas sûr laissez par défaut.");
+		console.log('warn', "Le dossier ci-dessous sert à partager les fichiers avec nodejs, si vous n'êtes pas sûr laissez par défaut.");
 
 		promptly.prompt(
 			'Chemin des dossiers à parser [/home] :', 
@@ -31,11 +32,11 @@ var install = {
 	},
 	nginx: function(next) {
 		if(cache.get('skipnginx')) {
-			log('warn', "Skipping nginx configuration");
+			console.log('warn', "Skipping nginx configuration");
 			next(null, {});
 		} else {
 
-			log('info', "ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)");
+			console.log('info', "ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)");
 			promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
 				
 				configure.nginx(sslkeys, next);
@@ -97,7 +98,7 @@ var install = {
 		if(cache.get('skipuser'))
 			next(null, {});
 		else {
-			log('info', "Entrez les informations de l'admin");
+			console.log('info', "Entrez les informations de l'admin");
 
 			promptly.prompt('Username : ', {validator: validators.user}, function (err, username) {
 			    promptly.password('Password : ', function(err, password) {

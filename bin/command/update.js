@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var child_process = require('child_process')
 	   , spawn = child_process.spawn
 	   , jf = require('jsonfile');
@@ -11,16 +12,16 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			log('info', string);
+			console.log('info', string);
 		});
 
 		running.stderr.on('error', function (data) {
 			var string = new Buffer(data).toString();
-			log('error', string);			
+			console.log('error', string);			
 		});
 
 		running.on('exit', function (code) {
-			log('info', 'Mise à jour de rutorrent terminée');
+			console.log('info', 'Mise à jour de rutorrent terminée');
 			var config = jf.readFileSync(global.app_path + '/app/config.json');
 			
 			config.rutorrent = true;
@@ -36,18 +37,18 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			log('info', string);
+			console.log('info', string);
 		});
 
 		running.stderr.on('error', function (data) {
 			var string = new Buffer(data).toString();
-			log('error', string);
+			console.log('error', string);
 			
 		});
 
 		running.on('exit', function (code) {
 
-			log('info', 'Enregistrement du scrapper');
+			console.log('info', 'Enregistrement du scrapper');
 
 			global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
 			jf.writeFileSync(global.app_path+'/app/config.json', global.config);
@@ -55,7 +56,7 @@ var update = {
 
 			var next = function() {
 				if(options['no-restart']) {
-					log('info', 'Mise à jour terminée, lancez : ezseed start');
+					console.log('info', 'Mise à jour terminée, lancez : ezseed start');
 					cb(code);
 				} else {
 					require('./daemon').daemon('start',function(code) {
@@ -68,7 +69,7 @@ var update = {
 			if(options['no-deploy']) {
 				next();
 			} else {
-				log('info', 'Ezseed est à jour déploiement des fichiers');
+				console.log('info', 'Ezseed est à jour déploiement des fichiers');
 
 				require('../lib/deploy')(function(code) {
 					next();

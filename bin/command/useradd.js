@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
@@ -63,12 +64,12 @@ var useradd = {
 					});
 				});
 			} else {
-				log('error', "Le client " + client + " n'est pas installé !");
+				console.log('error', "Le client " + client + " n'est pas installé !");
 				process.exit(1);
 			}
 
 		} else {
-			log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
+			console.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
 			process.exit(1);
 		}
 	}

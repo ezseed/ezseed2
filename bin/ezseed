@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+
 var pathInfo = require('path')
 	, jf = require('jsonfile')
 	, fs = require('fs')
@@ -13,12 +14,12 @@ var pathInfo = require('path')
 global.config = {};
 global.config.root = app_path + '/app';
 
+var console = require(global.config.root+'/core/logger');
+
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
 global.app_path = app_path;
-
-log = require(global.config.root+'/core/logger');
 
 var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 
@@ -45,7 +46,7 @@ program
 
 autoUpdate.checkForUpdates(function(update) {
 	if(update) {
-		log('warn', 'An update is available, please run ezseed update');
+		console.log('warn', 'An update is available, please run ezseed update');
 	}
 });
 
@@ -91,7 +92,7 @@ program
 program
 	.command('*')
 	.action(function() {
-		log('error', 'Command not found.');
+		console.log('error', 'Command not found.');
 		program.help();
 	});
 

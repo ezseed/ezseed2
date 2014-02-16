@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var db = require(global.app_path + '/app/core/database')
 	, async = require('async')
 	, daemon = require('../lib/daemon');
@@ -5,7 +6,7 @@ var db = require(global.app_path + '/app/core/database')
 var reboot = function() {
 	var start = function(user, cb) {
 		daemon(user.client, 'start', user.username, function() {
-			log('info', user.username + " " + user.client + " started");
+			console.log('info', user.username + " " + user.client + " started");
 			cb();
 		});
 	}
