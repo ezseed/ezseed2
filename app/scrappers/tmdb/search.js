@@ -35,12 +35,12 @@ var search = function(movie, cb) {
 
 	console.log('info','Gathering infos on', movie.search);
 
-	console.time('infos');
+	// console.time('infos');
 
   //searching in the allocine API (could be others)
   	tmdb.search(movie.movieType == 'tvseries' ? 'tv' : 'movie', {query: movie.search, language: 'fr'}, function(err, res) {
 
-        console.timeEnd('infos');
+        // console.timeEnd('infos');
 
         if(err) console.log('error', 'Error TMDB call', err);
 
