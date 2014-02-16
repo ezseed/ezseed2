@@ -1,6 +1,6 @@
 var level   = process.argv.indexOf('-d') === -1 ? 6 : 7;
 
-if(level == 6 && process.NODE_ENV == 'production') {
+if(level == 6 && process.env.NODE_ENV == 'production') {
 	level = 5;
 }
 

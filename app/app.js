@@ -4,6 +4,9 @@
  */
 var jf = require('jsonfile');
 
+if(!process.env.NODE_ENV)
+  process.env.NODE_ENV = 'development';
+
 global.config = jf.readFileSync(__dirname + '/config.json');
 
 //Writing conf file
@@ -118,6 +121,7 @@ mongo.once('open', function callback () {
   var io = require('./core/sockets').listen(server);
 
 });
+-
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 

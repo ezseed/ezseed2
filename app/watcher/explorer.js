@@ -16,7 +16,9 @@ exports.explore = function(params, cb) {
 
 	var explorePath = function(pathToWatch, pathCallback) {
 		console.log('info', 'exploring', pathToWatch);
-		global.console.time('paths');
+	
+		if(process.env.NODE_ENV != 'production')
+			global.console.time('paths');
 		
 		//Get db files first
 		var id_path = _.findWhere(params.docs.paths, {path : pathToWatch})._id;
@@ -117,7 +119,10 @@ exports.explore = function(params, cb) {
 
 
 		console.log('info', 'Each paths done.' );
-		global.console.timeEnd('paths');
+	
+		if(process.env.NODE_ENV != 'production')
+			global.console.timeEnd('paths');
+	
 		console.log('-------------------------------------------------'.rainbow);
 		cb(err, results);
 	});

@@ -10,7 +10,16 @@ else
 	npm i pm2 -g
 fi
 
+if [ ! -f ~/.pm2/custom_options.bak.sh]
+then
+	cp ~/.pm2/custom_options.sh ~/.pm2/custom_options.bak.sh
+fi
+
+rm ~/.pm2/custom_options.sh
+touch ~/.pm2/custom_options.sh
+
 echo "export PM2_NODE_OPTIONS='--stack_size=1400'" >> ~/.pm2/custom_options.sh
+echo "export NODE_ENV=production" >> ~/.pm2/custom_options.sh
 
 cd $appdir
 
