@@ -57,7 +57,7 @@ var user = {
 					db.remove.get(p._id, cb);
 					
 				}, function(err, results) {
-					// global.log('debug', 'API', results);
+					// console.log('debug', 'API', results);
 
 					res.json(_.flatten(results));
 				});
@@ -72,7 +72,7 @@ var user = {
 		if(req.params.uid) {
 	 		db.files.byUser(req.params.uid, req.parameters.last_update, req.parameters.limit, function(err, files) {
 	 			
-	 			global.log('debug', 'API getFiles', req.parameters);
+	 			console.log('debug', 'API getFiles', req.parameters);
 
 	 			if(err)
 	 				api.error(res, err);

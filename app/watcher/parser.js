@@ -220,7 +220,7 @@ module.exports.processMovies = function(params, callback) {
 
 			if(indexMatch !== null) {
 
-				global.log('debug', 'index Match on prevDir : '+e.prevDir);
+				console.log('debug', 'index Match on prevDir : '+e.prevDir);
 
 				movies[indexMatch].videos.push(e);
 
@@ -239,14 +239,14 @@ module.exports.processMovies = function(params, callback) {
 				}
 
 				if(indexMatch !== null) {
-					global.log('debug', 'Index match series', indexMatch);
+					console.log('debug', 'Index match series', indexMatch);
 
 					if(indexMatch.match == 'existing') {
 						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
 							
 							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
+								console.log('err', 'Error by adding the video in the movie', err);
+								console.log('debug', e);
 							}
 
 							return parseMovies(arr, cb, movies);
@@ -257,15 +257,15 @@ module.exports.processMovies = function(params, callback) {
 						return parseMovies(arr, cb, movies);
 					}
 				} else if (moviesMatch !== null) {
-					global.log('debug', 'Index match movies');
+					console.log('debug', 'Index match movies');
 
 					if(moviesMatch.match == 'existing') {
 
 						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
 							
 							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
+								console.log('err', 'Error by adding the video in the movie', err);
+								console.log('debug', e);
 							}
 
 							return parseMovies(arr, cb, movies);
@@ -374,7 +374,7 @@ var match = function(existing, movies, e) {
 			result = null;
 
 		// if(result !== null && result.match == 'existing')
-		// 	global.log(e, existing[result.existing]);
+		// 	console.log(e, existing[result.existing]);
 
 		return result;
 	}
@@ -483,14 +483,14 @@ module.exports.processOthers = function(params, callback) {
 
 			if(e.prevDir != pathToWatch) {
 
-				// global.log(e.prevDir);
+				// console.log(e.prevDir);
 				e.prevDir = 
 					pathInfos.join(
 						pathToWatch, 
 						e.prevDir.replace(pathToWatch, '').split('/')[1]
 					);
 				
-				// global.log(e.prevDir);
+				// console.log(e.prevDir);
 
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
@@ -500,7 +500,7 @@ module.exports.processOthers = function(params, callback) {
 				name = e.name;
 			}
 
-			// global.log('info', e.prevDir);
+			// console.log('info', e.prevDir);
 
 			if(single) {
 				//var t = mime.lookup(e.path).split('/')[0];
@@ -526,7 +526,7 @@ module.exports.processOthers = function(params, callback) {
 				indexMatch = findIndex(params.existing, function(other) { return e.prevDir == other.prevDir});
 
 				if(indexMatch !== null)
-					global.log('error', 'Find existsing in database ?');
+					console.log('error', 'Find existsing in database ?');
 
 				//Checking if the directory contains a video/audio file
 				var directoryFiles = fs.readdirSync(e.prevDir)
@@ -552,8 +552,8 @@ module.exports.processOthers = function(params, callback) {
 	var othersFiles = params.others;
 
 	parseOthers(othersFiles, function(others) {
-		global.log('debug', 'Parsed objects: ', parsed);
-		global.log('debug', 'News', others.length);
+		console.log('debug', 'Parsed objects: ', parsed);
+		console.log('debug', 'News', others.length);
 		delete othersFiles;
 		callback(null, others);
 	});

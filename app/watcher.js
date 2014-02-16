@@ -9,7 +9,7 @@ global.config = jf.readFileSync(__dirname + '/config.json');
 if(!fs.existsSync(global.config.root + '/public/tmp'))
 	fs.mkdirSync(global.config.root + '/public/tmp', '0775');
 
-global.log = require(global.config.root+'/core/logger');
+console.log = require(global.config.root+'/core/logger');
 
 var explorer = require('./watcher/explorer')
   , database = require('./core/database');
@@ -60,7 +60,7 @@ var watcher = {
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  global.log('DB opened successfuly !');
+  console.log('DB opened successfuly !');
 
 	watcher.setInterval();
 

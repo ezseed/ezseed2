@@ -5,7 +5,7 @@ var _ = require('underscore')
 
 var api = {
 	error: function(res, err) {
-		global.log('error', err);
+		console.log('error', err);
 		res.json({error: err});
 	},
 	//Parse req.query.t

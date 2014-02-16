@@ -13,15 +13,15 @@ if(global.config.root.length == 0 || !global.config.aucun) {
   jf.writeFileSync(__dirname + '/config.json', global.config);
 }
 
-global.log = require('./core/logger');
+console.log = require('./core/logger');
 
 process.on('uncaughtException', function ( err ) {
 
-    global.log(1, err.message);
-    global.log(1, err.stack);
+    console.log(1, err.message);
+    console.log(1, err.stack);
 
     if(err.code == 'MODULE_NOT_FOUND')
-      global.log(5, 'Please try : npm install');
+      console.log(5, 'Please try : npm install');
 
 
     setTimeout(function() {
@@ -108,13 +108,13 @@ mongoose.connect('mongodb://localhost/ezseed');
 
 var mongo = mongoose.connection;
 
-mongo.on('error', global.log.bind(global, 'connection error:'));
+mongo.on('error', console.log.bind(global, 'connection error:'));
 
 mongo.once('open', function callback () {
-  global.log('DB opened successfuly !');
+  console.log('DB opened successfuly !');
 
   var server = http.createServer(app).listen(app.get('port'), function(){
-    global.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + app.get('port'));
   });
 
   var io = require('./core/sockets').listen(server);
@@ -129,10 +129,10 @@ if ('development' == app.get('env')) {
 
 //This should be an error
 app.use(function(err, req, res, next) {
-  global.log('This should be an error');
+  console.log('This should be an error');
 
   if(err)
-    global.log('error', err);
+    console.log('error', err);
 
   next(err);
 });

@@ -40,7 +40,7 @@ var user = {
 	authenticate : function(req, res) {
 		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
 			if(err)
-				global.log('error', err);
+				console.log('error', err);
 
 			if (!err && user) {
 				// Regenerate session when logged

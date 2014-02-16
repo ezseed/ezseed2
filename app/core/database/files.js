@@ -88,7 +88,7 @@ var files = {
 				},
 				function(err, docs) {
 					if(err)
-						global.log('error', err);
+						console.log('error', err);
 					
 					if(docs.songs.length == 0)
 						files.albums.delete(id, cb);
@@ -199,7 +199,7 @@ var files = {
 				},
 				function(err, docs) {
 					if(err)
-						global.log('error', err);
+						console.log('error', err);
 					
 					if(docs.files.length == 0)
 						files.others.delete(id, cb);

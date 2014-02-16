@@ -6,7 +6,7 @@ var mongoose = require('mongoose')
  
 //  	schema.pre('remove', function (next) {
 
-// 	    global.log(this.infos);
+// 	    console.log(this.infos);
 
 // 	    MoviesInformations.findByIdAndRemove(this.infos).exec();
 

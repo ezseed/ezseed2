@@ -15,7 +15,7 @@ var _ = require('underscore')
 exports.explore = function(params, cb) {
 
 	var explorePath = function(pathToWatch, pathCallback) {
-		global.log('info', 'exploring', pathToWatch);
+		console.log('info', 'exploring', pathToWatch);
 		console.time('paths');
 		
 		//Get db files first
@@ -29,7 +29,7 @@ exports.explore = function(params, cb) {
 				//Getting each files
 				explorer.getFiles(pathToWatch, function(err, filePaths) {
 					if(err) {
-						global.log('error', err);
+						console.log('error', err);
 						if(err.code == 'ENOENT')
 							db.paths.removeByPath(err.path, pathCallback);
 					} else {
@@ -116,9 +116,9 @@ exports.explore = function(params, cb) {
 	async.mapSeries(params.paths, explorePath, function(err, results){
 
 
-		global.log('info', 'Each paths done.' );
+		console.log('info', 'Each paths done.' );
 		console.timeEnd('paths');
-		global.log('-------------------------------------------------'.rainbow);
+		console.log('-------------------------------------------------'.rainbow);
 		cb(err, results);
 	});
 }

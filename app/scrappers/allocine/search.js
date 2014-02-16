@@ -32,7 +32,7 @@ var search = function(movie, cb) {
   movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
   movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
 
-  global.log('info','Gathering infos on', movie.search);
+  console.log('info','Gathering infos on', movie.search);
   console.time('infos');
 
   //searching in the allocine API (could be others)
@@ -40,7 +40,7 @@ var search = function(movie, cb) {
 
       console.timeEnd('infos');
 
-      if(err) global.log('error', 'Error Allocine call', err);
+      if(err) console.log('error', 'Error Allocine call', err);
 
   		if(err) return cb(null, movie);
 
