@@ -122,7 +122,7 @@ var user = {
 		});
 	},
 	get_client: function(username, done) {
-		db.users.byUsername(username, function(err, u) {
+		db.user.byUsername(username, function(err, u) {
 
 			if(global.config && global.config[u.client])
 				done(err, u.client);

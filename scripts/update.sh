@@ -38,7 +38,7 @@ git pull -f
 
 echo "Installing dependecies"
 npm cache clear -f
-npm i
+npm i --production
 npm link
 
 # echo "Ezseed is up to date starting"
