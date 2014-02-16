@@ -22,13 +22,13 @@ var user = {
 
 		self.add(username, password, function(err) {
 			if(err) {
-				global.log('error', err);
+				log('error', err);
 
-				global.log('info', "Mise à jour du client");
+				log('info', "Mise à jour du client");
 
 				db.user.setClient(username, cache.get('client'), function(err) {
 					if(err)
-						global.log('error', err);
+						log('error', err);
 					
 					self.create_next(username, password, done);
 
@@ -47,7 +47,7 @@ var user = {
 			else {
 
 				db.users.create({username : username, password: password, client : cache.get('client'), role : cache.get('role')}, function(err, user) {
-		    		global.log('info', "Utilisateur ajouté à la base de données d'ezseed");
+		    		log('info', "Utilisateur ajouté à la base de données d'ezseed");
 		    		//cache.put('user', {username : username, password : password, client: client});
 		    		done(null);
 		    	});
@@ -64,10 +64,10 @@ var user = {
 	  	exec('grep -c "^'+username+':" /etc/passwd',function(err, stdout, stderr) {
 	  		
 	  		if(err)
-				global.log('error', err);
+				log('error', err);
 			
 			if(stderr)
-				global.log('error', stderr);
+				log('error', stderr);
 
 	  		if(stdout == '1') {
 	  			done("L'utilisateur existe déjà !", user_path);
@@ -77,10 +77,10 @@ var user = {
 				
 				var running = exec(cmd, function (err, stdout, stderr) {
 					if(err)
-						global.log('error', err);
+						log('error', err);
 					
 					if(stderr)
-						global.log('error', stderr);
+						log('error', stderr);
 
 					done(err, user_path);
 				});
@@ -92,7 +92,7 @@ var user = {
 	save_path: function(user_path, username, done) {
 
 		db.paths.save(user_path, username, function(err, p) {
-			global.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
+			log('info', "Chemin "+ user_path + " sauvegardé en base de données");
 
 			// require('./helpers/pm2').restart('watcher', function() {
 				done(null, user_path);
@@ -102,9 +102,9 @@ var user = {
 	delete: function(username, done) {
 		db.users.delete(username, function(err) {
 			if(err)
-				global.log("error", err);
+				log("error", err);
 			else
-		 		global.log("info", "Utilisateur "+ username + " supprimé");
+		 		log("info", "Utilisateur "+ username + " supprimé");
 	
 	 		done();
 	 	});
@@ -114,7 +114,7 @@ var user = {
 
 		exec(cmd, function(err, stdout, stderr) {
 			
-			global.log('info', "System password changed");
+			log('info', "System password changed");
 			
 			db.users.update(username, {password : password}, done);
 		});
@@ -125,7 +125,7 @@ var user = {
 			if(global.config && global.config[u.client])
 				done(err, u.client);
 			else {
-				global.log('error', "Le client "+u.client+" n'est pas installé")	
+				log('error', "Le client "+u.client+" n'est pas installé")	
 				done(err, u.client);
 			}
 		

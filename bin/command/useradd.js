@@ -63,12 +63,12 @@ var useradd = {
 					});
 				});
 			} else {
-				global.log('error', "Le client " + client + " n'est pas installé !");
+				log('error', "Le client " + client + " n'est pas installé !");
 				process.exit(1);
 			}
 
 		} else {
-			global.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
+			log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
 			process.exit(1);
 		}
 	}

@@ -24,22 +24,22 @@ var rtorrent_daemon = function (cmd, options) {
 
 						daemon('rutorrent', cmd, user.username, function() {
 
-							global.log('info', user.username + " " + cmd + "ed");
+							log('info', user.username + " " + cmd + "ed");
 							cb();
 
 						});
 
 					} else {
-						global.log('info', user.username + "is using "+user.client+", skipping");
+						log('info', user.username + "is using "+user.client+", skipping");
 						cb();
 					}
 
 				},
 				function(err) {
 
-					if(err) global.log('error', err);
+					if(err) log('error', err);
 
-					global.log('info', "Success");
+					log('info', "Success");
 					process.exit(0);
 
 				}

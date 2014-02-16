@@ -9,7 +9,7 @@ var fs = require('fs')
 var settings = function (username, password, next) {
 	var user_path = require(global.app_path+'/bin/lib/helpers/path')();
 
-	global.log("info", "Ajout de l'utilisateur tranmsission terminé, remplacement des configurations");
+	log("info", "Ajout de l'utilisateur tranmsission terminé, remplacement des configurations");
 	var settings = global.app_path + '/scripts/transmission/config/settings.'+username+'.json';
 
 	fs.readFile(settings, function (err, data) {
@@ -52,7 +52,7 @@ var useradd = function (username, password, next) {
 
 	user.create(username, password, function(err) {
 		if(err)
-			global.log('error', err.error);
+			log('error', err.error);
 
 		var shell_path = global.app_path + '/scripts/transmission/useradd.sh';
 		fs.chmodSync(shell_path, '775');
@@ -62,13 +62,13 @@ var useradd = function (username, password, next) {
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
 
-			global.log('info', string.info);
+			log('info', string.info);
 		});
 
 		running.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
 
-			global.log('error', string.error);
+			log('error', string.error);
 		});
 
 		running.on('exit', function (code) {

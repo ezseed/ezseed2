@@ -6,8 +6,8 @@ module.exports = {
 		exec('pm2', ['restart', name], function(err) {
 			
 			if(err !== undefined && err !== null) {
-				global.log('error', err);
-				global.log('debug', 'pm2 restart '+name+''.info);
+				log('error', err);
+				log('debug', 'pm2 restart '+name+''.info);
 			}
 
 			return typeof cb == 'function' ? cb() : true;
@@ -17,8 +17,8 @@ module.exports = {
 	 	exec('pm2', ['start', global.app_path+'/ezseed.json'], function(err) {
 			
 			if(err !== undefined && err !== null) {
-				global.log('error', err);
-				global.log('debug', 'pm2 start ezseed.json'.info);
+				log('error', err);
+				log('debug', 'pm2 start ezseed.json'.info);
 			}
 
 			return typeof cb == 'function' ? cb() : true;

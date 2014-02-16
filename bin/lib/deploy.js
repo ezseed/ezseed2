@@ -87,24 +87,24 @@ var deploy = function(cb) {
 
 	populateRequire(addPlugins(), function(err){
 		if(err)
-			global.log('error', err);
+			log('error', err);
 
 		var deploy = spawn(global.app_path + '/scripts/deploy.sh', [config.theme]);
 
 		deploy.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			global.log(string);
+			log(string);
 		});
 
 		deploy.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('error', string);
+			log('error', string);
 			
 		});
 
 		deploy.on('exit', function (code) {
 
-			global.log('info', "Deploiement terminé.");
+			log('info', "Deploiement terminé.");
 
 			return cb !== undefined && typeof cb == 'function' ? cb(code) : process.exit(code);
 		});

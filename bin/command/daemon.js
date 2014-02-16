@@ -5,12 +5,12 @@ var shortcut = function(cmd) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		global.log('info', string);
+		log('info', string);
 	});
 
 	running.stderr.on('error', function (data) {
 		var string = new Buffer(data).toString();
-		global.log('error', string);
+		log('error', string);
 		
 	});
 

@@ -11,16 +11,16 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('info', string);
+			log('info', string);
 		});
 
 		running.stderr.on('error', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('error', string);			
+			log('error', string);			
 		});
 
 		running.on('exit', function (code) {
-			global.log('info', 'Mise à jour de rutorrent terminée');
+			log('info', 'Mise à jour de rutorrent terminée');
 			var config = jf.readFileSync(global.app_path + '/app/config.json');
 			
 			config.rutorrent = true;
@@ -36,18 +36,18 @@ var update = {
 
 		running.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('info', string);
+			log('info', string);
 		});
 
 		running.stderr.on('error', function (data) {
 			var string = new Buffer(data).toString();
-			global.log('error', string);
+			log('error', string);
 			
 		});
 
 		running.on('exit', function (code) {
 
-			global.log('info', 'Enregistrement du scrapper');
+			log('info', 'Enregistrement du scrapper');
 
 			global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
 			jf.writeFileSync(global.app_path+'/app/config.json', global.config);
@@ -55,7 +55,7 @@ var update = {
 
 			var next = function() {
 				if(options['no-restart']) {
-					global.log('info', 'Mise à jour terminée, lancez : ezseed start');
+					log('info', 'Mise à jour terminée, lancez : ezseed start');
 					cb(code);
 				} else {
 					require('./daemon').daemon('start',function(code) {
@@ -68,7 +68,7 @@ var update = {
 			if(options['no-deploy']) {
 				next();
 			} else {
-				global.log('info', 'Ezseed est à jour déploiement des fichiers');
+				log('info', 'Ezseed est à jour déploiement des fichiers');
 
 				require('../lib/deploy')(function(code) {
 					next();
