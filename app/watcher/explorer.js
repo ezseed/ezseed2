@@ -1,5 +1,5 @@
-//Watch for files and than launch watcher (in real time)
-//use ObjectID in urls
+
+var console = require(global.config.root + '/core/logger');
 
 var _ = require('underscore')
   , explorer = require('explorer')
@@ -16,7 +16,7 @@ exports.explore = function(params, cb) {
 
 	var explorePath = function(pathToWatch, pathCallback) {
 		console.log('info', 'exploring', pathToWatch);
-		console.time('paths');
+		global.console.time('paths');
 		
 		//Get db files first
 		var id_path = _.findWhere(params.docs.paths, {path : pathToWatch})._id;
@@ -117,7 +117,7 @@ exports.explore = function(params, cb) {
 
 
 		console.log('info', 'Each paths done.' );
-		console.timeEnd('paths');
+		global.console.timeEnd('paths');
 		console.log('-------------------------------------------------'.rainbow);
 		cb(err, results);
 	});

@@ -1,3 +1,4 @@
+var console = require('../logger');
 var mongoose = require('mongoose')
   , models = require('../../models')
   , Remove = mongoose.model('Remove')

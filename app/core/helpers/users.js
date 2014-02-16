@@ -1,3 +1,4 @@
+var console = require('../logger');
 var _ = require('underscore')
   , cache = require('memory-cache')
   , pretty = require('prettysize')

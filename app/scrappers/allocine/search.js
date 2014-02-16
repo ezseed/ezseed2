@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var allocine = require('allocine-api')
   , _ = require('underscore')
   , _s = require('underscore.string')

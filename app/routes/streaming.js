@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var fs = require('fs')
 	, _ = require('underscore')
 	, db = require('../core/database');

@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var mongoose = require('mongoose')
   ,	model = require('./model')
   , MoviesInformations = mongoose.model('MoviesInformations');

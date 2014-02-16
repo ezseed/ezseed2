@@ -9,7 +9,7 @@ global.config = jf.readFileSync(__dirname + '/config.json');
 if(!fs.existsSync(global.config.root + '/public/tmp'))
 	fs.mkdirSync(global.config.root + '/public/tmp', '0775');
 
-console.log = require(global.config.root+'/core/logger');
+var console = require(global.config.root + '/core/logger');
 
 var explorer = require('./watcher/explorer')
   , database = require('./core/database');

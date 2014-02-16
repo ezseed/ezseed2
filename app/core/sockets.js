@@ -1,3 +1,4 @@
+var console = require('./logger');
 var socketio = require('socket.io')
   , fs = require('fs')
   , spawn = require('spawn-command')

@@ -13,8 +13,6 @@ if(global.config.root.length == 0 || !global.config.aucun) {
   jf.writeFileSync(__dirname + '/config.json', global.config);
 }
 
-console.log = require('./core/logger');
-
 process.on('uncaughtException', function ( err ) {
 
     console.log(1, err.message);
@@ -29,7 +27,7 @@ process.on('uncaughtException', function ( err ) {
     }, 10);
 });
 
-
+var console = require('./core/logger');
 
 var express = require('express')
   , db = require('./core/database')

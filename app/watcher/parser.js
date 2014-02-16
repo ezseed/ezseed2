@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var pathInfos = require('path')
   , mime = require('mime')
   , explorer = require('explorer')
