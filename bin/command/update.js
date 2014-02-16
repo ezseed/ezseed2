@@ -30,7 +30,7 @@ var update = {
 			cb(code);
 		});
 	},
-	ezseed: function (cb) {
+	ezseed: function (options, cb) {
 
 		var running = spawn(global.app_path+'/scripts/update.sh');
 
@@ -46,20 +46,34 @@ var update = {
 		});
 
 		running.on('exit', function (code) {
-			global.log('info', 'Ezseed est à jour déploiement des fichiers');
 
-			require('../lib/deploy')(function(code) {
+			global.log('info', 'Enregistrement du scrapper');
 
-				var config = jf.readFileSync(global.app_path + '/app/config.json');
+			global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
+			jf.writeFileSync(global.app_path+'/app/config.json', global.config);
+			
 
-				if(config.scrapper == undefined) {
-					config.scrapper = 'allocine';
-					jf.writeFileSync(global.app_path+'/app/config.json', config);
+			var next = function() {
+				if(options['no-restart']) {
+					global.log('info', 'Mise à jour terminée, lancez : ezseed start');
+					cb(code);
+				} else {
+					require('./daemon').daemon('start',function(code) {
+						cb(code);
+					});
+				
 				}
+			}
 
-				global.log('info', 'Mise à jour terminée, lancez : ezseed start');
-				cb(code);
-			});
+			if(options['no-deploy']) {
+				next();
+			} else {
+				global.log('info', 'Ezseed est à jour déploiement des fichiers');
+
+				require('../lib/deploy')(function(code) {
+					next();
+				});
+			}
 
 		});
 	}
@@ -72,6 +86,10 @@ module.exports = function (program) {
 	.command('update')
 	.description('Update ezseed')
 	.option('--rtorrent', 'update rtorrent & libtorrent')
+
+	.option('--scrapper <tmdb|allocine>')
+	.option('--no-deploy', "doesn't deploy")
+	.option('--no-restart', "doesn't restart ezseeed")
 	.action(function(options) {
 
 		if(options.rtorrent)
@@ -82,7 +100,7 @@ module.exports = function (program) {
 
 		else 
 			
-			update.ezseed(function(code) {
+			update.ezseed(options, function(code) {
 				process.exit(code);
 			});		
 

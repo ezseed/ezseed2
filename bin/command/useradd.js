@@ -47,10 +47,9 @@ var useradd = {
 		if(options.path)
 			cache.put('path', options.path);
 
-		if(fs.existsSync(app_path + '/app/config.json')) {
-			var config = jf.readFileSync(app_path + '/app/config.json');
+		if(global.config.client) {
 
-			if(client == "aucun" || config[client] == true) {
+			if(client == "aucun" || global.config[client] == true) {
 
 				cache.put('client', client);
 				
@@ -67,8 +66,9 @@ var useradd = {
 				global.log('error', "Le client " + client + " n'est pas installé !");
 				process.exit(1);
 			}
+
 		} else {
-			global.log('error', "Le fichier de configuration n'existe pas, lancez ./ezseed install");
+			global.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
 			process.exit(1);
 		}
 	}

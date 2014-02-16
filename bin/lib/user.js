@@ -118,6 +118,18 @@ var user = {
 			
 			db.users.update(username, {password : password}, done);
 		});
+	},
+	get_client: function(username, done) {
+		db.users.byUsername(username, function(err, u) {
+
+			if(global.config && global.config[u.client])
+				done(err, u.client);
+			else {
+				global.log('error', "Le client "+u.client+" n'est pas installé")	
+				done(err, u.client);
+			}
+		
+		});
 	}
 };
 
