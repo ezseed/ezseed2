@@ -109,15 +109,6 @@ var install = {
 
 			    	return useradd(username, password, next);
 
-			    	//Nul on fait cache+role => aucun + useradd
-			    	// db.users.create({username : username, password: password, client : 'aucun', role: 'admin'}, function(err, user) {
-			    	// 	console.log("Utilisateur ajouté à la base de données d'ezseed".info);
-			    	// 	cache.put('user', {username : username, password : password});
-			    	// 	callback(null,{});
-			    	// });
-
-
-
 			    });
 			});
 		}

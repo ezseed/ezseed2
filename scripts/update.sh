@@ -10,6 +10,8 @@ else
 	npm i pm2 -g
 fi
 
+echo "export PM2_NODE_OPTIONS='--stack_size=1400'" >> ~/.pm2/custom_options.sh
+
 cd $appdir
 
 if [ -d "$appdir/app/scripts" ]

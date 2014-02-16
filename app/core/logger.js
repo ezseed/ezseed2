@@ -1,7 +1,12 @@
 var level   = process.argv.indexOf('-d') === -1 ? 6 : 7;
-var logger  = require('caterpillar').createLogger({level:level});
-var filter  = require('caterpillar-filter').createFilter();
-var human   = require('caterpillar-human').createHuman({spacer: "  "});
+
+if(level == 6 && process.NODE_ENV == 'production') {
+	level = 5;
+}
+
+var logger  = require('caterpillar').createLogger({level:level})
+  , filter  = require('caterpillar-filter').createFilter()
+  , human   = require('caterpillar-human').createHuman({spacer: "  "});
 
 logger.pipe(filter).pipe(human).pipe(process.stdout);
 
@@ -19,7 +24,7 @@ logger = require('underscore').extend(logger,
 		},
 		info: function() {
 			var args = [].splice.call(arguments, 0);
-			args.unshift('info');
+			args.unshift('info');	
 			this.log.apply(this, args);
 		},
 		debug: function() {

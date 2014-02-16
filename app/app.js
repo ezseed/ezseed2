@@ -119,11 +119,14 @@ mongo.once('open', function callback () {
 
 });
 
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+});
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
+});
+
 
 //This should be an error
 app.use(function(err, req, res, next) {

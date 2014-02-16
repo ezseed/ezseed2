@@ -48,34 +48,37 @@ var update = {
 
 		running.on('exit', function (code) {
 
-			console.log('info', 'Enregistrement du scrapper');
+			require('../lib/helpers/configure').update_rc(function() {
 
-			global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
-			jf.writeFileSync(global.app_path+'/app/config.json', global.config);
-			
+				console.log('info', 'Enregistrement du scrapper');
 
-			var next = function() {
-				if(options['no-restart']) {
-					console.log('info', 'Mise à jour terminée, lancez : ezseed start');
-					cb(code);
-				} else {
-					require('./daemon').daemon('start',function(code) {
-						cb(code);
-					});
+				global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
+				jf.writeFileSync(global.app_path+'/app/config.json', global.config);
 				
+
+				var next = function() {
+					if(options['no-restart']) {
+						console.log('info', 'Mise à jour terminée, lancez : ezseed start');
+						cb(code);
+					} else {
+						require('./daemon').daemon('start',function(code) {
+							cb(code);
+						});
+					
+					}
 				}
-			}
 
-			if(options['no-deploy']) {
-				next();
-			} else {
-				console.log('info', 'Ezseed est à jour déploiement des fichiers');
-
-				require('../lib/deploy')(function(code) {
+				if(options['no-deploy']) {
 					next();
-				});
-			}
+				} else {
+					console.log('info', 'Ezseed est à jour déploiement des fichiers');
 
+					require('../lib/deploy')(function(code) {
+						next();
+					});
+				}
+			
+			});
 		});
 	}
 }
