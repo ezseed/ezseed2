@@ -27,7 +27,7 @@ var shortcut = function(cmd, cb) {
 
 module.exports.daemon = shortcut;
 
-module.exports = function(program) {
+module.exports.program = function(program) {
 	program
 		.command('start')
 		.action(function() {

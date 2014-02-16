@@ -50,7 +50,7 @@ autoUpdate.checkForUpdates(function(update) {
 	}
 });
 
-require('./command/daemon')(program);
+require('./command/daemon').program(program);
 
 require('./command/install')(program);
 require('./command/update')(program);
