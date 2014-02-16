@@ -54,7 +54,9 @@ app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 
 app.set('view engine', 'ejs');
 
-app.use(express.logger('dev'));
+if(process.env.NODE_ENV == 'development')
+  app.use(express.logger('dev'));
+
 app.use(express.compress());
 
 //not using bodyparser middleware
