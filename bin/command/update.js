@@ -57,7 +57,7 @@ var update = {
 				
 
 				var next = function() {
-					if(options['no-restart']) {
+					if(options.norestart) {
 						console.log('info', 'Mise à jour terminée, lancez : ezseed start');
 						cb(code);
 					} else {
@@ -68,7 +68,7 @@ var update = {
 					}
 				}
 
-				if(options['no-deploy']) {
+				if(options.nodeploy) {
 					next();
 				} else {
 					console.log('info', 'Ezseed est à jour déploiement des fichiers');
@@ -92,8 +92,8 @@ module.exports = function (program) {
 	.option('--rtorrent', 'update rtorrent & libtorrent')
 
 	.option('--scrapper <tmdb|allocine>')
-	.option('--no-deploy', "doesn't deploy")
-	.option('--no-restart', "doesn't restart ezseeed")
+	.option('--nodeploy', "doesn't deploy")
+	.option('--norestart', "doesn't restart ezseeed")
 	.action(function(options) {
 
 		if(options.rtorrent)
