@@ -48,7 +48,7 @@ var useradd = {
 		if(options.path)
 			cache.put('path', options.path);
 
-		if(global.config.client) {
+		if(global.config) {
 
 			if(client == "aucun" || global.config[client] == true) {
 
