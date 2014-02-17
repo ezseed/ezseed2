@@ -27,18 +27,20 @@ super() {
  
 start() {
     echo "Starting $NAME"
-    super $PM2 start /var/www/ezseed2/ezseed.json
+    #super $PM2 start /var/www/ezseed2/ezseed.json
+    super $PM2 resurrect
     super ezseed reboot
 }
  
 stop() {
     echo "Stoping $NAME"
-    super $PM2 stop all
+    super $PM2 dump
+    super $PM2 kill
 }
  
 restart() {
     echo "Restarting $NAME"
-    super pm2 kill
+    super ezseed stop
     super ezseed start
 }
  
