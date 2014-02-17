@@ -28,7 +28,7 @@ super() {
 start() {
     echo "Starting $NAME"
     super $PM2 start /var/www/ezseed2/ezseed.json
-    super /var/www/ezseed2/ezseed reboot
+    super ezseed reboot
 }
  
 stop() {
