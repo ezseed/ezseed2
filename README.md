@@ -1,5 +1,3 @@
-Les noms utilisateurs doivent être en minuscule ! <strike>UserName</strike> => username
-
 ## Installation
 
 ```
@@ -41,7 +39,43 @@ ezseed update
 ```
 
 ## Mise à jour depuis < v2.1.11-beta
-TODO
+
+Je commence par créer une nouvelle version d'ezseed et je remet les fichiers de configuration dedans :
+```
+cd /var/www
+mv ezseed2 ezseed2.bak
+git clone https://github.com/soyuka/ezseed2
+cd ezseed2
+git checkout develop-stable
+cp ../ezseed2.bak/app/scripts/transmission/config/* scripts/transmission/config
+cp ../ezseed2.bak/app/config.json app/config.json
+
+#Pendant qu'on y est un petit update :
+apt-get update && apt-get upgrade -y
+
+#mise à jour de pm2
+pm2 kill
+npm install pm2 -g
+
+#Ensuite, je vais supprimer les médias de la base de données :
+mongo
+use ezseed
+db.movies.drop()
+db.albums.drop()
+db.others.drop()
+
+#ctrl+c pour quitter mongo
+Enfin, je configure le nouveau ezseed
+npm cache clear -f #par précaution
+npm install
+npm link
+
+#la commande de config
+ezseed install -uns
+ezseed deploy #nouveau ça minimise tout le bordel :D
+
+ezseed start
+```
 
 ## Mise à jour depuis < v2.1.10-beta
 

@@ -39,7 +39,9 @@ var user = {
 	* POST Login
 	*/
 	authenticate : function(req, res) {
-		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
+		var username = req.body.username.toLowerCase();
+
+		userHelper.authenticate(username, req.body.password, function(err, user){
 			if(err)
 				console.log('error', err);
 

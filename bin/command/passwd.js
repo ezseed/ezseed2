@@ -7,6 +7,8 @@ module.exports = function (program) {
 	.description('Change username password')
 	.action(function(username, options) {
 
+		username = username.toLowerCase();
+
 		require('../lib/user').get_client(username, function(err, client) {
 
 			var passwd = global.app_path + '/bin/client/' + client + '/password';
