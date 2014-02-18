@@ -28,9 +28,9 @@ super() {
 }
 
 start() {
-    if[ -n $('ps -ef | grep "pm2: ezseed" | grep -v grep') ]
+    if[ -n $(ps -ef | grep "pm2: ezseed" | grep -v grep) ]
     then
-        echo "Ezseed is running"
+        echo "Ezseed is already running"
     else
         echo "Starting $NAME"
         super $PM2 resurrect
@@ -52,7 +52,7 @@ restart() {
 
 reload() {
     echo "Reloading $NAME"
-    super $PM2 reload all
+    super $PM2 gracefulReload all
 }
 
 status() {
