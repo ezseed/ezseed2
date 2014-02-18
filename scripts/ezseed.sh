@@ -28,9 +28,14 @@ super() {
 }
 
 start() {
-    echo "Starting $NAME"
-    super $PM2 resurrect
-    super ezseed reboot
+    if[ -n $(ps -ef | grep "pm2: ezseed" | grep -v grep) ]
+    then
+        echo "Ezseed is already running"
+    else
+        echo "Starting $NAME"
+        super $PM2 resurrect
+        super ezseed reboot
+    fi
 }
 
 stop() {
@@ -47,7 +52,7 @@ restart() {
 
 reload() {
     echo "Reloading $NAME"
-    super $PM2 reload all
+    super $PM2 gracefulReload all
 }
 
 status() {

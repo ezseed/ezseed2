@@ -34,12 +34,9 @@ var search = function(movie, cb) {
   movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
 
   console.log('info','Gathering infos on', movie.search);
-  console.time('infos');
 
   //searching in the allocine API (could be others)
   	allocine.api('search', { q:movie.search, filter: movie.movieType, count: 5}, function(err, res) {
-
-      console.timeEnd('infos');
 
       if(err) console.log('error', 'Error Allocine call', err);
 
