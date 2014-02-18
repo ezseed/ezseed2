@@ -21,6 +21,8 @@ var shortcut = function(cmd, cb) {
 			var c = 'ps -ef | grep ezseed | grep -v grep';
 
 			exec(c, function(err, stdout, stderr) {
+				
+				console.log(c, err, stdout, stderr);
 
 				if(stdout.length) {
 					if(typeof cb == 'function')
@@ -29,6 +31,8 @@ var shortcut = function(cmd, cb) {
 						process.exit(code);
 				} else {
 					c = 'pm2 start '+global.app_path+'/ezseed.json';
+
+					console.log('OK', c);
 
 					exec(c, function(err) {
 						if(typeof cb == 'function')
