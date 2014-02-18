@@ -1,5 +1,5 @@
 var console = require(global.config.root+'/core/logger');
-var spawn = require('child_process').spawn;
+var spawn = require('child_process').spawn, exec = require('child_process').exec;
 
 var shortcut = function(cmd, cb) {
 	var running = spawn('/etc/init.d/ezseed.sh', [cmd]);
@@ -17,11 +17,34 @@ var shortcut = function(cmd, cb) {
 
 	running.on('exit', function (code) {
 
-		if(typeof cb == 'function')
-			cb(code);
-		else
-			process.exit(code);
+		if(cmd == 'start') {
+			var c = 'ps -ef | grep ezseed | grep -v grep';
 
+			exec(c, function(err, stdout, stderr) {
+
+				if(stdout.length) {
+					if(typeof cb == 'function')
+						cb(code);
+					else
+						process.exit(code);
+				} else {
+					c = 'pm2 start '+global.app_path+'/ezseed.json';
+
+					exec(c, function(err) {
+						if(typeof cb == 'function')
+							cb(err);
+						else
+							process.exit(err);
+					});
+				}
+			});
+		} else {
+
+			if(typeof cb == 'function')
+				cb(code);
+			else
+				process.exit(code);
+		}
 	});
 }
 
