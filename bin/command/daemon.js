@@ -18,7 +18,7 @@ var shortcut = function(cmd, cb) {
 	running.on('exit', function (code) {
 
 		if(cmd == 'start') {
-			var c = 'ps -ef | grep ezseed | grep -v grep';
+			var c = 'ps -ef | grep "pm2: ezseed" | grep -v grep';
 
 			exec(c, function(err, stdout, stderr) {
 				
