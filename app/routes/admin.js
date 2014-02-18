@@ -8,6 +8,8 @@ var db = require('../core/database')
   , exec = require('child_process').exec
   , userHelper = require('../core/helpers/users');
 
+var console = require('../core/logger');
+
 var admin = {
 	/*
 	 * GET /admin
@@ -211,11 +213,17 @@ var admin = {
 
 		res.redirect('/');
 
-		exec('pm2 restart ezseed', function() {
-			
+		exec('ezseed restart', function() {
+		});
+	},
+	userSpace: function(req, res) {
+		db.user.setSpaceLeft(req.params.uid, req.body.disk, function(err) {
+			if(err)
+				console.error(err);
+		
+			res.redirect('back');
 		});
 	}
-
 }
 
 module.exports = function(app) {
@@ -234,6 +242,8 @@ module.exports = function(app) {
 
 	app.get('/admin/user/:uid/password', admin.restrict, admin.userPassword);
 	app.post('/admin/user/:uid/password', admin.restrict, admin.updatePassword);
+
+	app.post('/admin/user/:uid/space', admin.restrict, admin.userSpace);
 
 	app.post('/admin/theme', admin.restrict, admin.changeTheme);
 
