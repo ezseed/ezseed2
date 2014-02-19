@@ -45,6 +45,8 @@ var useradd = {
 
 		var self = useradd;
 
+		username = username.toLowerCase();
+
 		if(options.path)
 			cache.put('path', options.path);
 

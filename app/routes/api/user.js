@@ -24,7 +24,8 @@ var user = {
 		db.users.count(function(err, num) {
 
 		      //Space left = disk / users
-		      var spaceLeft = global.config.diskSpace / num;
+		      //var spaceLeft = global.config.diskSpace / num;
+		      var spaceLeft = req.user.size;
 
 		      db.paths.byUser(req.params.uid, function(err, results) {
 
@@ -38,7 +39,6 @@ var user = {
 			          spaceLeft = pretty(spaceLeft * 1024 * 1024);
 
 			          res.json({left : spaceLeft, percent : percent, pretty : size.pretty});
-			          //io.sockets.socket(params.sid).emit('size', {left : spaceLeft, percent : percent, pretty : size.pretty});
 
 			    });
 			}, true); //only user direct paths
