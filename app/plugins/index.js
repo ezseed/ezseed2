@@ -1,11 +1,42 @@
 var fs = require('fs')
     , _ = require('underscore')
     , path = require('path')
-    , express = require('express');
+    , express = require('express')
+    , cache = require('memory-cache');
 
-var exec = require('child_process').exec;
+
 
 var pluginsPath = path.join(global.config.root, "plugins");
+
+var getPlugins = function() {
+
+    var plugins = cache.get('plugins');
+
+    if(!plugins) {
+        
+        plugins = [];
+
+        var paths = fs.readdirSync(pluginsPath);
+        _.each(paths, function(plugin) {
+            plugin = path.join(pluginsPath, plugin);
+
+            stats = fs.statSync(plugin);
+            
+            //Check if it's a directory, it's a plugin
+            if(stats.isDirectory()) {
+                plugins.push(plugin);
+            }
+
+        });
+
+        cache.put('plugins', plugins);
+    }
+
+    return plugins;
+}
+
+
+
 
 var getLocals = function(plugin, user) {
     var html = [];
@@ -37,54 +68,38 @@ module.exports = function(app) {
 
     app.use(function(req, res, next) {
 
-        var plugins = fs.readdirSync(pluginsPath), locals = [], stats;
+        var locals = [], stats, plugins = getPlugins();
 
         //Parsing the plugins folder
         _.each(plugins, function(plugin) {
 
-            //Plugin path
-            plugin = path.join(pluginsPath, plugin);
 
-            stats = fs.statSync(plugin);
-            
-            //Check if it's a directory, it's a plugin
-            if(stats.isDirectory()) {
+            //Require the plugin
+            plugin = require(plugin).plugin;
 
-                // if( fs.existsSync(path.join(plugin, 'public'))
-                //      && 
-                //     fs.existsSync(path.join(plugin, 'public/js'))
-                //      &&
-                //     !fs.existsSync(path.join(global.config.root, 'public/'))
-                // ) {
-                //     child = exec('ln -sf')
-                // }
+            //Exporting the routes through app
+            for(var i in plugin.routes) {
+                var route = plugin.routes[i];
 
-                //Require the plugin
-                plugin = require(plugin).plugin;
-
-                //Exporting the routes through app
-                for(var i in plugin.routes) {
-                    var route = plugin.routes[i];
-
-                    switch(route.type) {
-                        case "GET" : 
-                            app.get(route.route, route.action);
-                            break;
-                        case "POST" : 
-                            app.post(route.route, route.action);
-                            break;
-                        default:
-                            break;
-                    }
+                switch(route.type) {
+                    case "GET" : 
+                        app.get(route.route, route.action);
+                        break;
+                    case "POST" : 
+                        app.post(route.route, route.action);
+                        break;
+                    default:
+                        break;
                 }
-
-                //Adds the assets folder of each plugin
-                if(typeof plugin.static == 'string')
-                    app.use(express.static(plugin.static));
-
-                //Defining locals vars
-                locals[plugin.name] = getLocals(plugin, req.user);
             }
+
+            //Adds the assets folder of each plugin
+            if(typeof plugin.static == 'string')
+                app.use(express.static(plugin.static));
+
+            //Defining locals vars
+            locals[plugin.name] = getLocals(plugin, req.user);
+        
         });
 
         res.locals.plugins = locals;
@@ -96,26 +111,21 @@ module.exports = function(app) {
 }
 
 module.exports.database = function() {
-    var plugins = fs.readdirSync(pluginsPath), databases = {};
+    var plugins = getPlugins(), databases = {};
 
     _.each(plugins, function(plugin) {
-        plugin = path.join(pluginsPath, plugin);
-        if(fs.statSync(plugin).isDirectory())
-            databases[plugin] = require(plugin).database;
+        databases[plugin] = require(plugin).database;
     });
 
     return databases;
 }
 
 module.exports.sockets = function(socket, sockets) {
-	var plugins = fs.readdirSync(pluginsPath);
+	var plugins = getPlugins();
 
 	_.each(plugins, function(plugin) {
-    	plugin = path.join(pluginsPath, plugin);
-    	if(fs.statSync(plugin).isDirectory()) {
-    		var s = require(plugin).sockets;
-    		if(typeof s == 'function')
-	    		s(socket, sockets);
-    	}
+		var s = require(plugin).sockets;
+		if(typeof s == 'function')
+    		s(socket, sockets);
     });
 }

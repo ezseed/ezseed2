@@ -1,3 +1,4 @@
+var console = require('../logger');
 var _ = require('underscore')
   , cache = require('memory-cache')
   , pretty = require('prettysize')
@@ -21,7 +22,7 @@ var directorySize = function(path, cb) {
       function (error, stdout, stderr) {
 
         if(error)
-          global.log('error', error);
+          console.log('error', error);
 
         var size = stdout.match(/([0-9]+)/);
 
@@ -43,7 +44,7 @@ var helper = {
     else {
       async.map(paths.paths, directorySize, function(err, sizes){
 
-          global.log('debug', 'User size', sizes);
+          console.log('debug', 'User size', sizes);
 
           var size = _.reduce(sizes, function(memo, num){ return memo + num; }, 0);
           cache.put(key, size, 10000);

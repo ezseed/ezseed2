@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var _ = require('underscore')
   , _s = require('underscore.string')
   , dummyName = require(global.config.root + '/watcher/release.js').dummyName;
@@ -32,16 +33,16 @@ var search = function(movie, cb) {
 	movie.search = movie.search !== undefined ? movie.search : dummyName(movie.name, movie);
 	movie.title = movie.title == undefined ? _s.titleize(movie.name) : movie.title;
 
-	global.log('info','Gathering infos on', movie.search);
+	console.log('info','Gathering infos on', movie.search);
 
-	console.time('infos');
+	// console.time('infos');
 
   //searching in the allocine API (could be others)
   	tmdb.search(movie.movieType == 'tvseries' ? 'tv' : 'movie', {query: movie.search, language: 'fr'}, function(err, res) {
 
-        console.timeEnd('infos');
+        // console.timeEnd('infos');
 
-        if(err) global.log('error', 'Error TMDB call', err);
+        if(err) console.log('error', 'Error TMDB call', err);
 
   		if(err) return cb(null, movie);
 

@@ -111,15 +111,14 @@ Date.prototype.getFrenchDateAsString = function() {
 					<input type="number" id="disk" name="disk" value="<% if(config.diskSpace !== undefined) { %><%= parseInt(config.diskSpace.replace(/[^0-9]/ig, '')) %><% } else { %>1024<% } %>">
 				</div>
 
-				<!-- 
 				<div class="form-block">
-					<label for="player-video">Player Vidéo</label>
-					<select id="player-video" name="videoPlayer">
-						<option value="divx" <% if(config.videoPlayer == 'divx') { %>selected<%}%>>DivX Player</option>
-						<option value="vlc" <% if(config.videoPlayer == 'vlc') { %>selected<%}%>>VLC</option>
+					<label for="scrapper">Scrapper</label>
+					<select id="scrapper" name="scrapper">
+						<option value="allocine" <% if(config.scrapper == 'allocine') { %>selected<%}%>>Allocine</option>
+						<option value="tmdb" <% if(config.scrapper == 'tmdb') { %>selected<%}%>>The movie Database</option>
 					</select>
 				</div>
-				-->
+		
 				<div class="text-center">
 					<input type="submit" value="Sauvegarder">
 				</div>

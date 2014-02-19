@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , db = require(global.app_path + '/app/core/database')
   , child_process = require('child_process')

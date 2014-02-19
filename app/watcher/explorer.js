@@ -1,5 +1,5 @@
-//Watch for files and than launch watcher (in real time)
-//use ObjectID in urls
+
+var console = require(global.config.root + '/core/logger');
 
 var _ = require('underscore')
   , explorer = require('explorer')
@@ -15,8 +15,10 @@ var _ = require('underscore')
 exports.explore = function(params, cb) {
 
 	var explorePath = function(pathToWatch, pathCallback) {
-		global.log('info', 'exploring', pathToWatch);
-		console.time('paths');
+		console.log('info', 'exploring', pathToWatch);
+	
+		if(process.env.NODE_ENV != 'production')
+			global.console.time('paths');
 		
 		//Get db files first
 		var id_path = _.findWhere(params.docs.paths, {path : pathToWatch})._id;
@@ -29,7 +31,7 @@ exports.explore = function(params, cb) {
 				//Getting each files
 				explorer.getFiles(pathToWatch, function(err, filePaths) {
 					if(err) {
-						global.log('error', err);
+						console.log('error', err);
 						if(err.code == 'ENOENT')
 							db.paths.removeByPath(err.path, pathCallback);
 					} else {
@@ -116,9 +118,12 @@ exports.explore = function(params, cb) {
 	async.mapSeries(params.paths, explorePath, function(err, results){
 
 
-		global.log('info', 'Each paths done.' );
-		console.timeEnd('paths');
-		global.log('-------------------------------------------------'.rainbow);
+		console.log('info', 'Each paths done.' );
+	
+		if(process.env.NODE_ENV != 'production')
+			global.console.timeEnd('paths');
+	
+		console.log('-------------------------------------------------'.rainbow);
 		cb(err, results);
 	});
 }

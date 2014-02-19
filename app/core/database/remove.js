@@ -1,3 +1,4 @@
+var console = require('../logger');
 var mongoose = require('mongoose')
   , models = require('../../models')
   , Remove = mongoose.model('Remove')
@@ -14,7 +15,7 @@ var remove = {
 			{ upsert:true }, 
 			function (err, docs) {
 				if(err) 
-					global.log('error', err);
+					console.log('error', err);
 
 				done(err, docs);
 			}
@@ -25,7 +26,7 @@ var remove = {
 		Remove.findByIdAndUpdate(id_path, {to_remove: []},{'new': false}, function(err, docs) {
 			
 			if(err)
-				global.log('error', err);
+				console.log('error', err);
 
 			if(docs)
 				done(err, docs.to_remove);

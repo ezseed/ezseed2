@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var mongoose = require('mongoose')
   ,	model = require('./model')
   , MoviesInformations = mongoose.model('MoviesInformations');
@@ -6,7 +7,7 @@ var mongoose = require('mongoose')
  
 //  	schema.pre('remove', function (next) {
 
-// 	    global.log(this.infos);
+// 	    console.log(this.infos);
 
 // 	    MoviesInformations.findByIdAndRemove(this.infos).exec();
 

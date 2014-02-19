@@ -10,6 +10,12 @@ else
 	npm i pm2 -g
 fi
 
+rm ~/.pm2/custom_options.sh
+touch ~/.pm2/custom_options.sh
+
+echo "export PM2_NODE_OPTIONS='--stack_size=1400'" >> ~/.pm2/custom_options.sh
+echo "export NODE_ENV=production" >> ~/.pm2/custom_options.sh
+
 cd $appdir
 
 if [ -d "$appdir/app/scripts" ]
@@ -27,7 +33,7 @@ git pull -f
 
 echo "Installing dependecies"
 npm cache clear -f
-npm i
+npm i --production
 npm link
 
 # echo "Ezseed is up to date starting"

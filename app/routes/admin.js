@@ -65,7 +65,7 @@ var admin = {
 		conf = _.extend(conf, {
 			torrentLink : req.body.torrent,
 			diskSpace : req.body.disk,
-			videoPlayer : req.body.videoPlayer
+			scrapper : req.body.scrapper
 		});
 
 		jf.writeFileSync(global.config.root + '/config.json', conf);
@@ -93,8 +93,6 @@ var admin = {
 				var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 				
 				var options = ['useradd', '-r', 'user','-p', req.body.password, req.body.client, req.body.username];
-
-				console.log(options.join(' '));
 
 				var running = spawn(shell_path, options);
 
@@ -132,8 +130,7 @@ var admin = {
 		var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 
 		db.user.byId(req.params.uid, function(err, user) {
-			var running = spawn(shell_path, ['userdel', user.client, user.username]);
-
+			var running = spawn(shell_path, ['userdel', user.username]);
 
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
@@ -160,7 +157,7 @@ var admin = {
 		db.user.byId(req.params.uid, function(err, user) {
 			var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
 			
-			var options = ['password', user.client, user.username, ,'-p', req.body.password];
+			var options = ['password', user.username, ,'-p', req.body.password];
 
 			exec(shell_path, options, function(err, stderr, stdout) {
 				if(err)

@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var _ = require('underscore')
 	, db = require('../core/database')
 	, path = require('path')
@@ -40,7 +41,7 @@ var user = {
 	authenticate : function(req, res) {
 		userHelper.authenticate(req.body.username, req.body.password, function(err, user){
 			if(err)
-				global.log('error', err);
+				console.log('error', err);
 
 			if (!err && user) {
 				// Regenerate session when logged
@@ -82,7 +83,7 @@ var user = {
 		db.user.byId(req.params.uid, function(err, user) {
 			var shell_path = path.resolve(global.config.root, '../bin/', 'ezseed');
 				
-			var options = ['password', user.client, user.username,'-p', req.body.password];
+			var options = ['password', user.username,'-p', req.body.password];
 
 			exec(shell_path + ' ' + options.join(' '), function(err, stderr, stdout) {
 

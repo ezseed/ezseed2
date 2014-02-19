@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var fs = require('fs')
 	, _ = require('underscore')
 	, db = require('../core/database');
@@ -7,7 +8,7 @@ var streaming = {
 
 		db.files.movies.byId(req.params.id, function(err, doc) {
 			if(err) { 
-				global.log('error', err);
+				console.log('error', err);
 				req.session.error = 'Aucun fichier trouvé';
 				res.redirect('/');
 			} else {

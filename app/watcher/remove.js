@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var _ = require('underscore')
   , async = require('async')
   , db = require('../core/database')
@@ -16,7 +17,7 @@ var exists = function(params, callback) {
 
 	if(!fs.existsSync(item.path)) {
 
-		global.log('warn', item.path + ' has been deleted');
+		console.log('warn', item.path + ' has been deleted');
 
 		to_remove.push({
 			type: params.type,
@@ -28,7 +29,7 @@ var exists = function(params, callback) {
 			case 'movies': 
 				db.files[params.type].deleteVideo(params.file._id, item._id, function(err) {
 					if(err)
-						global.log('error', err);
+						console.log('error', err);
 
 					callback(null, item);
 				});
@@ -36,7 +37,7 @@ var exists = function(params, callback) {
 			case 'albums':
 				db.files[params.type].deleteSong(params.file._id, item._id, function(err) {
 					if(err)
-						global.log('error', err);
+						console.log('error', err);
 
 					callback(null, item);
 				});
@@ -45,7 +46,7 @@ var exists = function(params, callback) {
 			case 'others':
 				db.files[params.type].deleteFile(params.file._id, item._id, function(err) {
 					if(err)
-						global.log('error', err);
+						console.log('error', err);
 
 					callback(null, item);
 				});
@@ -111,7 +112,7 @@ var remove = function (existing, id_path, cb) {
 	    }
 	},
 	function(err, results) {
-		//global.log('debug','To be removed', to_remove);
+		//console.log('debug','To be removed', to_remove);
 		
 		db.remove.store(id_path, to_remove, function(err, docs) {
 

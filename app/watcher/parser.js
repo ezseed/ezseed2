@@ -1,3 +1,4 @@
+var console = require(global.config.root + '/core/logger');
 var pathInfos = require('path')
   , mime = require('mime')
   , explorer = require('explorer')
@@ -8,7 +9,6 @@ var pathInfos = require('path')
   , db = require('../core/database')
   , fs = require('fs')
   , scrapper = require('../scrappers')
-  , cache = require('memory-cache')
   ;
 
 /**
@@ -38,19 +38,14 @@ var findIndex = function(arr, iterator) {
 module.exports.processAlbums = function(params, callback) {
 	var audios = params.audios, pathToWatch = params.pathToWatch;
 
-	// _.each(audios, function(e, i) {
+	var parseAudios = function(arr, cb, albums) {
 
-	var parseAudios = function(arr, cb, i, albums) {
-
-		i = i === undefined ? 0 : i;
 		albums = albums === undefined ? [] : albums;
 
-		if(i == arr.length) {
-			delete arr;
+		if(arr.length == 0)
 			return cb(albums);
-		}
-
-		var e = arr[i];
+	
+		var e = arr.shift();
 		
 		//Redifine prevDir
 		var lastDir = e.prevDir.split('/'), dirsNb = lastDir.length - 1;
@@ -90,8 +85,8 @@ module.exports.processAlbums = function(params, callback) {
 					}
 
 					albums[indexMatch].songs.push(e);
-					i++;
-					return parseAudios(arr, cb, i, albums);
+					
+					return parseAudios(arr, cb, albums);
 
 				});
 			} else {
@@ -121,8 +116,8 @@ module.exports.processAlbums = function(params, callback) {
 					if(indexMatch !== null) {
 
 						albums[indexMatch].songs.push(e);
-						i++;
-						return parseAudios(arr, cb, i, albums);
+						
+						return parseAudios(arr, cb, albums);
 					} else {
 						//New album detected
 						var a = {
@@ -133,7 +128,7 @@ module.exports.processAlbums = function(params, callback) {
 								songs : [e],
 								picture : infos.picture,
 								prevDir : e.prevDir,
-								prevDirRelative : e.prevDir.replace(global.config.root, '')
+								prevDirRelative : e.prevDir.replace(global.rootPath, '')
 							};
 
 						if(a.picture === null) {
@@ -142,22 +137,22 @@ module.exports.processAlbums = function(params, callback) {
 								if(!err)
 									albums.push( _.extend(a, {picture: results.artworkUrl100.replace('100x100', '400x400')} ));
 								else
-									albums.push(a); //WTF ?!
+									albums.push(a);
 
-								i++;
-								return parseAudios(arr, cb, i, albums);
+								
+								return parseAudios(arr, cb, albums);
 							})
 						} else {
 							albums.push(a);
-							i++;
-							return parseAudios(arr, cb, i, albums);
+							
+							return parseAudios(arr, cb, albums);
 						}
 					}
 				});
 			}
 		} else {
-			i++;
-			return parseAudios(arr, cb, i, albums);
+			
+			return parseAudios(arr, cb, albums);
 		}
 	}
 
@@ -178,7 +173,166 @@ module.exports.processAlbums = function(params, callback) {
 module.exports.processMovies = function(params, callback) {
 	var videos = params.videos, pathToWatch = params.pathToWatch;
 
-	var match = function(existing, movies, e, fn) {
+
+	/**
+	* Declaration within the module because of "pathToWatch"
+	* Process the array of movies asynchronously
+	* Must be async because we might call allocine to gather some infos
+	* + in serie, wait until previous has finish
+	* @param arr : list of videos files
+	* @param cb : callback when everything is done
+	* @param i : cursor
+	* @param movies : movies array spawned on the fly
+	* @return callback
+	**/
+	var parseMovies = function(arr, cb, movies) {
+
+		movies = movies === undefined ? [] : movies;
+
+		if(arr.length == 0)
+			return cb(movies);
+
+		var e = arr.shift();
+
+		var exists = false;
+
+		for(var p in params.existing) {
+			for(var o in params.existing[p].videos) {
+				if(params.existing[p].videos[o].path.indexOf(e.path) !== -1 ) {
+					exists = true;
+					break;
+				}
+			}
+		}
+
+		if(!exists) {
+
+			//Getting some informations
+			e = _.extend(e, release.getTags.video(e.path));
+
+			// e = _.extend(e, release.getTags.video(e.path));
+			var indexMatch = null, moviesMatch = null;
+
+			//If movies are in the same directory
+			if(pathToWatch != e.prevDir)
+				indexMatch = findIndex(movies, function(movie) {
+					return movie.prevDir == e.prevDir;
+				});
+
+			if(indexMatch !== null) {
+
+				console.log('debug', 'index Match on prevDir : '+e.prevDir);
+
+				movies[indexMatch].videos.push(e);
+
+				return parseMovies(arr, cb, movies);
+
+			} else {
+
+				if(e.movieType == 'tvseries') {
+
+					//Searching for a similar name && an equal season on existing
+					indexMatch = match(params.existing, movies, e);
+
+				} else {
+					//same on movies
+					moviesMatch = match(params.existing, movies, e);
+				}
+
+				if(indexMatch !== null) {
+					console.log('debug', 'Index match series', indexMatch);
+
+					if(indexMatch.match == 'existing') {
+						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								console.log('err', 'Error by adding the video in the movie', err);
+								console.log('debug', e);
+							}
+
+							return parseMovies(arr, cb, movies);
+						});
+					} else {
+						movies[indexMatch.movies].videos.push(e);
+
+						return parseMovies(arr, cb, movies);
+					}
+				} else if (moviesMatch !== null) {
+					console.log('debug', 'Index match movies');
+
+					if(moviesMatch.match == 'existing') {
+
+						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
+							
+							if(err) {
+								console.log('err', 'Error by adding the video in the movie', err);
+								console.log('debug', e);
+							}
+
+							return parseMovies(arr, cb, movies);
+						});
+					} else {
+						movies[moviesMatch.movies].videos.push(e);
+
+						return parseMovies(arr, cb, movies);
+					}
+				} else {
+					var infos = {
+						title: e.name,
+						synopsis: null,
+						trailer: null,
+						picture: null
+					};
+
+					scrapper.search(e, function(err, infos) {
+						movies.push({
+							movieType : e.movieType,
+							name : e.name,
+							season : e.season,
+							title : infos.title,
+							synopsis : infos.synopsis,
+							trailer : infos.trailer,
+							picture : infos.picture,
+							quality : e.quality,
+							subtitles : e.subtitles,
+							language : e.language,
+							audio : e.audio,
+							format : e.format,
+
+							// allocine : infos.code,
+
+							videos : [e],
+							prevDir : e.prevDir,
+							prevDirRelative : e.prevDir.replace(global.rootPath, '')
+						});
+
+						return parseMovies(arr, cb, movies);
+					});
+				}
+
+			}
+		} else {
+			return parseMovies(arr, cb, movies);
+		}
+
+	}
+
+
+	parseMovies(videos, function(movies) {
+		delete videos;
+		callback(null, movies);
+	});
+}
+
+
+/**
+ * Movies match helper
+ * @param  {array}   existing   Existing files
+ * @param  {array}   movies     Movies just parsed
+ * @param  {element}   e        Current parsed element
+ * @return {Object}  result     { match - existing|movies, movies: index|null, existing: index|null
+ */
+var match = function(existing, movies, e) {
 		var result = {
 			match: null,
 			existing: null,
@@ -221,172 +375,11 @@ module.exports.processMovies = function(params, callback) {
 			result = null;
 
 		// if(result !== null && result.match == 'existing')
-		// 	global.log(e, existing[result.existing]);
+		// 	console.log(e, existing[result.existing]);
 
 		return result;
 	}
 
-	/**
-	* Declaration within the module because of "pathToWatch"
-	* Process the array of movies asynchronously
-	* Must be async because we might call allocine to gather some infos
-	* + in serie, wait until previous has finish
-	* @param arr : list of videos files
-	* @param cb : callback when everything is done
-	* @param i : cursor
-	* @param movies : movies array spawned on the fly
-	* @return callback
-	**/
-	var parseMovies = function(arr, cb, i, movies) {
-
-		i = i === undefined ? 0 : i;
-		movies = movies === undefined ? [] : movies;
-
-		if(i == arr.length)
-			return cb(movies);
-
-		var e = arr[i];
-
-		var exists = false;
-
-		for(var p in params.existing) {
-			for(var o in params.existing[p].videos) {
-				if(params.existing[p].videos[o].path.indexOf(e.path) !== -1 ) {
-					exists = true;
-					break;
-				}
-			}
-		}
-
-		if(!exists) {
-
-			//Getting some informations
-			e = _.extend(e, release.getTags.video(e.path));
-
-			// e = _.extend(e, release.getTags.video(e.path));
-			var indexMatch = null, moviesMatch = null;
-
-			//If movies are in the same directory
-			if(pathToWatch != e.prevDir)
-				indexMatch = findIndex(movies, function(movie) {
-					return movie.prevDir == e.prevDir;
-				});
-
-			if(indexMatch !== null) {
-
-				global.log('debug', 'index Match on prevDir : '+e.prevDir);
-
-				movies[indexMatch].videos.push(e);
-				i++;
-				return parseMovies(arr, cb, i, movies);
-
-			} else {
-
-				if(e.movieType == 'tvseries') {
-
-					//Searching for a similar name && an equal season on existing
-					indexMatch = match(params.existing, movies, e);
-
-					//Same as before, if the video path is there, skip
-					//, should not be necessary because we did all the existing before
-					// while(nbExisting-- && !exists)
-					// 	if(_.findWhere(existingFile[nbExisting].videos, {path : e.path}))
-					// 		exists = true;
-						
-
-				} else {
-					//same on movies
-					moviesMatch = match(params.existing, movies, e);
-				}
-
-				if(indexMatch !== null) {
-					global.log('debug', 'Index match series', indexMatch);
-
-					if(indexMatch.match == 'existing') {
-						db.files.movies.addVideo(params.existing[indexMatch.existing]._id, e, function(err) {
-							
-							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
-							}
-
-							i++;
-							return parseMovies(arr, cb, i, movies);
-						});
-					} else {
-						movies[indexMatch.movies].videos.push(e);
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					}
-				} else if (moviesMatch !== null) {
-					global.log('debug', 'Index match movies');
-
-					if(moviesMatch.match == 'existing') {
-
-						db.files.movies.addVideo(params.existing[moviesMatch.existing]._id, e, function(err) {
-							
-							if(err) {
-								global.log('err', 'Error by adding the video in the movie', err);
-								global.log('debug', e);
-							}
-
-							i++;
-							return parseMovies(arr, cb, i, movies);
-						});
-					} else {
-						movies[moviesMatch.movies].videos.push(e);
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					}
-				} else {
-					var infos = {
-						title: e.name,
-						synopsis: null,
-						trailer: null,
-						picture: null
-					};
-
-					scrapper.search(e, function(err, infos) {
-						movies.push({
-							movieType : e.movieType,
-							name : e.name,
-							season : e.season,
-							title : infos.title,
-							synopsis : infos.synopsis,
-							trailer : infos.trailer,
-							picture : infos.picture,
-							quality : e.quality,
-							subtitles : e.subtitles,
-							language : e.language,
-							audio : e.audio,
-							format : e.format,
-
-							// allocine : infos.code,
-
-							videos : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.config.root, '')
-						});
-
-						i++;
-						return parseMovies(arr, cb, i, movies);
-					});
-				}
-
-			}
-		} else {
-			i++;
-			return parseMovies(arr,cb, i, movies);
-		}
-
-	}
-
-
-	parseMovies(videos, function(movies) {
-		delete videos;
-		callback(null, movies);
-	});
-}
 
 /**
 * Parses files, search if there is a movie / an audio file
@@ -402,16 +395,18 @@ var checkIsOther = function (files, i) {
 		if(!/^\./.test(pathInfos.basename(files[i]))) {
 
 			if(fs.existsSync(files[i])) {
+
 				var stats = fs.statSync(files[i]);
 				
-				//could be recursive
 				if(stats.isDirectory()) {
-					return checkIsOther(files, i+1);
-					// var arr = _.map(fs.readdirSync(files[i]), function(p){ return pathInfos.join(files[i], p); });
-					// if(!checkIsOther(arr))
-					// 	return false;
-					// else
-					// 	return checkIsOther(files, i + 1);
+
+					var directoryFiles = fs.readdirSync(files[i])
+					  , arr = _.map(directoryFiles, function(p){ return pathInfos.join(files[i], p); });
+
+					if(!checkIsOther(arr))
+						return false;
+					else
+						return checkIsOther(files, i + 1);
 				} else {
 					var t = mime.lookup(files[i]).split('/')[0];
 
@@ -429,6 +424,8 @@ var checkIsOther = function (files, i) {
 	} else 
 		return true;
 }
+var cache = require('memory-cache')
+
 
 /**
 * Main function to process files
@@ -455,11 +452,6 @@ module.exports.processOthers = function(params, callback) {
 
 		var e = arr.shift()
 		  , exists = false;
-
-		// if(typeof e !== 'object') {
-		// 	global.log('error', e, 'is not an object');
-		// 	process.nextTick(function() { parseOthers(arr, cb, others); });
-		// }
 
 		//Test if the file already exists by path
 		var k = params.existing.length, z = cached.length, j = 0;
@@ -492,14 +484,14 @@ module.exports.processOthers = function(params, callback) {
 
 			if(e.prevDir != pathToWatch) {
 
-				// global.log(e.prevDir);
+				// console.log(e.prevDir);
 				e.prevDir = 
 					pathInfos.join(
 						pathToWatch, 
 						e.prevDir.replace(pathToWatch, '').split('/')[1]
 					);
 				
-				// global.log(e.prevDir);
+				// console.log(e.prevDir);
 
 				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
 				name = pathInfos.basename(e.prevDir);
@@ -509,7 +501,7 @@ module.exports.processOthers = function(params, callback) {
 				name = e.name;
 			}
 
-			// global.log('info', e.prevDir);
+			// console.log('info', e.prevDir);
 
 			if(single) {
 				//var t = mime.lookup(e.path).split('/')[0];
@@ -535,7 +527,7 @@ module.exports.processOthers = function(params, callback) {
 				indexMatch = findIndex(params.existing, function(other) { return e.prevDir == other.prevDir});
 
 				if(indexMatch !== null)
-					global.log('error', 'Find existsing in database ?');
+					console.log('error', 'Find existsing in database ?');
 
 				//Checking if the directory contains a video/audio file
 				var directoryFiles = fs.readdirSync(e.prevDir)
@@ -561,108 +553,10 @@ module.exports.processOthers = function(params, callback) {
 	var othersFiles = params.others;
 
 	parseOthers(othersFiles, function(others) {
-		global.log('debug', 'Parsed objects: ', parsed);
-		global.log('debug', 'News', others.length);
+		console.log('debug', 'Parsed objects: ', parsed);
+		console.log('debug', 'News', others.length);
 		delete othersFiles;
-		delete params;
 		callback(null, others);
 	});
 
 }
-
-
-/**
-* Main function to process files
-* @param othersFiles : list of others files
-* @param callback : the parallel callback (see async.parallel) 
-* @return callback
-**/
-/*
-module.exports.processOthers = function(params, callback) {
-
-	var others = [], indexMatch = null, name, othersFiles = params.others, pathToWatch = params.pathToWatch, single;
-
-	_.each(othersFiles, function(e, i) {
-
-
-	var exists = false;
-		//Test if the file already exists by path
-		var k = params.existing.length, j = 0;
-
-		while(k--) {
-			j = params.existing[k].files.length;
-			while(j--) {
-				if(params.existing[k].files[j].path == e.path)
-					exists = true;
-			}
-		}
-
-
-
-
-		// var existingFile = _.where(params.existing, {prevDir : e.prevDir}), exists = false;
-
-		// if(existingFile.length) {
-		// 	for(var k in existingFile) {
-		// 		if(_.findWhere(existingFile[k].files, {path : e.path})) {
-		// 			exists = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
-
-		if(!exists) {
-
-			if(e.prevDir != pathToWatch) {
-				e.prevDir = pathInfos.join(
-					pathToWatch, 
-					e.prevDir.replace(pathToWatch, '').split('/')[1]);
-
-				indexMatch = findIndex(others, function(other) { return e.prevDir == other.prevDir; });
-				name = pathInfos.basename(e.prevDir);
-				single = false;
-			} else {
-				single = true;
-				name = e.name;
-			}
-
-			// console.log(name, 'doesn\'t exists and match', indexMatch, 'and is', single, 'single');
-
-			if(indexMatch !== null)
-				others[indexMatch].files.push(e);
-			else {
-				if(!single) {
-					var directoryFiles = fs.readdirSync(e.prevDir)
-					  , arr = _.map(directoryFiles, function(p){ return pathInfos.join(e.prevDir, p); });
-					
-
-					if(checkIsOther(arr)) {
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.config.root, '')
-						});
-					}
-				} else {
-
-					// var t = mime.lookup(e.path).split('/')[0];
-
-					// if(e.prevDir == pathToWatch && t != 'audio' && t != 'video')
-					// {
-						others.push({
-							name : name,
-							files : [e],
-							prevDir : e.prevDir,
-							prevDirRelative : e.prevDir.replace(global.config.root, '')
-						});
-					//}
-				}
-			}
-		}
-
-	});
-
-	callback(null, others);
-}
-*/

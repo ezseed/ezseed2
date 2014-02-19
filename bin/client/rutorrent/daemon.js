@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var db = require(global.app_path + '/app/core/database')
   , async = require('async')
   , daemon = require('../../lib/daemon.js');
@@ -24,22 +25,22 @@ var rtorrent_daemon = function (cmd, options) {
 
 						daemon('rutorrent', cmd, user.username, function() {
 
-							global.log('info', user.username + " " + cmd + "ed");
+							console.log('info', user.username + " " + cmd + "ed");
 							cb();
 
 						});
 
 					} else {
-						global.log('info', user.username + "is using "+user.client+", skipping");
+						console.log('info', user.username + "is using "+user.client+", skipping");
 						cb();
 					}
 
 				},
 				function(err) {
 
-					if(err) global.log('error', err);
+					if(err) console.log('error', err);
 
-					global.log('info', "Success");
+					console.log('info', "Success");
 					process.exit(0);
 
 				}

@@ -4,6 +4,9 @@
  */
 var jf = require('jsonfile');
 
+if(!process.env.NODE_ENV)
+  process.env.NODE_ENV = 'development';
+
 global.config = jf.readFileSync(__dirname + '/config.json');
 
 //Writing conf file
@@ -13,23 +16,20 @@ if(global.config.root.length == 0 || !global.config.aucun) {
   jf.writeFileSync(__dirname + '/config.json', global.config);
 }
 
-global.log = require('./core/logger');
+process.on('uncaughtException', function ( err ) {
 
-// process.on('uncaughtException', function ( err ) {
+    console.log(1, err.message);
+    console.log(1, err.stack);
 
-//     global.log(1, err.message);
-//     global.log(1, err.stack);
+    if(err.code == 'MODULE_NOT_FOUND')
+      console.log(5, 'Please try : npm install');
 
-//     if(err.code == 'MODULE_NOT_FOUND')
-//       global.log(5, 'Please try : npm install');
+    setTimeout(function() {
+      process.exit(1);
+    }, 100);
+});
 
-
-//     setTimeout(function() {
-//       process.exit(1);
-//     }, 100);
-// });
-
-
+var console = require('./core/logger');
 
 var express = require('express')
   , db = require('./core/database')
@@ -37,7 +37,6 @@ var express = require('express')
   , http = require('http')
   , _ = require('underscore')
   , path = require('path')
-  , cache = require('memory-cache')
   , MongoStore = require('connect-mongo')(express)
 ;
 
@@ -54,7 +53,9 @@ app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
 
 app.set('view engine', 'ejs');
 
-app.use(express.logger('dev'));
+if(process.env.NODE_ENV == 'development')
+  app.use(express.logger('dev'));
+
 app.use(express.compress());
 
 //not using bodyparser middleware
@@ -109,31 +110,35 @@ mongoose.connect('mongodb://localhost/ezseed');
 
 var mongo = mongoose.connection;
 
-mongo.on('error', global.log.bind(global, 'connection error:'));
+mongo.on('error', console.log.bind(global, 'connection error:'));
 
 mongo.once('open', function callback () {
-  global.log('DB opened successfuly !');
+  console.log('DB opened successfuly !');
 
   var server = http.createServer(app).listen(app.get('port'), function(){
-    global.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + app.get('port'));
   });
 
   var io = require('./core/sockets').listen(server);
 
 });
+-
 
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+});
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
+});
+
 
 //This should be an error
 app.use(function(err, req, res, next) {
-  global.log('This should be an error');
+  console.log('This should be an error');
 
   if(err)
-    global.log('error', err);
+    console.log('error', err);
 
   next(err);
 });

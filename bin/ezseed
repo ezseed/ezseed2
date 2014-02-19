@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+
 var pathInfo = require('path')
 	, jf = require('jsonfile')
 	, fs = require('fs')
@@ -12,12 +13,15 @@ var pathInfo = require('path')
 
 global.config = {};
 global.config.root = app_path + '/app';
-global.log = require(global.config.root+'/core/logger');
-global.app_path = app_path;
+
+var console = require(global.config.root+'/core/logger');
 
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
+global.app_path = app_path;
+
+var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 
 var program = require('commander')
   , colors = require('colors')
@@ -38,9 +42,15 @@ colors.setTheme({
 });
 
 program
-	.version('2.0.0');
+	.version(autoUpdate.version);
 
-require('./command/daemon')(program);
+autoUpdate.checkForUpdates(function(update) {
+	if(update) {
+		console.log('warn', 'An update is available, please run ezseed update');
+	}
+});
+
+require('./command/daemon').program(program);
 
 require('./command/install')(program);
 require('./command/update')(program);
@@ -82,11 +92,15 @@ program
 program
 	.command('*')
 	.action(function() {
-		global.log('error', 'Command not found.');
+		console.log('error', 'Command not found.');
 		program.help();
 	});
 
+//Removing debug argument
+var index = process.argv.indexOf('-d');
 
+if(index !== -1)
+	process.argv.splice(index,1);
 
 mongoose.connect('mongodb://localhost/ezseed');
 
@@ -94,16 +108,13 @@ var mongo = mongoose.connection;
 
 mongo.on('error', console.error.bind(console, 'connection error:'.error));
 mongo.once('open', function callback () {
-	
-	var index = process.argv.indexOf('-d');
+	program.parse(process.argv);
 
-	if(index !== -1)
-		process.argv.splice(index,1);
-	
-	if (process.argv.length == 2) 
+	if(process.argv.length == 2)
 		program.help();
-	else
-		program.parse(process.argv);
 	
 });
+
+
+
 

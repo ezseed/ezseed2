@@ -1,3 +1,4 @@
+var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
@@ -47,10 +48,9 @@ var useradd = {
 		if(options.path)
 			cache.put('path', options.path);
 
-		if(fs.existsSync(app_path + '/app/config.json')) {
-			var config = jf.readFileSync(app_path + '/app/config.json');
+		if(global.config) {
 
-			if(client == "aucun" || config[client] == true) {
+			if(client == "aucun" || global.config[client] == true) {
 
 				cache.put('client', client);
 				
@@ -64,11 +64,12 @@ var useradd = {
 					});
 				});
 			} else {
-				global.log('error', "Le client " + client + " n'est pas installé !");
+				console.log('error', "Le client " + client + " n'est pas installé !");
 				process.exit(1);
 			}
+
 		} else {
-			global.log('error', "Le fichier de configuration n'existe pas, lancez ./ezseed install");
+			console.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
 			process.exit(1);
 		}
 	}
