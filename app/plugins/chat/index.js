@@ -1,7 +1,8 @@
 
+var plugin =  require('./plugin');
 
-module.exports.plugin = require('./plugin').init();
+module.exports.plugin =	plugin.plugin;
 
-module.exports.sockets = require('./sockets');
+module.exports.sockets = plugin.sockets;
 
 module.exports.database = require('./database');

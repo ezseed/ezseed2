@@ -20,7 +20,23 @@ var database = {
 		model.findOneAndUpdate({}, {active: status}, cb);
 	},
 	get: function(cb) {
-		model.findOne({}, cb);
+		model.findOne({}, function(err, doc) {
+			if(err)
+				console.error(err);		
+
+			if(!err && !doc) {
+				var chat = new model({
+					active: true,
+					messages:[]
+				});
+
+
+				chat.save();
+
+				cb(null, chat);
+			} else 
+				cb(null, doc);
+		});
 	},
 	//message is an object !
 	saveMessage: function(message, cb) {

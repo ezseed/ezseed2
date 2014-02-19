@@ -4,8 +4,6 @@ var fs = require('fs')
     , express = require('express')
     , cache = require('memory-cache');
 
-
-
 var pluginsPath = path.join(global.config.root, "plugins");
 
 var getPlugins = function() {
@@ -24,7 +22,12 @@ var getPlugins = function() {
             
             //Check if it's a directory, it's a plugin
             if(stats.isDirectory()) {
-                plugins.push(plugin);
+                if(typeof plugin.init == 'function')
+                    plugin.init(function(plugin) {
+                        plugins.push(plugin);
+                    });
+                else
+                    plugins.push(plugin);
             }
 
         });
