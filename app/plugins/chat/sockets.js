@@ -1,7 +1,7 @@
 var md = require("node-markdown").Markdown;
 var db = require('./database');
 
-var console = require(global.config.root + '/app/core/logger');
+var console = require(global.config.root + '/core/logger');
 
 var plugin = require('./plugin');
 
