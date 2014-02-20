@@ -19,6 +19,8 @@ define([
 
 ], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify){
 
+    alertify.set({ delay : 10000 }); // 10s
+
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
         return function( elem ) {
@@ -118,8 +120,6 @@ define([
 
             $.cookie('display', display);
             this.display = display;
-
-            console.log(display);
 
             return this;
         },

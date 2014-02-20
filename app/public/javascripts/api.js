@@ -34,7 +34,6 @@ define([
                             last_update = Date.now();
                         } else {
                         	self.desktop.noFiles();
-                            console.log('Aucuns fichiers trouvés');
                         }
 
                     } else {
