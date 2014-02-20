@@ -27,7 +27,7 @@ mv rutorrent/ /var/www
 wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
 tar -xf libtorrent-0.13.2.tar.gz
 
-wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz rtorrent
+wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz
 tar -xzf rtorrent-0.9.2.tar.gz
 
 # libtorrent compilation
