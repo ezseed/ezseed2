@@ -19,6 +19,8 @@ define([
 
 ], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify){
 
+    alertify.set({ delay : 10000 }); // 10s
+
     //Expression to search case insensitive
     $.expr[":"].contains = $.expr.createPseudo(function(arg) {
         return function( elem ) {
@@ -46,6 +48,27 @@ define([
         itemSelector : '.element',
         displaySelector : null,
         display: $.cookie('display') === undefined ? '.list' : $.cookie('display'),
+        //Packery Instance
+        pckry : null,
+        hasLayout : false,
+        //Socket
+        socket : null,
+        hasLayout : function() {},
+        currentDisplay: function() {},
+        alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
+        loader : function() {
+
+            var $loader = $('#loader');
+            
+            if($loader.is(':visible'))
+                $loader.fadeOut();
+            else 
+                $loader.fadeIn();
+
+        },
+        showNotification : function(params) {
+            // notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
+        },
         setDisplay: function(selector, remove) {
             
             var option = ['.list', '.miniature','.table']
@@ -98,30 +121,7 @@ define([
             $.cookie('display', display);
             this.display = display;
 
-            console.log(display);
-
             return this;
-        },
-        //Packery Instance
-        pckry : null,
-        hasLayout : false,
-        //Socket
-        socket : null,
-        hasLayout : function() {},
-        currentDisplay: function() {},
-        alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
-        loader : function() {
-
-            var $loader = $('#loader');
-            
-            if($loader.is(':visible'))
-                $loader.fadeOut();
-            else 
-                $loader.fadeIn();
-
-        },
-        showNotification : function(params) {
-            // notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
         },
         init : function() {
             var self = this;
@@ -262,6 +262,18 @@ define([
                 self.layout();
 
             }
+        },
+        noFiles: function() {
+            
+            var self = this;
+
+            if(self.firstLoad) {
+                self.loader();
+                self.firstLoad = false;
+                alertify.log('Aucun fichier trouvé');
+            }
+
+            return;
         },
         append : function(datas) {
 
