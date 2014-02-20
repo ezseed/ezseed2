@@ -3,6 +3,8 @@ var child_process = require('child_process')
 	   , spawn = child_process.spawn
 	   , jf = require('jsonfile');
 
+var fs = require('fs');
+
 var update = {
 	rtorrent: function(cb) {
 		var shell_path = global.app_path + '/scripts/rutorrent/update.sh';
