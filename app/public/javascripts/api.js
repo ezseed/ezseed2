@@ -33,6 +33,7 @@ define([
                             self.desktop.append(data.paths);
                             last_update = Date.now();
                         } else {
+                        	self.desktop.noFiles();
                             console.log('Aucuns fichiers trouvés');
                         }
 
