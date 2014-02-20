@@ -3,44 +3,50 @@ var mongoose = require('mongoose')
 	, ObjectId = Schema.ObjectId;
 
 var chatSchema = new Schema({
-	active: {type: Boolean, default: true},
-	messages: [
-		{
-			user: String,
-			message: String,
-			time: { type: Date, default: Date.now }
-		}
-	]
+	active: {type: Boolean, default: true}
 });
 
-var model = mongoose.model('pluginchat', chatSchema);
+var messagesSchema = new Schema(
+	{
+		user: String,
+		message: String,
+		time: { type: Date, default: Date.now }
+	}
+);
+
+var chatModel = mongoose.model('pluginchat', chatSchema);
+var messagesModel = mongoose.model('pluginchat_messages', messagesSchema);
 
 var database = {
-	setStatus: function(status, cb) {
-		model.findOneAndUpdate({}, {active: status}, cb);
-	},
-	get: function(cb) {
-		model.findOne({}, function(err, doc) {
-			if(err)
-				console.error(err);		
+	// setStatus: function(status, cb) {
+	// 	chatModel.findOneAndUpdate({}, {active: status}, cb);
+	// },
+	// get: function(cb) {
 
-			if(!err && !doc) {
-				var chat = new model({
-					active: true,
-					messages:[]
-				});
+	// 	chatModel.findOne({}, function (err, chat) {
+	// 		if(err)
+	// 			console.error(err);
 
+	// 		if(!err && !chat) {
+	// 			chat = new chatModel({
+	// 				active: true
+	// 			});
 
-				chat.save();
+	// 			chat.save();
+	// 		}
 
-				cb(null, chat);
-			} else 
-				cb(null, doc);
-		});
+	// 		return cb(err, chat);
+	// 	});
+	// },
+	getMessages: function (cb) {
+		messagesModel.find({}, cb);
 	},
 	//message is an object !
 	saveMessage: function(message, cb) {
-		model.findOneAndUpdate({}, {messages: {$push: message} }, cb);
+		var message = new messagesModel(message);
+		message.save();
+
+		cb();
 	}
 };
 

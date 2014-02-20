@@ -12,26 +12,23 @@ var console = require(global.config.root + '/core/logger');
 var plugin = {
 	inited: false,
 	admin_template: null,
-	init: function(cb) {
+	init: function() {
 		var self = this;
 
 		if(!self.inited) {
+
 			self.admin_template = fs.readFileSync(__dirname + '/public/views/admin.ejs');
 
-			db.get(function(err, chat) {
-				if(err)
-					console.error(err);
+			// db.get(function(err, chat) {
+			// 	self.enabled = chat.active;
+			// });
 
-				self.enabled = chat.active;
-				self.messages = chat.messages;
+			self.inited = true;
 
-				self.inited = true;
-
-				return typeof(cb == 'function') ? cb(self) : self;
-			});
+			return self;
 
 		} else
-				return typeof(cb == 'function') ? cb(self) : self;
+			return self;
 	},
 	name : "Chat",
 	enabled : true,
@@ -59,10 +56,10 @@ var plugin = {
 			route : '/plugins/chat/disable',
 			action :  function(req, res) {
 				
-				db.setStatus(false, function(err) {
+				// db.setStatus(false, function(err) {
 					plugin.enabled = false;
-					res.redirect('back');
-				});
+				//	res.redirect('back');
+				//});
 			}
 		},
 
@@ -70,10 +67,10 @@ var plugin = {
 			type : 'GET',
 			route : '/plugins/chat/enable', 
 			action : function(req, res) {
-				db.setStatus(true, function(err) {
+				//db.setStatus(true, function(err) {
 					plugin.enabled = true;
-					res.redirect('back');
-				});
+				//	res.redirect('back');
+				//});
 			}
 		}
 	]
@@ -90,9 +87,14 @@ var sockets = function(socket, sockets) {
 		}
 		
 		sockets.emit('chat:joined', plugin.users);
-
-		socket.emit('chat:init', plugin.messages);
 		
+		db.getMessages(function(err, messages) {
+				
+			console.log(messages);
+			socket.emit('chat:init', messages);
+		
+		});
+
 	});
 
 	socket.on('chat:message', function(u, m) {

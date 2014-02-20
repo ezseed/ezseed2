@@ -6,22 +6,16 @@ var fs = require('fs')
 
 var pluginsPath = path.join(global.config.root, "plugins");
 
-var getPlugins = function(callback) {
+var getPlugins = function() {
 
     var plugins = cache.get('plugins');
-
     if(!plugins) {
-        
+
         plugins = [];
 
         var paths = fs.readdirSync(pluginsPath), plugin;
 
-        var init = function(arr, cb, plugins) {
-
-            if(arr.length == 0)
-                return cb(plugins);
-
-            plugin = arr.shift();
+        _.each(paths, function(plugin) {
 
             plugin = path.join(pluginsPath, plugin);
 
@@ -29,27 +23,22 @@ var getPlugins = function(callback) {
             
             //Check if it's a directory, it's a plugin
             if(stats.isDirectory()) {
-                if(typeof plugin.init == 'function')
-                    plugin.init(function(plugin) {
-                        plugins.push(plugin);
-                        return init(arr, cb, plugins);
-                    });
-                else {
-                    plugins.push(plugin);
-                    return init(arr, cb, plugins);
-                }
+
+                plugins.push(plugin);
+               
             }
+        })
+        
+        cache.put('plugins', plugins);
+        
+        return plugins;
+       // return typeof callback == 'function' ? callback(plugins) : plugins;
 
-        }
-
-        init(paths, function(plugins) {
-            cache.put('plugins', plugins);
-            return typeof callback == 'function' ? callback(plugins) : plugins;
-        });
-
+    } else {
+        return plugins;
     }
 
-    return typeof callback == 'function' ? callback(plugins) : plugins;
+   // return typeof callback == 'function' ? callback(plugins) : plugins;
 }
 
 
@@ -80,47 +69,50 @@ var getLocals = function(plugin, user) {
 
 module.exports = function(app) {
 
-    getPlugins(function(plugins){
-        app.use(function(req, res, next) {
+    app.use(function(req, res, next) {
 
-            var locals = [], stats;
+        var plugins = getPlugins();
+        var locals = [], stats;
 
-            //Parsing the plugins folder
-            _.each(plugins, function(plugin) {
+        //Parsing the plugins folder
+        _.each(plugins, function(plugin) {
 
+            //Require the plugin
+            plugin = require(plugin).plugin;
 
-                //Require the plugin
-                plugin = require(plugin).plugin;
+            //Add some async call to see if it's enable to current user.
 
-                //Exporting the routes through app
-                for(var i in plugin.routes) {
-                    var route = plugin.routes[i];
+            if(typeof plugin.init == 'function')
+                plugin.init();
 
-                    switch(route.type) {
-                        case "GET" : 
-                            app.get(route.route, route.action);
-                            break;
-                        case "POST" : 
-                            app.post(route.route, route.action);
-                            break;
-                        default:
-                            break;
-                    }
+            //Exporting the routes through app
+            for(var i in plugin.routes) {
+                var route = plugin.routes[i];
+
+                switch(route.type) {
+                    case "GET" : 
+                        app.get(route.route, route.action);
+                        break;
+                    case "POST" : 
+                        app.post(route.route, route.action);
+                        break;
+                    default:
+                        break;
                 }
+            }
 
-                //Adds the assets folder of each plugin
-                if(typeof plugin.static == 'string')
-                    app.use(express.static(plugin.static));
+            //Adds the assets folder of each plugin
+            if(typeof plugin.static == 'string')
+                app.use(express.static(plugin.static));
 
-                //Defining locals vars
-                locals[plugin.name] = getLocals(plugin, req.user);
-            
-            });
-
-            res.locals.plugins = locals;
-
-            next();
+            //Defining locals vars
+            locals[plugin.name] = getLocals(plugin, req.user);
+        
         });
+
+        res.locals.plugins = locals;
+
+        next();
     });
 	
 }
