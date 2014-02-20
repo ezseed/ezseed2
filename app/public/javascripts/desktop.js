@@ -264,6 +264,8 @@ define([
             }
         },
         noFiles: function() {
+            
+            var self = this;
 
             if(self.firstLoad) {
                 self.loader();
