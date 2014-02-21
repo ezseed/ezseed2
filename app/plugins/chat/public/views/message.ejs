@@ -11,7 +11,7 @@ for(var i = 0; i < l - 1; i++) {
 	} else {
 %>
 	<%= prev === null ? '<li>' : '</li><li>' %>
-		<span class="pseudo" data-user="<%= m.user %>"><%= m.user %></span><%= m.message %>
+		<span class="pseudo" data-user="<%= m.user %>"><%= m.user %> - <%- ago(m.time) %></span><%= m.message %>
 <%
 	}
 %>

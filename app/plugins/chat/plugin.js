@@ -12,23 +12,23 @@ var console = require(global.config.root + '/core/logger');
 var plugin = {
 	inited: false,
 	admin_template: null,
-	init: function() {
+	init: function(user, cb) {
 		var self = this;
 
 		if(!self.inited) {
 
 			self.admin_template = fs.readFileSync(__dirname + '/public/views/admin.ejs');
 
-			// db.get(function(err, chat) {
-			// 	self.enabled = chat.active;
-			// });
+			db.getStatus(user.id, function(err, status) {
+				self.enabled = status;
+				
+				self.inited = true;
 
-			self.inited = true;
-
-			return self;
+				cb(err, self);
+			});
 
 		} else
-			return self;
+			cb(null, self);
 	},
 	name : "Chat",
 	enabled : true,
@@ -36,7 +36,7 @@ var plugin = {
 	static : path.join(__dirname, 'public'),
 	stylesheets : ['/css/chat.css'],
 	javascripts : ['/js/chat.js'],
-	admin : function() {
+	preferences : function() {
 		var self = this;
 		return _.template(new Buffer(self.admin_template).toString(), {enabled : self.enabled})
 	},
@@ -53,24 +53,24 @@ var plugin = {
 	routes : [
 		{
 			type : 'GET',
-			route : '/plugins/chat/disable',
+			route : '/user/plugins/chat/disable',
 			action :  function(req, res) {
 				
-				// db.setStatus(false, function(err) {
+				db.setStatus(req.user.id, false, function(err) {
 					plugin.enabled = false;
-				//	res.redirect('back');
-				//});
+					res.redirect('back');
+				});
 			}
 		},
 
 		{ 
 			type : 'GET',
-			route : '/plugins/chat/enable', 
+			route : '/user/plugins/chat/enable', 
 			action : function(req, res) {
-				//db.setStatus(true, function(err) {
+				db.setStatus(req.user.id, true, function(err) {
 					plugin.enabled = true;
-				//	res.redirect('back');
-				//});
+					res.redirect('back');
+				});
 			}
 		}
 	]
@@ -89,8 +89,7 @@ var sockets = function(socket, sockets) {
 		sockets.emit('chat:joined', plugin.users);
 		
 		db.getMessages(function(err, messages) {
-				
-			console.log(messages);
+			
 			socket.emit('chat:init', messages);
 		
 		});
@@ -101,8 +100,7 @@ var sockets = function(socket, sockets) {
 		m = md(m, true);
 
 		db.saveMessage({user : u, message : m}, function(err) {
-/*			plugin.messages.push({user : u, message : m});
-*/			sockets.emit('chat:message', {user : u, message : m});
+			sockets.emit('chat:message', {user : u, message : m});
 		});
 	});
 

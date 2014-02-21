@@ -2,6 +2,7 @@ var fs = require('fs')
     , _ = require('underscore')
     , path = require('path')
     , express = require('express')
+    , async = require('async')
     , cache = require('memory-cache');
 
 var pluginsPath = path.join(global.config.root, "plugins");
@@ -61,6 +62,7 @@ var getLocals = function(plugin, user) {
         html : html, 
         css : plugin.stylesheets, 
         javascripts : js.join(','), //Join js files, see require (header.ejs)
+        preferences: typeof plugin.preferences == 'function' ? plugin.preferences() : null,
         admin : typeof plugin.admin == 'function' ? plugin.admin() : null,
         enabled : plugin.enabled
     }
@@ -75,44 +77,53 @@ module.exports = function(app) {
         var locals = [], stats;
 
         //Parsing the plugins folder
-        _.each(plugins, function(plugin) {
+        
+        async.map(plugins, function(plugin, cb) {
 
             //Require the plugin
             plugin = require(plugin).plugin;
 
             //Add some async call to see if it's enable to current user.
 
-            if(typeof plugin.init == 'function')
-                plugin.init();
+            if(typeof plugin.init == 'function') {
+                plugin.init(req.user, function(err, plugin) {
+                    cb(err, plugin);
+                });
+            } else 
+                cb(null, plugin);
+    
 
-            //Exporting the routes through app
-            for(var i in plugin.routes) {
-                var route = plugin.routes[i];
+        }, function(err, plugins) {
 
-                switch(route.type) {
-                    case "GET" : 
-                        app.get(route.route, route.action);
-                        break;
-                    case "POST" : 
-                        app.post(route.route, route.action);
-                        break;
-                    default:
-                        break;
+            _.each(plugins, function(plugin) {
+                //Exporting the routes through app
+                for(var i in plugin.routes) {
+                    var route = plugin.routes[i];
+
+                    switch(route.type) {
+                        case "GET" : 
+                            app.get(route.route, route.action);
+                            break;
+                        case "POST" : 
+                            app.post(route.route, route.action);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
 
-            //Adds the assets folder of each plugin
-            if(typeof plugin.static == 'string')
-                app.use(express.static(plugin.static));
+                //Adds the assets folder of each plugin
+                if(typeof plugin.static == 'string')
+                    app.use(express.static(plugin.static));
 
-            //Defining locals vars
-            locals[plugin.name] = getLocals(plugin, req.user);
-        
+                //Defining locals vars
+                locals[plugin.name] = getLocals(plugin, req.user);
+            });
+
+            res.locals.plugins = locals;
+            next();
         });
 
-        res.locals.plugins = locals;
-
-        next();
     });
 	
 }

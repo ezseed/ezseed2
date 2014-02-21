@@ -2,7 +2,10 @@ var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
 
+var console = require(global.config.root + '/core/logger');
+
 var chatSchema = new Schema({
+	user: ObjectId,
 	active: {type: Boolean, default: true}
 });
 
@@ -18,26 +21,35 @@ var chatModel = mongoose.model('pluginchat', chatSchema);
 var messagesModel = mongoose.model('pluginchat_messages', messagesSchema);
 
 var database = {
-	// setStatus: function(status, cb) {
-	// 	chatModel.findOneAndUpdate({}, {active: status}, cb);
-	// },
-	// get: function(cb) {
+	setStatus: function(uid, status, cb) {
+		chatModel.findOneAndUpdate({user: uid}, {active: status}, function(err, updated) {
+			if(err)
+				console.error(err);
 
-	// 	chatModel.findOne({}, function (err, chat) {
-	// 		if(err)
-	// 			console.error(err);
+			cb(err, updated);
+		});
+	},
+	getStatus: function(uid, cb) {
+		if(!uid)
+			cb('No user', {});
 
-	// 		if(!err && !chat) {
-	// 			chat = new chatModel({
-	// 				active: true
-	// 			});
+		chatModel.findOne({user: uid}, function(err, doc) {
+			if(err)
+				console.error(err);
 
-	// 			chat.save();
-	// 		}
+			console.debug('Get status, doc ', doc);
 
-	// 		return cb(err, chat);
-	// 	});
-	// },
+			if(!doc) {
+				var doc = new chatModel({
+					user: uid
+				});
+
+				doc.save(cb);
+			} else {
+				cb(err, doc.active);
+			}
+		})
+	},
 	getMessages: function (cb) {
 		messagesModel.find({}, cb);
 	},

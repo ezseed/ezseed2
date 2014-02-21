@@ -21,15 +21,16 @@ module.exports = function(app) {
 
 var user = {
 	getSize: function(req, res) {
-		db.users.count(function(err, num) {
 
-		      //Space left = disk / users
-		      //var spaceLeft = global.config.diskSpace / num;
-		      var spaceLeft = req.user.size;
+		db.user.byId(req.params.uid, function(err, user) {
 
-		      db.paths.byUser(req.params.uid, function(err, results) {
+	      //Space left = disk / users
+	      //var spaceLeft = global.config.diskSpace / num;
+	      var spaceLeft = user.spaceLeft;
 
-			      userHelper.usedSize(results, function(size) {
+	      	db.paths.byUser(req.params.uid, function(err, results) {
+
+		      	userHelper.usedSize(results, function(size) {
 
 			          //(/helpers/users)
 			          var percent = size.size / 1024 / 1024;
@@ -42,7 +43,9 @@ var user = {
 
 			    });
 			}, true); //only user direct paths
-		});
+
+	     });
+
 	},
 	getFilesToRemove: function(req, res) {
 		var to_remove = [];
