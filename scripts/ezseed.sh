@@ -28,7 +28,7 @@ super() {
 }
 
 start() {
-    if[ -n $(ps -ef | grep "pm2: ezseed" | grep -v grep) ]
+    if [ ! -z $(ps -ef | grep "pm2: ezseed" | grep -v grep) ];
     then
         echo "Ezseed is already running"
     else
