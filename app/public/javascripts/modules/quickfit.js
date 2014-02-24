@@ -2,11 +2,11 @@
     var Quickfit, QuickfitHelper, defaults, pluginName;
     pluginName = 'quickfit';
     defaults = {
-      min: 18,
+      min: 12,
       max: 20,
-      tolerance: 0.02,
+      tolerance: 0.002,
       truncate: true,
-      width: 240,
+      width: 100,
       sample_number_of_letters: 10,
       sample_font_size: 12
     };

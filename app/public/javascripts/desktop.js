@@ -378,18 +378,27 @@ define([
         },
         layoutThumbnails: function(cb) {
 
-            var self = this, selector = '#' + self.$container.attr('id') + ' '+ self.display +' img';
+            var self = this, selector = '#' + self.$container.attr('id') + ' '+ self.display;
            
             // console.log('layoutThumbs', self.display, selector);            
             
             imagesLoaded(
-                selector, 
+                selector +' img', 
             function(instance) {
                 self.pckry.layout();
 
-                // $(selector+' h1').quickfit();
                 $(self.itemSelector + self.display).css('display', 'block');
-                
+
+                $(selector).each(function(i, e) {
+
+                    $(e).find('h1').quickfit({
+                        min: 12,
+                        max: 20,
+                        truncate: true,
+                        width: $(e).find('img').width() - 10
+                    });
+                });
+
                 self.pckry.layout();
 
                 self.countElementsByLetter();
