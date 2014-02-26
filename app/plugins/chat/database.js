@@ -34,10 +34,11 @@ var database = {
 			cb('No user', {});
 
 		chatModel.findOne({user: uid}, function(err, doc) {
+			
 			if(err)
 				console.error(err);
 
-			console.debug('Get status, doc ', doc);
+			// console.debug('Get status, doc ', doc);
 
 			if(!doc) {
 				var doc = new chatModel({
