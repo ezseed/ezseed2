@@ -55,7 +55,6 @@ define([
         socket : null,
         hasLayout : function() {},
         currentDisplay: function() {},
-        alphabet : {'A':0,'B':0,'C':0,'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0,'M':0,'N':0,'O':0,'P':0,'Q':0,'R':0,'S':0,'T':0,'U':0,'V':0,'W':0,'X':0,'Y':0,'Z':0,'#':0},
         loader : function() {
 
             var $loader = $('#loader');
@@ -363,19 +362,6 @@ define([
                 }
             });
         },
-        countElementsByLetter : function() {
-            var self = this, $els = self.$container.find(self.itemSelector + '.list');
-
-            $els.each(function(i, e) {
-                var firstLetter = $(this).find('h1').text().charAt(0).toUpperCase();
-
-                if(firstLetter.match(/\d/g))
-                    firstLetter = '#';
-
-                self.alphabet[firstLetter]++;
-            });
-
-        },
         layoutThumbnails: function(cb) {
 
             var self = this, selector = '#' + self.$container.attr('id') + ' '+ self.display;
@@ -401,8 +387,6 @@ define([
 
                 self.pckry.layout();
 
-                self.countElementsByLetter();
-
                 self.hasLayout();
                 
                 if(typeof cb == 'function')
@@ -424,8 +408,6 @@ define([
 
                 self.pckry.layout();
              
-                self.countElementsByLetter();
-
                 self.hasLayout();
 
                 if(typeof cb == 'function')

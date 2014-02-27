@@ -149,6 +149,10 @@ albums.forEach(function(album) {
 				<img src="<%- album.picture %>" />
 			<% } %>
 		</a>
+
+		<div class="footer">
+			<% if(album.songs.length > 1) {%><a href="/archive/<%- album._id %>" data-full-size="<%- tailleDossier %>" class="archive" title="Télécharger"><% } else {%><a href="/download/<%- album._id %>" title="Télécharger"><% } %><i class="entypo-download"></i></a><a href="/delete/album/<%- album._id %>" class="delete-item" title="Supprimer"><i class="entypo-trash"></i></a>
+		</div>
 	</div>
 	<div data-id="<%- album._id %>" data-path="<%= path %>" class="element table audio" data-date-added="<%- new Date(album.dateAdded).getTime() %>">
 		<i class="entypo-music"></i>

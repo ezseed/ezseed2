@@ -10,8 +10,6 @@ var ago = function(time, local){
 	if(typeof time == 'string')
 		time = new Date(time).getTime();
 	
-	console.log(typeof time, time);
-
 	var
 		offset = Math.abs((local - time)/1000),
 		span   = [],

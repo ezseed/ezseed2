@@ -236,71 +236,10 @@ define([
      */
     Desktop = _.extend(Desktop, {
         hasLayout : function() {
-            var maxPercent = 150, minPercent = 100, min = 0, max = 0;
-
-            _.each(Desktop.alphabet, function(e) {
-                max = (e > max ? e : max);
-                min = (min > e ? e : min);
-            });
-
-            var multiplier = (maxPercent-minPercent)/(max-min);
-
-            $('#alpha-nav li a').each(function(i, e) {
-                var letter = $(this).attr('href').substr(1), nb = Desktop.alphabet[letter];
-
-                if(parseInt(nb) !== NaN) {
-                    var size = minPercent + ((max-(max-(nb-min)))*multiplier) + '%';
-
-                    $(this).css('font-size',size);
-                }
-            });
+            
         }
     });
 
-
-    /**
-     * Filters on first letter
-     */
-    $('#alpha-nav li a').on('click', function(e) {
-        e.preventDefault();
-
-        toTop();
-
-        var $letter = $(this)
-          , letter = $(this).parent().hasClass('active') ? '' : $letter.attr('href').substr(1);
-        
-        $section.find('.startsWith').toggleClass('startsWith');
-
-        $(this).closest('ul').find('li.active').removeClass('active');
-
-        if(letter.length || letter === '#') {
-
-            var matches;
-
-            if(letter === '#')
-                matches = $section.find(Desktop.itemSelector + ':match("\\d+")');
-            else
-                matches = $section.find(Desktop.itemSelector + ':startsWith("'+letter+'")');
-
-
-            matches.each(function(i, e) {
-                if(!$(e).hasClass('startsWith')) {
-                    var id = $(e).attr('data-id');
-
-                    $section.find(Desktop.itemSelector + '[data-id="'+id+'"]').addClass('startsWith');
-                }
-            });
-
-            Desktop.setDisplay('.startsWith')
-                    .layout(function() {
-                        $letter.parent().addClass('active');
-                    });
-        } else {
-            Desktop.setDisplay('.startsWith', true).layout();
-        }
-    });
-
-    
     var $buttongroup = $('#displayPath');
   
     $buttongroup.on('click', function(e) {
