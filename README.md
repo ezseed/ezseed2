@@ -4,6 +4,7 @@
 apt-get install git-core
 git clone https://github.com/soyuka/ezseed2/
 cd ezseed2
+git checkout develop-stable
 ```
 
 ### Automatique

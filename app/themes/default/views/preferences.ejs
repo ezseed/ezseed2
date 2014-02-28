@@ -2,17 +2,29 @@
 
 <h1>Configurations</h1>
 
-<div id="admin" class="text-center">
-	<form method="POST" action="/user/password/<%= user.id %>" style="padding:10px" class="text-center">
-		<input type="password" name="password" value="" placeholder="Nouveau mot de passe">
-		<br><br>
-		<input type="submit" value="Envoyer">
-	</form>
+<div id="admin" style="width:600px;margin:0 auto;">
+	<div class="content">
 
-	<br>
+		<form method="POST" action="/user/password/<%= user.id %>" style="padding:10px" class="text-center">
+			<input type="password" name="password" value="" placeholder="Nouveau mot de passe" style="height:19px;"> <input type="submit" value="Envoyer">
+		</form>
 
-	<a href="/user/reset/<%= user.id%>" class="reset-db"><i class="entypo-ccw" title="Réinitialiser la base de données"></i>Réinitialiser la base de données</a>
-	<br><br>
+		<br>
+
+		<h3>Plugins</h3>
+		<ul>
+			<% for(var p in plugins) { %>
+				<% if(plugins[p].preferences) {%>
+					<li><%= p %> <span class="pullRight"><%- plugins[p].preferences %></span></li>
+				<% } %>
+			<% } %>
+		</ul>
+
+		<div class="text-center">
+			<a href="/user/reset/<%= user.id%>" class="reset-db"><i class="entypo-ccw" title="Réinitialiser la base de données"></i>Réinitialiser la base de données</a>
+			<br><br>
+		</div>
+	</div>
 </div>
 
 <div id="toTop"><i class="entypo-up-bold"></i></div>

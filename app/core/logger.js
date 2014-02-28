@@ -1,49 +1,34 @@
-var level   = process.argv.indexOf('-d') === -1 ? 6 : 7;
+var level   = process.argv.indexOf('-d') === -1 ? 'info' : 'debug';
 
-if(level == 6 && process.env.NODE_ENV == 'production') {
-	level = 5;
-}
+if(level == 'info' && process.env.NODE_ENV == 'production')
+	level = 'notice';
 
-var logger  = require('caterpillar').createLogger({level:level})
-  , filter  = require('caterpillar-filter').createFilter()
-  , human   = require('caterpillar-human').createHuman({spacer: "  "});
+var winston = require('winston');
 
-logger.pipe(filter).pipe(human).pipe(process.stdout);
+var logger = new (winston.Logger)({
+	transports: [
+	  new (winston.transports.Console)({ level: level, colorize: true, levels: winston.config.syslog.levels }),
+	  new (winston.transports.File)({ 
+	  								   filename: global.config.root + '/exceptions.log'
+	  	                             , handleExceptions: true 
+	  	                             , levels: winston.config.syslog.levels
+	  	                             , level: level
+	  	                           })
+	]
+});
 
-logger = require('underscore').extend(logger, 
-	{
-		error: function() {
-			var args = [].splice.call(arguments, 0);
-			args.unshift('error');
-			this.log.apply(this, args);
-		},
-		warn: function() {
-			var args = [].splice.call(arguments, 0);
-			args.unshift('warn');
-			this.log.apply(this, args);
-		},
-		info: function() {
-			var args = [].splice.call(arguments, 0);
-			args.unshift('info');	
-			this.log.apply(this, args);
-		},
-		debug: function() {
-			var args = [].splice.call(arguments, 0);
-			args.unshift('debug');
-			this.log.apply(this, args);
-		},
-		trace: function() {
-			var args = [].splice.call(arguments, 0);
+process.on('uncaughtException', function ( err ) {
 
-			console.trace(args);
-			this.log.apply(this, args);
-		},
-		alert: function() {
-			var args = [].splice.call(arguments, 0);
-			args.unshift('alert');
-			this.log.apply(this, args);
-		}
-	}
-);
+    logger.log('alert', err.message);
+    logger.log('alert', err.stack);
+
+    if(err.code == 'MODULE_NOT_FOUND')
+    	logger.log('notice', 'Please try : npm install', function () {
+	      process.exit(1);
+
+      	});
+    else
+    	process.exit();
+});
 
 module.exports = logger;

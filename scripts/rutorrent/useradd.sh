@@ -66,6 +66,7 @@ cat > /var/www/rutorrent/conf/users/$USER/config.php<< EOF
     "id"    => '',               
     "stat"  => '/usr/bin/stat',  
 );
+\$topDirectory = "/home/$USER";
 ?>
 EOF
 chmod -R 777 /var/www/rutorrent/
