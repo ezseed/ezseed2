@@ -14,7 +14,7 @@ define([
     'alertify',
 
     //Helpers
-    'underscore', 'cookie', 'quickfit',
+    'underscore', 'cookie', 'quickfit'
 
 
 ], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify){
@@ -140,9 +140,9 @@ define([
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
             if(user && isDesktop) {
-                api.init(self);
+                self.api = api.init(self);
             } else if(user) {
-                api.size();
+                self.api.size();
             }
 
             //hash

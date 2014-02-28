@@ -1,7 +1,7 @@
 define([
 	'jquery',
     //Helpers
-    'underscore', 'cookie', 'quickfit',
+    'underscore', 'cookie', 'quickfit'
 ], function($){
 
 	var last_update = 0;
@@ -92,12 +92,19 @@ define([
 		init: function(Desktop) {
 			var self = this;
 
-			this.desktop = Desktop;
+			this.desktop = Desktop !== false ? Desktop : this.desktop;
 			this.size();
 			this.files(function() {
 				self.setInterval();
 			});
 
+			return self;
+		},
+		start: function() {
+			this.init(false);	
+		},
+		stop: function() {
+			clearInterval(this.interval);
 		}
 	};
 

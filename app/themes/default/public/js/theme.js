@@ -1,6 +1,6 @@
 define([
-    'jquery', 'desktop', 'alertify', 'underscore'
-], function($, Desktop, alertify){
+    'jquery', 'desktop', 'alertify', 'api', 'underscore'
+], function($, Desktop, alertify, api){
 
     $section = Desktop.$container;
 
@@ -9,8 +9,10 @@ define([
 
     $('#alert .entypo-cross').on('click', function(e) { $(this).parent().empty(); });
 
+    //On load
     $(window).load(function() {
 
+        //Throw message if there's one
         var $msg = $('#alert').find('.msg');
 
         if($msg.length) {
@@ -29,6 +31,25 @@ define([
         else
             onTopScroll(false);
         
+    }).on('blur focus', function(e) {  //thanks to http://codepen.io/calebnance/pen/bIjid
+    
+        var prevType = $(this).data('prevType');
+        
+        //  reduce double fire issues
+        if (prevType != e.type) {
+            switch (e.type) {
+
+                case 'blur':
+                    api.stop();
+                  break;
+                  
+                case 'focus':
+                    api.start();
+                  break;
+            }
+        }
+          
+        $(this).data('prevType', e.type);
     });
 
     $('body').on('click', '.delete-item', function(e) {
