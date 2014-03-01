@@ -11,13 +11,10 @@ var console = require(global.config.root + '/core/logger');
 
 var plugin = {
 	inited: false,
-	admin_template: null,
 	init: function(user, cb) {
 		var self = this;
 
 		if(!self.inited) {
-
-			self.admin_template = fs.readFileSync(__dirname + '/public/views/admin.ejs');
 
 			db.getStatus(user.id, function(err, status) {
 				self.enabled = status;
@@ -38,7 +35,11 @@ var plugin = {
 	javascripts : ['/js/chat.js'],
 	preferences : function() {
 		var self = this;
-		return _.template(new Buffer(self.admin_template).toString(), {enabled : self.enabled})
+		return _.template(new Buffer(fs.readFileSync(__dirname + '/public/views/preferences.ejs')).toString(), {enabled : self.enabled})
+	},
+	admin : function() {
+		var self = this;
+		return '<a href="plugins/chat/purge" title="Purger"><i class="entypo-back-in-time"></i></a>';
 	},
 	users : [],
 	usersBySID : [], //Store socket.id by users
@@ -58,6 +59,7 @@ var plugin = {
 				
 				db.setStatus(req.user.id, false, function(err) {
 					plugin.enabled = false;
+					req.session.success = "Chat désactivé";
 					res.redirect('back');
 				});
 			}
@@ -69,6 +71,18 @@ var plugin = {
 			action : function(req, res) {
 				db.setStatus(req.user.id, true, function(err) {
 					plugin.enabled = true;
+					req.session.success = "Chat activé";
+					res.redirect('back');
+				});
+			}
+		},
+
+		{
+			type: 'GET',
+			route: '/plugins/chat/purge',
+			action: function(req, res) {
+				db.purge(function() {
+					req.session.success = "Chat purgé";
 					res.redirect('back');
 				});
 			}

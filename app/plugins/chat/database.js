@@ -51,6 +51,9 @@ var database = {
 			}
 		})
 	},
+	purge: function(cb) {
+		messagesModel.remove({}, cb);
+	},
 	getMessages: function (cb) {
 		messagesModel.find({}, cb);
 	},

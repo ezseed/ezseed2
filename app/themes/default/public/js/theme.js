@@ -22,25 +22,6 @@ define([
 
     }).on('display', function(display) {
 
-        // if(display) {
-        //     $('#displayOptions .active').removeClass('active');
-        //     $('#filterOptions .active').removeClass('active');
-        //     $('#displayPath li.active').removeClass('active');
-
-        //     $('#displayOptions i').each(function(i, e) {
-
-        //         if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-        //             $(e).addClass('active');
-        //     });
-
-        //     $('#filterOptions li').each(function(i, e) {
-
-        //         if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-        //             $(e).addClass('active');
-        //     });
-        // }
-
-
     }).on('sort', function(by) {
         $('#orderOptions .order.'+by).addClass('active');
     });
@@ -52,22 +33,19 @@ define([
 
     $('#alert .entypo-cross').on('click', function(e) { $(this).parent().empty(); });
 
-    //On load
-    $(window).load(function() {
+    //Throw message if there's one
+    var $msg = $('#alert').find('.msg');
 
-        //Throw message if there's one
-        var $msg = $('#alert').find('.msg');
+    if($msg.length) {
+        if($msg.hasClass('error'))
+            alertify.error($msg.text());
+        else if($msg.hasClass('success'))
+            alertify.success($msg.text());
+        else
+            alertify.log($msg.text());
+    }
 
-        if($msg.length) {
-            if($msg.hasClass('error'))
-                alertify.error($msg.text());
-            else if($msg.hasClass('success'))
-                alertify.success($msg.text());
-            else
-                alertify.log($msg.text());
-        }
-
-    }).on('scroll', function() {
+    $(window).on('scroll', function() {
         var scrollTop = $('body').scrollTop() || $('html').scrollTop();
         if ( scrollTop > $('header').height() + 7 )
             onTopScroll();
@@ -76,25 +54,25 @@ define([
         
     }).on('blur focus', function(e) {  //thanks to http://codepen.io/calebnance/pen/bIjid
     
-        var prevType = $(this).data('prevType');
-        
-        //  reduce double fire issues
-        if (prevType != e.type) {
-            switch (e.type) {
+        if(isDesktop) {
+            var prevType = $(this).data('prevType');
+            
+            //  reduce double fire issues
+            if (prevType != e.type) {
+                switch (e.type) {
 
-                case 'blur':
-                    console.info('Stop');
-                    Desktop.api.stop();
-                  break;
-                  
-                case 'focus':
-                console.info('Start');
-                    Desktop.api.start();
-                  break;
+                    case 'blur':
+                        Desktop.api.stop();
+                      break;
+                      
+                    case 'focus':
+                        Desktop.api.start();
+                      break;
+                }
             }
-        }
           
-        $(this).data('prevType', e.type);
+            $(this).data('prevType', e.type);
+        }
     });
 
     $('body').on('click', '.delete-item', function(e) {
