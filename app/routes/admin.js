@@ -67,7 +67,8 @@ var admin = {
 		conf = _.extend(conf, {
 			torrentLink : req.body.torrent,
 			diskSpace : req.body.disk,
-			scrapper : req.body.scrapper
+			scrapper : req.body.scrapper,
+			archive_max_size: req.body.archive_max_size
 		});
 
 		jf.writeFileSync(global.config.root + '/config.json', conf);

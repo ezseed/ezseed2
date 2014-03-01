@@ -129,7 +129,12 @@ Date.prototype.getFrenchDateAsString = function() {
 						<option value="tmdb" <% if(config.scrapper == 'tmdb') { %>selected<%}%>>TMDB</option>
 					</select>
 				</div>
-		
+
+				<div class="form-block">
+					<label for="archive_max_size">Taille maximale de l'archive (Mo) - 0 pour aucune</label>
+					<input type="number" name="archive_max_size" value="<%= config.archive_max_size ? config.archive_max_size : 0 %>"> 
+				</div>
+
 				<div class="text-center" style="margin-top:20px;">
 					<input type="submit" value="Sauvegarder">
 				</div>

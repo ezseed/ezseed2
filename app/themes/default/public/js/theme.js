@@ -353,20 +353,25 @@ define([
     $section.on('click', '.archive', function(e) {
         e.preventDefault();
 
-        var $el = $(this).closest('.element'),
-        id = $el.attr('data-id'),
-        titre = $el.find('h1').text(),
-        $archiving = $('#archiving');
-        
-        socket.emit('archive', id);
+        if(config.archive_max_size !== undefined && config.archive_max_size > 0 && parseInt($(this).attr('data-full-size')) > config.archive_max_size * 1048576) {
+            alertify.error("Cet élément est trop gros pour être archivé.");
+        } else {
 
-        $archiving.find('.name').text(titre);
+            var $el = $(this).closest('.element'),
+            id = $el.attr('data-id'),
+            titre = $el.find('h1').text(),
+            $archiving = $('#archiving');
+            
+            socket.emit('archive', id);
 
-        $archiving.show();
+            $archiving.find('.name').text(titre);
 
-        $(window).bind('beforeunload', function() {
-            return 'Une compression est en cours';
-        });
+            $archiving.show();
+
+            $(window).bind('beforeunload', function() {
+                return 'Une compression est en cours';
+            });
+        }
     });
 
     /**
