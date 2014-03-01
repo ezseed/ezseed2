@@ -6,7 +6,8 @@ daemon="transmission-daemon-$1"
 d_start() {
  	running=$(ps -ef | grep $daemon | grep -v grep)
 
-	if [ ! -z "$running" ]	then
+	if [ ! -z "$running" ];
+  then
 		echo "Transmission is already running"
 		return
 	else
