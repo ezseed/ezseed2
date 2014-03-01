@@ -29,7 +29,7 @@ var rtorrent_daemon = function (cmd, options) {
 						});
 
 					} else {
-						console.log('notice', user.username + " is using "+user.client+", skipping");
+						// console.log('notice', user.username + " is using "+user.client+", skipping");
 						cb();
 					}
 

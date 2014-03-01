@@ -24,13 +24,13 @@ var transmission_daemon = function (cmd, options) {
 
 						daemon('transmission', cmd, user.username, function() {
 
-							console.info(user.username + " " + cmd + "ed");
+							// console.info(user.username + " " + cmd + "ed");
 							cb();
 
 						});
 
 					} else {
-						console.info(user.username + "is using "+user.client+", skipping");
+						// console.info(user.username + "is using "+user.client+", skipping");
 						cb();
 					}
 
