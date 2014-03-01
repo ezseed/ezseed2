@@ -125,7 +125,7 @@ define([
         $('#search input').val('');
 
         $('#displayOptions i.active').removeClass('active');
-        $('#filterOptions i.active').removeClass('active');
+        $('#filterOptions li.active').removeClass('active');
         $('#displayPath li.active').removeClass('active');
 
         $('#displayOptions i[data-filter=".list"]').addClass('active');

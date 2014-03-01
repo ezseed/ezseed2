@@ -112,7 +112,6 @@ define([
 
             $.cookie('display', display);
             this.display = display;
-
             return this;
         },
         init : function() {
