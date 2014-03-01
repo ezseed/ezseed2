@@ -44,6 +44,30 @@ var configure = {
 		//Writes the config
 		jf.writeFileSync(global.app_path + '/app/config.json', config);
 
+		console.log('info', "Paramétrage du lanceur");
+
+		jf.writeFileSync(global.app_path + '/ezseed.json', 
+
+			[{
+			    "name"      : "watcher",
+			    "script"    : global.app_path + "/app/watcher.js",
+			    "error_file": global.app_path + "/logs/watcher-err.log",
+			    "out_file"  : global.app_path + "/logs/ezseed/watcher-out.log",
+			    "env": {
+			    	"NODE_ENV": "production"
+			    }
+			},{
+			    "name"      : "ezseed",
+			    "script"    : global.app_path + "/app/app.js",
+			    "error_file": global.app_path + "/logs/ezseed-err.log",
+			    "out_file"  : global.app_path + "/logs/ezseed-out.log",
+			    "env": {
+			    	"NODE_ENV": "production"
+			    }
+			}]
+
+		);
+
 		console.log('info', "Création d'un lien symbolique sur app/public/downloads");
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads')) {

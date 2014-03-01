@@ -71,6 +71,17 @@ program
 	.action(require('./lib/deploy'));
 
 program
+	.command('configure')
+	.description('Configure')
+	.action(function() {
+		var configure = require('./lib/helpers/configure');
+
+		configure.update_rc(function() {
+			configure.set_config(path, next);					
+		});
+	});
+
+program
 	.command('credits')
 	.description('Credits')
 	.action(function() {

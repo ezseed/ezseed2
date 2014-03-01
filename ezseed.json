@@ -4,7 +4,7 @@
 	"error_file": "/var/log/ezseed/watcher-err.log",
 	"out_file"  : "/var/log/ezseed/watcher-out.log",
 	"env": {
-      "NODE_ENV": "production"
+    	"NODE_ENV": "production"
     }
 },{
 	"name"      : "ezseed",

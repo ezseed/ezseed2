@@ -30,6 +30,7 @@ var shortcut = function(cmd, cb) {
 						process.exit(code);
 				} else {
 					//if not start it manually
+
 					c = 'pm2 start '+global.app_path+'/ezseed.json';
 
 					exec(c, function(err) {
