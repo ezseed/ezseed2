@@ -120,15 +120,15 @@ checkcnfg
 
 case "$1" in
   start)
-    echo -n "Starting $DESC: $NAME"
+    echo -n "Starting $srnname"
     d_start
     ;;
   stop)
-    echo -n "Stopping $DESC: $NAME"
+    echo -n "Stopping $srnname"
     d_stop
     ;;
   restart|force-reload)
-    echo -n "Restarting $DESC: $NAME"
+    echo -n "Restarting $srnname"
     d_stop
     sleep 1
     d_start

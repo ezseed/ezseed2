@@ -24,14 +24,12 @@ var rtorrent_daemon = function (cmd, options) {
 					if(user.client == 'rutorrent') {
 
 						daemon('rutorrent', cmd, user.username, function() {
-
-							console.log('info', user.username + " " + cmd + "ed");
 							cb();
 
 						});
 
 					} else {
-						console.log('info', user.username + "is using "+user.client+", skipping");
+						console.log('notice', user.username + " is using "+user.client+", skipping");
 						cb();
 					}
 
