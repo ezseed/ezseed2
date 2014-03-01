@@ -3,9 +3,9 @@ _trash/
 .idea/
 .DS_Store
 sftp-config.json
+logs/*
 
 app/public/js
-
 app/public/javascripts/main.build.js
 app/themes/default/public/js/main.min.js
 app/themes/default/public/css/main.min.css
