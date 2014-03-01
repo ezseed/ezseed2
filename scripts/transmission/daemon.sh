@@ -4,8 +4,8 @@ username=$2
 daemon="transmission-daemon-$2"
 
 d_start() {
-  running = $(ps -ef | grep "$daemon" | grep -v grep)
-	if [ ! -z "$running" ];
+  running=$(ps -ef | grep "$daemon" | grep -v grep)
+  if [ ! -z "$running" ];
   then
 		echo "$daemon is already running"
 		return
