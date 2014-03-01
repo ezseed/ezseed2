@@ -83,10 +83,11 @@ checkcnfg() {
 }
 
 d_start() {
-  [ -d "${base}" ] && cd "${base}"
+    cd "${base}"
+    running=$(ps -ef | grep rtorrent-$username | grep -v grep)
 
-    if [ ! -z $(ps -ef | grep rtorrent-$username | grep -v grep) ];
-    then
+    if [ ! -z "$running" ];
+    then    
         echo "Rtorrent is already running"
         return
     else

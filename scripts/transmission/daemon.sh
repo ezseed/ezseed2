@@ -1,11 +1,12 @@
 #!/bin/bash
 opt=$1
 username=$2
+daemon="transmission-daemon-$1"
 
 d_start() {
- 
-	if [ ! -z $(ps -ef | grep transmission-daemon-$username | grep -v grep) ];
-	then
+ 	running=$(ps -ef | grep $daemon | grep -v grep)
+
+	if [ ! -z "$running" ]	then
 		echo "Transmission is already running"
 		return
 	else
