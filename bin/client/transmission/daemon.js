@@ -35,7 +35,7 @@ var transmission_daemon = function (cmd, options) {
 
 					setTimeout(function() {
 						process.exit(0);
-					, 1000);
+					}, 1000);
 
 				}
 			);
