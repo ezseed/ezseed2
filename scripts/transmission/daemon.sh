@@ -7,7 +7,7 @@ d_start() {
   running=$(ps -ef | grep "$daemon" | grep -v grep)
   if [ ! -z "$running" ];
   then
-		echo "$daemon is already running"
+		echo "$daemon is already running" >&2
 		return
 	else
 		/etc/init.d/transmission-daemon-$username $opt
