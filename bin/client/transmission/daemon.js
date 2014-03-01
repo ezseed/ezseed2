@@ -22,15 +22,9 @@ var transmission_daemon = function (cmd, options) {
 
 					if(user.client == 'transmission') {
 
-						daemon('transmission', cmd, user.username, function() {
-
-							// console.info(user.username + " " + cmd + "ed");
-							cb();
-
-						});
+						daemon('transmission', cmd, user.username, cb);
 
 					} else {
-						// console.info(user.username + "is using "+user.client+", skipping");
 						cb();
 					}
 
@@ -39,8 +33,9 @@ var transmission_daemon = function (cmd, options) {
 
 					if(err) console.error(err);
 
-					console.info("Success");
-					process.exit(0);
+					setTimeout(function() {
+						process.exit(0);
+					, 1000);
 
 				}
 			);

@@ -23,13 +23,9 @@ var rtorrent_daemon = function (cmd, options) {
 
 					if(user.client == 'rutorrent') {
 
-						daemon('rutorrent', cmd, user.username, function() {
-							cb();
-
-						});
+						daemon('rutorrent', cmd, user.username, cb);
 
 					} else {
-						// console.log('notice', user.username + " is using "+user.client+", skipping");
 						cb();
 					}
 
@@ -38,8 +34,9 @@ var rtorrent_daemon = function (cmd, options) {
 
 					if(err) console.log('error', err);
 
-					console.log('info', "Success");
-					process.exit(0);
+					setTimeout(function() {
+						process.exit(0);
+					, 1000);
 
 				}
 			);
