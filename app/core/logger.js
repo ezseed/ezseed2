@@ -18,7 +18,7 @@ var winston = require('winston');
  *  7 debug    
  *
  */
-
+require('fs').mkdirSync(global.config.root + '/../logs', '777');
 require('fs').writeFileSync(global.config.root + '/../logs/exceptions.log');
 
 var logger = new (winston.Logger)({
