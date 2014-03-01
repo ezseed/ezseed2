@@ -54,7 +54,7 @@ exports.explore = function(params, cb) {
 									prevDirRelative : pathInfos.dirname(filePaths[i]).replace(root.rootPath, ''),
 									type : mimetype[0],
 									ext : mimetype[1],
-									size : fs.statSync(filePaths[i]).size
+									size : fs.existsSync(filePaths[i]) ? fs.statSync(filePaths[i]).size : 0
 								}
 							} while(i--)
 

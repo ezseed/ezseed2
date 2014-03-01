@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title><%= title %></title>
 
-    <link rel="stylesheet" type="text/css" href="/css/main.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
 
     <% for(var i in plugins) {
       if(plugins[i].enabled) {
@@ -74,7 +74,7 @@
 
           <div id="diskSpace" class="league-gothic">
             <div id="usedBar"></div>
-            <span class="text">Espace Disque</span>
+            <span class="text"></span>
             <span class="size">
               <span class="used"></span>
               <span class="left"></span>
@@ -92,6 +92,11 @@
           <i class="entypo-numbered-list" title="Présentation par liste" data-filter=".list"></i>
           <i class="entypo-layout" title="Présentation par miniatures" data-filter=".miniature" ></i>
         </div>
+        
+        <div id="orderOptions">
+          <!-- <i class="entypo-arrow-combo"></i> --><span class="order alpha">A-Z</span><span class="order time"><i class="entypo-clock"></i></span>
+        </div>
+
         <div id="search" class="input-block">
           <i class="entypo-search"></i><input type="search" name="search" /><span id="displayPath"></span>
         </div>
@@ -100,7 +105,7 @@
           <div class="spinner icon-spinner" aria-hidden="true"></div>
         </div>
 
-        <ul id="displayFilters">
+        <ul id="filterOptions">
           <li data-filter=".video.movie" data-display=".list">Films</li>
           <li data-filter=".video.tvseries" data-display=".list">Séries</li>
           <li data-filter=".audio" data-display=".list">Albums</li>

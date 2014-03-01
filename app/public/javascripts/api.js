@@ -78,7 +78,6 @@ define([
 			var self = this;
 			
 			self.interval = setInterval(function() {
-				//http://codepen.io/calebnance/pen/bIjid
 				clearInterval(self.interval);
 
 				self.fetchRemove(function(err, to_remove) {
@@ -92,7 +91,8 @@ define([
 		init: function(Desktop) {
 			var self = this;
 
-			this.desktop = Desktop !== false ? Desktop : this.desktop;
+			this.desktop = this.desktop === undefined ? Desktop : this.desktop;
+
 			this.size();
 			this.files(function() {
 				self.setInterval();
@@ -101,10 +101,14 @@ define([
 			return self;
 		},
 		start: function() {
-			this.init(false);	
+			this.init();
+
+			return this;
 		},
 		stop: function() {
 			clearInterval(this.interval);
+
+			return this;
 		}
 	};
 

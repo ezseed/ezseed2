@@ -1,6 +1,24 @@
 define([
-    'jquery', 'desktop', 'alertify', 'api', 'underscore'
-], function($, Desktop, alertify, api){
+    'jquery', 'desktop', 'alertify', 'underscore'
+], function($, Desktop, alertify){
+
+    Desktop.on('firstDisplay', function(display) {
+
+        display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
+
+        $('#displayOptions i').each(function(i, e) {
+
+            if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                $(e).addClass('active');
+        });
+
+        $('#filterOptions li').each(function(i, e) {
+
+            if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                $(e).addClass('active');
+        });
+
+    });
 
     $section = Desktop.$container;
 
@@ -40,11 +58,13 @@ define([
             switch (e.type) {
 
                 case 'blur':
-                    api.stop();
+                    console.info('Stop');
+                    Desktop.api.stop();
                   break;
                   
                 case 'focus':
-                    api.start();
+                console.info('Start');
+                    Desktop.api.start();
                   break;
             }
         }
@@ -211,7 +231,7 @@ define([
 
     /** Filter Methods **/
 
-    $('body').on('click', '#displayFilters li', function(){
+    $('body').on('click', '#filterOptions li', function(){
 
         toTop();
 
@@ -219,7 +239,7 @@ define([
 
         if(!$(this).hasClass('active')) { 
 
-            $('#displayFilters li.active').removeClass('active');
+            $('#filterOptions li.active').removeClass('active');
 
             $(this).addClass('active');
             
@@ -249,16 +269,6 @@ define([
         }
 
         return false;
-    });
-
-    /**
-     * Extends Desktop
-     * Called when packery desktop has Layout
-     */
-    Desktop = _.extend(Desktop, {
-        hasLayout : function() {
-            
-        }
     });
 
     var $buttongroup = $('#displayPath');

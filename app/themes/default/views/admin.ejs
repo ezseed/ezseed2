@@ -56,10 +56,11 @@ Date.prototype.getFrenchDateAsString = function() {
 				var e = users[nbUsers];
 			%>
 				<li>
-					<%= e.username %> 
-					<% if(e.role == 'admin') { %>
-						<i class="entypo-star"></i>
-					<% } %>
+					<a href="#more" style="text-decoration:none;"><%= e.username %> 
+						<% if(e.role == 'admin') { %>
+							<i class="entypo-star"></i>
+						<% } %>
+					</a>
 					<div class="pullRight">
 						<a title="Supprimer l'utilisateur" href="/admin/user/<%= e._id %>/delete"><i class="entypo-erase"></i></a>
 						<a title="Modifier le mot de passe" href="/admin/user/<%= e._id %>/password"><i class="entypo-key"></i></a>
@@ -76,25 +77,25 @@ Date.prototype.getFrenchDateAsString = function() {
 								while(nbUserPaths--) {
 									var p = e.paths[nbUserPaths];
 								%>
-									<li><%= p.path %> <a href="/admin/path/<%= e._id%>/<%= p._id %>/delete" title="les données seront conservées">Enlever</a><br><small><i><%= p.dateUpdated.getFrenchDateAsString() %></i> (<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
+									<li><%= p.path %> <a href="/admin/path/<%= e._id%>/<%= p._id %>/delete" title="les données seront conservées">Enlever</a><br><small>Mis à jour le <i><%= p.dateUpdated.getFrenchDateAsString() %></i><br>(<%= p.movies.length %> vidéos, <%= p.albums.length %> albums, <%= p.others.length %> autres)</small></li>
 								<% } 
 							}
 						%>
 						</ul><br>
-						Utilise <%= e.client %>
+						Utilise le client "<%= e.client %>"
 						<% if(e.client == 'transmission') { %>
 						 - <a href="/admin/user/transmission/<%= e.username %>">modifier la configuration.</a>
 						<% } %>
 
 						<br><br>
+						
+						<h4>Espace disque</h4>
 
-						<div class="form-block">
-							<form method="POST" action="/admin/user/<%= e._id%>/space">
-								<label for="disk">Espace disque</label>
-								<span class="input-helper">Mo</span>
-								<input type="number" id="disk" name="disk" value="<% if(e.spaceLeft !== undefined) { %><%= e.spaceLeft %><% } else { %>0<% } %>">
-							</form>
-						</div>
+						<form method="POST" action="/admin/user/<%= e._id%>/space">
+							<input type="number" id="disk" name="disk" value="<% if(e.spaceLeft !== undefined) { %><%= e.spaceLeft %><% } else { %>0<% } %>">
+							<span class="input-helper">Mo</span>
+							<input type="submit" name="save" value="Sauvegarder" class="">
+						</form>
 					</div>
 				</li>
 			<% } %>
@@ -125,27 +126,27 @@ Date.prototype.getFrenchDateAsString = function() {
 					<label for="scrapper">Scrapper</label>
 					<select id="scrapper" name="scrapper">
 						<option value="allocine" <% if(config.scrapper == 'allocine') { %>selected<%}%>>Allocine</option>
-						<option value="tmdb" <% if(config.scrapper == 'tmdb') { %>selected<%}%>>The movie Database</option>
+						<option value="tmdb" <% if(config.scrapper == 'tmdb') { %>selected<%}%>>TMDB</option>
 					</select>
 				</div>
 		
-				<div class="text-center">
+				<div class="text-center" style="margin-top:20px;">
 					<input type="submit" value="Sauvegarder">
 				</div>
 			</form>
 		</div>
 	</div>
-	<h2 class="last"><i class="entypo-palette"></i> Plugins</h2>
+	<h2 class="last"><i class="entypo-palette"></i> Plugins & Thèmes</h2>
 	<div>
 		<div class="content">
-			<h3>Themes</h3>
+			<h3>Thèmes</h3>
 
-			<form method="POST" action="/admin/theme" class="text-center" id="change-theme">
+			<form method="POST" action="/admin/theme" id="change-theme">
 				<select name="theme" style="display:inline-block;">
 					<% for(var t in themes) { %>
 						<option value="<%= themes[t] %>" <%= themes[t] == config.theme ? "selected" : "" %>><%= themes[t] %></option>
 					<% } %>
-				</select><br><br>
+				</select>
 				<input type="submit">
 
 			</form>

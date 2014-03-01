@@ -13,11 +13,13 @@ define([
     'api',
     'alertify',
 
+    'eventEmitter/EventEmitter',
+
     //Helpers
     'underscore', 'cookie', 'quickfit'
 
 
-], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify){
+], function(Albums, Movies, Others, Paths, Packery, imagesLoaded, async, $, api, alertify, EventEmitter){
 
     alertify.set({ delay : 10000 }); // 10s
 
@@ -43,6 +45,7 @@ define([
     });
 
     var Desktop = {
+        api: api,
         firstLoad : true,
         $container : $('section#desktop'), //Elements container
         itemSelector : '.element',
@@ -76,25 +79,10 @@ define([
               , i = -1
               , display = this.display;         
 
-
-            if(this.firstLoad) {
-                
-                display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
-
-                $('#displayOptions i').each(function(i, e) {
-
-                    if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-                        $(e).addClass('active');
-                });
-
-                $('#displayFilters li').each(function(i, e) {
-
-                    if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-                        $(e).addClass('active');
-                });
-                
-            }
-
+            if(this.firstLoad)
+                this.emit('firstDisplay', display);
+            else
+                this.emit('display', display);
 
             if(selector !== undefined && display.indexOf(selector) === -1) {
                     
@@ -125,7 +113,7 @@ define([
         init : function() {
             var self = this;
 
-            if(self.pckry === null && isDesktop == true) {
+            if(self.pckry === null && isDesktop === true) {
                 self.pckry = new Packery( 
                     document.querySelector('section#desktop'),
                     {
@@ -139,15 +127,12 @@ define([
             if(self.socket === null)
                 self.socket = io.connect('wss://'+document.domain+':3001');
 
-            if(user && isDesktop) {
-                self.api = api.init(self);
+            if(user && isDesktop === true) {
+                self.api.init(self);
             } else if(user) {
                 self.api.size();
             }
 
-            //hash
-//            self.toRemove = window.location.hash.substr(1);
-//            
             return self;
         },
         template : function(View, datas) {
@@ -280,12 +265,6 @@ define([
 
             if(!self.firstLoad)
                 self.loader();
-
-            // self.display = $.cookie('display') === undefined ? '.list' : $.cookie('display');
-           
-            // $('#displayFilters li').each(function(i, e) { 
-            //     $(e).attr('data-display', displayOption); 
-            // });
             
             self.render.files(datas, function(err, html) {
                 if(err)
@@ -419,6 +398,6 @@ define([
 
     };//Desktop ends
 
-    return Desktop.init();
+    return _.extend(Desktop.init(), EventEmitter.prototype);
 
 });

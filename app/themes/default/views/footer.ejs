@@ -10,13 +10,14 @@
 
 
     <footer class="text-center">
-        Made by <a href="http://soyuka.me">soyuka</a> - Creative Commons.
+        Made by <a href="http://soyuka.me">soyuka</a> - <a href="https://raw.github.com/soyuka/ezseed2/master/LICENCE">Creative Commons.</a> - Icons by <a href="http://entypo.com">Entypo</a>
+
     </footer>
 
     <script>
     var user = <%- JSON.stringify(user) %>;
     var config = <%- JSON.stringify(config) %>;
-    var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>
+    var isDesktop = <% if(location == '/') { %>true <% } else { %> false <% } %>;
     </script>
 
   </body>
