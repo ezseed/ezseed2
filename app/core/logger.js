@@ -36,7 +36,13 @@ var logger = new (winston.Logger)({
 	        level: level,
 
 	    })
-	]
+	],
+	exitOnError: false
 });
+
+logger.on('error', function (err) { 
+	console.error("Logger error", err);
+});
+
 
 module.exports = logger;

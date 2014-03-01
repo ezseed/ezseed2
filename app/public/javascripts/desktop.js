@@ -358,13 +358,15 @@ define([
 
                     var sort = $.cookie('sort');
 
-                    if(!sort) {
+                    if(!sort)
                         sort = 'date';
-                        $.cookie('sort', 'date');
-                    }
+                    
+                    
+                    $.cookie('sort', sort);
 
                     $items = self.sortBy[sort]($els);
                     self.emit('sort', sort);
+                    
                     delete $els;
 
                     if(self.firstLoad) {
