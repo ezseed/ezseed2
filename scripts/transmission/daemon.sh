@@ -1,11 +1,10 @@
 #!/bin/bash
 opt=$1
 username=$2
-daemon="transmission-daemon-$1"
+daemon="transmission-daemon-$2"
 
 d_start() {
- 	running=$(ps -ef | grep $daemon | grep -v grep)
-
+  running = $(ps -ef | grep "$daemon" | grep -v grep)
 	if [ ! -z "$running" ];
   then
 		echo "Transmission is already running"
@@ -26,15 +25,12 @@ d_restart() {
 
 case "$1" in
   start)
-    echo -n "Starting : $username"
     d_start
     ;;
   stop)
-    echo -n "Stopping : $username"
     d_stop
     ;;
   restart|force-reload)
-    echo -n "Restarting : $username"
     d_restart
     ;;
   *)

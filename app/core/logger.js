@@ -19,6 +19,8 @@ var winston = require('winston');
  *
  */
 
+require('fs').writeFileSync(global.config.root + '/../logs/exceptions.log');
+
 var logger = new (winston.Logger)({
 	transports: [
 	  	new (winston.transports.Console) ({ 
@@ -31,7 +33,7 @@ var logger = new (winston.Logger)({
 
 	  	new (winston.transports.File) ({ 
 
-			filename: global.config.root + '/log/exceptions.log',
+			filename: global.config.root + '/../logs/exceptions.log',
 	        handleExceptions: true,
 	        levels: winston.config.syslog.levels,
 	        level: level,
