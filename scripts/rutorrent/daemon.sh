@@ -84,13 +84,15 @@ checkcnfg() {
 
 d_start() {
   [ -d "${base}" ] && cd "${base}"
+
+    if [ ! -z $(ps -ef | grep rtorrent-$username | grep -v grep) ];
+    then
+        echo "Rtorrent is already running"
+        return
+    else
   #stty stop undef && stty start undef
-  su $user -c "screen -dmS ${srnname} rtorrent"
-  # su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "screen -dm -S ${srnname} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
-  # # this works for the screen command, but starting rtorrent below adopts screen session gid
-  # # even if it is not the screen session we started (e.g. running under an undesirable gid
-  # #su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "sg \"$group\" -c \"screen -fn -dm -S ${srnname} 2>&1 1>/dev/null\"" ${user} | tee -a "$logfile" >&2
-  # su -c "screen -S "${srnname}" -X screen rtorrent ${options} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
+      su $user -c "screen -dmS ${srnname} rtorrent"
+    fi
 }
 
 d_stop() {
