@@ -51,29 +51,29 @@ define([
             onTopScroll();
         else
             onTopScroll(false);
-        
-    }).on('blur focus', function(e) {  //thanks to http://codepen.io/calebnance/pen/bIjid
-    
-        if(isDesktop) {
-            var prevType = $(this).data('prevType');
-            
-            //  reduce double fire issues
-            if (prevType != e.type) {
-                switch (e.type) {
-
-                    case 'blur':
-                        Desktop.api.stop();
-                      break;
-                      
-                    case 'focus':
-                        Desktop.api.start();
-                      break;
-                }
-            }
-          
-            $(this).data('prevType', e.type);
-        }
     });
+    // }).on('blur focus', function(e) {  //thanks to http://codepen.io/calebnance/pen/bIjid
+    
+    //     if(isDesktop) {
+    //         var prevType = $(this).data('prevType');
+            
+    //         //  reduce double fire issues
+    //         if (prevType != e.type) {
+    //             switch (e.type) {
+
+    //                 case 'blur':
+    //                     Desktop.api.stop();
+    //                   break;
+                      
+    //                 case 'focus':
+    //                     Desktop.api.start();
+    //                   break;
+    //             }
+    //         }
+          
+    //         $(this).data('prevType', e.type);
+    //     }
+    // });
 
     $('body').on('click', '.delete-item', function(e) {
         e.preventDefault();
