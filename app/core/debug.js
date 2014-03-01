@@ -11,11 +11,12 @@ process.on('uncaughtException', function ( err ) {
 
     if(err.code == 'MODULE_NOT_FOUND')
     	logger.log('notice', 'Please try : npm install', function () {
-	      process.exit(1); //exit
-
-      	});
+        process.exit(1); //exit
+    	});
     else
-    	process.exit(1);
+      logger.log('emerg', err.code, function() {
+        process.exit(1);
+      });
 });
 
 var memwatch = require('memwatch'), winston = require('winston');

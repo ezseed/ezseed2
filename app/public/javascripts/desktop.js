@@ -259,6 +259,75 @@ define([
 
             return;
         },
+        sort: function(by) {
+            var self = this
+              , $items = this.sortBy[by](this.pckry.getItemElements());
+            
+            this.loader();
+
+            this.pckry.remove(this.pckry.getItemElements());
+
+            this.$container.addClass('notransition').css('visibility', 'hidden').append($items);
+
+            this.pckry.appended($items);
+
+            self.layout(function() { 
+
+                self.loader();
+
+                $.cookie('sort', by);
+
+                self.$container.removeClass('notransition').css('visibility', 'visible');
+
+            });
+
+        },
+        sortBy: {
+
+            date: function($items) {
+
+                $items.sort(function (a, b) {
+                    a = $(a), b = $(b); //jquerying -"-
+                    if (a.data('date-added') == b.data('date-added')) {
+                        return 0;
+                    } else if (a.data('date-added') < b.data('date-added')) {
+                        return 1;
+                    }
+                    return -1;
+                });
+        
+                return $items;
+        
+            },
+            alpha: function($items) {
+
+                $items.sort(function (a, b) {
+                    a = $(a), b = $(b);
+
+                    if(a.hasClass('table'))
+                        a = a.find('a.table-link').text().replace(/\s+/g, '').charAt(0);
+                    else
+                        a = $(a).find('h1').text().replace(/\s+/g, '').charAt(0);
+
+                    if(b.hasClass('table'))
+                        b = b.find('a.table-link').text().replace(/\s+/g, '').charAt(0);
+                    else
+                        b = $(b).find('h1').text().replace(/\s+/g, '').charAt(0);
+                    
+                    // \o/
+                    if (a == b)
+                        return 0;
+                    else if (a > b)
+                        return 1;
+
+                    return -1;
+                });
+                
+                return $items;
+        
+            }
+
+        },
         append : function(datas) {
 
             var self = this;
@@ -282,19 +351,16 @@ define([
                         
                     });
 
-                    $items = $els;
-                    delete $els;
+                    var sort = $.cookie('sort');
 
-                    //SORT TODO
-                    $items.sort(function (a, b) {
-                        a = $(a), b = $(b); //jquerying -"-
-                        if (a.data('date-added') == b.data('date-added')) {
-                            return 0;
-                        } else if (a.data('date-added') < b.data('date-added')) {
-                            return 1;
-                        }
-                        return -1;
-                    });
+                    if(!sort) {
+                        sort = 'date';
+                        $.cookie('sort', 'date');
+                    }
+
+                    $items = self.sortBy[sort]($els);
+                    self.emit('sort', sort);
+                    delete $els;
 
                     if(self.firstLoad) {
                         self.$container.addClass('notransition').css('visibility', 'hidden').append($items);

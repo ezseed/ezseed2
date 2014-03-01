@@ -18,6 +18,8 @@ define([
                 $(e).addClass('active');
         });
 
+    }).on('sort', function(by) {
+        $('#orderOptions .order.'+by).addClass('active');
     });
 
     $section = Desktop.$container;
@@ -154,8 +156,8 @@ define([
     $('#toTop').on('click', function(e) {
         toTop(true);
     });
-
-      $('body').on('click', '.showFiles', function() {
+    
+    $('body').on('click', '.showFiles', function() {
         $button = $(this);
         
         if($button.data('text') === undefined)
@@ -202,8 +204,6 @@ define([
         }
     },'nav#display.fixed');
 
-   
-
     /** Search **/
 
     $('#search input').on('keyup', function(e) {
@@ -231,6 +231,7 @@ define([
 
     /** Filter Methods **/
 
+    //Choosing between audio, video, other
     $('body').on('click', '#filterOptions li', function(){
 
         toTop();
@@ -252,6 +253,7 @@ define([
         return false;
     });
 
+    //List/Thumbs/Table
     $('body').on('click', '#displayOptions i', function() {
         var selector = $(this).attr('data-filter');
 
@@ -265,6 +267,26 @@ define([
             toTop();
 
             Desktop.setDisplay(selector).layout();
+
+        }
+
+        return false;
+    });
+
+    //ordering
+    $('body').on('click', '#orderOptions .order', function() {
+        var by = $(this).attr('data-by');
+
+        if(!$(this).hasClass('active')) {
+
+            $(this).parent().find('.active').removeClass('active');
+
+            $(this).addClass('active');
+
+            toTop();
+
+            Desktop.sort(by);
+            // Desktop.setDisplay(selector).layout();
 
         }
 
@@ -313,6 +335,31 @@ define([
 
     var socket = Desktop.socket;
 
+     //Archive through socket
+    $section.on('click', '.archive', function(e) {
+        e.preventDefault();
+
+        var $el = $(this).closest('.element'),
+        id = $el.attr('data-id'),
+        titre = $el.find('h1').text(),
+        $archiving = $('#archiving');
+        
+        socket.emit('archive', id);
+
+        $archiving.find('.name').text(titre);
+
+        $archiving.show();
+
+        $(window).bind('beforeunload', function() {
+            return 'Une compression est en cours';
+        });
+    });
+
+    /**
+     * Sockets for archiving
+     * TODO: Add start/stop watcher when user leaves
+     */
+
     var archiveComplete = function() {
         setTimeout(function() {
             $('#archiving').fadeOut('800');
@@ -350,26 +397,6 @@ define([
         $(window).unbind('beforeunload');
         window.location.href = url;
         archiveComplete();
-    });
-
-    //Archive through ajax
-    $section.on('click', '.archive', function(e) {
-        e.preventDefault();
-
-        var $el = $(this).closest('.element'),
-        id = $el.attr('data-id'),
-        titre = $el.find('h1').text(),
-        $archiving = $('#archiving');
-        
-        socket.emit('archive', id);
-
-        $archiving.find('.name').text(titre);
-
-        $archiving.show();
-
-        $(window).bind('beforeunload', function() {
-            return 'Une compression est en cours';
-        });
     });
 
 });
