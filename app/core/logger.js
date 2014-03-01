@@ -18,8 +18,13 @@ var winston = require('winston');
  *  7 debug    
  *
  */
-require('fs').mkdirSync(global.config.root + '/../logs', '777');
-require('fs').writeFileSync(global.config.root + '/../logs/exceptions.log');
+var log_path = global.config.root + '/../logs';
+
+var fs = require('fs');
+if(!fs.existsSync(log_path))
+	fs.mkdirSync(log_path, '777');
+
+fs.writeFileSync(log_path + '/exceptions.log');
 
 var logger = new (winston.Logger)({
 	transports: [
@@ -32,8 +37,7 @@ var logger = new (winston.Logger)({
 	  	}),
 
 	  	new (winston.transports.File) ({ 
-
-			filename: global.config.root + '/../logs/exceptions.log',
+			filename: log_path + '/exceptions.log',
 	        handleExceptions: true,
 	        levels: winston.config.syslog.levels,
 	        level: level,
