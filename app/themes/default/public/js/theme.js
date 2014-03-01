@@ -4,19 +4,42 @@ define([
 
     Desktop.on('firstDisplay', function(display) {
 
-        display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
+        if(display) {
+            display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
 
-        $('#displayOptions i').each(function(i, e) {
+            $('#displayOptions i').each(function(i, e) {
 
-            if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-                $(e).addClass('active');
-        });
+                if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                    $(e).addClass('active');
+            });
 
-        $('#filterOptions li').each(function(i, e) {
+            $('#filterOptions li').each(function(i, e) {
 
-            if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
-                $(e).addClass('active');
-        });
+                if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+                    $(e).addClass('active');
+            });
+        }
+
+    }).on('display', function(display) {
+
+        // if(display) {
+        //     $('#displayOptions .active').removeClass('active');
+        //     $('#filterOptions .active').removeClass('active');
+        //     $('#displayPath li.active').removeClass('active');
+
+        //     $('#displayOptions i').each(function(i, e) {
+
+        //         if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+        //             $(e).addClass('active');
+        //     });
+
+        //     $('#filterOptions li').each(function(i, e) {
+
+        //         if( display.indexOf( $(e).attr('data-filter') ) !== -1 )
+        //             $(e).addClass('active');
+        //     });
+        // }
+
 
     }).on('sort', function(by) {
         $('#orderOptions .order.'+by).addClass('active');
@@ -119,6 +142,19 @@ define([
         }, 'json');
     });
 
+    $('body').on('click', '#resetOptions i', function(e) {
+
+        $('#search input').val('');
+
+        $('#displayOptions i.active').removeClass('active');
+        $('#filterOptions i.active').removeClass('active');
+        $('#displayPath li.active').removeClass('active');
+
+        $('#displayOptions i[data-filter=".list"]').addClass('active');
+
+        Desktop.resetDisplay('.list').layout();
+
+    });
 
     var toTop = function(veryTop) {
         var veryTop = veryTop === undefined ? false : veryTop;

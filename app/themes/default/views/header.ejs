@@ -87,6 +87,10 @@
     </header>
       <% if(user && location == '/') { %>
       <nav id="display">
+        <div id="resetOptions">
+          <i class="entypo-arrows-ccw" title="Remettre les filtres à zéro"></i>
+        </div>
+
         <div id="displayOptions">
           <i class="entypo-list" title="Présentation par liste simplifiée" data-filter=".table" ></i>
           <i class="entypo-numbered-list" title="Présentation par liste" data-filter=".list"></i>
@@ -94,7 +98,7 @@
         </div>
         
         <div id="orderOptions">
-          <!-- <i class="entypo-arrow-combo"></i> --><span class="order alpha" data-by="alpha">A-Z</span><span class="order date" data-by="date"><i class="entypo-clock"></i></span>
+          <span class="order alpha" data-by="alpha">A-Z</span><span class="order date" data-by="date"><i class="entypo-clock"></i></span>
         </div>
 
         <div id="search" class="input-block">

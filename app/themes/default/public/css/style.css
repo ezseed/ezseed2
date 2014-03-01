@@ -229,24 +229,31 @@ nav#display.fixed {
 	opacity: 0.7;
 }
 
-	nav #displayOptions {
+	nav#display #displayOptions {
 		float:left;
-		margin-left: 20px;
 	}
 
 	#orderOptions {
 		float: left;
 		border-left:1px solid #000;
-		margin-left: 12px;
-		padding-left: 11px;
+		margin-left: 9px;
+		padding-left: 9px;
 	}
 
-	nav #displayOptions i, #orderOptions {
+	#resetOptions {
+		float:left;
+		border-right:1px solid #000;
+		padding-right:9px;
+		margin-right:9px;
+		margin-left: 10px
+	}
+
+	#resetOptions i, nav#display #displayOptions i, #orderOptions {
 		color: #b2b2af;
 		cursor: pointer;
 	}
 
-	nav #displayOptions i:before {
+	nav#display #displayOptions i:before {
 		font-size: 25px;
 		line-height: 30px;
 	}
@@ -255,19 +262,18 @@ nav#display.fixed {
 		margin-right: 7px;
 	}
 
-	#orderOptions i:before {
+	#resetOptions i:before, #orderOptions i:before {
 		font-size: 15px;
 		line-height: 30px;
 	}
 
-	nav #displayOptions i:hover,nav #displayOptions i.active,
+	nav#display i:hover,nav#display i.active,
 	#orderOptions .order:hover, #orderOptions .order.active {
-		color:#aa5f47;
+		color:#aa5f47!important;
 	}
 
 
-
-	nav ul#filterOptions {
+	nav#display ul#filterOptions {
 		margin: 0;
 		margin-right: 20px;
 		padding: 0;
@@ -278,7 +284,7 @@ nav#display.fixed {
 		box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
 	}
 
-	nav ul#filterOptions li:first-child {
+	nav#display ul#filterOptions li:first-child {
 		border-left: 0;
 		-webkit-border-top-left-radius: 3px;
 		-webkit-border-bottom-left-radius: 3px;
@@ -288,7 +294,7 @@ nav#display.fixed {
 		border-bottom-left-radius: 3px;
 	}
 
-	nav ul#filterOptions li:last-child {
+	nav#display ul#filterOptions li:last-child {
 		-webkit-border-top-right-radius: 3px;
 		-webkit-border-bottom-right-radius: 3px;
 		-moz-border-radius-topright: 3px;
@@ -297,7 +303,7 @@ nav#display.fixed {
 		border-bottom-right-radius: 3px;
 	}
 
-	nav ul#filterOptions li {
+	nav#display ul#filterOptions li {
 		cursor: pointer;
 		font-size: 1em;
 		line-height: 30px;
@@ -317,7 +323,7 @@ nav#display.fixed {
 		transition-duration: 0.5s;
 	}
 
-	nav ul#filterOptions li:hover, nav ul#filterOptions li.active {
+	nav#display ul#filterOptions li:hover, nav#display ul#filterOptions li.active {
 		color:#aa5f47;
 		background-color: rgba(40,40,39,0.5);
 	}

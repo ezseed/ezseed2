@@ -71,6 +71,11 @@ define([
         showNotification : function(params) {
             // notify.createNotification(params.title, {body : params.text, icon: '/images/planetetrans.png', tag:params.tag, timeout:2500});
         },
+        resetDisplay: function(display) {
+            this.display = display ? display : '.list';
+            this.emit('display', this.display);
+            return this;
+        },
         setDisplay: function(selector, remove) {
             
             var option = ['.list', '.miniature','.table']
