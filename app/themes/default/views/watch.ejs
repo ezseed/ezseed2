@@ -29,6 +29,26 @@
       <hr>
       <ul>
       <%
+      if(movie.movieType == "tvseries") {
+        movie.videos.sort(function (a, b) {
+          if(a.episode == b.episode)
+            return 0;
+          else if(a.episode > b.episode)
+            return 1;
+
+          return -1;
+        });
+      } else {
+        movie.videos.sort(function (a, b) {
+            if (a.name == b.name) {
+                return 0;
+            } else if (a.name > b.name) {
+                return 1;
+            }
+            return -1;
+        });
+      }
+
       for(var i in movie.videos) {
       %>
          <a <%if(movie.videos[i].episode == movie.episode) { %>class="active" href="#" <% } else { %>href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><li><span class="title"><%- movie.title + ' - E' + movie.videos[i].episode %></span><%=movie.videos[i].episode%></li></a>
