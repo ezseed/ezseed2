@@ -88,7 +88,7 @@ d_start() {
 
     if [ ! -z "$running" ];
     then    
-        echo "Rtorrent is already running"
+        echo "$srnname is already running" >&2
         return
     else
   #stty stop undef && stty start undef
