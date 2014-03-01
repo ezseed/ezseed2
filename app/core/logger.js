@@ -25,7 +25,8 @@ var logger = new (winston.Logger)({
 
 	  		level: level, 
 	  		colorize: true, 
-	  		levels: winston.config.syslog.levels
+	  		levels: winston.config.syslog.levels,
+	  		timestamp: level == 'debug' ? true : false
 	  	}),
 
 	  	new (winston.transports.File) ({ 
