@@ -20,6 +20,29 @@ h1.invert {
 	margin:5px 0;
 }
 
+button {
+	text-align: left;
+	cursor: pointer;
+	padding: 5px 0 5px 10px;
+	border: 1px #c2441c;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	color: rgba(22,21,19,1);
+	background: #c9532d;
+	-webkit-box-shadow: 0 0 1px 0 #aa5f47 inset;
+	box-shadow: 0 0 1px 0 #aa5f47 inset;
+	text-shadow: 1px 1px 0 rgba(255,163,82,0.2);
+	-webkit-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
+	-moz-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
+	-o-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
+	transition: all 100ms cubic-bezier(0.42,0,0.58,1);
+}
+
+button:hover {
+  color: #282827;
+  background: #c2441c;
+}
+
 section h2 {
 	text-shadow: 0 -1px 0 #303030;
 	font-size: 1.15em;
@@ -48,20 +71,7 @@ header {
 		text-align: left;
 		float: left;
 		width: 130px;
-		cursor: pointer;
 		padding: 5px 0 5px 10px;
-		border: 1px #c2441c;
-		-webkit-border-radius: 3px;
-		border-radius: 3px;
-		color: rgba(22,21,19,1);
-		background: #c9532d;
-		-webkit-box-shadow: 0 0 1px 0 #aa5f47 inset;
-		box-shadow: 0 0 1px 0 #aa5f47 inset;
-		text-shadow: 1px 1px 0 rgba(255,163,82,0.2);
-		-webkit-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
-		-moz-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
-		-o-transition: all 100ms cubic-bezier(0.42,0,0.58,1);
-		transition: all 100ms cubic-bezier(0.42,0,0.58,1);
 		margin-top:7px;
 		font-size: 0.9em;
 	}
@@ -80,11 +90,6 @@ header {
 		}
 	}
  
-	header nav#menu button:hover {
-	  color: #282827;
-	  background: #c2441c;
-	}
-
 	header nav#menu a:hover {
 		text-decoration: none;
 	}
