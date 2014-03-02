@@ -14,12 +14,6 @@ var plugin = {
 	stylesheets : [],
 	javascripts : ['/js/checkforupdates.js'],
 	checkForUpdates : function(socket, cb) {
-	
-		if(typeof socket == 'function') {
-			cb = socket;
-			socket = false;
-		}
-
 		request({url : 'https://api.github.com/repos/soyuka/ezseed2/releases', headers : {'User-Agent': 'Awesome-Octocat-App'}}, function(err, resp, body) {
 			var current = JSON.parse(body)[0].tag_name;
 

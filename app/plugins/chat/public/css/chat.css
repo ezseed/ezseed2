@@ -1,0 +1,54 @@
+#chat {
+	position:fixed;
+	height: 20px;
+	width: 275px;
+	right: 20px;
+	bottom:0;
+	background-color: rgba(71,71,71,0.95);
+	-moz-box-shadow: 0 0 7px rgba(40,40,39,.60);
+	-webkit-box-shadow: 0 0 7px rgba(40,40,39,.60);
+	box-shadow: 0 0 7px rgba(40,40,39,.60);
+	border:2px solid #e15d33;
+	border-bottom: 0;
+	color:#B2B2AF;
+}
+
+#chat .messages {
+	overflow-y:auto;
+	padding: 0;
+	margin: 0;
+	height: 270px;
+}
+
+#chat .messages li {
+	list-style-type: none;
+	border-bottom:1px solid rgba(235, 225, 200, 0.2);
+	font-weight: normal;
+	color:#ccc;
+}
+
+#chat .messages li .pseudo {
+	float:right;
+	font-size: 0.8em;
+	color:#b2b2af;
+	display: inline-block;
+	padding-right: 5px;
+	margin-top: -7px;
+}
+
+#chat .messages li .pseudo:before{content: "par ";}
+
+#chat #textarea {
+	background: rgba(255,255,255,0.9);
+	color:#111;
+	width: 100%;
+	height: 60px;
+	overflow-y:auto;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	padding: 5px;
+}
+
+#chat #textarea:focus {outline: 0}
+
+#chat .top {padding: 1px 5px 1px 5px; cursor: pointer;}
