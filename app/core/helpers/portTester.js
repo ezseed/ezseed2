@@ -36,12 +36,12 @@ var localPortTester = {
 
 		var port = arr.shift();
 
-		isPortTaken(port, function(err, taken) {
+		this.isPortTaken(port, function(err, taken) {
 			if(taken === status)
 				return cb(null, port); //It's open
 			else
 				setImmediate(function() {
-					parse(arr, status, cb);
+					this.parse(arr, status, cb);
 				});
 		});
 	},
@@ -60,7 +60,7 @@ var localPortTester = {
 		for(var i = start; i < stop; i++)
 			ports.push(i);
 
-		return parse(ports, false, cb);
+		return this.parse(ports, false, cb);
 	},
 	//Same as before, founds a closed port
 	findClose: function(start, stop, cb) {
@@ -73,7 +73,7 @@ var localPortTester = {
 		for(var i = start; i < stop; i++)
 			ports.push(i);
 
-		return parse(ports, true, cb);
+		return this.parse(ports, true, cb);
 	}
 
 }
