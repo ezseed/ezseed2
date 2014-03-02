@@ -57,7 +57,6 @@
     "tmdb-3": "0.0.4",
     "spawn-command": "0.0.2",
     "winston": "git://github.com/soyuka/winston.git",
-    "memwatch": "^0.2.2",
-    "portscanner": "^0.2.2"
+    "memwatch": "^0.2.2"
   }
 }

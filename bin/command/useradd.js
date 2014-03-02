@@ -58,8 +58,6 @@ var useradd = {
 				
 				self.role(options, function(options) {
 					self.password(options, function(options) {
-						console.log('../client/'+client+'/useradd');
-
 			    		require('../client/'+client+'/useradd')(username, options.password, function() {
 			    			process.exit(0);
 			    		});

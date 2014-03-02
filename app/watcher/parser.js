@@ -86,7 +86,7 @@ module.exports.processAlbums = function(params, callback) {
 
 					albums[indexMatch].songs.push(e);
 					
-					return parseAudios(arr, cb, albums);
+					setImmediate(function() { parseAudios(arr, cb, albums); });
 
 				});
 			} else {
@@ -117,7 +117,7 @@ module.exports.processAlbums = function(params, callback) {
 
 						albums[indexMatch].songs.push(e);
 						
-						return parseAudios(arr, cb, albums);
+						setImmediate(function() { parseAudios(arr, cb, albums); });
 					} else {
 						//New album detected
 						var a = {
@@ -140,19 +140,19 @@ module.exports.processAlbums = function(params, callback) {
 									albums.push(a);
 
 								
-								return parseAudios(arr, cb, albums);
+								setImmediate(function() { parseAudios(arr, cb, albums); });
 							})
 						} else {
 							albums.push(a);
 							
-							return parseAudios(arr, cb, albums);
+							setImmediate(function() { parseAudios(arr, cb, albums); });
 						}
 					}
 				});
 			}
 		} else {
 			
-			return parseAudios(arr, cb, albums);
+			setImmediate(function() { parseAudios(arr, cb, albums); });
 		}
 	}
 
@@ -225,7 +225,7 @@ module.exports.processMovies = function(params, callback) {
 
 				movies[indexMatch].videos.push(e);
 
-				return parseMovies(arr, cb, movies);
+				setImmediate(function() { parseMovies(arr, cb, movies); });
 
 			} else {
 
@@ -250,12 +250,12 @@ module.exports.processMovies = function(params, callback) {
 								console.log('debug', e);
 							}
 
-							return parseMovies(arr, cb, movies);
+							setImmediate(function() { parseMovies(arr, cb, movies); });
 						});
 					} else {
 						movies[indexMatch.movies].videos.push(e);
 
-						return parseMovies(arr, cb, movies);
+						setImmediate(function() { parseMovies(arr, cb, movies); });
 					}
 				} else if (moviesMatch !== null) {
 					console.log('debug', 'Index match movies');
@@ -269,12 +269,12 @@ module.exports.processMovies = function(params, callback) {
 								console.log('debug', e);
 							}
 
-							return parseMovies(arr, cb, movies);
+							setImmediate(function() { parseMovies(arr, cb, movies); });
 						});
 					} else {
 						movies[moviesMatch.movies].videos.push(e);
 
-						return parseMovies(arr, cb, movies);
+						setImmediate(function() { parseMovies(arr, cb, movies); });
 					}
 				} else {
 					var infos = {
@@ -306,13 +306,13 @@ module.exports.processMovies = function(params, callback) {
 							prevDirRelative : e.prevDir.replace(global.rootPath, '')
 						});
 
-						return parseMovies(arr, cb, movies);
+						setImmediate(function() { parseMovies(arr, cb, movies); });
 					});
 				}
 
 			}
 		} else {
-			return parseMovies(arr, cb, movies);
+			setImmediate(function() { parseMovies(arr, cb, movies); });
 		}
 
 	}
@@ -406,7 +406,7 @@ var checkIsOther = function (files, i) {
 					if(!checkIsOther(arr))
 						return false;
 					else
-						return checkIsOther(files, i + 1);
+						setImmediate(function() { return checkIsOther(files, i + 1); });
 				} else {
 					var t = mime.lookup(files[i]).split('/')[0];
 
@@ -414,13 +414,13 @@ var checkIsOther = function (files, i) {
 					{
 						return false;
 					} else
-						return checkIsOther(files, i + 1);
+						setImmediate(function() { return checkIsOther(files, i + 1); });
 				}
 			} else {
-				return checkIsOther(files, i + 1);
+				setImmediate(function() { return checkIsOther(files, i + 1); });
 			}
 		} else
-			return checkIsOther(files, i + 1);
+			setImmediate(function() { return checkIsOther(files, i + 1); });
 	} else 
 		return true;
 }
@@ -475,7 +475,7 @@ module.exports.processOthers = function(params, callback) {
 		}
 
 		if(exists) {
-			process.nextTick(function() { parseOthers(arr, cb, others); });
+			setImmediate(function() { parseOthers(arr, cb, others); });
 		} else {
 
 			var indexMatch = null
@@ -515,13 +515,13 @@ module.exports.processOthers = function(params, callback) {
 					prevDirRelative : e.prevDir.replace(global.config.root, '')
 				});
 				
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(function() { parseOthers(arr, cb, others); });
 
 				//}
 			} else if(indexMatch !== null) {
 				others[indexMatch].files.push(e);
 
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(function() { parseOthers(arr, cb, others); });
 			} else {
 
 				indexMatch = findIndex(params.existing, function(other) { return e.prevDir == other.prevDir});
@@ -545,7 +545,7 @@ module.exports.processOthers = function(params, callback) {
 					cache.put('others', cached);
 				}
 
-				process.nextTick(function() { parseOthers(arr, cb, others); });
+				setImmediate(function() { parseOthers(arr, cb, others); });
 			}
 		}
 	};

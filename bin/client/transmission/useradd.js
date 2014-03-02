@@ -1,6 +1,5 @@
 var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
-  , portscanner = require('portscanner')
   , db = require(global.app_path + '/app/core/database')
   , child_process = require('child_process')
   , spawn = child_process.spawn
@@ -34,7 +33,7 @@ var settings = function (username, password, next) {
 		d['download-dir'] = path.join(user_path, username, 'downloads');
 
 		//db.users.count(function (err, count) {
-		portscanner.findAPortNotInUse(6000, 9999, '127.0.0.1', function(error, port) {
+		require(global.app_path + 'app/core/helpers/portTester').findOpen(9000, function(error, port) {
 			if(error)
 				console.error('Port error', error);
 
@@ -53,8 +52,6 @@ var settings = function (username, password, next) {
 
 var useradd = function (username, password, next) {
 
-	console.log('debug', "Creating transmission for "+username);
-	
 	user.create(username, password, function(err) {
 		if(err)
 			console.log('error', err.error);
