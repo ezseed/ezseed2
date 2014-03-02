@@ -68,15 +68,15 @@ logger.on('error', function (err) {
  */
 process.on('uncaughtException', function ( err ) {
 
-    logger.log('emerg', err.message);
-    logger.log('emerg', err.stack);
+    logger.emerg(err.message);
+    logger.emerg(err.stack);
 
     if(err.code == 'MODULE_NOT_FOUND')
-    	logger.log('notice', 'Please try : npm install', function () {
+    	logger.notice('Please try : npm install', function () {
         process.exit(1); //exit
     	});
     else
-      logger.log('emerg', err.code, function() {
+      logger.emerg(err.code, function() {
         process.exit(1);
       });
 });
@@ -98,13 +98,13 @@ var memory_logger = new (winston.Logger)({
 });
 
 memwatch.on('leak', function(info) { 
-	memory_logger.log('alert', info);
+	memory_logger.alert(info);
 });
 
 memwatch.on('stats', function(stats) { 
 	//Only log stats on debug
 	if( process.argv.indexOf('-d') === 1 )
-		memory_logger.log('notice', 'Memory stats', stats);
+		memory_logger.notice('Memory stats', stats);
 });
 
 

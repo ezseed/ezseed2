@@ -30,7 +30,8 @@ var portTester = {
 	//Asynchronous parse an array of ports
 	//Callback when status is founded
 	parse: function(arr, status, cb) {
-
+		var self = this;
+		
 		if(arr.length == 0)
 			cb(null, false);
 
@@ -41,7 +42,7 @@ var portTester = {
 				return cb(null, port); //It's open
 			else
 				setImmediate(function() {
-					this.parse(arr, status, cb);
+					self.parse(arr, status, cb);
 				});
 		});
 	},
