@@ -13,26 +13,27 @@ var useradd = function (username, password, next) {
 	user.create(username, password, function(err) {
 
 		if(err)
-			console.log(err.error), console.trace(err);
+			console.error(err.error);
+		else {
+			fs.chmodSync(shell_path, '775');
 
-		fs.chmodSync(shell_path, '775');
+			var running = spawn(shell_path, [username, password]);
 
-		var running = spawn(shell_path, [username, password]);
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.log(string.info);
+			});
 
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.log(string.info);
-		});
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
+				console.error(string.error);
 
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
-			console.error(string.error);
+			});
 
-		});
-
-		running.on('exit', function (code) {
-			next(code);
-		});
+			running.on('exit', function (code) {
+				next(code);
+			});
+		}
 	});
 	
 }

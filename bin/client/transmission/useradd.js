@@ -54,30 +54,31 @@ var useradd = function (username, password, next) {
 
 	user.create(username, password, function(err) {
 		if(err)
-			console.log('error', err.error);
+			console.error(err);
+		else {
+			var shell_path = global.app_path + '/scripts/transmission/useradd.sh';
+			fs.chmodSync(shell_path, '775');
 
-		var shell_path = global.app_path + '/scripts/transmission/useradd.sh';
-		fs.chmodSync(shell_path, '775');
+			var running = spawn(shell_path, [username, password]);
 
-		var running = spawn(shell_path, [username, password]);
+			running.stdout.on('data', function (data) {
+				var string = new Buffer(data).toString();
 
-		running.stdout.on('data', function (data) {
-			var string = new Buffer(data).toString();
+				console.log('info', string.info);
+			});
 
-			console.log('info', string.info);
-		});
+			running.stderr.on('data', function (data) {
+				var string = new Buffer(data).toString();
 
-		running.stderr.on('data', function (data) {
-			var string = new Buffer(data).toString();
+				console.log('error', string.error);
+			});
 
-			console.log('error', string.error);
-		});
+			running.on('exit', function (code) {
 
-		running.on('exit', function (code) {
+				return settings(username, password, next);
 
-			return settings(username, password, next);
-
-		});
+			});
+		}
 	});
 }
 
