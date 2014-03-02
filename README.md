@@ -35,7 +35,7 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 
 ![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
 
-### [Configuration Chroot SSH](https://github.com/soyuka/ezseed2/wiki/Chroot-utilisateurs)
+#### [Configuration Chroot SSH](https://github.com/soyuka/ezseed2/wiki/Chroot-utilisateurs)
 
 ### Erreurs
 
