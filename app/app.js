@@ -130,8 +130,6 @@ app.use(function(err, req, res, next) {
   next(err);
 });
 
-throw new Error('test');
-
 //This is shit
 //http://www.itamarweiss.com/post/57962670227/error-handling-in-node-js-express
 // app.all('*', function(req, res, next){
