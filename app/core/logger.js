@@ -38,7 +38,6 @@ var logger = new (winston.Logger)({
 
 	  	new (winston.transports.File) ({ 
 			filename: log_path + '/exceptions.log',
-	        handleExceptions: true,
 	        levels: winston.config.syslog.levels,
 	        level: level,
 

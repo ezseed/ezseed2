@@ -63,7 +63,7 @@ var localPortTester = {
 		return parse(ports, false, cb);
 	},
 	//Same as before, founds a closed port
-	findClose = function(start, stop, cb) {
+	findClose: function(start, stop, cb) {
 		cb = typeof stop == 'function' ? stop : cb;
 
 		stop = typeof stop == 'function' ? start + default_range : stop;
