@@ -1,7 +1,7 @@
- - **[Installation][1]**
- - **[Mis à jour][2]**
- - **[CLI][3]**
- - **[Misc (licence, credits)][4]**
+- [Installation][1]
+- [Mis à jour][2]
+- [CLI][3]
+- [Misc (licence, credits)][4]
 
 ## Installation
 
