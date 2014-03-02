@@ -20,6 +20,7 @@ node_modules/
 app/scripts
 scripts/transmission/config/settings.*.json
 app/config.json
+ezseed.json
 
 app/plugins/*
 !app/plugins/index.js
