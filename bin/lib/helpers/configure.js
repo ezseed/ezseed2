@@ -16,33 +16,41 @@ var configure = {
 	 * Sets the config.json file
 	 */
 	set_config: function(path, done) {
-		var config = {
+
+		done = typeof path == 'function' ? path : done;
+
+		if(typeof path == 'string') {
+			
+			console.info('app/config.json');
+
+			var config = {
 					"path": path,
 					"fetchTime": 5000,
 					"root": global.app_path +'/app',
 					"location": "",
 					"torrentLink": "embed",
-					"diskSpace": "1048576",
-					"availableSpace": "1 TB",
+					"diskSpace": "1048576", //useless now
+					"availableSpace": "1 TB", //yep this too
 					"transmission":false,
   					"rutorrent":false,
 					"theme": "default",
 					"scrapper": "allocine"
 				};
 		
-		if(fs.existsSync(global.app_path+'/app/config.json')) {
-			var cf = jf.readFileSync(global.app_path + '/app/config.json');
+			if(fs.existsSync(global.app_path+'/app/config.json')) {
+				var cf = jf.readFileSync(global.app_path + '/app/config.json');
 
-			_.each(config, function(e, i) {
-				if(cf[i])
-					config[i] = e;
-			});
+				_.each(config, function(e, i) {
+					if(cf[i])
+						config[i] = e;
+				});
+			}
+			
+			global.config = config;
+
+			//Writes the config
+			jf.writeFileSync(global.app_path + '/app/config.json', config);
 		}
-		
-		global.config = config;
-
-		//Writes the config
-		jf.writeFileSync(global.app_path + '/app/config.json', config);
 
 		console.log('info', "Paramétrage du lanceur");
 
@@ -52,7 +60,7 @@ var configure = {
 			    "name"      : "watcher",
 			    "script"    : global.app_path + "/app/watcher.js",
 			    "error_file": global.app_path + "/logs/watcher-err.log",
-			    "out_file"  : global.app_path + "/logs/ezseed/watcher-out.log",
+			    "out_file"  : global.app_path + "/logs/watcher-out.log",
 			    "env": {
 			    	"NODE_ENV": "production"
 			    }

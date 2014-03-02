@@ -72,12 +72,22 @@ program
 
 program
 	.command('configure')
+	.option('-p <path>, --path <path>', 'Specify path, without it app/config.json will not be changed')
 	.description('Configure')
-	.action(function() {
+	.action(function(options) {
 		var configure = require('./lib/helpers/configure');
 
 		configure.update_rc(function() {
-			configure.set_config(path, next);					
+
+			if(options.path) {
+				configure.set_config(path, function() {
+					process.exit(0);
+				});					
+			} else {
+				configure.set_config(function(){
+					process.exit(0);
+				});
+			}
 		});
 	});
 
