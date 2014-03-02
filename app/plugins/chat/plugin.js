@@ -15,7 +15,7 @@ var plugin = {
 		var self = this;
 
 		if(!self.inited) {
-
+			if(user) {
 			db.getStatus(user.id, function(err, status) {
 				self.enabled = status;
 				
@@ -23,6 +23,9 @@ var plugin = {
 
 				cb(err, self);
 			});
+			} else {
+				cb("No user", self);	
+			}
 
 		} else
 			cb(null, self);
