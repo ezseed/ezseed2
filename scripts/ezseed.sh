@@ -30,7 +30,7 @@ super() {
 start() {
     if [ ! -z "$(ps -ef | grep 'pm2: ezseed' | grep -v grep)" ]
     then
-        echo "Ezseed is already running"
+        echo "Ezseed is already running" >&2
     else
         echo "Starting $NAME"
         super $PM2 resurrect

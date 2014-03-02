@@ -6,12 +6,12 @@ var shortcut = function(cmd, cb) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log('info', string);
+		console.info(string);
 	});
 
 	running.stderr.on('error', function (data) {
 		var string = new Buffer(data).toString();
-		console.log('error', string);
+		console.error(string);
 		
 	});
 
