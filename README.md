@@ -100,7 +100,7 @@ Usage: ezseed [options] [command]
 
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
-
+* [FAQ][7]
 
   [1]: #installation
   [2]: #mise-%C3%A0-jour
@@ -108,3 +108,4 @@ Usage: ezseed [options] [command]
   [4]: #misc
   [5]: https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure
   [6]: http://www.zupmage.eu/i/KgO87SJzpu.png
+  [7]: https://github.com/soyuka/ezseed2/wiki/FAQ
