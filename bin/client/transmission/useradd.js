@@ -53,6 +53,8 @@ var settings = function (username, password, next) {
 
 var useradd = function (username, password, next) {
 
+	console.log('debug', "Creating transmission for "+username);
+	
 	user.create(username, password, function(err) {
 		if(err)
 			console.log('error', err.error);
