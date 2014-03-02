@@ -84,7 +84,7 @@ checkcnfg() {
 
 d_start() {
     cd "${base}"
-    running=$(ps -ef | grep rtorrent-$username | grep -v grep)
+    running=$(ps -ef | grep "$srnname" | grep -v grep)
 
     if [ ! -z "$running" ];
     then    
