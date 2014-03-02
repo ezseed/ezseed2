@@ -1,7 +1,7 @@
-- [Installation][1]
-- [Mis à jour][2]
-- [CLI][3]
-- [Misc (licence, credits)][4]
+ - **[Installation][1]**
+ - **[Mis à jour][2]**
+ - **[CLI][3]**
+ - **[Misc (licence, credits, liens)][4]**
 
 ## Installation
 
@@ -45,8 +45,6 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
 ```
 ezseed start
 ```
-
-Les logs de l'application sont dans `/var/log/ezseed/`
 
 ## Mise à jour
 ```
