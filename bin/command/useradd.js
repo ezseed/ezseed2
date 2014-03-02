@@ -12,7 +12,7 @@ module.exports = function(program) {
 		.option('-P, --path <path>', 'DO NOT USE, user home path should be /home')
 		.option('-p, --password <password>', 'specify password')
 		.option('-r, --role <role>', '<admin|[user]>')
-		.description("Ajout d'un utilisateur au client spécifié")
+		.description("Adds a user to ezseed and to the system using the specified client")
 		.action(useradd.command);
 }
 

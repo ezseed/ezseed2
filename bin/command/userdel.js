@@ -2,7 +2,7 @@
 module.exports = function (program) {
 	program
 	.command('userdel <username>')
-	.description("Suppression de l'utilisateur /!\\ tous les fichiers seront supprimés")
+	.description("/!\\ All files will be deleted")
 	.action(function(username) {
 
 		username = username.toLowerCase();
