@@ -39,7 +39,7 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 
 Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voir ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
 
-`can't start transmission unknow job` - ubuntu #77
+`can't start transmission unknow job` - ubuntu [#77](https://github.com/soyuka/ezseed2/issues/77)
 
 ### Lancement
 ```
