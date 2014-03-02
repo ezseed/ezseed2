@@ -17,7 +17,7 @@
     "url": "https://github.com/soyuka/ezseed2"
   },
   "scripts": {
-    "start": "pm2 start ./ezseed.json",
+    "start": "ezseed start",
     "test": "mocha test"
   },
   "homepage": "http://soyuka.github.io/ezseed2",
