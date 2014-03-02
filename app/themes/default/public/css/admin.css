@@ -1,0 +1,142 @@
+
+/**
+ * Admin
+ */
+
+#admin {
+	/*border-radius: 3px;
+	-moz-border-radius: 3px;
+	background: url(../images/grey.png) repeat 0 0;
+	-moz-box-shadow: 0 0 4px rgba(40,40,39,.60);
+	-webkit-box-shadow: 0 0 4px rgba(40,40,39,.60);
+	box-shadow: 0 0 4px rgba(40,40,39,.60);
+	border:2px solid #e15d33;
+	color:#B2B2AF;*/
+}
+
+#admin ul {
+	max-width:200px;
+}
+
+#admin a {
+	color:#d45229;
+}
+
+#admin a:hover {
+	color:#c2441c;
+}
+
+#admin h2 {
+	font-weight: normal;
+	margin:0;
+	-wekit-border-radius: 3px;
+	border-radius: 3px;
+	margin-bottom: 5px;
+	width: 100%;
+	cursor: pointer;
+	  color:#B2B2AF;
+	  background: #373634 url('../images/grey.png');
+	  padding: 7px 10px;
+	text-shadow:none;
+}
+
+#admin h2.open, #admin h2:hover {
+}
+
+#admin h2.last{
+	border-bottom: 0;
+}
+
+#admin h2 a {
+	color:inherit;
+	display: block;
+	width: 100%;
+	text-decoration: none!important;
+}
+
+#admin h2 a:hover {
+	color:#aa5f47;
+}
+
+#admin h2 + div {
+  height: auto;
+}
+
+#admin h2.open + div {
+	border-bottom:1px solid rgba(235, 225, 200, 0.2);
+}
+
+#admin .content {
+  padding: 10px;
+}
+
+#admin .user-more {
+	display:none;
+	border: 2px solid #474747;
+	margin: 10px 0;
+	padding: 7px;
+}
+
+#admin .user-more h4 {
+	margin-bottom: 4px;
+}
+
+#admin .user-more ul {
+	max-width: 600px;
+}
+
+#admin form {
+	padding: 10px;
+}
+
+#admin form#configuration input {
+	width: 150px;
+}
+
+#admin form#configuration {
+	width:500px;
+	margin: 0 auto;
+}
+
+#admin form#configuration .form-block {
+	position: relative;
+	margin-bottom: 10px;
+}
+
+#admin input {
+	height:auto;
+	width: auto;
+	padding-left:4px;
+	margin:0;
+	width:175px;
+	display:inline-block;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	background: rgba(255,255,255,0.5);
+	border:1px solid #282827;
+	text-shadow: none;
+	box-shadow: none;
+	-moz-box-shadow: none;
+}
+
+#admin input[type="submit"] {
+	background: #373634 url(../images/grey.png);
+	color:#B2B2AF;
+}
+
+
+span.customSelect {
+	cursor:pointer;
+	color: #272726;
+	/*text-shadow: 0 -1px 0 rgba(101,38,17,.5);
+	-moz-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
+	-webkit-box-shadow: inset 0 0 3px rgba(222,86,47,.9);
+	box-shadow: inset 0 0 3px rgba(222,86,47,.9);*/
+	padding: 3px 10px;
+	font-size: 1em;
+	border:1px solid rgba(0,0,0,0.4);
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	width: 135px;
+	background:rgba(255,255,255,0.2) url(../images/arrow-down.png) right center no-repeat;
+}

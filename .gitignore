@@ -1,14 +1,26 @@
 downloads/
 _trash/
 .idea/
+.DS_Store
+sftp-config.json
+logs/*
 
+app/public/js
+app/public/javascripts/main.build.js
+app/themes/default/public/js/main.min.js
+app/themes/default/public/css/main.min.css
+
+
+app/public/views
 app/public/downloads
 app/public/tmp/*
 
 node_modules/
 
-app/scripts/transmission/config/settings.*.json
+app/scripts
+scripts/transmission/config/settings.*.json
 app/config.json
+ezseed.json
 
 app/plugins/*
 !app/plugins/index.js

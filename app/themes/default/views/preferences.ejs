@@ -1,0 +1,33 @@
+<% include header %>
+
+<h1>Préférences</h1>
+
+<div id="admin" style="width:600px;margin:0 auto;">
+	<div class="content">
+
+		<h3>Changer le mot de passe</h3>
+		<form method="POST" action="/user/password/<%= user.id %>" >
+			<input type="password" required name="password" value="" placeholder="Nouveau mot de passe" style="height:19px;"> <input type="submit" value="Envoyer">
+		</form>
+
+		<br>
+
+		<h3>Plugins</h3>
+		<ul>
+			<% for(var p in plugins) { %>
+				<% if(plugins[p].preferences) {%>
+					<li><%= p %> <span class="pullRight"><%- plugins[p].preferences %></span></li>
+				<% } %>
+			<% } %>
+		</ul>
+
+		<br>
+
+		<a href="/user/reset/<%= user.id%>" class="reset-db"><i class="entypo-ccw" title="Réinitialiser la base de données"></i> Réinitialiser la base de données</a>
+		<br>
+	</div>
+</div>
+
+<div id="toTop"><i class="entypo-up-bold"></i></div>
+
+<% include footer %>

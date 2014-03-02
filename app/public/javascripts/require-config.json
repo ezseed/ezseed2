@@ -1,0 +1,62 @@
+{
+  "baseUrl": "/javascripts",
+  "paths": {
+    "async": "helpers/async",
+    "underscore": "helpers/underscore",
+    "cookie": "modules/jquery.cookie",
+    "quickfit": "modules/quickfit",
+    "collapse": "modules/jquery.collapse",
+    "collapse_storage": "modules/jquery.collapse_storage",
+    "customselect": "modules/customselect",
+    "text": "text",
+    "classie": "packery/classie",
+    "eventie": "packery/eventie",
+    "doc-ready": "packery/doc-ready",
+    "eventEmitter": "packery/eventEmitter",
+    "get-style-property": "packery/get-style-property",
+    "get-size": "packery/get-size",
+    "matches-selector": "packery/matches-selector",
+    "outlayer": "packery/outlayer",
+    "imagesloaded": "packery/imagesloaded/imagesloaded",
+    "packery": "packery/packery/js",
+    "desktop": "desktop",
+    "api": "api",
+    "alertify": "alertify",
+    "theme": "../js/theme",
+    "admin": "../js/admin"
+  },
+  "shim": {
+    "notify": [
+      "jquery"
+    ],
+    "cookie": [
+      "jquery"
+    ],
+    "quickfit": [
+      "jquery"
+    ],
+    "collapse": [
+      "jquery"
+    ],
+    "collapse_storage": [
+      "collapse",
+      "jquery"
+    ],
+    "customselect": [
+      "jquery"
+    ],
+    "theme": {
+      "deps": [
+        "desktop"
+      ]
+    },
+    "admin": {
+      "deps": [
+        "collapse",
+        "collapse_storage",
+        "customselect"
+      ]
+    }
+  },
+  "waitSeconds": 25
+}

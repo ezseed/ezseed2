@@ -1,0 +1,68 @@
+<% include header %>
+<section class="element list text-center clearfix">
+    <h1 class="text-center"><%- movie.title %><% if(movie.type == "tvseries") { %><%- ' S' + movie.season + 'E' + movie.episode %><%}%></h1>
+
+  <object classid="clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616" width="700" height="350" codebase="http://go.divx.com/plugin/DivXBrowserPlugin.cab">
+    <param name="custommode" value="none" />
+    <param name="previewImage" value="<%- movie.poster %>" />
+    <param name="autoPlay" value="false" />
+    <param name="src" value="<%- fullUrl %>" />
+    <embed type="video/divx" src="<%- fullUrl %>" custommode="none" width="700" height="350" autoPlay="false" previewImage="<%- movie.poster %>" pluginspage="http://go.divx.com/plugin/download/">
+    </embed>
+  </object>
+
+  <p>
+  <!-- leaving the code below will help search index your video -->
+  <br />
+  Pas de vidéo ? Téléchargez le plugin pour <a style="text-decoration: underline;" target="_blank" href="http://download.divx.com/player/DivXWebPlayerInstaller.exe">Windows</a> ou pour <a style="text-decoration: underline;" target="_blank" href="http://download.divx.com/player/DivXWebPlayer.dmg">Mac</a>
+  <br />
+  Pas de son ? Installez <a target="_blank" href="http://perian.org">Perian</a> !
+  </p>
+
+   <div class="input-block">
+      <a href="<%- encodeURI(fullUrl) %>" target="_blank"><i class="entypo-traffic-cone"></i></a><input type="text" name="url" value="<%- encodeURI(fullUrl) %>" class="select-on-click">
+   </div>
+
+   <% if(season !== null) { %>
+   <br>
+   <div id="timeline">
+      <hr>
+      <ul>
+      <%
+      if(movie.movieType == "tvseries") {
+        movie.videos.sort(function (a, b) {
+          if(a.episode == b.episode)
+            return 0;
+          else if(a.episode > b.episode)
+            return 1;
+
+          return -1;
+        });
+      } else {
+        movie.videos.sort(function (a, b) {
+            if (a.name == b.name) {
+                return 0;
+            } else if (a.name > b.name) {
+                return 1;
+            }
+            return -1;
+        });
+      }
+
+      for(var i in movie.videos) {
+      %>
+         <a <%if(movie.videos[i].episode == movie.episode) { %>class="active" href="#" <% } else { %>href="/watch/<%- movie._id %>/<%-movie.videos[i]._id%>"<%}%>><li><span class="title"><%- movie.title + ' - E' + movie.videos[i].episode %></span><%=movie.videos[i].episode%></li></a>
+      <% 
+      }
+      %>
+      </ul>
+   </div>
+
+   <%
+   } 
+   %> 
+
+</section>
+
+<script src="/javascripts/jquery-vlc.js"></script>
+<% include footer %>

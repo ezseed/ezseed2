@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var pathInfo = require('path')
+	, jf = require('jsonfile')
+	, fs = require('fs')
+	, _ = require('underscore')
+  	, app_path = pathInfo.resolve(__dirname, '..');
+
+
+global.config = {};
+global.config.root = app_path + '/app';
+
+var logger = require(global.config.root+'/core/logger');
+
+if(fs.existsSync(app_path + '/app/config.json'))
+	global.config = jf.readFileSync(app_path + '/app/config.json');
+
+global.app_path = app_path;
+
+var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
+
+var program = require('commander')
+  , colors = require('colors')
+  , mongoose = require('mongoose')
+  ;
+
+colors.setTheme({
+  silly: 'rainbow',
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'cyan',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red'
+});
+
+program
+	.version(autoUpdate.version);
+
+autoUpdate.checkForUpdates(function(update) {
+	if(update) {
+		logger.log('warn', 'An update is available, please run ezseed update');
+	}
+});
+
+require('./command/daemon').program(program);
+
+require('./command/install')(program);
+require('./command/update')(program);
+
+require('./command/useradd')(program);
+require('./command/userdel')(program);
+require('./command/passwd')(program);
+
+//Specials daemons (1 per user or all users)
+require('./client/rutorrent/daemon')(program);
+require('./client/transmission/daemon')(program);
+
+require('./command/reboot')(program);
+
+program
+	.command('deploy')
+	.description('Deploy ezseed')
+	.action(require('./lib/deploy'));
+
+program
+	.command('configure')
+	.option('-p <path>, --path <path>', 'Specify path, without it app/config.json will not be changed')
+	.description('Configure')
+	.action(function(options) {
+		var configure = require('./lib/helpers/configure');
+
+		configure.update_rc(function() {
+
+			if(options.path) {
+				configure.set_config(path, function() {
+					process.exit(0);
+				});					
+			} else {
+				configure.set_config(function(){
+					process.exit(0);
+				});
+			}
+		});
+	});
+
+program
+	.command('credits')
+	.description('Credits')
+	.action(function() {
+		var ASCII = new Buffer("\
+		   ___  ___  ___  ___  ___  ___     _  _  ___    \n\
+		  (  _)(_  )/ __)(  _)(  _)(   \\   ( )( )(__ \\   \n\
+		   ) _) / / \\__ \\ ) _) ) _) ) ) )   \\\\// / __/   \n\
+		  (___)(___)(___/(___)(___)(___/    (__) \\___)   \n\
+		  									   \n\
+		").toString();
+
+		console.log(ASCII.yellow.bold);
+		console.log("Made with love by ".magenta + "soyuka".bold.magenta);
+		console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
+
+		console.log(" ");
+
+		process.exit();
+	});
+
+program
+	.command('*')
+	.action(function() {
+		logger.log('error', 'Command not found.');
+		program.help();
+	});
+
+//Removing debug argument
+var index = process.argv.indexOf('-d');
+
+if(index !== -1)
+	process.argv.splice(index,1);
+
+mongoose.connect('mongodb://localhost/ezseed');
+
+var mongo = mongoose.connection;
+
+mongo.on('error', logger.error.bind(logger, 'connection error:'.error));
+mongo.once('open', function callback () {
+	program.parse(process.argv);
+
+	if(process.argv.length == 2)
+		program.help();
+	
+});
+
+
+
+

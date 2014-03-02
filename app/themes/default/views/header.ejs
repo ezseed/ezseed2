@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="utf-8" />
+    <title><%= title %></title>
+
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css" />
+
+    <% for(var i in plugins) {
+      if(plugins[i].enabled) {
+        for(var j in plugins[i].css) { %>
+          <link rel="stylesheet" type="text/css" href="<%- plugins[i].css[j] %>" />
+        <% }
+      }
+    } %>
+
+    <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicons/favicon-96x96.png" sizes="96x96" />
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script data-main="/js/main.min.js" src="/js/require-jquery.js"></script>
+
+
+  </head>
+  <body>
+    <div id="alert">
+      <%- message %>
+    </div>
+    <header>
+      <div class="container clearfix">
+        <% if(user) { %>
+          <div id="user" class="pullRight">
+            <%= user.username %>
+            <a href="/logout" title="Se déconnecter" class="tip"><i class="entypo-logout pullRight" style="margin-left:5px"></i></a>
+            <% if(user.role == 'admin') {%>
+              <a href="/admin" title="Panel d'administration"><i class="entypo-tools pullRight" style="margin-left:5px"></i></a>
+            <% } %>
+            <a href="/user/preferences"><i class="entypo-cog pullRight" style="margin-left:5px"></i></a>
+          </div>
+
+          <nav id="menu" class="pullLeft clearfix">
+            <a href="/" title="Bureau">
+              <button class="first">
+                <i class="entypo-drive"></i>Bureau
+              </button>
+            </a>
+            <% if(user.client == 'transmission') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" title="Accéder aux torrents">
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="http://<%= host %>:<%= user['rpc-port'] %>" target="_blank" title="Accéder aux torrents">
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents">
+              <% } %>
+            <% } else if(user.client == 'rutorrent') { %>
+              <% if(config.torrentLink == 'link') { %>
+                <a href="/rutorrent" title="Accéder aux torrents">
+              <% } else if (config.torrentLink == 'window') { %>
+                <a href="/rutorrent" target="_blank" title="Accéder aux torrents">
+              <% } else { %>
+                <a href="/torrents" title="Accéder aux torrents">
+              <% } %>
+            <% } else { %>
+              <a href="#aucun">
+            <% } %>
+              <button id="torrents">
+                <i class="entypo-network"></i>Torrents
+              </button>
+            </a>
+          </nav>
+
+          <div id="diskSpace" class="league-gothic">
+            <div id="usedBar"></div>
+            <span class="text"></span>
+            <span class="size">
+              <span class="used"></span>
+              <span class="left"></span>
+            </span>
+          </div>
+        <% } else { %> 
+          <h1 class="text-center invert pullLeft" style="font-size:3em;"><img src="/images/planetetrans.png" style="vertical-align:middle;margin-right:15px" height="50px"/>EzSeed</h1>
+        <% } %>
+      </div>
+    </header>
+      <% if(user && location == '/') { %>
+      <nav id="display">
+        <div id="resetOptions">
+          <i class="entypo-arrows-ccw" title="Remettre les filtres à zéro"></i>
+        </div>
+
+        <div id="displayOptions">
+          <i class="entypo-list" title="Présentation par liste simplifiée" data-filter=".table" ></i>
+          <i class="entypo-numbered-list" title="Présentation par liste" data-filter=".list"></i>
+          <i class="entypo-layout" title="Présentation par miniatures" data-filter=".miniature" ></i>
+        </div>
+        
+        <div id="orderOptions">
+          <span class="order alpha" data-by="alpha">A-Z</span><span class="order date" data-by="date"><i class="entypo-clock"></i></span>
+        </div>
+
+        <div id="search" class="input-block">
+          <i class="entypo-search"></i><input type="search" name="search" /><span id="displayPath"></span>
+        </div>
+
+        <div id="loader">
+          <div class="spinner icon-spinner" aria-hidden="true"></div>
+        </div>
+
+        <ul id="filterOptions">
+          <li data-filter=".video.movie" data-display=".list">Films</li>
+          <li data-filter=".video.tvseries" data-display=".list">Séries</li>
+          <li data-filter=".audio" data-display=".list">Albums</li>
+          <li data-filter=".other" data-display=".list">Autres</li>
+        </ul>
+      </nav>
+      <% } %>
+
+
+    <section id="desktop" <% if(location == '/torrents') {%>style="width:90%"<%}%>>
+      
