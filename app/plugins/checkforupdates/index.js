@@ -27,7 +27,7 @@ var plugin = {
 				socket.emit('checker:available', current);
 			else if(current == plugin.version)
 				return typeof cb === 'function' ? cb(true) : true;
-			else
+			else 
 				return typeof cb === 'function' ? cb(false) : false;
 
 		});

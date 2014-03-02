@@ -44,8 +44,8 @@ colors.setTheme({
 program
 	.version(autoUpdate.version);
 
-autoUpdate.checkForUpdates(function(update) {
-	if(update) {
+autoUpdate.checkForUpdates(function(uptodate) {
+	if(!uptodate) {
 		logger.log('warn', 'An update is available, please run ezseed update');
 	}
 });
