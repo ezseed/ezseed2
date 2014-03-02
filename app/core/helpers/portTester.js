@@ -53,7 +53,7 @@ var localPortTester = {
 
 		cb = typeof stop == 'function' ? stop : cb;
 
-		stop = typeof stop == 'function' ? start + default_range : stop;
+		stop = typeof stop == 'function' ? start + this.default_range : stop;
 
 		var ports = [];
 
