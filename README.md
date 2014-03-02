@@ -35,6 +35,8 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 
 ![Autotools configuration](http://www.zupmage.eu/i/hpRER83cvG.png)
 
+### [Configuration Chroot SSH](https://github.com/soyuka/ezseed2/wiki/Chroot-utilisateurs)
+
 ### Erreurs
 
 Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voir ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
@@ -101,6 +103,7 @@ Usage: ezseed [options] [command]
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
 * [FAQ][7]
+* [Themes](https://github.com/soyuka/ezseed2/wiki/Themes)
 
   [1]: #installation
   [2]: #mise-%C3%A0-jour
