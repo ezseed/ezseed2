@@ -12,7 +12,9 @@ var reboot = function() {
 
 	db.users.getAll(function(err, users) {
 		async.each(users, start, function(err){
-			process.exit(0);
+			setTimeout(function() {
+				process.exit(0);
+			}, 1000);
 		});
 	});
 };
