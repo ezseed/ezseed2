@@ -90,7 +90,7 @@ Usage: ezseed [options] [command]
 
 ### Licence
 
-[![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr)
+[![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](https://github.com/soyuka/ezseed2/blob/develop/LICENCE.md) 
 
 ### Credits
 
