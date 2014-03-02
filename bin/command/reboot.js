@@ -5,9 +5,12 @@ var db = require(global.app_path + '/app/core/database')
 	
 var reboot = function() {
 	var start = function(user, cb) {
-		daemon(user.client, 'start', user.username, function() {
+		if(user.client == 'aucun')
 			cb();
-		});
+		else
+			daemon(user.client, 'start', user.username, function() {
+				cb();
+			});
 	}
 
 	db.users.getAll(function(err, users) {
