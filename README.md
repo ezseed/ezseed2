@@ -1,6 +1,7 @@
  - **[Installation][1]**
- - **[Mise à jour][2]**
+ - **[Mis à jour][2]**
  - **[CLI][3]**
+ - **[Misc (licence, credits)][4]**
 
 ## Installation
 
@@ -36,9 +37,9 @@ Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents un
 
 ### Erreurs
 
-Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voyez ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
+Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to [localhost:27017]`, [voir ici](https://github.com/soyuka/ezseed2/wiki/Erreur-MongoDB-chez-OVH-%28&Kimsufi%29).
 
-Sur ubuntu #77, `Ubuntu can't start transmission unknow job`
+`can't start transmission unknow job` - ubuntu #77
 
 ### Lancement
 ```
@@ -52,50 +53,7 @@ Les logs de l'application sont dans `/var/log/ezseed/`
 ezseed update
 ```
 
-### Mise à jour depuis < v2.1.11-beta
-
-Je commence par créer une nouvelle version d'ezseed et je remet les fichiers de configuration dedans :
-```
-cd /var/www
-mv ezseed2 ezseed2.bak
-git clone https://github.com/soyuka/ezseed2
-cd ezseed2
-cp ../ezseed2.bak/app/scripts/transmission/config/* scripts/transmission/config
-cp ../ezseed2.bak/app/config.json app/config.json
-
-#mise à jour de pm2
-pm2 kill
-npm install pm2 -g
-
-#Ensuite, je vais supprimer les médias de la base de données :
-mongo
-use ezseed
-db.movies.drop()
-db.albums.drop()
-db.others.drop()
-
-#ctrl+c pour quitter mongo
-Enfin, je configure le nouveau ezseed
-npm install
-npm link
-
-#la commande de config
-ezseed install -sun
-
-ezseed start
-```
-
-### Mise à jour depuis < v2.1.10-beta
-
-Pour configurer le reboot :
-
-`ezseed config -uns` 
-`Ctrl+C` pour annuler une fois l'étape terminée
-
-### Mise à jour depuis develop-stable > v2.1.11
-
- `ezseed update`
- `ezseed configure`
+Pour une mise à jour d'une version antérieure à la stable [voir ici][5]
 
 ## CLI
 
@@ -138,7 +96,7 @@ Usage: ezseed [options] [command]
 
 ### Credits
 
-![Credits ezseed2][4]
+![Credits ezseed2][6]
 
 ### Liens
 
@@ -146,7 +104,9 @@ Usage: ezseed [options] [command]
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
 
 
-  [1]: #Installation
-  [2]: #Mise à jour
-  [3]: #CLI
-  [4]: http://www.zupmage.eu/i/KgO87SJzpu.png
+  [1]: #installation
+  [2]: #mise-%C3%A0-jour
+  [3]: #cli
+  [4]: #misc
+  [5]: https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure
+  [6]: http://www.zupmage.eu/i/KgO87SJzpu.png
