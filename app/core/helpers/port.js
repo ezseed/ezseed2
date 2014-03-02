@@ -12,7 +12,7 @@ var net = require('net');
 
  */
 
-var localPortTester = {
+var portTester = {
 	default_range: 1000,
 	//https://gist.github.com/timoxley/1689041
 	isPortTaken: function(port, fn) {
@@ -78,5 +78,5 @@ var localPortTester = {
 
 }
 
-module.exports = localPortTester;
+module.exports = portTester;
 

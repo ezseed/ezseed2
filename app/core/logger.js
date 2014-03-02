@@ -1,9 +1,20 @@
-var level   = process.argv.indexOf('-d') === -1 ? 'info' : 'debug';
+var level   = process.argv.indexOf('-d') === -1 ? 'info' : 'debug'
+  , winston = require('winston')
+  , log_path = global.config.root + '/../logs';
 
 if(level == 'info' && process.env.NODE_ENV == 'production')
 	level = 'notice';
 
-var winston = require('winston');
+//Writes log directory + transport file
+var fs = require('fs');
+if(!fs.existsSync(log_path))
+	fs.mkdirSync(log_path, '777');
+
+if(!fs.existsSync(log_path + '/err.log'))
+	fs.writeFileSync(log_path + '/err.log');
+
+if(!fs.existsSync(log_path + '/memory.log'))
+	fs.writeFileSync(log_path + '/memory.log');
 
 /**
  * Levels
@@ -18,13 +29,7 @@ var winston = require('winston');
  *  7 debug    
  *
  */
-var log_path = global.config.root + '/../logs';
 
-var fs = require('fs');
-if(!fs.existsSync(log_path))
-	fs.mkdirSync(log_path, '777');
-
-fs.writeFileSync(log_path + '/exceptions.log');
 
 var logger = new (winston.Logger)({
 	transports: [
@@ -37,9 +42,10 @@ var logger = new (winston.Logger)({
 	  	}),
 
 	  	new (winston.transports.File) ({ 
-			filename: log_path + '/exceptions.log',
+			filename: log_path + '/err.log',
 	        levels: winston.config.syslog.levels,
-	        level: level,
+	  		timestamp: level == 'debug' ? true : false,
+	        level: 'notice' //forces level for file transport
 
 	    })
 	],
@@ -48,6 +54,57 @@ var logger = new (winston.Logger)({
 
 logger.on('error', function (err) { 
 	console.error("Logger error", err);
+});
+
+
+/**
+ * Debugging tools
+ */
+
+/**
+ * Logging exception before exiting
+ * @param  {[type]} err [description]
+ * @return {[type]}     [description]
+ */
+process.on('uncaughtException', function ( err ) {
+
+    logger.log('emerg', err.message);
+    logger.log('emerg', err.stack);
+
+    if(err.code == 'MODULE_NOT_FOUND')
+    	logger.log('notice', 'Please try : npm install', function () {
+        process.exit(1); //exit
+    	});
+    else
+      logger.log('emerg', err.code, function() {
+        process.exit(1);
+      });
+});
+
+//memwatch
+var memwatch = require('memwatch');
+
+var memory_logger = new (winston.Logger)({
+	transports: [
+  		new (winston.transports.File) ({ 
+
+		    filename: global.config.root + '/log/memory.log',
+            levels: winston.config.syslog.levels,
+            level: 'notice',
+            timestamp: true,
+           	colorize: false, 
+       })
+	]
+});
+
+memwatch.on('leak', function(info) { 
+	memory_logger.log('alert', info);
+});
+
+memwatch.on('stats', function(stats) { 
+	//Only log stats on debug
+	if( process.argv.indexOf('-d') === 1 )
+		memory_logger.log('notice', 'Memory stats', stats);
 });
 
 
