@@ -14,7 +14,7 @@ var pathInfo = require('path')
 global.config = {};
 global.config.root = app_path + '/app';
 
-var console = require(global.config.root+'/core/logger');
+var logger = require(global.config.root+'/core/logger');
 
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
@@ -46,7 +46,7 @@ program
 
 autoUpdate.checkForUpdates(function(update) {
 	if(update) {
-		console.log('warn', 'An update is available, please run ezseed update');
+		logger.log('warn', 'An update is available, please run ezseed update');
 	}
 });
 
@@ -108,12 +108,14 @@ program
 		console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
 
 		console.log(" ");
+
+		process.exit();
 	});
 
 program
 	.command('*')
 	.action(function() {
-		console.log('error', 'Command not found.');
+		logger.log('error', 'Command not found.');
 		program.help();
 	});
 
@@ -127,7 +129,7 @@ mongoose.connect('mongodb://localhost/ezseed');
 
 var mongo = mongoose.connection;
 
-mongo.on('error', console.error.bind(console, 'connection error:'.error));
+mongo.on('error', logger.error.bind(logger, 'connection error:'.error));
 mongo.once('open', function callback () {
 	program.parse(process.argv);
 
