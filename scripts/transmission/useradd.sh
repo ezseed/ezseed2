@@ -49,7 +49,7 @@ chmod -R 755 /var/lib/transmission-daemon-$username
 chmod -R 755 /etc/transmission-daemon-$username
 chmod 755 /etc/default/transmission-daemon
 
-echo "Editing settings"
+# echo "Editing settings"
 
 #cp $userdir/config/settings.default.json $userdir/config/settings.json
 

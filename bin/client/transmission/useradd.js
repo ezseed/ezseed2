@@ -1,5 +1,6 @@
 var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
+  , portscanner = require('portscanner')
   , db = require(global.app_path + '/app/core/database')
   , child_process = require('child_process')
   , spawn = child_process.spawn
@@ -32,20 +33,21 @@ var settings = function (username, password, next) {
 
 		d['download-dir'] = path.join(user_path, username, 'downloads');
 
-		db.users.count(function (err, count) {
+		//db.users.count(function (err, count) {
+		portscanner.findAPortNotInUse(6000, 9999, '127.0.0.1', function(error, port) {
+			if(error)
+				console.error('Port error', error);
 
-			d['rpc-port'] = d['rpc-port'] + count + 1; //+1 because of transmission default, could be started on reboot by default
+			d['rpc-port'] = port;
 
 			fs.writeFileSync(settings, JSON.stringify(d));
 
 			console.log('Démarage du daemon transmission'.info);
 
-			fs.chmodSync(global.app_path +'/scripts/transmission/daemon.sh', '775');
-
 			return require('../../lib/daemon.js')('transmission', 'start', username, next);
-		
 
 		});
+
 	});
 }
 
