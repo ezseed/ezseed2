@@ -35,10 +35,18 @@ var search = function(movie, cb) {
 
 	console.log('info','Gathering infos on', movie.search);
 
+  var search_options = {
+    query: movie.search,
+    language: 'fr'
+  };
+
+  if(movie.year !== undefined)
+    search_options.year = movie.year;
+
 	// console.time('infos');
 
   //searching in the allocine API (could be others)
-  	tmdb.search(movie.movieType == 'tvseries' ? 'tv' : 'movie', {query: movie.search, language: 'fr'}, function(err, res) {
+  	tmdb.search(movie.movieType == 'tvseries' ? 'tv' : 'movie', search_options, function(err, res) {
 
         // console.timeEnd('infos');
 

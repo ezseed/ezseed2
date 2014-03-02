@@ -69,16 +69,19 @@ logger.on('error', function (err) {
 process.on('uncaughtException', function ( err ) {
 
     logger.error(err.message);
-    logger.error(err.stack);
+    logger.error(err.stack, function() {
 
-    if(err.code == 'MODULE_NOT_FOUND')
-    	logger.log('Please try : npm install', function () {
-        process.exit(1); //exit
-    	});
-    else
-      logger.error(err.code ? err.code : 'No code', function() {
-        process.exit(1);
-      });
+	    if(err.code == 'MODULE_NOT_FOUND')
+	    	logger.log('Please try : npm install', function () {
+	        process.exit(1); //exit
+	    	});
+	    else {
+	    	if(err.code)
+	    		logger.error(err.code);
+
+	    	process.exit(1);
+	    }
+	});
 });
 
 //memwatch
