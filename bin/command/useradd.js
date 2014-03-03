@@ -66,7 +66,7 @@ var useradd = {
 				});
 			} else {
 				console.error("Le client " + client + " n'est pas installé !");
-				console.info("Si c'est une erreur et que transmission est installé modifiez " + global.config.app_path + '/app/config.json');
+				console.info("Si c'est une erreur et que transmission est installé modifiez " + global.app_path + '/app/config.json');
 				process.exit(1);
 			}
 
