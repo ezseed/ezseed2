@@ -82,7 +82,7 @@ define([
               , filter = ['.video.movie', '.video.tvseries', '.audio', '.other']
               , remove = remove ? remove : false
               , i = -1
-              , display = this.display;         
+              , display = this.firstLoad ? resetDisplay(this.display).display : this.display;         
 
             if(this.firstLoad)
                 this.emit('firstDisplay', display);
