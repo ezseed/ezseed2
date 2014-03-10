@@ -1,7 +1,7 @@
- - **[Installation][1]**
- - **[Mis à jour][2]**
- - **[CLI][3]**
- - **[Misc (licence, credits, liens)][4]**
+ - **[Installation](#installation)**
+ - **[Mis à jour](#mise-%C3%A0-jour)**
+ - **[CLI](#cli)**
+ - **[Misc (licence, credits, liens)](#misc)**
 
 ## Installation
 
@@ -53,7 +53,7 @@ ezseed start
 ezseed update
 ```
 
-Pour une mise à jour d'une version antérieure à la stable [voir ici][5]
+Pour une mise à jour d'une version antérieure à la stable [voir ici](https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure)
 
 ## CLI
 
@@ -96,19 +96,12 @@ Usage: ezseed [options] [command]
 
 ### Credits
 
-![Credits ezseed2][6]
+![Credits ezseed2](http://www.zupmage.eu/i/KgO87SJzpu.png)
 
 ### Liens
 
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
-* [FAQ][7]
+* [FAQ](https://github.com/soyuka/ezseed2/wiki/FAQ)
 * [Themes](https://github.com/soyuka/ezseed2/wiki/Themes)
 
-  [1]: #installation
-  [2]: #mise-%C3%A0-jour
-  [3]: #cli
-  [4]: #misc
-  [5]: https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure
-  [6]: http://www.zupmage.eu/i/KgO87SJzpu.png
-  [7]: https://github.com/soyuka/ezseed2/wiki/FAQ
