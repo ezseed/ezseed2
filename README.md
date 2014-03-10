@@ -1,5 +1,5 @@
  - **[Installation](#installation)**
- - **[Mis à jour](#mise-%C3%A0-jour)**
+ - **[Mis à jour](#mise-a-jour)**
  - **[CLI](#cli)**
  - **[Misc (licence, credits, liens)](#misc)**
 
@@ -48,7 +48,7 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
 ezseed start
 ```
 
-## Mise à jour
+## Mise a jour
 ```
 ezseed update
 ```
