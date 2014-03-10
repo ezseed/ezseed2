@@ -27,8 +27,8 @@ ezseed install
  - Les paquets suivants : `whois nginx zip` sont requis
  - `npm install pm2 -g`
  - `npm install && npm link`
- - `ezseed install` 
-       /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf), voir `ezseed install -h`
+ - `ezseed install`
+   /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf), voir `ezseed install -h`
 
 ### Configuration rutorrent
 Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :
