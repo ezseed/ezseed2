@@ -69,17 +69,17 @@ Usage: ezseed [options] [command]
     start
     stop
     restart
-    install [options] [client] Install ezseed or the specified client
-    update [options]       Update ezseed
-    useradd [options] <rutorrent|transmission|aucun> <username> Ajout d'un utilisateur au client spécifié
-    userdel <username>     Suppression de l'utilisateur /!\ tous les fichiers seront supprimés
-    password [options] <username> Change username password
-    rtorrent [options] <start|stop|restart> stop rtorrent daemon(s)
-    transmission [options] <start|stop|restart> start|stop|restart transmission daemon(s)
-    reboot                 Restart all daemons
-    deploy                 Deploy ezseed
-    configure [options]    Configure
-    credits                Credits
+    install         [options] [client]                                    Install ezseed or the specified client
+    update          [options]                                             Update ezseed
+    useradd         [options] <rutorrent|transmission|aucun> <username>   Ajout d'un utilisateur au client spécifié
+    userdel         <username>                                            Suppression de l'utilisateur /!\ tous les fichiers seront supprimés
+    password        [options] <username>                                  Change username password
+    rtorrent        [options] <start|stop|restart>                        stop rtorrent daemon(s)
+    transmission    [options] <start|stop|restart>                        start|stop|restart transmission daemon(s)
+    reboot                                                                Restart all daemons
+    deploy                                                                Deploy ezseed
+    configure       [options]                                             Configure
+    credits                                                               Credits
     *
 
   Options:
