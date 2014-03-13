@@ -50,7 +50,7 @@ define([
         $container : $('section#desktop'), //Elements container
         itemSelector : '.element',
         displaySelector : null,
-        display: $.cookie('display') === undefined ? '.list' : $.cookie('display'),
+        display: $.cookie('display') ? $.cookie('display') : '.list',
         //Packery Instance
         pckry : null,
         hasLayout : false,
@@ -82,7 +82,7 @@ define([
               , filter = ['.video.movie', '.video.tvseries', '.audio', '.other']
               , remove = remove ? remove : false
               , i = -1
-              , display = this.firstLoad ? resetDisplay(this.display).display : this.display;         
+              , display = this.display;         
 
             if(this.firstLoad)
                 this.emit('firstDisplay', display);
