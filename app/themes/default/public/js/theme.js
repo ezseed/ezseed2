@@ -5,8 +5,6 @@ define([
     Desktop.on('firstDisplay', function(display) {
 
         if(display) {
-            display = display.replace('.highlight', '').replace('.startsWith','').replace('.path', '');
-
             $('#displayOptions i').each(function(i, e) {
 
                 if( display.indexOf( $(e).attr('data-filter') ) !== -1 )

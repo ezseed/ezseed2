@@ -50,7 +50,7 @@ define([
         $container : $('section#desktop'), //Elements container
         itemSelector : '.element',
         displaySelector : null,
-        display: $.cookie('display') === undefined ? '.list' : $.cookie('display'),
+        display: $.cookie('display') ? $.cookie('display') : '.list',
         //Packery Instance
         pckry : null,
         hasLayout : false,
@@ -76,18 +76,33 @@ define([
             this.emit('display', this.display);
             return this;
         },
+        sanitizeDisplay: function(display) {
+            var displays = ['video', 'movie', 'video', 'tvseries', 'audio', 'other', 'list', 'miniature', 'table'];
+             
+            display = display.split('.');
+
+            display = _.reject(display, function(d){ return displays.indexOf(d) === -1});
+
+            display = display.join('.');
+
+            return '.' + display;
+        },
         setDisplay: function(selector, remove) {
             
             var option = ['.list', '.miniature','.table']
               , filter = ['.video.movie', '.video.tvseries', '.audio', '.other']
+              , types = []
               , remove = remove ? remove : false
               , i = -1
               , display = this.display;         
 
-            if(this.firstLoad)
+            if(this.firstLoad) {
+                //sanitize display to remove displays we didn't wanted i.e. themes ones
+                display = this.sanitizeDisplay(display);
                 this.emit('firstDisplay', display);
-            else
+            } else {
                 this.emit('display', display);
+            }
 
             if(selector !== undefined && display.indexOf(selector) === -1) {
                     
@@ -111,6 +126,7 @@ define([
                 display = display.replace(selector, '');
 
             $.cookie('display', display);
+
             this.display = display;
             return this;
         },
