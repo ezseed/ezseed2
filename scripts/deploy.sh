@@ -7,7 +7,7 @@ echo "Optimizing javascripts"
 
 if [ -d "$appdir/public/views" ]
 then
-	rm -r "$appdir/public/js"
+	rm -r "$appdir/public/views"
 
 fi
 

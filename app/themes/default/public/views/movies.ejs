@@ -13,7 +13,7 @@ movies.forEach(function(movie) {
 					<div class="cover-hover">
 						<i class="entypo-play"></i>
 					</div>
-					<% if(movie.infos.picture == undefined) {%>
+					<% if(!movie.infos || movie.infos.picture === undefined) {%>
 						<img src="/images/cover/video.png" />
 					<% } else { %>
 						<img src="<%- movie.infos.picture %>" />
@@ -138,7 +138,7 @@ movies.forEach(function(movie) {
 		<div class="titre"><h1 class="league-gothic"><%- movie.infos.title %><% if(movie.infos.season != undefined) { %> - S<%- movie.infos.season%><% if(movie.videos[0].episode != undefined && movie.videos.length <= 1) { %>E<%- movie.videos[0].episode%><% } } %></h1></div>
 	
 		<a href="/watch/<%- movie._id %>">
- 			<% if(movie.infos.picture == undefined) {%>
+			<% if(!movie.infos || movie.infos.picture === undefined) {%>
 				<img src="/images/cover/video.png" />
 			<% } else { %>
 				<img src="<%- movie.infos.picture %>" />

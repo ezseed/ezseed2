@@ -1,7 +1,7 @@
- - **[Installation][1]**
- - **[Mis à jour][2]**
- - **[CLI][3]**
- - **[Misc (licence, credits, liens)][4]**
+ - **[Installation](#installation)**
+ - **[Mis à jour](#mise-a-jour)**
+ - **[CLI](#cli)**
+ - **[Misc (licence, credits, liens)](#misc)**
 
 ## Installation
 
@@ -27,8 +27,8 @@ ezseed install
  - Les paquets suivants : `whois nginx zip` sont requis
  - `npm install pm2 -g`
  - `npm install && npm link`
- - `ezseed install` 
-       /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/app/scripts/nginx.conf), voir `ezseed install -h`
+ - `ezseed install`
+   /!\ peut effacer votre configuration nginx par [nginx.conf](https://github.com/soyuka/ezseed2/blob/master/scripts/nginx.conf), voir `ezseed install -h`
 
 ### Configuration rutorrent
 Pour rutorrent, il faut configurer autotools pour qu'il déplace les torrents une fois terminés :
@@ -48,12 +48,12 @@ Sur les kimsufi, si vous avez une erreur du genre `Error : failed to connect to 
 ezseed start
 ```
 
-## Mise à jour
+## Mise a jour
 ```
 ezseed update
 ```
 
-Pour une mise à jour d'une version antérieure à la stable [voir ici][5]
+Pour une mise à jour d'une version antérieure à la stable [voir ici](https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure)
 
 ## CLI
 
@@ -69,17 +69,17 @@ Usage: ezseed [options] [command]
     start
     stop
     restart
-    install [options] [client] Install ezseed or the specified client
-    update [options]       Update ezseed
-    useradd [options] <rutorrent|transmission|aucun> <username> Ajout d'un utilisateur au client spécifié
-    userdel <username>     Suppression de l'utilisateur /!\ tous les fichiers seront supprimés
-    password [options] <username> Change username password
-    rtorrent [options] <start|stop|restart> stop rtorrent daemon(s)
-    transmission [options] <start|stop|restart> start|stop|restart transmission daemon(s)
-    reboot                 Restart all daemons
-    deploy                 Deploy ezseed
-    configure [options]    Configure
-    credits                Credits
+    install         [options] [client]                                    Install ezseed or the specified client
+    update          [options]                                             Update ezseed
+    useradd         [options] <rutorrent|transmission|aucun> <username>   Ajout d'un utilisateur au client spécifié
+    userdel         <username>                                            Suppression de l'utilisateur /!\ tous les fichiers seront supprimés
+    password        [options] <username>                                  Change username password
+    rtorrent        [options] <start|stop|restart>                        stop rtorrent daemon(s)
+    transmission    [options] <start|stop|restart>                        start|stop|restart transmission daemon(s)
+    reboot                                                                Restart all daemons
+    deploy                                                                Deploy ezseed
+    configure       [options]                                             Configure
+    credits                                                               Credits
     *
 
   Options:
@@ -96,19 +96,12 @@ Usage: ezseed [options] [command]
 
 ### Credits
 
-![Credits ezseed2][6]
+![Credits ezseed2](http://www.zupmage.eu/i/KgO87SJzpu.png)
 
 ### Liens
 
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
-* [FAQ][7]
+* [FAQ](https://github.com/soyuka/ezseed2/wiki/FAQ)
 * [Themes](https://github.com/soyuka/ezseed2/wiki/Themes)
 
-  [1]: #installation
-  [2]: #mise-%C3%A0-jour
-  [3]: #cli
-  [4]: #misc
-  [5]: https://github.com/soyuka/ezseed2/wiki/Mise-%C3%A0-jour-depuis-une-version-ant%C3%A9rieure
-  [6]: http://www.zupmage.eu/i/KgO87SJzpu.png
-  [7]: https://github.com/soyuka/ezseed2/wiki/FAQ
