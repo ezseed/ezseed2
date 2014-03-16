@@ -50,9 +50,9 @@ var search = function(movie, cb) {
 
         // console.timeEnd('infos');
 
-        if(err) console.log('error', 'Error TMDB call', err);
+      if(err) console.log('error', 'Error TMDB call', err);
 
-  		if(err) return cb(null, movie);
+		  if(err) return cb(null, movie);
 
   		if(res.total_results > 0) {
       		var infos = res.results;
@@ -94,7 +94,7 @@ var search = function(movie, cb) {
           		movie.code = infos[index].id;
 
           		//Searching for a specific code
-          		tmdb.infos(movie.movieType == 'tvseries' ? 'tv' : 'movie', movie.code, function(err, specific_infos) { 
+          		tmdb.infos(movie.movieType == 'tvseries' ? 'tv' : 'movie', movie.code, {language: 'fr'}, function(err, specific_infos) { 
 
           			if(specific_infos) {
                   if(movie.movieType == 'tvseries')
