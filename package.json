@@ -1,6 +1,6 @@
 {
   "name": "ezseed2",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "keywords": [
     "seedbox",
     "torrent"
@@ -54,7 +54,7 @@
     "caterpillar-human": "~2.1.2",
     "caterpillar": "~2.0.7",
     "mkdirp": "~0.3.5",
-    "tmdb-3": "0.0.4",
+    "tmdb-3": "0.0.5",
     "spawn-command": "0.0.2",
     "winston": "git://github.com/soyuka/winston.git",
     "memwatch": "^0.2.2"
