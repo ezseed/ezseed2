@@ -36,7 +36,8 @@ var configure = {
 					"theme": "default",
 					"scrapper": "allocine"
 				};
-		
+			
+			//replaces existing configuration file
 			if(fs.existsSync(global.app_path+'/app/config.json')) {
 				var cf = jf.readFileSync(global.app_path + '/app/config.json');
 

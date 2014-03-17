@@ -854,34 +854,14 @@ section#desktop .input-box {margin: 0;margin-right: 5px; display: inline-block;w
 	vertical-align: top;
 }
 
-.login-button {
+button.login {
 	text-align: center;
-	font-size: 1.575em;
-	margin: 0 auto;
+	font-size: 1.15em;
+	margin: 10px auto;
 	float: none;
 	padding: 4px 7px;
 }
-
-	.login-button {
-		cursor: pointer;
-		border: 1px solid rgba(0,0,0,.5);
-		background-color: #e15d33;
-		display: block;
-		background-image: -moz-linear-gradient(top, #e66b3b 0%, #de502c 100%);
-		background-image: -o-linear-gradient(top, #e66b3b 0%, #de502c 100%);
-		background-image: -webkit-linear-gradient(top, #e66b3b 0%, #de502c 100%);
-		background-image: linear-gradient(top, #e66b3b 0%, #de502c 100%);
-		color:#282827;
-		vertical-align: middle;
-		margin-top:7px;
-	}
-
-	.login-button:hover {
-		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(236, 200, 82, 0.6);
-     	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(236, 200, 82, 0.6);
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 2px rgba(236, 200, 82, 0.6);
-	}
-
+/*
 button.connexion {
 	cursor: pointer;
 	border:0;
@@ -906,7 +886,7 @@ button.connexion {
 	font-family: "Oswald";
 	font-size: 27px;
 	float: none;
-}
+}*/
 
 input {
 	border: 1px solid #b14827;
