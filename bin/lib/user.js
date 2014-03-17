@@ -9,7 +9,7 @@ var db = require(global.app_path + '/app/core/database')
 
 
 var user = {
-	//Simple wrapper for below
+	//Simple wrapper for below could be an async waterfall
 	create_next: function(username, password, done) {
 		var self = user;
 
@@ -22,11 +22,13 @@ var user = {
 	create: function(username, password, done) {
 		var self = user;
 
-		self.add(username, password, function(err) {
+		self.add(username, password, function(err, message) {
 			if(err) {
-				console.log('error', err);
+				done(err);
+			} else if (message) {
+				console.log('warn', message);
 
-				console.log('info', "Mise à jour du client");
+				console.log('info', "Mise à jour du client sur la base de données");
 
 				db.user.setClient(username, cache.get('client'), function(err) {
 					if(err)
@@ -45,13 +47,18 @@ var user = {
 	add: function(username, password, done) {
 		db.user.exists(username, function(exists) {
 			if(exists)
-				done("L'utilisateur existe déjà !", "aucun");
+				done(null, "L'utilisateur existe déjà !");
 			else {
-
 				db.users.create({username : username, password: password, client : cache.get('client'), role : cache.get('role')}, function(err, user) {
-		    		console.log('info', "Utilisateur ajouté à la base de données d'ezseed");
-		    		//cache.put('user', {username : username, password : password, client: client});
-		    		done(null);
+
+					if(err) {
+						console.error('Error adding user to database', err);
+						done(err);
+					} else {
+			    		console.log('info', "Utilisateur ajouté à la base de données d'ezseed");
+			    		//cache.put('user', {username : username, password : password, client: client});
+			    		done(null);
+					}
 		    	});
 			}
 				

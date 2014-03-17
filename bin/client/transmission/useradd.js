@@ -37,11 +37,13 @@ var settings = function (username, password, next) {
 			if(error)
 				console.error('Port error', error);
 
+			console.log('Port ' + port + ' ouvert').
+
 			d['rpc-port'] = port;
 
 			fs.writeFileSync(settings, JSON.stringify(d));
 
-			console.log('Démarage du daemon transmission'.info);
+			console.log('Démarage du daemon transmission');
 
 			return require('../../lib/daemon.js')('transmission', 'start', username, next);
 
@@ -64,13 +66,13 @@ var useradd = function (username, password, next) {
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
 
-				console.log('info', string.info);
+				console.log(string);
 			});
 
 			running.stderr.on('data', function (data) {
 				var string = new Buffer(data).toString();
 
-				console.log('error', string.error);
+				console.error(string);
 			});
 
 			running.on('exit', function (code) {
