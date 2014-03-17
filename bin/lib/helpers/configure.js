@@ -18,9 +18,13 @@ var configure = {
 	set_config: function(path, done) {
 
 		done = typeof path == 'function' ? path : done;
+		var replace_symlink = false;
 
 		if(typeof path == 'string') {
-			
+
+			if(path !== global.config.path)
+				replace_symlink = true;
+				
 			console.info('Ecriture du fichier de configuration app/config.json');
 
 			var config = {
@@ -46,11 +50,13 @@ var configure = {
 						config[i] = e;
 				});
 			}
-			
+
 			global.config = config;
 
 			//Writes the config
 			jf.writeFileSync(global.app_path + '/app/config.json', config);
+		} else {
+			path = global.config.path;
 		}
 
 		console.log('info', "Paramétrage du lanceur");
@@ -79,14 +85,29 @@ var configure = {
 
 		console.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"app/public/downloads");
 
-		if(!fs.existsSync(global.app_path + '/app/public/downloads')) {
-			//Symlink on the path
-			exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads',
-			  	function (error, stdout, stderr) {
-			  		cache.put('path', path); //?
-				    done(null, {});
-				}
-			);
+		if(!fs.existsSync(global.app_path + '/app/public/downloads') || replace_symlink) {
+			
+			var next = function(cb) {
+				//Symlink on the path
+				exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads',
+				  	function (error, stdout, stderr) {
+				  		cache.put('path', path); //?
+					    cb(null, {});
+					}
+				);
+			}
+
+			if(replace_symlink) {
+				exec('rm '+global.app_path + '/app/public/downloads', function(err, stdout, stderr) {
+					
+					if(err)
+						console.error('Error while removing symlink', err);
+
+					next(done);
+				});
+			} else
+				next(done);
+			
 		} else {
 			console.log('warn', "Le lien symbolique existe");
 			done(null, {});

@@ -78,8 +78,7 @@ program
 		var configure = require('./lib/helpers/configure');
 
 		configure.update_rc(function() {
-
-			if(options.path) {
+			if(options.path !== undefined) {
 				configure.set_config(options.path, function() {
 					process.exit(0);
 				});					
