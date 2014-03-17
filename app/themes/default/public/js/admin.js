@@ -46,4 +46,5 @@ define([
 		$(this).closest('li').find('.user-more').slideToggle();
 	});
 
+
 });

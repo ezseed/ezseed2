@@ -218,7 +218,29 @@ var admin = {
 		});
 	},
 	userSpace: function(req, res) {
-		db.user.setSpaceLeft(req.params.uid, req.body.disk, function(err) {
+
+		var sizes = ['KB', 'MB', 'GB', 'TB'] //indexes matters
+		  , size = req.body.size
+		  , index = sizes.indexOf(req.body.size)
+		  , allowed_space = req.body.disk;
+
+		console.log(allowed_space, size, index)
+
+		//convert size in MB
+		if(size !== 'MB') {
+		    if(index == 0)
+		        index = 1;
+		    
+		    if(index <= 1)
+		        allowed_space = allowed_space / Math.pow(1024, Math.abs(index));
+		    else
+		        allowed_space = allowed_space * Math.pow(1024, index - 1);
+		}		
+
+
+		console.log(allowed_space);
+
+		db.user.setSpaceLeft(req.params.uid, allowed_space, function(err) {
 			if(err)
 				console.error(err);
 		

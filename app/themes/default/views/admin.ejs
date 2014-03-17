@@ -92,9 +92,14 @@ Date.prototype.getFrenchDateAsString = function() {
 						<h4>Espace disque</h4>
 
 						<form method="POST" action="/admin/user/<%= e._id%>/space">
-							<input type="number" id="disk" name="disk" value="<% if(e.spaceLeft !== undefined) { %><%= e.spaceLeft %><% } else { %>0<% } %>">
-							<span class="input-helper">Mo</span>
-							<input type="submit" name="save" value="Sauvegarder" class="">
+							<input type="text" id="disk" name="disk" value="<% if(e.spaceLeft !== undefined) { %><%= e.spaceLeft %><% } else { %>0<% } %>">
+							<select name="size">
+							    <option value="KB">Kb</option>
+							    <option value="MB" selected="selected">Mb</option>
+							    <option value="GB">Gb</option>
+							    <option value="TB">Tb</option>
+							</select>
+							<input type="submit" name="save_size" id="save_size" value="Sauvegarder" class="">
 						</form>
 					</div>
 				</li>
