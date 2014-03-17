@@ -21,7 +21,7 @@ var configure = {
 
 		if(typeof path == 'string') {
 			
-			console.info('app/config.json');
+			console.info('Ecriture du fichier de configuration app/config.json');
 
 			var config = {
 					"path": path,
@@ -76,11 +76,11 @@ var configure = {
 
 		);
 
-		console.log('info', "Création d'un lien symbolique sur app/public/downloads");
+		console.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"app/public/downloads");
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads')) {
 			//Symlink on the path
-			exec('ln -sfn '+ path +' ' + global.app_path + '/app/public/downloads',
+			exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads',
 			  	function (error, stdout, stderr) {
 			  		cache.put('path', path); //?
 				    done(null, {});
