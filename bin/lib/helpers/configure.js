@@ -83,7 +83,7 @@ var configure = {
 
 		);
 
-		console.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"app/public/downloads");
+		console.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"/app/public/downloads");
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads') || replace_symlink) {
 			
