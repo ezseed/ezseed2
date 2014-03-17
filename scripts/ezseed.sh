@@ -33,8 +33,8 @@ start() {
         echo "Ezseed is already running" >&2
     else
         echo "Starting $NAME"
-        super $PM2 resurrect
         super ezseed reboot
+        super $PM2 resurrect
     fi
 }
 
