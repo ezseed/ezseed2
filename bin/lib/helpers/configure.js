@@ -33,8 +33,6 @@ var configure = {
 					"root": global.app_path +'/app',
 					"location": "",
 					"torrentLink": "embed",
-					"diskSpace": "1048576", //useless now
-					"availableSpace": "1 TB", //yep this too
 					"transmission":false,
   					"rutorrent":false,
 					"theme": "default",

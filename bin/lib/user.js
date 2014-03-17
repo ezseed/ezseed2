@@ -56,7 +56,6 @@ var user = {
 						done(err);
 					} else {
 			    		console.log('info', "Utilisateur ajouté à la base de données d'ezseed");
-			    		//cache.put('user', {username : username, password : password, client: client});
 			    		done(null);
 					}
 		    	});

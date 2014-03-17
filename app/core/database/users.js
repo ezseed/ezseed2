@@ -16,10 +16,7 @@ var users = {
     var password = u.password, username = u.username;
 
     users.count(function(err, num) {
-
-      //Space left = disk / users
-      var spaceLeft = global.config.diskSpace / num;
-
+      
       //Generates the hash
       bcrypt.hash(password, null, null, function(err, hash) {
 
