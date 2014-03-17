@@ -36,7 +36,6 @@ var users = {
           } else {
             doc = new Users ({
               username : username,
-              spaceLeft: spaceLeft,
               role : u.role ? u.role : 'user',
               hash : hash,
               client : u.client ? u.client : 'aucun'
