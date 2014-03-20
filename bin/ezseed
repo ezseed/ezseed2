@@ -68,6 +68,8 @@ require('./client/transmission/daemon')(program);
 
 require('./command/reboot')(program);
 
+require('./command/backup')(program);
+
 program
 	.command('deploy')
 	.description('Deploy ezseed')
