@@ -99,19 +99,11 @@ Usage: ezseed [options] [command]
 
 ![Credits ezseed2](http://www.zupmage.eu/i/KgO87SJzpu.png)
 
-### Donate
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="S3VC2G57H9776">
-<input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !">
-<img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
-</form>
-
 ### Liens
 
 * [Wiki](https://github.com/soyuka/ezseed2/wiki)
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
 * [FAQ](https://github.com/soyuka/ezseed2/wiki/FAQ)
 * [Themes](https://github.com/soyuka/ezseed2/wiki/Themes)
+* [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S3VC2G57H9776)
 
