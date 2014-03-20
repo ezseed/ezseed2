@@ -13,12 +13,12 @@ var pathInfo = require('path')
 global.config = {};
 global.config.root = app_path + '/app';
 
+logger = require(global.config.root+'/core/logger');
+
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
 global.app_path = app_path;
-
-logger = require(global.config.app_path+'/app/core/logger');
 
 var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 
