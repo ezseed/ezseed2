@@ -1,35 +1,46 @@
-var console = require(global.config.root+'/core/logger');
-var spawn = require('child_process').spawn, exec = require('child_process').exec;
+var spawn = require('child_process').spawn
+  , exec = require('shelljs').exec
+  , _s = require('underscore.string');
 
 var shortcut = function(cmd, cb) {
 	var running = spawn('/etc/init.d/ezseed.sh', [cmd]);
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.info(string);
+		logger.info(string);
 	});
 
 	running.stderr.on('error', function (data) {
 		var string = new Buffer(data).toString();
-		console.error(string);
-		
+		logger.error(string);
 	});
 
 	running.on('exit', function (code) {
 
-		if(cmd == 'start') {
-			//check if ezseed has been started
-			var c = 'ps -ef | grep "pm2: ezseed" | grep -v grep';
 
-			exec(c, function(err, stdout, stderr) {
-				
-				if(stdout.length) {
+		if(cmd == 'start') {
+		
+			//check if ezseed has been started
+			logger.warn('Vérification qu\'ezseed est démarré, Patientez...');
+
+			setTimeout(function() {
+
+				var running = exec('ps -ef | grep "pm2: ezseed" | grep -v grep');
+					
+				logger.log('debug', 'Running', running);
+
+				running = _s.trim(running.output);
+
+				if(running.length !== 0) {
+					logger.log('ezseed est démarré');
+
 					if(typeof cb == 'function')
 						cb(code);
 					else
-						process.exit(code);
+						process.exit(0);
 				} else {
 					//if not start it manually
+					logger.log('ezseed démarre pour la première fois...');
 
 					c = 'pm2 start '+global.app_path+'/ezseed.json';
 
@@ -40,7 +51,9 @@ var shortcut = function(cmd, cb) {
 							process.exit(err);
 					});
 				}
-			});
+
+			}, 1000);
+
 		} else {
 
 			if(typeof cb == 'function')

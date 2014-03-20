@@ -8,13 +8,13 @@ var pathInfo = require('path')
 	, jf = require('jsonfile')
 	, fs = require('fs')
 	, _ = require('underscore')
-  	, app_path = pathInfo.resolve(__dirname, '..');
+	, app_path = pathInfo.resolve(__dirname, '..');
 
 
 global.config = {};
 global.config.root = app_path + '/app';
 
-var logger = require(global.config.root+'/core/logger');
+logger = require(global.config.root+'/core/logger');
 
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
