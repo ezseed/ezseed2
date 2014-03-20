@@ -1,10 +1,10 @@
-require('shelljs/global')
+var s = require('shelljs')
 
 var path = require('path')
   , backup
   , scripts = 'scripts/transmission/config/';
 
-cd(app_path)
+s.cd(app_path)
 
 module.exports = function (program) {
 	program
@@ -17,12 +17,12 @@ module.exports = function (program) {
 		logger.info('Backup is done in ', backup)
 
 		//Creating folders
-		mkdir('-p', path.join(backup, 'app'), path.join(backup, scripts))
+		s.mkdir('-p', path.join(backup, 'app'), path.join(backup, scripts))
 		//Copy config.json
-		cp('app/config.json', path.join(backup, 'app'))
+		s.cp('app/config.json', path.join(backup, 'app'))
 		//Copy transmission user configuration files
-		cp(scripts + 'settings.*.json', path.join(backup, scripts))
-		exit()
+		s.cp(scripts + 'settings.*.json', path.join(backup, scripts))
+		s.exit()
 	})
 
 	program
@@ -34,7 +34,7 @@ module.exports = function (program) {
 		var from = options.from || '../'
 
 		//most recent first
-		var backup = ls(from).sort(function(a, b) {
+		var backup = s.ls(from).sort(function(a, b) {
 			return a < b ? 1 : -1;
 		})
 
@@ -47,12 +47,12 @@ module.exports = function (program) {
 
 		if(backup.length > 0 && backup[0] !== "") {
 			backup =  path.join(app_path, '../', backup)
-			cp('-f', path.join(backup, 'app', 'config.json'), 'app/config.json')
-			cp('-f', path.join(backup, scripts, 'settings.*.json'), scripts)
+			s.cp('-f', path.join(backup, 'app', 'config.json'), 'app/config.json')
+			s.cp('-f', path.join(backup, scripts, 'settings.*.json'), scripts)
 
 			logger.info('Backup restored from ' + backup)
 
-			exit()
+			s.exit()
 		} else {
 			throw new Error('No backup folder founded')
 		}
