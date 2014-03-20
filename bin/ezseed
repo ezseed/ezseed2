@@ -15,16 +15,12 @@ global.config.root = app_path + '/app';
 
 logger = require(global.config.root+'/core/logger');
 
-console.log(global.config.root)
-
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
 
-console.log(global.config.root)
-
 global.app_path = app_path;
 
-// var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
+var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 
 var program = require('commander')
   , colors = require('colors')
