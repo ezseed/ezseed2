@@ -8,13 +8,12 @@ var pathInfo = require('path')
 	, jf = require('jsonfile')
 	, fs = require('fs')
 	, _ = require('underscore')
-  	, app_path = pathInfo.resolve(__dirname, '..');
-
+	, app_path = pathInfo.resolve(__dirname, '..');
 
 global.config = {};
 global.config.root = app_path + '/app';
 
-var logger = require(global.config.root+'/core/logger');
+logger = require(global.config.root+'/core/logger');
 
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
@@ -44,11 +43,15 @@ colors.setTheme({
 program
 	.version(autoUpdate.version);
 
-autoUpdate.checkForUpdates(function(uptodate) {
-	if(!uptodate) {
-		logger.log('warn', 'An update is available, please run ezseed update');
-	}
-});
+var checkedForUpdates = false;
+
+if(!checkedForUpdates)
+	autoUpdate.checkForUpdates(function(uptodate) {
+		if(!uptodate) {
+			logger.log('warn', 'An update is available, please run ezseed update');
+		}
+		checkedForUpdates = true;
+	});
 
 require('./command/daemon').program(program);
 
@@ -102,11 +105,11 @@ program
 		  									   \n\
 		").toString();
 
-		console.log(ASCII.yellow.bold);
-		console.log("Made with love by ".magenta + "soyuka".bold.magenta);
-		console.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
+		logger.log(ASCII.yellow.bold);
+		logger.log("Made with love by ".magenta + "soyuka".bold.magenta);
+		logger.log("Big Thanks too : ".magenta + "Gaaa".rainbow +" (rutorrent), ".magenta +"Lines".rainbow +" (design), ".magenta +"Jay_kay".rainbow +" (ideas), ".magenta + "LeBedouin".rainbow +" ($$), ".magenta + "Winux".rainbow +", ".magenta + "H4T".rainbow +", ".magenta + "Ulule participants".rainbow +", ".magenta + "wouya (<3)".rainbow +" !".magenta)
 
-		console.log(" ");
+		logger.log(" ");
 
 		process.exit();
 	});

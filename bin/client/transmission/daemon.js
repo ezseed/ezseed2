@@ -31,7 +31,7 @@ var transmission_daemon = function (cmd, options) {
 				},
 				function(err) {
 
-					if(err) console.error(err);
+					if(err) logger.error(err);
 
 					setTimeout(function() {
 						process.exit(0);

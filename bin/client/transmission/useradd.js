@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , db = require(global.app_path + '/app/core/database')
   , child_process = require('child_process')
@@ -10,7 +9,7 @@ var fs = require('fs')
 var settings = function (username, password, next) {
 	var user_path = require(global.app_path+'/bin/lib/helpers/path')();
 
-	console.log("info", "Ajout de l'utilisateur tranmsission terminé, remplacement des configurations");
+	logger.log("info", "Ajout de l'utilisateur tranmsission terminé, remplacement des configurations");
 	var settings = global.app_path + '/scripts/transmission/config/settings.'+username+'.json';
 
 	fs.readFile(settings, function (err, data) {
@@ -35,15 +34,15 @@ var settings = function (username, password, next) {
 		//db.users.count(function (err, count) {
 		require(global.app_path + '/app/core/helpers/port').findOpen(9090, function(error, port) {
 			if(error)
-				console.error('Port error', error);
+				logger.error('Port error', error);
 
-			console.log('Port ' + port + ' ouvert').
+			logger.log('Port ' + port + ' ouvert');
 
 			d['rpc-port'] = port;
 
 			fs.writeFileSync(settings, JSON.stringify(d));
 
-			console.log('Démarage du daemon transmission');
+			logger.log('Démarage du daemon transmission');
 
 			return require('../../lib/daemon.js')('transmission', 'start', username, next);
 
@@ -56,7 +55,7 @@ var useradd = function (username, password, next) {
 
 	user.create(username, password, function(err) {
 		if(err)
-			console.error(err);
+			logger.error(err);
 		else {
 			var shell_path = global.app_path + '/scripts/transmission/useradd.sh';
 			fs.chmodSync(shell_path, '775');
@@ -66,13 +65,13 @@ var useradd = function (username, password, next) {
 			running.stdout.on('data', function (data) {
 				var string = new Buffer(data).toString();
 
-				console.log(string);
+				logger.log(string);
 			});
 
 			running.stderr.on('data', function (data) {
 				var string = new Buffer(data).toString();
 
-				console.error(string);
+				logger.error(string);
 			});
 
 			running.on('exit', function (code) {

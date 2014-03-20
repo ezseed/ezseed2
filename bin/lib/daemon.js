@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , spawn = require('child_process').spawn
   , path = require('path')
@@ -12,12 +11,12 @@ var daemon = function(client, command, username, done) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log('info', string);
+		logger.log('info', string);
 	});
 
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log('error', string);
+		logger.log('error', string);
 		
 	});
 

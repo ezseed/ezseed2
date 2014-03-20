@@ -1,10 +1,7 @@
-var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
   , promptly = require('promptly');
-
-
 
 module.exports = function(program) {
 	program
@@ -65,13 +62,13 @@ var useradd = {
 					});
 				});
 			} else {
-				console.error("Le client " + client + " n'est pas installé !");
-				console.info("Si c'est une erreur et que transmission est installé modifiez " + global.app_path + '/app/config.json');
+				logger.error("Le client " + client + " n'est pas installé !");
+				logger.info("Si c'est une erreur et que transmission est installé modifiez " + global.app_path + '/app/config.json');
 				process.exit(1);
 			}
 
 		} else {
-			console.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
+			logger.log('error', "Le fichier de configuration n'existe pas, lancez ezseed install");
 			process.exit(1);
 		}
 	}

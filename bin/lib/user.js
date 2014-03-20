@@ -1,11 +1,7 @@
-var console = require(global.config.root+'/core/logger');
-
 var db = require(global.app_path + '/app/core/database')
-	   , child_process = require('child_process')
 	   , cache = require('memory-cache')
 	   , path = require('path')
-	   , spawn = child_process.spawn
-	   , exec = child_process.exec;
+	   , exec = require('shelljs').exec;
 
 
 var user = {
@@ -26,13 +22,13 @@ var user = {
 			if(err) {
 				done(err);
 			} else if (message) {
-				console.log('warn', message);
+				logger.log('warn', message);
 
-				console.log('info', "Mise à jour du client sur la base de données");
+				logger.log('info', "Mise à jour du client sur la base de données");
 
 				db.user.setClient(username, cache.get('client'), function(err) {
 					if(err)
-						console.log('error', err);
+						logger.log('error', err);
 					
 					self.create_next(username, password, done);
 
@@ -52,10 +48,10 @@ var user = {
 				db.users.create({username : username, password: password, client : cache.get('client'), role : cache.get('role')}, function(err, user) {
 
 					if(err) {
-						console.error('Error adding user to database', err);
+						logger.error('Error adding user to database', err);
 						done(err);
 					} else {
-			    		console.log('info', "Utilisateur ajouté à la base de données d'ezseed");
+			    		logger.log('info', "Utilisateur ajouté à la base de données d'ezseed");
 			    		done(null);
 					}
 		    	});
@@ -69,38 +65,32 @@ var user = {
 
 	  	var user_path = path.join(p, username), self = user;
 
-	  	exec('grep -c "^'+username+':" /etc/passwd',function(err, stdout, stderr) {
-	  		
-	  		if(err)
-				console.log('error', err);
-			
-			if(stderr)
-				console.log('error', stderr);
+	  	var exists = exec('grep -c "^'+username+':" /etc/passwd');
 
-	  		if(stdout == '1') {
-	  			done("L'utilisateur existe déjà !", user_path);
-	  		} else {
+	  	if(exists.output == 1) {
+		  	done("L'utilisateur existe déjà !", user_path);
+		} else {
 
-				var cmd = 'mkdir -p '+user_path+' && useradd --home-dir '+user_path+' --groups users --password broken '+username+' && chown -R '+username+' '+user_path+'/ && usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
-				
-				var running = exec(cmd, function (err, stdout, stderr) {
-					if(err)
-						console.log('error', err);
-					
-					if(stderr)
-						console.log('error', stderr);
+			var create_user = exec('mkdir -p '+user_path+' &&'+
+				 'useradd --home-dir '+user_path+' --groups users --password broken '+username+' &&'+
+				 ' chown -R '+username+' '+user_path+'/ &&'+
+				 ' usermod -p $(mkpasswd -H md5 "'+password+'") '+username, function(code, output) {
+					if(code == 0) {
+						logger.error(output);
+					}
+
+					logger.log('debug', output);
 
 					done(err, user_path);
-				});
+				 });
 
-	  		}
-	  	});
 
+  		}
 	},
 	save_path: function(user_path, username, done) {
 
 		db.paths.save(user_path, username, function(err, p) {
-			console.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
+			logger.log('info', "Chemin "+ user_path + " sauvegardé en base de données");
 
 			// require('./helpers/pm2').restart('watcher', function() {
 				done(null, user_path);
@@ -110,9 +100,9 @@ var user = {
 	delete: function(username, done) {
 		db.users.delete(username, function(err) {
 			if(err)
-				console.log("error", err);
+				logger.log("error", err);
 			else
-		 		console.log("info", "Utilisateur "+ username + " supprimé");
+		 		logger.log("info", "Utilisateur "+ username + " supprimé");
 	
 	 		done();
 	 	});
@@ -120,9 +110,10 @@ var user = {
 	password: function(username, password, done) {
 		var cmd = 'usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
 
-		exec(cmd, function(err, stdout, stderr) {
+		exec(cmd, function(code, output) {
 			
-			console.log('info', "System password changed");
+			logger.log('debug', code, output);
+			logger.log('info', "System password changed");
 			
 			db.users.update(username, {password : password}, done);
 		});
@@ -131,7 +122,7 @@ var user = {
 		db.user.byUsername(username, function(err, user) {
 
 			if(err)
-				console.error(err);
+				logger.error(err);
 			
 			if(!user)
 				done('No user founded');
@@ -139,7 +130,7 @@ var user = {
 			if(global.config && global.config[user.client])
 				done(err, user.client);
 			else {
-				console.log('error', "Le client "+user.client+" n'est pas installé")	
+				logger.log('error', "Le client "+user.client+" n'est pas installé")	
 				done(err, user.client);
 			}
 		
