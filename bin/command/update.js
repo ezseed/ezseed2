@@ -1,4 +1,3 @@
-var logger = require(global.config.root+'/core/logger');
 var child_process = require('child_process')
 	   , spawn = child_process.spawn
 	   , jf = require('jsonfile');

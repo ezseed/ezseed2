@@ -1,6 +1,5 @@
-var logger = require(global.config.root+'/core/logger');
 var cache = require('memory-cache')
-  , exec = require('child_process').exec
+  , exec = require('shelljs').exec
   , _ = require('underscore')
   , fs = require('fs')
   , jf = require('jsonfile');
@@ -8,7 +7,9 @@ var cache = require('memory-cache')
 var configure = {
 	update_rc: function(done) {
 		logger.log('info', "Ajout du script de reboot automatique");
-		exec("cp "+global.app_path+"/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
+		exec("cp "+global.app_path+"/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(code, output) {
+			if(code == 1)
+				logger.error(output);
 			done(null, {});
 		});
 	},
@@ -85,26 +86,18 @@ var configure = {
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads') || replace_symlink) {
 			
-			var next = function(cb) {
-				//Symlink on the path
-				exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads',
-				  	function (error, stdout, stderr) {
-				  		cache.put('path', path); //?
-					    cb(null, {});
-					}
-				);
-			}
-
 			if(replace_symlink) {
-				exec('rm '+global.app_path + '/app/public/downloads', function(err, stdout, stderr) {
-					
-					if(err)
-						logger.error('Error while removing symlink', err);
+				var running = exec('rm '+global.app_path + '/app/public/downloads');
 
-					next(done);
-				});
+				if(running.code == 1)
+					logger.error('Error while removing symlink', running.output);
+
+				exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads');				
+				cache.put('path', path); //?
+			    done(null, {});
+
 			} else
-				next(done);
+				done(null, {})
 			
 		} else {
 			logger.log('warn', "Le lien symbolique existe");
@@ -113,7 +106,11 @@ var configure = {
 	},
 	nginx_copy_config: function(done) {
 		//Should be a spawn
-		exec("cat "+global.app_path+"/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(error, stdout, stderr) {
+		exec("cat "+global.app_path+"/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(code, output) {
+			
+			if(code == 1)
+				logger.error(output);
+
 			done(null, {});
 		});
 	},
@@ -137,19 +134,22 @@ var configure = {
 					mv " + sslkeys[1].path + " " + global.app_path + "/ezseed" + sslkeys[1].ext + " && \
 					mv *ezseed.key ezseed.pem* /usr/local/nginx/").toString();
 
-			exec(cmd, function(error, stdout, stderr) {
+			exec(cmd, function(code, output) {
 				
-				if(error) {
-					logger.log('error', error);
+				if(code == 1) {
+					logger.log('error', output);
 				}
-
 
 				self.nginx_copy_config(done);
 			});
 				 
 		} else {
 			var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
-			exec(cmd, function(error, stdout, stderr) {
+			exec(cmd, function(code, output) {
+
+				if(code == 1) {
+					logger.log('error', output);
+				}
 
 				self.nginx_copy_config(done);
 			});

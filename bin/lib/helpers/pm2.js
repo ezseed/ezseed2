@@ -14,7 +14,7 @@ module.exports = {
 		});
 	},
 	 start: function (cb) {
-	 	exec('pm2', ['start', global.app_path+'/ezseed.json'], function(err) {
+		exec('pm2', ['start', global.app_path+'/ezseed.json'], function(err) {
 			
 			if(err !== undefined && err !== null) {
 				logger.log('error', err);

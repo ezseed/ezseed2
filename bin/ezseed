@@ -10,10 +10,10 @@ var pathInfo = require('path')
 	, _ = require('underscore')
 	, app_path = pathInfo.resolve(__dirname, '..');
 
-var logger = require(global.config.root+'/core/logger');
-
 global.config = {};
 global.config.root = app_path + '/app';
+
+logger = require(global.config.root+'/core/logger');
 
 if(fs.existsSync(app_path + '/app/config.json'))
 	global.config = jf.readFileSync(app_path + '/app/config.json');
@@ -43,11 +43,15 @@ colors.setTheme({
 program
 	.version(autoUpdate.version);
 
-autoUpdate.checkForUpdates(function(uptodate) {
-	if(!uptodate) {
-		logger.log('warn', 'An update is available, please run ezseed update');
-	}
-});
+var checkedForUpdates = false;
+
+if(!checkedForUpdates)
+	autoUpdate.checkForUpdates(function(uptodate) {
+		if(!uptodate) {
+			logger.log('warn', 'An update is available, please run ezseed update');
+		}
+		checkedForUpdates = true;
+	});
 
 require('./command/daemon').program(program);
 

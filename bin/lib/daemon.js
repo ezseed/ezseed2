@@ -1,4 +1,3 @@
-var logger = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , spawn = require('child_process').spawn
   , path = require('path')

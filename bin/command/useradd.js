@@ -1,10 +1,7 @@
-var logger = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , jf = require('jsonfile')
   , cache = require('memory-cache')
   , promptly = require('promptly');
-
-
 
 module.exports = function(program) {
 	program

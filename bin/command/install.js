@@ -1,4 +1,3 @@
-var logger = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , promptly = require('promptly')
   , cache = require('memory-cache')
