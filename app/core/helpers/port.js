@@ -32,8 +32,9 @@ var portTester = {
 	parse: function(arr, status, cb) {
 		var self = this;
 		
-		if(arr.length == 0)
+		if(arr.length == 0) {
 			cb(null, false);
+		}
 
 		var port = arr.shift();
 
