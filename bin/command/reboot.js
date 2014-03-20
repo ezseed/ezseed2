@@ -1,4 +1,4 @@
-var console = require(global.config.root+'/core/logger');
+var logger = require(global.config.root+'/core/logger');
 var db = require(global.app_path + '/app/core/database')
 	, async = require('async')
 	, daemon = require('../lib/daemon');

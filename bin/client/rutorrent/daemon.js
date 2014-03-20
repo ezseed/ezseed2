@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var db = require(global.app_path + '/app/core/database')
   , async = require('async')
   , daemon = require('../../lib/daemon.js');
@@ -32,7 +31,7 @@ var rtorrent_daemon = function (cmd, options) {
 				},
 				function(err) {
 
-					if(err) console.log('error', err);
+					if(err) logger.log('error', err);
 
 					setTimeout(function() {
 						process.exit(0);

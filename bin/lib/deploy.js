@@ -1,4 +1,4 @@
-var console = require(global.config.root+'/core/logger');
+var logger = require(global.config.root+'/core/logger');
 var jf = require('jsonfile')
   , spawn = require('child_process').spawn
   , path = require('path')
@@ -88,24 +88,24 @@ var deploy = function(cb) {
 
 	populateRequire(addPlugins(), function(err){
 		if(err)
-			console.log('error', err);
+			logger.log('error', err);
 
 		var deploy = spawn(global.app_path + '/scripts/deploy.sh', [config.theme]);
 
 		deploy.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log(string);
+			logger.log(string);
 		});
 
 		deploy.stderr.on('data', function (data) {
 			var string = new Buffer(data).toString();
-			console.log('error', string);
+			logger.log('error', string);
 			
 		});
 
 		deploy.on('exit', function (code) {
 
-			console.log('info', "Deploiement terminé.");
+			logger.log('info', "Deploiement terminé.");
 
 			return cb !== undefined && typeof cb == 'function' ? cb(code) : process.exit(code);
 		});

@@ -1,4 +1,4 @@
-var console = require(global.config.root+'/core/logger');
+var logger = require(global.config.root+'/core/logger');
 var cache = require('memory-cache')
   , exec = require('child_process').exec
   , _ = require('underscore')
@@ -7,7 +7,7 @@ var cache = require('memory-cache')
 
 var configure = {
 	update_rc: function(done) {
-		console.log('info', "Ajout du script de reboot automatique");
+		logger.log('info', "Ajout du script de reboot automatique");
 		exec("cp "+global.app_path+"/scripts/ezseed.sh /etc/init.d/ezseed.sh && chmod 755 /etc/init.d/ezseed.sh && update-rc.d ezseed.sh defaults", function(err, stdout, stderr) {
 			done(null, {});
 		});
@@ -25,7 +25,7 @@ var configure = {
 			if(path !== global.config.path)
 				replace_symlink = true;
 				
-			console.info('Ecriture du fichier de configuration app/config.json');
+			logger.info('Ecriture du fichier de configuration app/config.json');
 
 			var config = {
 					"path": path,
@@ -57,7 +57,7 @@ var configure = {
 			path = global.config.path;
 		}
 
-		console.log('info', "Paramétrage du lanceur");
+		logger.log('info', "Paramétrage du lanceur");
 
 		jf.writeFileSync(global.app_path + '/ezseed.json', 
 
@@ -81,7 +81,7 @@ var configure = {
 
 		);
 
-		console.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"/app/public/downloads");
+		logger.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"/app/public/downloads");
 
 		if(!fs.existsSync(global.app_path + '/app/public/downloads') || replace_symlink) {
 			
@@ -99,7 +99,7 @@ var configure = {
 				exec('rm '+global.app_path + '/app/public/downloads', function(err, stdout, stderr) {
 					
 					if(err)
-						console.error('Error while removing symlink', err);
+						logger.error('Error while removing symlink', err);
 
 					next(done);
 				});
@@ -107,7 +107,7 @@ var configure = {
 				next(done);
 			
 		} else {
-			console.log('warn', "Le lien symbolique existe");
+			logger.log('warn', "Le lien symbolique existe");
 			done(null, {});
 		}
 	},
@@ -140,7 +140,7 @@ var configure = {
 			exec(cmd, function(error, stdout, stderr) {
 				
 				if(error) {
-					console.log('error', error);
+					logger.log('error', error);
 				}
 
 

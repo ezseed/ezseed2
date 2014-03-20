@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , child_process = require('child_process')
   , spawn = child_process.spawn
@@ -12,12 +11,12 @@ module.exports = function(username, done) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.info);
+		logger.log(string.info);
 	});
 
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.error);
+		logger.log(string.error);
 	});
 
 	running.on('exit', function (code) {

@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var spawn = require('child_process').spawn, exec = require('child_process').exec;
 
 var shortcut = function(cmd, cb) {
@@ -6,12 +5,12 @@ var shortcut = function(cmd, cb) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.info(string);
+		logger.info(string);
 	});
 
 	running.stderr.on('error', function (data) {
 		var string = new Buffer(data).toString();
-		console.error(string);
+		logger.error(string);
 		
 	});
 

@@ -1,4 +1,3 @@
-var console = require(global.config.root+'/core/logger');
 var fs = require('fs')
   , spawn = require('child_process').spawn
   , jf = require('jsonfile');
@@ -11,17 +10,17 @@ module.exports = function(done) {
 
 	running.stdout.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.info);
+		logger.log(string.info);
 	});
 
 	running.stderr.on('data', function (data) {
 		var string = new Buffer(data).toString();
-		console.log(string.error);
+		logger.log(string.error);
 		
 	});
 
 	running.on('exit', function (code) {
-		console.log('Installation de rutorrent terminée'.info);
+		logger.log('Installation de rutorrent terminée'.info);
 		var config = jf.readFileSync(global.app_path + '/app/config.json');
 		
 		config.rutorrent = true;
