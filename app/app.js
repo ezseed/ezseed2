@@ -6,7 +6,7 @@ var jf = require('jsonfile');
 
 if(!process.env.NODE_ENV)
   process.env.NODE_ENV = 'development';
-
+ 
 global.config = jf.readFileSync(__dirname + '/config.json');
 
 //Writing conf file

@@ -91,13 +91,11 @@ var configure = {
 
 				if(running.code == 1)
 					logger.error('Error while removing symlink', running.output);
-
-				exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads');				
-				cache.put('path', path); //?
-			    done(null, {});
-
-			} else
-				done(null, {})
+			}
+			
+			exec('ln -sf '+ path +' ' + global.app_path + '/app/public/downloads');				
+			cache.put('path', path); //?
+		    done(null, {});
 			
 		} else {
 			logger.log('warn', "Le lien symbolique existe");

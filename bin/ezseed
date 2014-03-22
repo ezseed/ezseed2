@@ -25,7 +25,7 @@ var autoUpdate = require('../app/plugins/checkforupdates/index.js').plugin;
 var program = require('commander')
   , colors = require('colors')
   , mongoose = require('mongoose')
-  ;
+  ; 
 
 colors.setTheme({
   silly: 'rainbow',

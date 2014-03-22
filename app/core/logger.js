@@ -15,7 +15,7 @@ if(!fs.existsSync(log_path + '/err.log'))
 
 if(!fs.existsSync(log_path + '/memory.log'))
 	fs.writeFileSync(log_path + '/memory.log');
-
+ 
 /**
  * Levels
  * 
