@@ -18,7 +18,7 @@ var shortcut = function(cmd, cb) {
 	running.on('exit', function (code) {
 
 
-		if(cmd == 'start') {
+		if(cmd == 'start' || cmd == 'restart') {
 		
 			//check if ezseed has been started
 			logger.warn('Vérification qu\'ezseed est démarré, Patientez...');
