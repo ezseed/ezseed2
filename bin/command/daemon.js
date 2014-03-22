@@ -44,11 +44,14 @@ var shortcut = function(cmd, cb) {
 
 					c = 'pm2 start '+global.app_path+'/ezseed.json';
 
-					exec(c, function(err) {
+					exec(c, function(code, output) {
+
+						logger.debug(output);
+
 						if(typeof cb == 'function')
 							cb(err);
 						else
-							process.exit(err);
+							process.exit(code);
 					});
 				}
 

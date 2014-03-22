@@ -37,7 +37,7 @@ var configure = {
 					"transmission":false,
 					"rutorrent":false,
 					"theme": "default",
-					"scrapper": "allocine"
+					"scrapper": "tmdb"
 				};
 			
 			//replaces existing configuration file
