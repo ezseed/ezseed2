@@ -51,10 +51,10 @@ var user = {
 						logger.error('Error adding user to database', err);
 						done(err);
 					} else {
-			    		logger.log('info', "Utilisateur ajouté à la base de données d'ezseed");
-			    		done(null);
+						logger.log('info', "Utilisateur ajouté à la base de données d'ezseed");
+						done(null);
 					}
-		    	});
+				});
 			}
 				
 	    });
@@ -63,19 +63,19 @@ var user = {
 
 		var p = require('./helpers/path')();
 
-	  	var user_path = path.join(p, username), self = user;
+		var user_path = path.join(p, username), self = user;
 
-	  	var exists = exec('grep -c "^'+username+':" /etc/passwd');
+		var exists = exec('grep -c "^'+username+':" /etc/passwd');
 
-	  	if(exists.output == 1) {
-		  	done("L'utilisateur existe déjà !", user_path);
+		if(exists.output == 1) {
+			done("L'utilisateur existe déjà !", user_path);
 		} else {
 
 			var create_user = exec('mkdir -p '+user_path+' &&'+
 				 'useradd --home-dir '+user_path+' --groups users --password broken '+username+' &&'+
 				 ' chown -R '+username+' '+user_path+'/ &&'+
 				 ' usermod -p $(mkpasswd -H md5 "'+password+'") '+username, function(code, output) {
-					if(code == 0) {
+					if(code === 0) {
 						logger.error(output);
 					}
 
@@ -85,7 +85,7 @@ var user = {
 				 });
 
 
-  		}
+		}
 	},
 	save_path: function(user_path, username, done) {
 
@@ -102,10 +102,10 @@ var user = {
 			if(err)
 				logger.log("error", err);
 			else
-		 		logger.log("info", "Utilisateur "+ username + " supprimé");
+				logger.log("info", "Utilisateur "+ username + " supprimé");
 	
-	 		done();
-	 	});
+			done();
+		});
 	},
 	password: function(username, password, done) {
 		var cmd = 'usermod -p $(mkpasswd -H md5 "'+password+'") '+username;
