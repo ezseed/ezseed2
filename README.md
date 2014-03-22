@@ -90,6 +90,7 @@ Usage: ezseed [options] [command]
 
 ## Misc
 
+
 ### Licence
 
 [![Licence Creative Commons](http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png)](https://github.com/soyuka/ezseed2/blob/develop/LICENCE.md) 
@@ -104,4 +105,5 @@ Usage: ezseed [options] [command]
 * [Bugs](https://github.com/soyuka/ezseed2/issues)
 * [FAQ](https://github.com/soyuka/ezseed2/wiki/FAQ)
 * [Themes](https://github.com/soyuka/ezseed2/wiki/Themes)
+* [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S3VC2G57H9776)
 
