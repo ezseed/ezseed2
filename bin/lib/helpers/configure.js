@@ -35,7 +35,7 @@ var configure = {
 					"location": "",
 					"torrentLink": "embed",
 					"transmission":false,
-  					"rutorrent":false,
+					"rutorrent":false,
 					"theme": "default",
 					"scrapper": "allocine"
 				};
@@ -68,7 +68,7 @@ var configure = {
 			    "error_file": global.app_path + "/logs/watcher-err.log",
 			    "out_file"  : global.app_path + "/logs/watcher-out.log",
 			    "env": {
-			    	"NODE_ENV": "production"
+					"NODE_ENV": "production"
 			    }
 			},{
 			    "name"      : "ezseed",
@@ -76,7 +76,7 @@ var configure = {
 			    "error_file": global.app_path + "/logs/ezseed-err.log",
 			    "out_file"  : global.app_path + "/logs/ezseed-out.log",
 			    "env": {
-			    	"NODE_ENV": "production"
+					"NODE_ENV": "production"
 			    }
 			}]
 

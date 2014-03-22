@@ -75,13 +75,10 @@ var user = {
 				 'useradd --home-dir '+user_path+' --groups users --password broken '+username+' &&'+
 				 ' chown -R '+username+' '+user_path+'/ &&'+
 				 ' usermod -p $(mkpasswd -H md5 "'+password+'") '+username, function(code, output) {
-					if(code === 0) {
+					if(code === 0)
 						logger.error(output);
-					}
 
-					logger.log('debug', output);
-
-					done(err, user_path);
+					done(null, user_path);
 				 });
 
 
