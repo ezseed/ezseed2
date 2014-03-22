@@ -29,7 +29,7 @@ git clone https://github.com/joyent/node.git
 cd node
  
 # 'git tag' shows all available versions: select the latest stable.
-git checkout v0.10.25
+git checkout v0.10.26
  
 # Configure seems not to find libssl by default so we give it an explicit pointer.
 # Optionally: you can isolate node by adding --prefix=/opt/node
@@ -47,7 +47,6 @@ then
 	exit 0
 else
 	npm install pm2 -g #to be changed
-	mkdir -p /var/log/ezseed
 	mkdir -p /var/www
 	cd /
 	mv $DIR /var/www/ezseed2
