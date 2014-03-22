@@ -84,9 +84,9 @@ var configure = {
 
 		logger.log('info', "Création d'un lien symbolique de "+path+" sur "+global.app_path+"/app/public/downloads");
 
-		if(!fs.existsSync(global.app_path + '/app/public/downloads') || replace_symlink) {
+		if(replace_symlink) {
 			
-			if(replace_symlink) {
+			if(fs.existsSync(global.app_path + '/app/public/downloads') ) {
 				var running = exec('rm '+global.app_path + '/app/public/downloads');
 
 				if(running.code == 1)
