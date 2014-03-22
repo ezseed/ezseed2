@@ -22,7 +22,7 @@ mkdir /data/db
 
 # Dependecies
 # whois = mkpasswd
-apt-get install mongodb-10gen git-core curl build-essential openssl libssl-dev whois python nginx php5-fpm unzip zip -y
+apt-get install sudo mongodb-10gen git-core curl build-essential openssl libssl-dev whois python nginx php5-fpm unzip zip -y
 
 #Install node js
 git clone https://github.com/joyent/node.git

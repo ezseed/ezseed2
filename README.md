@@ -24,7 +24,7 @@ ezseed install
 ### Manuelle
 
  - Installation de [nodejs et mongodb](https://github.com/soyuka/ezseed2/wiki/Installation-manuelle-des-d%C3%A9pendances-sous-Debian)
- - Les paquets suivants : `whois nginx zip` sont requis
+ - Les paquets suivants : `whois nginx zip sudo` sont requis
  - `npm install pm2 -g`
  - `npm install && npm link`
  - `ezseed install`
@@ -77,6 +77,8 @@ Usage: ezseed [options] [command]
     rtorrent        [options] <start|stop|restart>                        stop rtorrent daemon(s)
     transmission    [options] <start|stop|restart>                        start|stop|restart transmission daemon(s)
     reboot                                                                Restart all daemons
+    backup                                                                Backup
+    restore         [options]                                             Restore backup config
     deploy                                                                Deploy ezseed
     configure       [options]                                             Configure
     credits                                                               Credits
