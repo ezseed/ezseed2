@@ -124,7 +124,7 @@ var user = {
 			if(!user)
 				done('No user founded');
 
-			if(global.config && global.config[user.client])
+			if(user.client == 'aucun' || (global.config && global.config[user.client]))
 				done(err, user.client);
 			else {
 				logger.log('error', "Le client "+user.client+" n'est pas installé")	
