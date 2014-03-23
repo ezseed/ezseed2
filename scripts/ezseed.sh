@@ -47,8 +47,10 @@ stop() {
 
 restart() {
     echo "Restarting $NAME"
-    stop
-    start
+    super $PM2 dump
+    super $PM2 restart ezseed
+    super $PM2 restart watcher
+    super ezseed reboot
 }
 
 reload() {
