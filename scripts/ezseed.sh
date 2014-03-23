@@ -40,7 +40,8 @@ start() {
 
 stop() {
     super $PM2 dump
-    super $PM2 delete all
+    super $PM2 stop ezseed
+    super $PM2 stop watcher
     super $PM2 kill
 }
 
