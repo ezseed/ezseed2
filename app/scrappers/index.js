@@ -1,3 +1,3 @@
 
 
-module.exports = global.config.scrapper !== undefined ? require('./'+ global.config.scrapper + '/search') : require('./allocine/search');
+module.exports = global.conf.scrapper !== undefined ? require('./'+ global.conf.scrapper + '/search') : require('./allocine/search');

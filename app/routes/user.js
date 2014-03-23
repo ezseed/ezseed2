@@ -1,4 +1,4 @@
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 var _ = require('underscore')
 	, db = require('../core/database')
 	, path = require('path')
@@ -68,7 +68,7 @@ var user = {
 	},
 
 	torrent : function(req, res) {
-		var link = global.config.torrentLink;
+		var link = global.conf.torrentLink;
 		if(link == 'embed')
 			res.render('torrents', {title : 'Torrents'});
 		else
@@ -83,7 +83,7 @@ var user = {
 	},
 	password : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = path.resolve(global.config.root, '../bin/', 'ezseed');
+			var shell_path = path.resolve(global.conf.root, '../bin/', 'ezseed');
 				
 			var options = ['password', user.username,'-p', req.body.password];
 

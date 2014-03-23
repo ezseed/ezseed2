@@ -53,7 +53,7 @@ var movies = new Schema({
 	dateAdded: { type: Date, default: Date.now },
 });
 
-// movies.plugin(require(global.config.root + '/plugins/allocine/mongoose').plugin);
+// movies.plugin(require(global.conf.root + '/plugins/allocine/mongoose').plugin);
 
 
 //Others

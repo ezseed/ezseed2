@@ -4,12 +4,12 @@
 var colors = require('colors');
 var jf = require('jsonfile'), fs = require('fs');
 
-global.config = jf.readFileSync(__dirname + '/config.json');
+global.conf = jf.readFileSync(__dirname + '/config.json');
 
-if(!fs.existsSync(global.config.root + '/public/tmp'))
-	fs.mkdirSync(global.config.root + '/public/tmp', '0775');
+if(!fs.existsSync(global.conf.root + '/public/tmp'))
+	fs.mkdirSync(global.conf.root + '/public/tmp', '0775');
 
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 
 var explorer = require('./watcher/explorer')
   , database = require('./core/database');
@@ -31,7 +31,7 @@ var watcher = {
 
 		self.interval = setInterval(function() {
 			self.parse(self);
-		}, !init ? 0 : global.config.fetchTime);
+		}, !init ? 0 : global.conf.fetchTime);
 		
 		init = true;
 	},
@@ -78,7 +78,7 @@ db.once('open', function() {
 	// 					paths.push(docs[p].path);
 		        
 	// 			explorer.explore({docs : {paths : docs}, paths : paths}, function(err, update) {
-	// 				setTimeout(callback, global.config.fetchTime);
+	// 				setTimeout(callback, global.conf.fetchTime);
 	// 			});
 	// 		});
 	// 	},

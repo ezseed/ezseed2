@@ -1,4 +1,4 @@
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 var pathInfos = require('path')
   , mime = require('mime')
   , explorer = require('explorer')
@@ -512,7 +512,7 @@ module.exports.processOthers = function(params, callback) {
 					name : name,
 					files : [e],
 					prevDir : e.prevDir,
-					prevDirRelative : e.prevDir.replace(global.config.root, '')
+					prevDirRelative : e.prevDir.replace(global.conf.root, '')
 				});
 				
 				setImmediate(function() { parseOthers(arr, cb, others); });
@@ -538,7 +538,7 @@ module.exports.processOthers = function(params, callback) {
 						name : name,
 						files : [e],
 						prevDir : e.prevDir,
-						prevDirRelative : e.prevDir.replace(global.config.root, '')
+						prevDirRelative : e.prevDir.replace(global.conf.root, '')
 					});
 				} else {
 					cached.push(e.path);

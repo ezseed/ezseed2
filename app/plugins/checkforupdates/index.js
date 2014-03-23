@@ -9,7 +9,7 @@ var plugin = {
 	static : path.join(__dirname, 'public'),
 	enabled : true,
 	interval : null,
-	version : 'v' + jf.readFileSync(global.config.root + '/..' + '/package.json').version,
+	version : 'v' + jf.readFileSync(global.conf.root + '/..' + '/package.json').version,
 	update : 1000 * 3600, //1 hour
 	stylesheets : [],
 	javascripts : ['/js/checkforupdates.js'],

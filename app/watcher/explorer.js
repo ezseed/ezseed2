@@ -1,5 +1,5 @@
 
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 
 var _ = require('underscore')
   , explorer = require('explorer')

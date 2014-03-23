@@ -22,7 +22,7 @@ var middlewares = {
 	locals : function(req, res, next) {
 		
 		res.locals.config = 
-			_.extend(global.config, 
+			_.extend(global.conf, 
                 { 
                   location : req.originalUrl, 
                   host : req.host
@@ -34,7 +34,7 @@ var middlewares = {
 		
 		res.locals.plugins = [];
 
-		res.locals.themes = require(global.config.root + '/themes');
+		res.locals.themes = require(global.conf.root + '/themes');
 		
 		next();
 	},
@@ -46,7 +46,7 @@ var middlewares = {
 		    var u = req.session.user;
 		    delete u.hash; //Deleting password from user local variable
 
-		    var confPath = global.config.root + '/../scripts/transmission/config/settings.'+u.username+'.json';
+		    var confPath = global.conf.root + '/../scripts/transmission/config/settings.'+u.username+'.json';
 
 		    if(u.client == 'transmission') {
 

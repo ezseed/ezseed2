@@ -48,11 +48,11 @@ var useradd = {
 			cache.put('path', options.path);
 
 		if(fs.existsSync(app_path + '/app/config.json'))
-			global.config = jf.readFileSync(app_path + '/app/config.json');
+			global.conf = jf.readFileSync(app_path + '/app/config.json');
 		
-		if(global.config) {
+		if(global.conf) {
 
-			if(client == "aucun" || global.config[client] == true) {
+			if(client == "aucun" || global.conf[client] == true) {
 
 				cache.put('client', client);
 				

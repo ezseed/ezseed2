@@ -5,7 +5,7 @@ var fs = require('fs')
     , async = require('async')
     , cache = require('memory-cache');
 
-var pluginsPath = path.join(global.config.root, "plugins");
+var pluginsPath = path.join(global.conf.root, "plugins");
 
 var getPlugins = function() {
 

@@ -1,8 +1,8 @@
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 var allocine = require('allocine-api')
   , _ = require('underscore')
   , _s = require('underscore.string')
-  , dummyName = require(global.config.root + '/watcher/release.js').dummyName;
+  , dummyName = require(global.conf.root + '/watcher/release.js').dummyName;
 
 /*
 * Get an object by the string

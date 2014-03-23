@@ -25,7 +25,7 @@ var user = {
 		db.user.byId(req.params.uid, function(err, user) {
 
 	      //Space left = disk / users
-	      //var spaceLeft = global.config.diskSpace / num;
+	      //var spaceLeft = global.conf.diskSpace / num;
 	      var spaceLeft = user.spaceLeft;
 
 	      	db.paths.byUser(req.params.uid, function(err, results) {

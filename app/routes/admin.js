@@ -26,13 +26,13 @@ var admin = {
 	 * GET /admin/path
 	 */
 	, path : function(req, res) {
-		res.render('admin/path', {title : 'Nouveau répertoire', basePath : global.config.path, username : req.params.username});
+		res.render('admin/path', {title : 'Nouveau répertoire', basePath : global.conf.path, username : req.params.username});
 	}
 
 	, createPath : function(req, res) {
 		if(req.body.path.length) {
-			if(fs.existsSync(pathInfo.join(global.config.path, req.body.path) )) {
-				db.paths.save(pathInfo.join(global.config.path, req.body.path), req.body.username, function(err, p) {
+			if(fs.existsSync(pathInfo.join(global.conf.path, req.body.path) )) {
+				db.paths.save(pathInfo.join(global.conf.path, req.body.path), req.body.username, function(err, p) {
 					req.session.success = "Chemin sauvegardé en base de données";
 					exec('pm2', ['restart', 'watcher'], function() {
 						res.redirect('admin');
@@ -62,7 +62,7 @@ var admin = {
 	 * Saves the configuration
 	 */
 	, config : function(req, res) {
-		var conf = global.config;
+		var conf = global.conf;
 
 		conf = _.extend(conf, {
 			torrentLink : req.body.torrent,
@@ -71,7 +71,7 @@ var admin = {
 			archive_max_size: req.body.archive_max_size
 		});
 
-		jf.writeFileSync(global.config.root + '/config.json', conf);
+		jf.writeFileSync(global.conf.root + '/config.json', conf);
 
 		res.redirect('/admin');
 	}
@@ -91,9 +91,9 @@ var admin = {
 
 		if(req.body.client == "transmission" || req.body.client == "rutorrent" || req.body.client == "aucun") {
 			
-			if(global.config[req.body.client] == true) {
+			if(global.conf[req.body.client] == true) {
 
-				var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
+				var shell_path = pathInfo.resolve(global.conf.root, '..', 'bin/ezseed');
 				
 				var options = ['useradd', '-r', req.body.role,'-p', req.body.password, req.body.client, req.body.username];
 
@@ -130,7 +130,7 @@ var admin = {
 	 * Must be run as root = bad.
 	 */
 	, userdel : function(req, res) {
-		var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
+		var shell_path = pathInfo.resolve(global.conf.root, '..', 'bin/ezseed');
 
 		db.user.byId(req.params.uid, function(err, user) {
 			var running = spawn(shell_path, ['userdel', user.username]);
@@ -158,7 +158,7 @@ var admin = {
 
 	, updatePassword : function(req, res) {
 		db.user.byId(req.params.uid, function(err, user) {
-			var shell_path = pathInfo.resolve(global.config.root, '..', 'bin/ezseed');
+			var shell_path = pathInfo.resolve(global.conf.root, '..', 'bin/ezseed');
 			
 			var options = ['password', user.username, ,'-p', req.body.password];
 
@@ -188,7 +188,7 @@ var admin = {
 	}
 
 	, editTransmissionConfiguration : function(req, res) {
-		var transmissionConfig = jf.readFileSync(global.config.root + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
+		var transmissionConfig = jf.readFileSync(global.conf.root + '/../scripts/transmission/config/settings.'+req.params.username+'.json');
 
 		res.render('admin/transmission', {title: "Editer la configuration transmission", config : transmissionConfig});
 	}
@@ -197,7 +197,7 @@ var admin = {
 		var username = req.params.username;
 
 		exec('/etc/init.d/transmission-daemon-'+username + ' stop', function(err, stdout, sdterr) {
-			jf.writeFileSync(global.config.root + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
+			jf.writeFileSync(global.conf.root + '/../scripts/transmission/config/settings.'+username+'.json', JSON.parse(req.body.config) );
 			exec('/etc/init.d/transmission-daemon-'+username + ' start', function(err, stdout, sdterr) {
 				res.redirect('/admin');
 			});
@@ -205,7 +205,7 @@ var admin = {
 	}
 
 	, changeTheme : function(req, res) {
-		var configPath = pathInfo.join(global.config.root, 'config.json')
+		var configPath = pathInfo.join(global.conf.root, 'config.json')
 		  , config = jf.readFileSync(configPath);
 
 		config.theme = req.body.theme;

@@ -82,7 +82,7 @@ var findCoverInDirectory = function(dir) {
 		}
 	}
 	
-	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.config.path, '/downloads');
+	return cover === undefined ? null : pathInfos.join(dir, cover).replace(global.conf.path, '/downloads');
 }
 
 var contains = function(words, item) {
@@ -237,7 +237,7 @@ module.exports.getTags  = {
 
 							var coverName = new Buffer(tags.artist + tags.album).toString().replace(/[^a-zA-Z0-9]+/ig,'')
 
-							  , file = pathInfos.join(global.config.root, '/public/tmp/', coverName)
+							  , file = pathInfos.join(global.conf.root, '/public/tmp/', coverName)
 
 							  , type = datas.format.split('/');
 
@@ -251,7 +251,7 @@ module.exports.getTags  = {
 
 								delete datas;
 								
-								tags = _.extend(tags, {picture: file.replace(global.config.root + '/public', '')});
+								tags = _.extend(tags, {picture: file.replace(global.conf.root + '/public', '')});
 							}
 
 						}

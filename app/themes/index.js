@@ -1,6 +1,6 @@
 var path = require('path'), fs = require('fs'), _ = require('underscore');
 
-var themesPath = path.join(global.config.root, "themes");
+var themesPath = path.join(global.conf.root, "themes");
 
 var themes = fs.readdirSync(themesPath);
 

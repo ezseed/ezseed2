@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 	, Schema =  mongoose.Schema
 	, ObjectId = Schema.ObjectId;
 
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 
 var chatSchema = new Schema({
 	user: ObjectId,

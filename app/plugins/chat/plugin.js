@@ -7,7 +7,7 @@ var db = require('./database');
 var md = require("node-markdown").Markdown;
 var _s = require('underscore.string');
 
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 
 var plugin = {
 	inited: false,

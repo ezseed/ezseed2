@@ -2,7 +2,7 @@ var fs = require('fs')
     , _ = require('underscore')
     , _s = require('underscore.string')
     , path = require('path')
-    , db = require(global.config.root + '/core/database');
+    , db = require(global.conf.root + '/core/database');
 
 var plugin = {
 	name : "Audiocogs",
@@ -53,14 +53,14 @@ var plugin = {
 								res.json({error : 'Aucun fichier trouvé'});
 							} else {
 
-								var cwd = global.config.root.replace('/app', '');
+								var cwd = global.conf.root.replace('/app', '');
 
 								var songs = [];
 
 								for(var i in doc.songs) {
 
-									//doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
-									doc.songs[i].url = 'http://' + req.headers.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+									//doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.conf.path, '/downloads');
+									doc.songs[i].url = 'http://' + req.headers.host + doc.songs[i].path.replace(cwd, '').replace(global.conf.path, '/downloads');
 									
 									if(doc.songs[i].ext != 'm3u')
 										songs.push(doc.songs[i]);

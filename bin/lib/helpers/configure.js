@@ -23,7 +23,7 @@ var configure = {
 
 		if(typeof path == 'string') {
 
-			if(path !== global.config.path)
+			if(path !== global.conf.path)
 				replace_symlink = true;
 				
 			logger.info('Ecriture du fichier de configuration app/config.json');
@@ -50,12 +50,12 @@ var configure = {
 				});
 			}
 
-			global.config = config;
+			global.conf = config;
 
 			//Writes the config
 			jf.writeFileSync(global.app_path + '/app/config.json', config);
 		} else {
-			path = global.config.path;
+			path = global.conf.path;
 		}
 
 		logger.log('info', "Paramétrage du lanceur");

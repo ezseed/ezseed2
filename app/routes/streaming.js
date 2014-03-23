@@ -1,4 +1,4 @@
-var console = require(global.config.root + '/core/logger');
+var console = require(global.conf.root + '/core/logger');
 var fs = require('fs')
 	, _ = require('underscore')
 	, db = require('../core/database');
@@ -24,9 +24,9 @@ var streaming = {
 				doc.episode = file.episode;
 
 				//current working dir
-				var cwd = global.config.root.replace('/app', '');
+				var cwd = global.conf.root.replace('/app', '');
 
-				path = path.replace(cwd, '').replace(global.config.path, '/downloads');
+				path = path.replace(cwd, '').replace(global.conf.path, '/downloads');
 
 				var fullUrl = 'http://' + req.host + path;
 
@@ -50,10 +50,10 @@ var streaming = {
 						res.json({error : 'Aucun fichier trouvé'});
 					} else {
 
-						var cwd = global.config.root.replace('/app', '');
+						var cwd = global.conf.root.replace('/app', '');
 
 						for(var i in doc.songs)			
-							 doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.config.path, '/downloads');
+							 doc.songs[i].url = 'http://' + req.host + doc.songs[i].path.replace(cwd, '').replace(global.conf.path, '/downloads');
 						
 
 						res.json( { album: doc, id:doc._id });

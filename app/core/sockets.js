@@ -20,7 +20,7 @@ module.exports.listen = function(server) {
 
         socket.on('archive', function(id) {
             
-            var tmpFolder = path.join(global.config.path, '.tmp');
+            var tmpFolder = path.join(global.conf.path, '.tmp');
 
             if(!fs.existsSync(tmpFolder))
                 fs.mkdirSync(tmpFolder);

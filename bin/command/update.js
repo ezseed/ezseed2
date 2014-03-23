@@ -53,8 +53,8 @@ var update = {
 
 				logger.log('info', 'Enregistrement du scrapper');
 
-				global.config.scrapper = options.scrapper ? options.scrapper : global.config.scrapper ? global.config.scrapper : 'tmdb';
-				jf.writeFileSync(global.app_path+'/app/config.json', global.config);
+				global.conf.scrapper = options.scrapper ? options.scrapper : global.conf.scrapper ? global.conf.scrapper : 'tmdb';
+				jf.writeFileSync(global.app_path+'/app/config.json', global.conf);
 				
 
 				var next = function() {

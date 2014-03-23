@@ -1,6 +1,6 @@
 var level   = process.argv.indexOf('-d') === -1 ? 'info' : 'debug'
   , winston = require('winston')
-  , log_path = global.config.root + '/../logs';
+  , log_path = global.conf.root + '/../logs';
 
 if(level == 'info' && process.env.NODE_ENV == 'production')
 	level = 'notice';
@@ -91,7 +91,7 @@ var memory_logger = new (winston.Logger)({
 	transports: [
 		new (winston.transports.File) ({ 
 
-		    filename: global.config.root + '/log/memory.log',
+		    filename: global.conf.root + '/log/memory.log',
             levels: winston.config.syslog.levels,
             level: level,
             timestamp: true,

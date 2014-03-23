@@ -7,13 +7,13 @@ var jf = require('jsonfile');
 if(!process.env.NODE_ENV)
   process.env.NODE_ENV = 'development';
  
-global.config = jf.readFileSync(__dirname + '/config.json');
+global.conf = require(__dirname + '/config.json');
 
 //Writing conf file
-if(global.config.root.length == 0 || !global.config.aucun) {
-  global.config.root = __dirname;
-  global.config.aucun = true;
-  jf.writeFileSync(__dirname + '/config.json', global.config);
+if(global.conf.root.length === 0 || !global.conf.aucun) {
+  global.conf.root = __dirname;
+  global.conf.aucun = true;
+  jf.writeFileSync(__dirname + '/config.json', global.conf);
 }
 
 var console = require('./core/logger');
@@ -36,7 +36,7 @@ app.enable('trust proxy');
 app.set('port', 3001); //don't touch (sockets desktop.js are listening to this port)
 
 //More views engines ? See ghost each theme = git submodule !
-app.set('views', path.join(__dirname, 'themes', global.config.theme, 'views'));
+app.set('views', path.join(__dirname, 'themes', global.conf.theme, 'views'));
 
 app.set('view engine', 'ejs');
 
@@ -64,7 +64,7 @@ app.use(express.session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Only theme
-app.use(express.static(path.join(__dirname, 'themes', global.config.theme, 'public')));
+app.use(express.static(path.join(__dirname, 'themes', global.conf.theme, 'public')));
 
 
 //Middlewares
