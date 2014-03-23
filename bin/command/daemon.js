@@ -49,7 +49,7 @@ var shortcut = function(cmd, cb) {
 						logger.debug(output);
 
 						if(typeof cb == 'function')
-							cb(err);
+							cb(code);
 						else
 							process.exit(code);
 					});
