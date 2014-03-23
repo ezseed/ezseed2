@@ -33,19 +33,19 @@ if(!fs.existsSync(log_path + '/memory.log'))
 
 var logger = new (winston.Logger)({
 	transports: [
-	  	new (winston.transports.Console) ({ 
+		new (winston.transports.Console) ({ 
 
-	  		level: level, 
-	  		colorize: true, 
-	  		levels: winston.config.syslog.levels,
-	  		timestamp: level == 'debug' ? true : false
-	  	}),
+			level: level, 
+			colorize: true, 
+			levels: winston.config.syslog.levels,
+			timestamp: level == 'debug' ? true : false
+		}),
 
-	  	new (winston.transports.File) ({ 
+		new (winston.transports.File) ({ 
 			filename: log_path + '/err.log',
-	        levels: winston.config.syslog.levels,
-	  		timestamp: level == 'debug' ? true : false,
-	        level: 'notice' //forces level for file transport
+		     levels: winston.config.syslog.levels,
+			timestamp: level == 'debug' ? true : false,
+		     level: 'notice' //forces level for file transport
 
 	    })
 	],
@@ -72,14 +72,14 @@ process.on('uncaughtException', function ( err ) {
     logger.error(err.stack, function() {
 
 	    if(err.code == 'MODULE_NOT_FOUND')
-	    	logger.log('Please try : npm install', function () {
-	        process.exit(1); //exit
-	    	});
-	    else {
-	    	if(err.code)
-	    		logger.error(err.code);
+			logger.log('Please try : npm install', function () {
+			    process.exit(1); //exit
+			});
+		else {
+			if(err.code)
+				logger.error(err.code);
 
-	    	process.exit(1);
+			process.exit(1);
 	    }
 	});
 });
@@ -89,14 +89,14 @@ var memwatch = require('memwatch');
 
 var memory_logger = new (winston.Logger)({
 	transports: [
-  		new (winston.transports.File) ({ 
+		new (winston.transports.File) ({ 
 
 		    filename: global.config.root + '/log/memory.log',
             levels: winston.config.syslog.levels,
-            level: 'notice',
+            level: level,
             timestamp: true,
-           	colorize: false, 
-       })
+			colorize: false, 
+        })
 	]
 });
 
@@ -106,8 +106,10 @@ memwatch.on('leak', function(info) {
 
 memwatch.on('stats', function(stats) { 
 	//Only log stats on debug
-	if( process.argv.indexOf('-d') === 1 )
+	if( process.argv.indexOf('-d') === 1 ) {
+		logger.log('notice', 'Memory stats', stats);
 		memory_logger.log('notice', 'Memory stats', stats);
+	}
 });
 
 

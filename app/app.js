@@ -43,8 +43,6 @@ app.set('view engine', 'ejs');
 if(process.env.NODE_ENV == 'development')
   app.use(express.logger('dev'));
 
-app.use(express.compress());
-
 //not using bodyparser middleware
 app.use(express.json());
 app.use(express.urlencoded());

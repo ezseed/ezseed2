@@ -40,7 +40,7 @@ var middlewares = {
 	},
 	user : function(req, res, next) {
 		if(req.session.user) {
-		  	//Shortcut, used ?
+			//Shortcut, used ?
 			req.user = req.session.user;
 
 		    var u = req.session.user;
@@ -50,7 +50,7 @@ var middlewares = {
 
 		    if(u.client == 'transmission') {
 
-		    	if(fs.existsSync(confPath)) {
+				if(fs.existsSync(confPath)) {
 
 					var transmissionConfig = jf.readFileSync(confPath);
 
@@ -62,8 +62,8 @@ var middlewares = {
 					next();
 
 			    } else {
-			    	req.session.destroy(function(){
-			    		// req.session.error = "Une erreur de client torrent est survenue, merci de vous connecter à nouveau";
+					req.session.destroy(function(){
+						// req.session.error = "Une erreur de client torrent est survenue, merci de vous connecter à nouveau";
 					    res.redirect('/login');
 					});
 			    }
