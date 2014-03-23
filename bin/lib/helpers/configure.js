@@ -40,7 +40,7 @@ var configure = {
 					"scrapper": "tmdb"
 				};
 			
-			//replaces existing configuration file
+			//replaces with existing configuration file
 			if(fs.existsSync(global.app_path+'/app/config.json')) {
 				var cf = jf.readFileSync(global.app_path + '/app/config.json');
 
