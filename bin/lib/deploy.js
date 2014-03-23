@@ -10,7 +10,7 @@ var jf = require('jsonfile')
  * @param  {[type]}   to_require [plugins to require]
  * @return  {Function} cb         [callback]
  */
-var populateRequire = function(conf, cb) {
+var populateRequire = function(configuration, cb) {
 	
 	var main = global.app_path+'/app/public/javascripts/main.js';
 
@@ -20,8 +20,8 @@ var populateRequire = function(conf, cb) {
 			return cb(err);
 	  
 		var result = data
-					.replace(/CONFIG_HERE/g, JSON.stringify(conf.config))
-					.replace(/REQUIRE_PLUGINS/g, JSON.stringify(conf.to_require).replace('[', '').replace(']', ''));
+					.replace(/CONFIG_HERE/g, JSON.stringify(configuration.config))
+					.replace(/REQUIRE_PLUGINS/g, JSON.stringify(configuration.to_require).replace('[', '').replace(']', ''));
 
 		fs.writeFile(main.replace('main.js', 'main.build.js'), result, 'utf8', function (err) {
 			if (err) return cb(err);
@@ -89,7 +89,7 @@ var deploy = function(cb) {
 		if(err)
 			logger.log('error', err);
 
-		var deploy = spawn(global.app_path + '/scripts/deploy.sh', [config.theme]);
+		var deploy = spawn(global.app_path + '/scripts/deploy.sh', [global.conf.theme]);
 
 		deploy.stdout.on('data', function (data) {
 			var string = new Buffer(data).toString();
