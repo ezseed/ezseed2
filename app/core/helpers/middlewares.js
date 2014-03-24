@@ -1,6 +1,7 @@
 var _ = require('underscore')
   , fs = require('fs')
   , jf = require('jsonfile')
+  , cache = require('memory-cache')
 ;
 
 var middlewares = {
@@ -78,6 +79,18 @@ var middlewares = {
 			res.locals.user = null;
 			next();
 		}
+	},
+	version: function(req, res, next) {
+
+		if(cache.get('version'))
+			res.locals.version = cache.get('version');
+		else {
+			var version = require(global.conf.root + '/../package.json').version;
+			cache.put('version', version);
+			res.locals.version = version;
+		}
+
+		next();
 	}
 };
 
