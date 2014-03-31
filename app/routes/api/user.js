@@ -28,9 +28,9 @@ var user = {
 	      //var spaceLeft = global.conf.diskSpace / num;
 	      var spaceLeft = user.spaceLeft;
 
-	      	db.paths.byUser(req.params.uid, function(err, results) {
+			db.paths.byUser(req.params.uid, function(err, results) {
 
-		      	userHelper.usedSize(results, function(size) {
+				userHelper.usedSize(results, function(size) {
 
 			          //(/helpers/users)
 			          var percent = size.size / 1024 / 1024;
