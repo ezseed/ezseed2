@@ -94,7 +94,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/ezseed');
 
 var mongo = mongoose.connection;
-
+//test
 mongo.on('error', console.log.bind(global, 'connection error:'));
 
 mongo.once('open', function callback () {

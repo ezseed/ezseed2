@@ -32,7 +32,7 @@ var settings = function (username, password, next) {
 		d['download-dir'] = path.join(user_path, username, 'downloads');
 
 		//db.users.count(function (err, count) {
-		require(global.app_path + '/app/core/helpers/port').findOpen(9090, function(error, port) {
+		require(app_path + '/lib/helpers/port').findOpen(9090, function(error, port) {
 			if(error)
 				logger.error('Port error', error);
 

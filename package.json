@@ -60,8 +60,12 @@
     "memwatch": "^0.2.2",
     "shelljs": "~0.2.6"
   },
+  "peerDependencies": {
+    "ezseed-watcher": "^0.1.0"
+  },
   "devDependencies": {
     "mocha": "^1.18.2",
-    "should": "^3.2.0-beta1"
+    "should": "^3.2.0-beta1",
+    "debug": "^0.8.0"
   }
 }
