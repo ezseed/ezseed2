@@ -52,6 +52,8 @@ ldconfig
 cd ../
 
 rm -R rtorrent-0.9.2 libtorrent-0.13.2
+rm libtorrent-0.13.2.tar.gz
+rm rtorrent-0.9.2.tar.gz
 
 #Création des dossiers
 mkdir /usr/local/nginx
