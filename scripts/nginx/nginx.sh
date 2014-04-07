@@ -11,14 +11,6 @@ then mkdir /etc/nginx/sites-enabled
 fi
 
 #include /etc/nginx/sites-enabled in the nginx.conf as a vhost include directory	
-# if [ -f /etc/nginx/nginx.conf || $(cat /etc/nginx/nginx.conf | wc -l)=0 ]
-# 	then
-# 	cp nginx.default.conf > /etc/nginx/nginx.conf
-# else
-# 	sed '/http {/ a\include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
-# 	mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
-# fi
-
 if [ ! -f /etc/nginx/nginx.conf ]
 	then
 	cp nginx.default.conf /etc/nginx/nginx.conf
