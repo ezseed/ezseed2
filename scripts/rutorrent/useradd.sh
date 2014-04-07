@@ -21,9 +21,6 @@ PW=$2
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HOME="$( su $USER -c 'cd ~/ && pwd' )"
 
-#Adding the user to the www-data so he could write into share directory
-adduser $USER www-data
-
 ############
 #Creation de l'utilisateur
 python $DIR/htpasswd.py -b /usr/local/nginx/rutorrent_passwd $USER $PW
@@ -76,8 +73,7 @@ EOF
 
 $DIR/daemon.sh start $USER
 
-chown -R root:www-data /var/www/rutorrent
-
+chmod 777 /var/www/rutorrent/share
 #Fin du script
 ##########
 
