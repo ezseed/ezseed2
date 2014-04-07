@@ -24,7 +24,7 @@ if [ -f /etc/nginx/sites-enabled/default ]
 then rm /etc/nginx/sites-enabled/default
 fi
 
-cp /var/www/ezseed2/nginx/ezseed /etc/nginx/sites-available/
+cp /var/www/ezseed2/scripts/nginx/ezseed /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/ezseed /etc/nginx/sites-enabled/
 
 
@@ -38,7 +38,7 @@ if [ -f /etc/nginx/sites-available/ezseedSSL ]
 then rm /etc/nginx/sites-available/ezseedSSL
 fi
 
-cp /var/www/ezseed2/nginx/ezseedSSL /etc/nginx/sites-available/
+cp /var/www/ezseed2/scripts/nginx/ezseedSSL /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/ezseedSSL /etc/nginx/sites-enabled/
 
 
