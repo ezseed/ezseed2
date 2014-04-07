@@ -54,7 +54,7 @@ var install = {
 
 				function (err, client) {
 
-					if(cache.get('notorrent') === true) {
+					if(cache.get('skiptorrent') === true) {
 						cache.put('client', 'aucun');
 						callback(null, 'aucun');
 					} else if(client == 'aucun') {
@@ -86,7 +86,7 @@ var install = {
 			});
 		}
 
-		if(cache.get('notorrent') === true) {
+		if(cache.get('skiptorrent') === true) {
 			cache.put('client', 'aucun');
 			next(null);
 		} else
@@ -121,7 +121,7 @@ module.exports = function(program) {
 	program
 	.command('install [client]')
 	.option('-u, --skipuser', 'Skip admin creation')
-	.option('-n, --notorrent', 'Skip torrent client installation')
+	.option('-n, --skiptorrent', 'Skip torrent client installation')
 	.option('-s, --skipnginx', 'Skip nginx configuration')
 	.description('Install ezseed or the specified client')
 	.action(function(client, options) {
@@ -132,24 +132,29 @@ module.exports = function(program) {
 			});
 		} else {
 
-			if(options.notorrent)
-				cache.put('notorrent', true);
+			if(options.skiptorrent)
+				cache.put('skiptorrent', true);
 
 			if(options.skipnginx)
 				cache.put('skipnginx', true);
 
 			if(options.skipuser)
 				cache.put('skipuser', true);
-
+			
 			cache.put('isinstall', true);
 
 			async.series(install,
 				function (err, results) {
 
-					require('../lib/deploy.js')(function(code) {
+					if(options.skipbuild) {
 						logger.log("Fin de l'installation. Lancez ezseed start".info);
 						process.exit(0);
-					});
+					} else {
+						require('../lib/deploy.js')(function(code) {
+							logger.log("Fin de l'installation. Lancez ezseed start".info);
+							process.exit(0);
+						});
+					}
 				}
 			);
 		}
