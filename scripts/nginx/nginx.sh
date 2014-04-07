@@ -9,7 +9,16 @@ fi
 if [ -d /etc/nginx/sites-enabled ]
 then echo ""
 #include /etc/nginx/sites-enabled in the nginx.conf as a vhost include directory
-else mkdir /etc/nginx/sites-enabled && sed '/http {/ a\include /etc/nginx/sites-enabled' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp && mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
+else 
+	mkdir /etc/nginx/sites-enabled
+	
+	if[ $(cat /etc/nginx/nginx.conf | wc -l)  = 1 ]
+	then
+		echo 'http { include /etc/nginx/sites-enabled }'
+	else
+		sed '/http {/ a\include /etc/nginx/sites-enabled' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
+		mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
+	fi
 fi
 
 # Mise en place du vhost ezseed
