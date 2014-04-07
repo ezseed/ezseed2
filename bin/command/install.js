@@ -5,6 +5,7 @@ var fs = require('fs')
   ;
 
 var configure = require(global.app_path + '/bin/lib/helpers/configure');
+var nginx = require(global.app_path + '/bin/lib/helpers/nginx');
 var validators =  require(global.app_path + '/bin/lib/helpers/validators');
 
 /**
@@ -38,7 +39,7 @@ var install = {
 			logger.log('info', "ex : ./ssl.pem ./ssl.key - séparé par un espace (ou laissez vide pour la générer)");
 			promptly.prompt("Entrez une clé SSL :", {validator : validators.ssl, default: ""}, function(err, sslkeys) {
 				
-				configure.nginx(sslkeys, next);
+				require(nginx.install(sslkeys, next));
 			});
 		}
 	},
