@@ -10,7 +10,7 @@ module.exports = {
 		done();
 	},
 	configure: function(done) {
-		exec("bash "+global.app_path+"/scripts/nginx/nginx.sh", function(code, output) {
+		exec("bash "+global.app_path+"/scripts/nginx/nginx.sh", {silent: true}, function(code, output) {
 			
 			if(code == 1)
 				logger.error(output);
