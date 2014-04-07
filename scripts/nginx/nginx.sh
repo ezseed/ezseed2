@@ -1,4 +1,6 @@
 #!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
 
 # Vérification que les répertoires pour le vhost soient présents
 if [ ! -d /etc/nginx/sites-available ]
@@ -10,9 +12,9 @@ then mkdir /etc/nginx/sites-enabled
 fi
 
 #include /etc/nginx/sites-enabled in the nginx.conf as a vhost include directory	
-if [ $(cat /etc/nginx/nginx.conf | wc -l)=1 ]
+if [ -z $(cat /etc/nginx/nginx.conf) ]
 	then
-	echo 'http { include /etc/nginx/sites-enabled/*; }' > /etc/nginx/nginx.conf
+	cp nginx.default.conf > /etc/nginx/nginx.conf
 else
 		sed '/http {/ a\include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
 		mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
@@ -33,8 +35,6 @@ fi
 
 cp /var/www/ezseed2/scripts/nginx/ezseed /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/ezseed /etc/nginx/sites-enabled/
-
-
 
 # Mise en place du vhost ezseedSSL
 if [ -f /etc/nginx/sites-enabled/ezseedSSL ]
