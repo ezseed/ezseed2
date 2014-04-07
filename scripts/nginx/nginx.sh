@@ -1,24 +1,21 @@
 #!/bin/bash
 
 # Vérification que les répertoires pour le vhost soient présents
-if [ -d /etc/nginx/sites-available ]
-then echo ""
-else mkdir /etc/nginx/sites-available
+if [ ! -d /etc/nginx/sites-available ]
+then mkdir /etc/nginx/sites-available
 fi
 
-if [ -d /etc/nginx/sites-enabled ]
-then echo ""
-#include /etc/nginx/sites-enabled in the nginx.conf as a vhost include directory
-else 
-	mkdir /etc/nginx/sites-enabled
-	
-	if[ $(cat /etc/nginx/nginx.conf | wc -l)  = 1 ]
+if [ ! -d /etc/nginx/sites-enabled ]
+then mkdir /etc/nginx/sites-enabled
+fi
+
+#include /etc/nginx/sites-enabled in the nginx.conf as a vhost include directory	
+if [ $(cat /etc/nginx/nginx.conf | wc -l)=1 ]
 	then
-		echo 'http { include /etc/nginx/sites-enabled }'
-	else
-		sed '/http {/ a\include /etc/nginx/sites-enabled' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
+	echo 'http { include /etc/nginx/sites-enabled/*; }' > /etc/nginx/nginx.conf
+else
+		sed '/http {/ a\include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
 		mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
-	fi
 fi
 
 # Mise en place du vhost ezseed

@@ -1,7 +1,3 @@
-upstream nodejs {
-	server 127.0.0.1:3001 max_fails=0 fail_timeout=0;
-} 
-
 server {
 	listen 443;
     server_name localhost;
