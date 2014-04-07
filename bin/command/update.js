@@ -81,8 +81,7 @@ var update = {
 			
 			});
 		});
-	},
-	nginx: require('../lib/helpers/nginx').update
+	}
 }
 
 
@@ -92,7 +91,6 @@ module.exports = function (program) {
 	.command('update')
 	.description('Update ezseed')
 	.option('--rtorrent', 'update rtorrent & libtorrent')
-	.option('--nginx', 'update nginx')
 
 	.option('--scrapper <tmdb|allocine>')
 	.option('--nodeploy', "doesn't deploy")
@@ -100,11 +98,16 @@ module.exports = function (program) {
 	.action(function(options) {
 
 		if(options.rtorrent)
-			update.rtorrent(process.exit);
-		else if(options.nginx)
-			update.nginx(process.exit);
+
+			update.rtorrent(function(code) {
+				process.exit(code);
+			});
+
 		else 
-			update.ezseed(process.exit);		
+			
+			update.ezseed(options, function(code) {
+				process.exit(code);
+			});		
 
 	});
 

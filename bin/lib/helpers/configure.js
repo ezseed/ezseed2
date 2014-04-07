@@ -101,6 +101,58 @@ var configure = {
 			logger.log('warn', "Le lien symbolique existe");
 			done(null, {});
 		}
+	},
+	nginx_copy_config: function(done) {
+		//Should be a spawn
+		exec("cat "+global.app_path+"/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(code, output) {
+			
+			if(code == 1)
+				logger.error(output);
+
+			done(null, {});
+		});
+	},
+	/**
+	 * Creating keys
+	 * @param  {String}   sslkeys [ssl keys array]
+	 * @param  {Function} done    [callback]
+	 * @return {Function}           [callback]
+	 */
+	nginx: function(sslkeys, done) {
+
+		var l = sslkeys.length, self = this;
+
+		if(!fs.existsSync('/usr/local/nginx'))
+			fs.mkdirSync('/usr/local/nginx', '755');
+
+		//Getting some ssl keys to move in the right directory
+		if(l == 2) {	
+			var cmd = new Buffer("\
+					mv " + sslkeys[0].path + " " + global.app_path + "/ezseed" + sslkeys[0].ext + " && \
+					mv " + sslkeys[1].path + " " + global.app_path + "/ezseed" + sslkeys[1].ext + " && \
+					mv *ezseed.key ezseed.pem* /usr/local/nginx/").toString();
+
+			exec(cmd, function(code, output) {
+				
+				if(code == 1) {
+					logger.log('error', output);
+				}
+
+				self.nginx_copy_config(done);
+			});
+				 
+		} else {
+			var cmd = "openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'";
+			exec(cmd, function(code, output) {
+
+				if(code == 1) {
+					logger.log('error', output);
+				}
+
+				self.nginx_copy_config(done);
+			});
+		}
+
 	}
 };
 

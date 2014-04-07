@@ -46,7 +46,7 @@ module.exports = {
 			exec("openssl req -new -x509 -days 365 -nodes -out /usr/local/nginx/ezseed.pem -keyout /usr/local/nginx/ezseed.key -subj '/CN=ezseed/O=EzSeed/C=FR'");
 		}
 
-		this.move_keys()
+		this.move_keys(sslkeys);
 		self.configure(done);
 
 	}
