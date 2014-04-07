@@ -1,10 +1,12 @@
-upstream nodejs {
-	server 127.0.0.1:3001 max_fails=0 fail_timeout=0;
-} 
-
 server {
-	listen 80;
+	listen 443;
 	server_name localhost;
+
+	ssl on;
+	ssl_certificate /usr/local/nginx/ezseed.pem;
+	ssl_certificate_key /usr/local/nginx/ezseed.key;
+    
+	add_header Strict-Transport-Security max-age=500; 
 
 	location / {
 		proxy_set_header X-Real-IP $remote_addr;
@@ -35,4 +37,3 @@ server {
                 include fastcgi_params;
         }
 }
-
