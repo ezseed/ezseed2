@@ -57,7 +57,6 @@
     "tmdb-3": "0.0.5",
     "spawn-command": "0.0.2",
     "winston": "git://github.com/soyuka/winston.git",
-    "memwatch": "^0.2.2",
     "shelljs": "~0.2.6"
   },
   "devDependencies": {

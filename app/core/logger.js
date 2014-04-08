@@ -84,33 +84,4 @@ process.on('uncaughtException', function ( err ) {
 	});
 });
 
-//memwatch
-var memwatch = require('memwatch');
-
-var memory_logger = new (winston.Logger)({
-	transports: [
-		new (winston.transports.File) ({ 
-
-		    filename: global.conf.root + '/log/memory.log',
-            levels: winston.config.syslog.levels,
-            level: level,
-            timestamp: true,
-			colorize: false, 
-        })
-	]
-});
-
-memwatch.on('leak', function(info) { 
-	memory_logger.error(info);
-});
-
-memwatch.on('stats', function(stats) { 
-	//Only log stats on debug
-	if( process.argv.indexOf('-d') === 1 ) {
-		logger.log('notice', 'Memory stats', stats);
-		memory_logger.log('notice', 'Memory stats', stats);
-	}
-});
-
-
 module.exports = logger;
