@@ -56,14 +56,12 @@ rm libtorrent-0.13.2.tar.gz
 rm rtorrent-0.9.2.tar.gz
 
 # Vérification de l'éxistance et création des dossiers si nécessaire
-if [ -d /usr/local/nginx ]
-then echo "Le répertoire existe"
-else mkdir /usr/local/nginx
+if [ !-d /usr/local/nginx ]
+then mkdir /usr/local/nginx
 fi
 
-if [ -f /usr/local/nginx/rutorrent_passwd ]
-then echo "Le fichier gérant les accès existe déjà"
-else touch /usr/local/nginx/rutorrent_passwd
+if [ !-f /usr/local/nginx/rutorrent_passwd ]
+then touch /usr/local/nginx/rutorrent_passwd
 fi
 
 #ajout de l'environnement
@@ -74,17 +72,14 @@ echo "include /usr/local/bin" >> /etc/ld.so.conf
 ldconfig
 
 # Vérification de l'existance de l'utilisateur pour le pool et création si nécessaire
-test=
 test=$(grep -e ezseedtorrent /etc/passwd)
-if [ ${test} ]
-then echo "Cet utilisateur est deja créé"
-else useradd -M -p `openssl passwd ezseed` ezseedtorrent &&adduser www-data ezseedtorrent
+if [ !${test} ]
+then useradd -M -p `openssl passwd ezseed` ezseedtorrent &&adduser www-data ezseedtorrent
 fi
 
 # Vérification de l'existance du fichier de config du pool et création si besoin
-if [ -f /etc/php5/fpm/pool.d/ezseedtorrent.conf ]
-then echo "Le fichier de configuration du pool existe déjà"
-else echo "
+if [ !-f /etc/php5/fpm/pool.d/ezseedtorrent.conf ]
+then echo "
 # Nom du pool
 [ezseed]
 
@@ -104,9 +99,8 @@ chdir = /
 " >> /etc/php5/fpm/pool.d/ezseedtorrent.conf
 fi
 
-if [ -d /etc/phpcgi ]
-then echo "Le repertoire existe"
-else mkdir /etc/phpcgi
+if [ !-d /etc/phpcgi ]
+then mkdir /etc/phpcgi
 fi
 
 service php5-fpm restart
