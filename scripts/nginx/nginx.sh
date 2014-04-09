@@ -14,12 +14,6 @@ then
  	mv -f /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf	
 fi
 
-# if [ ! -f /etc/nginx/nginx.conf ]
-# 	then
-# 	cp nginx.default.conf /etc/nginx/nginx.conf
-# else
-#fi
-
 # Mise en place du vhost ezseed
 if [ -f /etc/nginx/sites-enabled/ezseed ]
 then rm /etc/nginx/sites-enabled/ezseed
