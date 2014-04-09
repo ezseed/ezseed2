@@ -23,28 +23,39 @@ mv ./plugins/* ./rutorrent/plugins/
 rm -R ./plugins
 mv rutorrent/ /var/www
 
-#clone rtorrent et libtorrent
-wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
-tar -xf libtorrent-0.13.2.tar.gz
 
-wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz
-tar -xzf rtorrent-0.9.2.tar.gz
+# get xmlrpc from svn
+svn checkout http://svn.code.sf.net/p/xmlrpc-c/code/stable xmlrpc-c
+cd xmlrpc-c
+./configure --disable-cplusplus
+make
+make install
+cd ..
+rm -rv xmlrpc-c
 
-# libtorrent compilation
-cd libtorrent-0.13.2
+
+mkdir rtorrent
+cd rtorrent
+
+# get libtorrent from source
+git clone https://github.com/rakshasa/libtorrent
+cd libtorrent
 ./autogen.sh
 ./configure
 make
 make install
+cd ..
 
-# rtorrent compilation
-cd ../rtorrent-0.9.2
+#get rtorrent
+git clone https://github.com/rakshasa/rtorrent
+cd rtorrent
 ./autogen.sh
 ./configure --with-xmlrpc-c
 make
 make install
+cd ../..
+rm -rv rtorrent
 
-#that.
 ldconfig
 
 # back from rtorrent
