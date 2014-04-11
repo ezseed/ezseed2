@@ -59,10 +59,32 @@ rm -rv rtorrent
 ldconfig
 
 # back from rtorrent
-
 cd ../
 
 rm -R rtorrent-0.9.2 libtorrent-0.13.2
+
+#
+#	Configuration du plugin createTorrent
+#
+
+#install mktorrent (logiciel de creation de torrent)
+apt-get install mktorrent
+
+#suppresion de l'ancien fichier de configuration
+rm /var/www/rutorrent/plugins/create/conf.php 
+touch /var/www/rutorrent/plugins/create/conf.php 
+
+#creation du nouveau fichier de config
+echo "<?php
+        // configuration parameters
+
+        @define('MAX_CONSOLE_SIZE',25,true);
+
+        $useExternal = \"mktorrent\";
+        $pathToCreatetorrent = \"/usr/bin/mktorrent\";            // Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be found in PATH.
+        $pathToExternals[\"pgrep\"] = '';         // Something like /usr/bin/pgrep. If empty, will be found in PATH.
+" >> /var/www/rutorrent/plugins/create/conf.php 
+
 
 #Création des dossiers
 mkdir /usr/local/nginx
