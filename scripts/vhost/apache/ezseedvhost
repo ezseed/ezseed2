@@ -1,0 +1,31 @@
+<VirtualHost *:80>
+	ServerAdmin infos@soyuka.me
+	ServerName localhost
+
+	ProxyRequests Off
+
+	<Proxy *>
+		Order deny,allow
+		Allow from all
+	</Proxy>
+ 
+	ErrorLog /var/log/apache2/ezseed
+
+	DocumentRoot /var/www
+ 
+	ProxyPass /rutorrent !
+	ProxyPassReverse /rutorrent !
+	ProxyPass / http://127.0.0.1:3001/
+	ProxyPassReverse / http://127.0.0.1//localhost:3001/
+ 
+	<Location /rutorrent>
+		Order allow,deny
+		Allow from all
+		DirectoryIndex index.html index.php
+		AuthType Basic
+		AuthName "ezseed"
+		AuthUserFile /usr/local/nginx/rutorrent_passwd
+		Require valid-user
+		SetEnv R_ENV "/var/www/rutorrent"
+	</Location>
+</VirtualHost>
