@@ -104,7 +104,7 @@ var configure = {
 	},
 	nginx_copy_config: function(done) {
 		//Should be a spawn
-		exec("cat "+global.app_path+"/scripts/nginx.conf > /etc/nginx/nginx.conf && service nginx restart", function(code, output) {
+			exec("bash "+global.app_path+"/scripts/serveurweb.sh", {silent: true}, function(code, output) {
 			
 			if(code == 1)
 				logger.error(output);
