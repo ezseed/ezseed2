@@ -1,3 +1,6 @@
+# Please check http://github.com/ezseed/ezseed
+
+----------
  - **[Installation](#installation)**
  - **[Mis à jour](#mise-a-jour)**
  - **[CLI](#cli)**
