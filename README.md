@@ -1,4 +1,4 @@
-# Please check http://github.com/ezseed/ezseed
+# USE THIS => http://github.com/ezseed/ezseed
 
 ----------
  - **[Installation](#installation)**
