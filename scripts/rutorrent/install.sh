@@ -1,82 +1,146 @@
 #!/bin/bash
 #su $user -c 'screen -dmS rtorrent rtorrent' lancer
 ###
-#Vérification du root
+# Mise en place des variables modifiables
+TMP="/tmp" 						# Répertoire temporaire
+WEB="/var/www" 					# Répertoire web
+RUTORRENT="/var/www/rutorrent" 	# Répertoire de rutorrent
+POOLUSER="ezseedpool"			# Nom de l'utilisateur qui lance le pool php
+LIBTORRENT="http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz" 	# Adresse de DL pour libtorrent
+RTORRENT="http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz" 		# Adresse de DL pour rtorrent
+
+
+###############################################################################
+###############################################################################
+###############################    SCRIPT    ##################################
+#########################    NE RIEN MODIFIER    ##############################
+###############################################################################
+###############################################################################
+
+# Mise en place des variables fixes
+PLUGINS=($RUTORRENT/plugins)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WEBUSER=$(ps aux | grep $(netstat -tulpn | grep :80 | awk -F/ '{print $2}' | sed -e "s/ *$//" | sort -u) | cut -d ' ' -f 1 | sed '/root/d' | sort -u)
+
+# Vérification du root
 if [ "$(id -u)" != "0" ]; then
         echo "This bash script needs a root account" 1>&2
         exit 1
 fi
-###
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# building tools
+apt-get install -y apache2-utils automake build-essential buildtorrent curl ffmpeg git htop libcppunit-dev libcurl3 libcurl3-dev libcurl4-openssl-dev libncurses5 libncurses5-dev libsigc++-2.0-dev libterm-readline-gnu-perl libtool libxmlrpc-c3-dev php5-cgi php5-cli php5-curl php5-geoip pkg-config screen subversion unrar-free unzip
 
 
-##building tools##
-apt-get -y install libncurses5-dev libxmlrpc-c3-dev libcurl3-dev automake libncurses5 libcppunit-dev libtool pkg-config subversion php5-cli unzip ffmpeg curl php5-curl mediainfo screen unrar-free libsigc++-2.0-dev
+###############################################################################
+#############################    RUTOPRRENT    ################################
+###############################################################################
+# Téléchargement de rutorrent (web)
+if [ ! -d $WEB ]; then
+	mkdir -p $WEB
+fi
+svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent/ $RUTORRENT
 
-#comerr-dev libcurl3-openssl-dev libidn11-dev libkadm55 libkrb5-dev libssl-dev zlib1g-dev libncurses5 libncurses5-dev
+# Installation des plugins
+# Plugins de bases
+rm -R $PLUGINS
+svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/ $PLUGINS
+# Plugins logoff
+svn co http://rutorrent-logoff.googlecode.com/svn/trunk/ $PLUGINS/logoff
+# Plugins tadd-labels
+wget -O $TMP/lbll-suite.tar.gz http://rutorrent-tadd-labels.googlecode.com/files/lbll-suite_0.8.1.tar.gz
+tar -xzf $TMP/lbll-suite.tar.gz
+rm $TMP/lbll-suite.tar.gz
+mv $TMP/lbll* $PLUGINS
+# Plugins mediainfo
+wget -O $TMP/libzen.deb http://mediaarea.net/download/binary/libzen0/0.4.29/libzen0_0.4.29-1_amd64.Debian_7.0.deb
+wget -O $TMP/libmediainfo.deb http://mediaarea.net/download/binary/libmediainfo0/0.7.65/libmediainfo0_0.7.65-1_amd64.Debian_7.0.deb
+wget -O $TMP/mediainfo.deb http://mediaarea.net/download/binary/mediainfo/0.7.65/mediainfo_0.7.65-1_amd64.Debian_7.0.deb
+dpkg -i $TMP/libzen.deb $TMP/libmediainfo.deb $TMP/mediainfo.deb
+# Configuration de buildtorrent
+sed -i ":useExternal: s:false:'buildtorrent':" $PLUGINS/create/conf.php
+sed -i ":pathToCreatetorrent: s:= ':= '/usr/bin/buildtorrent:" $PLUGINS/create/conf.php
 
-#Téléchargement + déplacement de rutorrent (web)
-svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent/
-svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/
-mv ./plugins/* ./rutorrent/plugins/
-rm -R ./plugins
-mv rutorrent/ /var/www
+# Donner le répertoire rutorrent à l'utilisateur web
+chown -R $WEBUSER:$WEBUSER $RUTORRENT
 
-#clone rtorrent et libtorrent
-wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/libtorrent-0.13.2.tar.gz
-tar -xf libtorrent-0.13.2.tar.gz
 
-wget --no-check-certificate http://libtorrent.rakshasa.no/downloads/rtorrent-0.9.2.tar.gz
-tar -xzf rtorrent-0.9.2.tar.gz
+###############################################################################
+##############################    RTORRENT    #################################
+###############################################################################
+# Téléchargement des sources de rtorrent et libtorrent
+cd $TMP
+wget --no-check-certificate $LIBTORRENT
+tar -xzf libtorrent*
+wget --no-check-certificate $RTORRENT
+tar -xzf rtorrent*
 
 # libtorrent compilation
-cd libtorrent-0.13.2
+cd $TMP/libtorrent*
 ./autogen.sh
 ./configure
-make
-make install
+make && make install
 
 # rtorrent compilation
-cd ../rtorrent-0.9.2
+cd $TMP/rtorrent*
 ./autogen.sh
 ./configure --with-xmlrpc-c
-make
-make install
+make && make install
 
-#that.
+# that.
 ldconfig
+# Nettoyage du répertoire tmp
+rm -R $TMP/*
 
-# back from rtorrent
-
-cd ../
-
-rm -R rtorrent-0.9.2 libtorrent-0.13.2
-
-#Création des dossiers
-mkdir /usr/local/nginx
-touch /usr/local/nginx/rutorrent_passwd
+# Vérification de l'éxistance et création du fichier passwd
+if [ ! -d /usr/local/nginx ]; then
+	mkdir -p /usr/local/nginx
+fi
+if [ ! -f /usr/local/nginx/rutorrent_passwd ]; then
+	touch /usr/local/nginx/rutorrent_passwd
+fi
 
 #ajout de l'environnement
 echo "include /usr/local/bin" >> /etc/ld.so.conf
+# Suppression des lignes include en doublon
+(cat /etc/ld.so.conf | sort | uniq > /etc/ld.so.conf.tmp) &&  mv -f /etc/ld.so.conf.tmp /etc/ld.so.conf
 ldconfig
 
-#Ajout de la config dans php-fpm.conf
-echo "
-[www]
-listen = /etc/phpcgi/php-cgi.socket
-user = www-data
-group = www-data
+
+###############################################################################
+##############################    POOL PHP    #################################
+###############################################################################
+# Vérification de l'existance de l'utilisateur pour le pool et création si nécessaire
+if [ "$(grep -e $POOLUSER /etc/passwd)" = "" ]; then
+	useradd -M -p `openssl passwd ezseed` $POOLUSER && adduser $WEBUSER $POOLUSER
+fi
+# Vérification de l'existance du fichier de config du pool et création si besoin
+if [ ! -f /etc/php5/fpm/pool.d/$POOLUSER.conf ]; then
+	echo "# Nom du pool
+[ezseed]
+
+# Utilisateur et socket du pool
+user = $POOLUSER
+group = $POOLUSER
+listen = /etc/phpcgi/php-cgi-ezseed.socket
+
+# Paramètres du pool
+pm = dynamic
 pm.max_children = 4096
 pm.start_servers = 4
 pm.min_spare_servers = 4
 pm.max_spare_servers = 128
 pm.max_requests = 4096
-" >> /etc/php5/fpm/php-fpm.conf
+chdir = /
+" >> /etc/php5/fpm/pool.d/$POOLUSER.conf
+fi
 
-mkdir /etc/phpcgi
+if [ ! -d /etc/phpcgi ]; then
+	mkdir /etc/phpcgi
+fi
 
+# Redémarrage de php5
 service php5-fpm restart
-service nginx restart
+
 
 exit 0
