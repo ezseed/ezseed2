@@ -75,8 +75,8 @@
 .entypo-level-down:before { content: '\e8b9'; } /* '' */
 .entypo-switch:before { content: '\e8bd'; } /* '' */
 .entypo-infinity:before { content: '\e8dd'; } /* '' */
-.entypo-plus-squared:before { content: '\e80b'; } /* '' */
-.entypo-minus-squared:before { content: '\e866'; } /* '' */
+.entypo-plus-squared:before { content: '\e80b'; cursor : pointer ; } /* '' */
+.entypo-minus-squared:before { content: '\e866'; cursor : pointer ; } /* '' */
 .entypo-home:before { content: '\e86c'; } /* '' */
 .entypo-keyboard:before { content: '\e87f'; } /* '' */
 .entypo-erase:before { content: '\e8de'; } /* '' */
